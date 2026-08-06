@@ -1,26 +1,244 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ------------------------------------------------------------------
+   ROUTES CRETE — DESIGN TOKENS
+   Crete-inspired, desaturated, premium. No saturated colour anywhere.
+   ------------------------------------------------------------------ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-manrope);
+  --font-sans: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  /* --- Colour: Deep Ocean Blue --------------------------------- */
+  --color-ocean-950: #04141d;
+  --color-ocean-900: #082430;
+  --color-ocean-800: #0d3444;
+  --color-ocean-700: #14485c;
+  --color-ocean-600: #1d5f78;
+  --color-ocean-500: #2a7a95;
+
+  /* --- Colour: Sand ------------------------------------------- */
+  --color-sand-50: #faf6ef;
+  --color-sand-100: #f3ebdd;
+  --color-sand-200: #e8dcc6;
+  --color-sand-300: #dbcbae;
+  --color-sand-400: #c9b48f;
+
+  /* --- Colour: Olive ------------------------------------------ */
+  --color-olive-700: #414937;
+  --color-olive-600: #4f5843;
+  --color-olive-500: #646e54;
+  --color-olive-400: #808a6d;
+
+  /* --- Colour: Stone Gray ------------------------------------- */
+  --color-rock-100: #eceae5;
+  --color-rock-200: #d8d5ce;
+  --color-rock-300: #bdb9b0;
+  --color-rock-400: #9c978d;
+  --color-rock-500: #7d786e;
+  --color-rock-600: #5f5b53;
+
+  /* --- Colour: Sunset Gold (accent — use sparingly) ------------ */
+  --color-gold-300: #e2c893;
+  --color-gold-400: #d4ae6a;
+  --color-gold-500: #c1954a;
+  --color-gold-600: #a67c36;
+
+  /* --- Colour: neutrals --------------------------------------- */
+  --color-shell: #faf8f4; /* warm white — page background */
+  --color-ink: #14171a; /* near-black — body text        */
+
+  /* --- Type scale (fluid) ------------------------------------- */
+  --text-display-2xl: clamp(3.25rem, 11.5vw, 10.5rem);
+  --text-display-2xl--line-height: 0.88;
+  --text-display-2xl--letter-spacing: -0.035em;
+  --text-display-2xl--font-weight: 700;
+
+  --text-display-xl: clamp(2.5rem, 7.5vw, 6.5rem);
+  --text-display-xl--line-height: 0.92;
+  --text-display-xl--letter-spacing: -0.03em;
+  --text-display-xl--font-weight: 700;
+
+  --text-display-lg: clamp(2.125rem, 5.25vw, 4.25rem);
+  --text-display-lg--line-height: 0.98;
+  --text-display-lg--letter-spacing: -0.025em;
+  --text-display-lg--font-weight: 700;
+
+  --text-display-md: clamp(1.75rem, 3.75vw, 2.875rem);
+  --text-display-md--line-height: 1.06;
+  --text-display-md--letter-spacing: -0.02em;
+  --text-display-md--font-weight: 600;
+
+  --text-heading-lg: clamp(1.375rem, 2.5vw, 2rem);
+  --text-heading-lg--line-height: 1.18;
+  --text-heading-lg--letter-spacing: -0.015em;
+  --text-heading-lg--font-weight: 600;
+
+  --text-heading-md: clamp(1.1875rem, 1.9vw, 1.5rem);
+  --text-heading-md--line-height: 1.28;
+  --text-heading-md--letter-spacing: -0.01em;
+  --text-heading-md--font-weight: 600;
+
+  --text-heading-sm: 1.0625rem;
+  --text-heading-sm--line-height: 1.4;
+  --text-heading-sm--letter-spacing: -0.005em;
+  --text-heading-sm--font-weight: 600;
+
+  --text-body-lg: clamp(1.0625rem, 1.15vw, 1.1875rem);
+  --text-body-lg--line-height: 1.72;
+  --text-body-lg--letter-spacing: 0;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+  --text-body--letter-spacing: 0;
+
+  --text-body-sm: 0.9375rem;
+  --text-body-sm--line-height: 1.62;
+  --text-body-sm--letter-spacing: 0;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.5;
+  --text-caption--letter-spacing: 0.01em;
+
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.22em;
+  --text-eyebrow--font-weight: 500;
+
+  /* --- Motion ------------------------------------------------- */
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  /* --- Layout ------------------------------------------------- */
+  --spacing-gutter: 1.5rem;
+  --spacing-section: clamp(5rem, 11vh, 9rem);
+  --spacing-section-lg: clamp(7rem, 16vh, 13rem);
+
+  /* --- Radius ------------------------------------------------- */
+  --radius-card: 2px;
+  --radius-media: 3px;
+  --radius-pill: 999px;
+}
+
+/* ------------------------------------------------------------------
+   BASE
+   ------------------------------------------------------------------ */
+
+@layer base {
+  html {
+    /* Offset for the fixed nav when jumping to an #anchor */
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-shell);
+    color: var(--color-ink);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible, on-brand focus for keyboard users only */
+  :focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-ocean-900);
+    color: var(--color-sand-100);
+  }
+
+  /* Media defaults */
+  img,
+  video {
+    display: block;
+    max-width: 100%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ------------------------------------------------------------------
+   UTILITIES
+   ------------------------------------------------------------------ */
+
+@utility text-balance-none {
+  text-wrap: initial;
+}
+
+/* Hairline rule used as an editorial separator */
+@utility rule {
+  height: 1px;
+  width: 100%;
+  background-color: color-mix(in srgb, var(--color-ink) 12%, transparent);
+}
+
+/* Cinematic scrim for full-bleed imagery — keeps overlay text legible
+   without flattening the photograph. */
+@utility scrim {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-ocean-950) 88%, transparent) 0%,
+    color-mix(in srgb, var(--color-ocean-950) 55%, transparent) 38%,
+    color-mix(in srgb, var(--color-ocean-950) 22%, transparent) 68%,
+    color-mix(in srgb, var(--color-ocean-950) 34%, transparent) 100%
+  );
+}
+
+@utility scrim-soft {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-ocean-950) 72%, transparent) 0%,
+    color-mix(in srgb, var(--color-ocean-950) 24%, transparent) 55%,
+    transparent 100%
+  );
+}
+
+/* Very fine film grain — adds depth to large flat dark areas.
+   Pure CSS, no image request. */
+@utility grain {
+  position: relative;
+}
+@utility grain-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
+}
+
+/* ------------------------------------------------------------------
+   MOTION PREFERENCES
+   Every animation in the app is transform/opacity only, and all of it
+   collapses to a static end-state when the user asks for less motion.
+   ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
