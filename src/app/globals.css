@@ -228,6 +228,47 @@
 }
 
 /* ------------------------------------------------------------------
+   KEN BURNS
+
+   Deliberately CSS, not JavaScript. The hero photograph is the LCP element,
+   so it must paint on the first frame and start its push from scale(1) —
+   never wait for hydration or a motion library to apply a transform.
+   ------------------------------------------------------------------ */
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.07);
+  }
+}
+
+@utility ken-burns {
+  animation: ken-burns 16s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ken-burns {
+    animation: none;
+  }
+}
+
+/* Loading sweep — transform only, so it never triggers layout. */
+@keyframes loading-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+@utility loading-sweep {
+  animation: loading-sweep 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* ------------------------------------------------------------------
    MOTION PREFERENCES
    Every animation in the app is transform/opacity only, and all of it
    collapses to a static end-state when the user asks for less motion.

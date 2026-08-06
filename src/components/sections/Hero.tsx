@@ -58,25 +58,23 @@ export function Hero({
         className="absolute inset-0 will-change-transform"
         style={reduced ? undefined : { y: imageY }}
       >
-        <motion.div
-          className="absolute inset-[-4%] will-change-transform"
-          initial={reduced ? false : { scale: 1 }}
-          animate={reduced ? undefined : { scale: 1.07 }}
-          transition={{ duration: 14, ease: "linear" }}
-        >
+        {/* CSS animation, not motion: the LCP image must not be gated on
+            hydration. It paints immediately at scale(1) and the push runs
+            from there. */}
+        <div className="ken-burns absolute inset-[-4%] will-change-transform">
           <Image
             src={image}
             alt=""
             fill
             priority
             fetchPriority="high"
-            quality={75}
+            quality={70}
             sizes="100vw"
             placeholder={blurDataURL ? "blur" : undefined}
             blurDataURL={blurDataURL}
             className="object-cover"
           />
-        </motion.div>
+        </div>
       </motion.div>
 
       {/* Layered cinematic scrim: a vertical film gradient plus a soft corner
@@ -113,16 +111,20 @@ export function Hero({
           className="mt-7 max-w-[15ch] text-display-2xl text-sand-50"
         />
 
-        <motion.div
-          data-reveal
-          initial={reduced ? false : { opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, delay: 0.75, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
-        >
+        <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          {/* Deliberately NOT opacity-gated. This paragraph is the largest
+              contentful element in the hero, so fading it in makes it the LCP
+              and pins LCP to the end of the animation chain — it measured
+              3.4s that way. It paints immediately; only the buttons animate. */}
           <p className="text-body max-w-[38ch] text-sand-100/75">{subheading}</p>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <motion.div
+            data-reveal
+            initial={reduced ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-wrap items-center gap-3"
+          >
             <Magnetic>
               <Button href={primaryCta.href} size="lg" variant="primary">
                 {primaryCta.label}
@@ -133,8 +135,8 @@ export function Hero({
                 {secondaryCta.label}
               </Button>
             </Magnetic>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </motion.div>
 
       {/* Scroll cue */}

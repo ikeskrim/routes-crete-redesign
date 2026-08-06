@@ -44,8 +44,10 @@
     "heading": "Routes Crete",
     "subheading": "Explore the unknown side of Crete",
     "originalCta": { "label": "Tell me more", "href": "#services" },
-    "backgroundImage": "/images/experiences/kourtaliotis-temple-of-nature/ku1574-dsc06647.jpg",
+    "backgroundImage": "/images/site/hero-home.jpg",
+    "backgroundImageMaster": "/images/experiences/kourtaliotis-temple-of-nature/ku1574-dsc06647.jpg",
     "backgroundImageOriginal": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg",
+    "backgroundImageLcpNote": "hero-home.jpg is a 1600×2400 derivative of the 4000×6000 master. The master is 24 megapixels, which the image optimiser had to decode and re-encode on demand — the dominant cost in a 4.9s mobile LCP. The derivative still covers a 1440px desktop slot and any phone at 3x.",
     "backgroundImageNote": "ART DIRECTION CHANGE. The original masthead (sp1-17.jpg) is a close-up of a goat behind a wire fence at 1024×724 — unusable as a cinematic fullscreen hero. Replaced with ku1574-dsc06647.jpg, the only genuinely high-resolution asset on the site (4000×6000): sharp at every viewport, natively portrait for mobile, and an olive grove reads unmistakably as Crete. Both images are original site photography — nothing external was introduced. See CONTENT_INVENTORY.md Q9."
   },
 

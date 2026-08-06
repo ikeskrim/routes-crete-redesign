@@ -26,7 +26,10 @@ const ROUTES = {
   listing: "/experiences",
   kourtaliotis: "/experiences/kourtaliotis-temple-of-nature",
   tradition: "/experiences/heart-of-cretan-tradition",
+  transfers: "/transfers",
   transfer: "/transfers/private-transfers-rethymno",
+  contact: "/contact",
+  notFound: "/this-route-does-not-exist",
 };
 
 const filters = process.argv.slice(2).map((a) => a.toLowerCase());
@@ -250,6 +253,58 @@ async function run() {
       await shot(page, `${key}-mobile-03-gallery`);
       await context.close();
     }
+  }
+
+  /* ------------------------------------- transfers index, contact, 404 */
+  console.log("\ntransfers index / contact / 404");
+  {
+    const { context, page } = await openPage(browser, ROUTES.transfers, DESKTOP);
+    await shot(page, "transfers-desktop-01-top");
+    await scrollPct(page, 40, DESKTOP.height);
+    await shot(page, "transfers-desktop-02-spread");
+    await context.close();
+  }
+  {
+    const { context, page } = await openPage(browser, ROUTES.transfers, MOBILE);
+    await shot(page, "transfers-mobile-01-top");
+    await context.close();
+  }
+  {
+    const { context, page } = await openPage(browser, ROUTES.contact, DESKTOP);
+    await shot(page, "contact-desktop-01-channels");
+    // The Monday.com iframe is third-party; give it room, then capture
+    // whatever it rendered rather than failing the run.
+    await scrollPct(page, 45, DESKTOP.height, 3500);
+    await shot(page, "contact-desktop-02-form");
+    await context.close();
+  }
+  {
+    const { context, page } = await openPage(browser, ROUTES.contact, MOBILE);
+    await shot(page, "contact-mobile-01-channels");
+    await context.close();
+  }
+  {
+    const { context, page } = await openPage(browser, ROUTES.notFound, DESKTOP);
+    await shot(page, "notfound-desktop-01");
+    await context.close();
+  }
+  {
+    const { context, page } = await openPage(browser, ROUTES.notFound, MOBILE);
+    await shot(page, "notfound-mobile-01");
+    await context.close();
+  }
+
+  /* --------------------------------------- featured frame on the listing */
+  console.log("\nfeatured frame");
+  {
+    const { context, page } = await openPage(browser, ROUTES.listing, DESKTOP);
+    const figure = page.locator("figure").first();
+    if (await figure.count()) {
+      await figure.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(1800);
+      await shot(page, "featured-frame-desktop");
+    }
+    await context.close();
   }
 
   /* ---------------------------------------------------- reduced motion */
