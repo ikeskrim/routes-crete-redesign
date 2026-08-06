@@ -3,22 +3,31 @@
  *
  * Headless Chromium runs requestAnimationFrame, IntersectionObserver and
  * ScrollTrigger normally, so everything scroll-driven — Ken Burns, line masks,
- * pinned scrubbed scenes, nav state — is genuinely exercisable here.
+ * pinned scrubbed scenes, nav state, sticky CTAs — is genuinely exercisable.
  *
- *   node qa/visual-check.mts            # everything
- *   node qa/visual-check.mts hero nav   # only matching capture groups
+ *   node qa/visual-check.mts              # everything
+ *   node qa/visual-check.mts mobile hero  # only matching capture names
  *
- * Requires the dev server on http://localhost:3003.
+ * Defaults to the production server on :3009 (`npm start`), which is both
+ * faster and closer to what ships than the dev server.
  */
 import { chromium, type Browser, type Page } from "playwright";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const BASE = process.env.QA_BASE_URL ?? "http://localhost:3003";
+const BASE = process.env.QA_BASE_URL ?? "http://localhost:3009";
 const OUT = path.join(process.cwd(), "qa", "screenshots");
 
 const DESKTOP = { width: 1440, height: 900 };
 const MOBILE = { width: 390, height: 844 };
+
+const ROUTES = {
+  home: "/",
+  listing: "/experiences",
+  kourtaliotis: "/experiences/kourtaliotis-temple-of-nature",
+  tradition: "/experiences/heart-of-cretan-tradition",
+  transfer: "/transfers/private-transfers-rethymno",
+};
 
 const filters = process.argv.slice(2).map((a) => a.toLowerCase());
 const wanted = (name: string) =>
@@ -28,44 +37,45 @@ let captured = 0;
 
 async function shot(page: Page, name: string, fullPage = false) {
   if (!wanted(name)) return;
-  const file = path.join(OUT, `${name}.png`);
   try {
     await page.screenshot({
-      path: file,
+      path: path.join(OUT, `${name}.png`),
       fullPage,
-      // A full-page shot of the whole homepage is enormous; don't let one
-      // slow capture stall the entire run.
       timeout: fullPage ? 120_000 : 20_000,
       animations: "allow",
     });
     captured++;
-    console.log(`  ✓ ${name}.png`);
+    console.log(`  + ${name}.png`);
   } catch (err) {
-    console.log(`  ✗ ${name}.png — ${(err as Error).message.split("\n")[0]}`);
+    console.log(`  ! ${name}.png — ${(err as Error).message.split("\n")[0]}`);
   }
 }
 
-/** Position the scroll deterministically through Lenis, then let things settle. */
+/** Position the scroll deterministically through Lenis, then let it settle. */
 async function scrollTo(page: Page, y: number, settle = 700) {
   await page.evaluate((target) => {
-    const lenis = (window as unknown as { __lenis?: { scrollTo: (v: number, o?: object) => void } })
-      .__lenis;
+    const lenis = (
+      window as unknown as { __lenis?: { scrollTo: (v: number, o?: object) => void } }
+    ).__lenis;
     if (lenis) lenis.scrollTo(target, { immediate: true });
     else window.scrollTo(0, target);
   }, y);
   await page.waitForTimeout(settle);
 }
 
-async function pageHeight(page: Page) {
-  return page.evaluate(() => document.documentElement.scrollHeight);
+async function scrollPct(page: Page, pct: number, viewportH: number, settle = 700) {
+  const height = await page.evaluate(() => document.documentElement.scrollHeight);
+  await scrollTo(page, ((height - viewportH) * pct) / 100, settle);
 }
 
 /**
- * Wait for fonts + all currently-requested images before shooting.
+ * Wait for fonts + images near the viewport.
  *
- * Every callback below returns a primitive on purpose: `document.fonts.ready`
- * resolves to a FontFaceSet and image `load` handlers resolve to Events, and
- * returning either from page.evaluate stalls forever trying to serialise them.
+ * Every callback returns a primitive on purpose: document.fonts.ready resolves
+ * to a FontFaceSet and image load handlers resolve to Events, and returning
+ * either from page.evaluate stalls forever trying to serialise it. Images far
+ * below the fold are lazy and never fire load until scrolled to, so only
+ * nearby ones are awaited — and even that is capped.
  */
 async function settleLoad(page: Page) {
   await page.evaluate(async () => {
@@ -74,15 +84,11 @@ async function settleLoad(page: Page) {
   });
   await page.waitForTimeout(400);
   await page.evaluate(async () => {
-    // Only images near the viewport. Lazy images further down are
-    // `complete === false` and never fire `load` until scrolled to, so
-    // awaiting all of them would hang. Capped as a second safety net.
     const near = [...document.querySelectorAll("img")].filter((img) => {
       if (img.complete) return false;
       const rect = img.getBoundingClientRect();
       return rect.top < window.innerHeight * 1.5 && rect.bottom > -window.innerHeight;
     });
-
     await Promise.race([
       Promise.all(
         near.map(
@@ -100,7 +106,14 @@ async function settleLoad(page: Page) {
   await page.waitForTimeout(300);
 }
 
-async function openPage(browser: Browser, viewport: { width: number; height: number }, opts: { reducedMotion?: "reduce" | "no-preference" } = {}) {
+const allErrors: string[] = [];
+
+async function openPage(
+  browser: Browser,
+  route: string,
+  viewport: { width: number; height: number },
+  opts: { reducedMotion?: "reduce" | "no-preference" } = {},
+) {
   const context = await browser.newContext({
     viewport,
     deviceScaleFactor: 1,
@@ -108,139 +121,158 @@ async function openPage(browser: Browser, viewport: { width: number; height: num
   });
   const page = await context.newPage();
 
-  const errors: string[] = [];
   page.on("console", (m) => {
-    if (m.type() === "error") errors.push(m.text());
+    if (m.type() === "error") allErrors.push(`[${route}] ${m.text()}`);
   });
-  page.on("pageerror", (e) => errors.push(String(e)));
+  page.on("pageerror", (e) => allErrors.push(`[${route}] ${String(e)}`));
 
-  // NOT networkidle: the Next dev server holds an HMR websocket open, so
-  // "no network activity" never happens and the wait hangs forever.
-  await page.goto(BASE, { waitUntil: "load", timeout: 60_000 });
+  // NOT networkidle: the dev server holds an HMR websocket open, so "no
+  // network activity" never happens and the wait hangs forever.
+  await page.goto(`${BASE}${route}`, { waitUntil: "load", timeout: 60_000 });
   await settleLoad(page);
-  return { context, page, errors };
+  return { context, page };
 }
 
 async function run() {
   await fs.mkdir(OUT, { recursive: true });
   const browser = await chromium.launch();
-  const allErrors: string[] = [];
 
-  /* ---------------------------------------------------------- desktop */
-  console.log("\ndesktop 1440x900");
+  /* ------------------------------------------------------ home: desktop */
+  console.log("\nhome — desktop");
   {
-    const { context, page, errors } = await openPage(browser, DESKTOP);
-
-    // Hero exactly as it lands, then the whole page.
-    await shot(page, "desktop-01-hero-on-load");
-    await shot(page, "desktop-02-full-page", true);
-
-    // Nav over the hero vs. after scrolling away from it.
-    await shot(page, "desktop-nav-over-hero");
+    const { context, page } = await openPage(browser, ROUTES.home, DESKTOP);
+    await shot(page, "home-desktop-01-hero-on-load");
+    await shot(page, "home-desktop-nav-over-hero");
     await scrollTo(page, DESKTOP.height * 1.4);
-    await shot(page, "desktop-nav-solid");
-
-    // Indexed scroll positions across the whole page.
-    const height = await pageHeight(page);
-    const max = height - DESKTOP.height;
-    for (const pct of [0, 15, 30, 45, 60, 75, 90, 100]) {
-      await scrollTo(page, (max * pct) / 100);
-      await shot(page, `desktop-scroll-${String(pct).padStart(3, "0")}pct`);
+    await shot(page, "home-desktop-nav-solid");
+    for (const pct of [15, 30, 45, 60, 75, 90, 100]) {
+      await scrollPct(page, pct, DESKTOP.height);
+      await shot(page, `home-desktop-scroll-${String(pct).padStart(3, "0")}pct`);
     }
-
-    // Reveal mid-states: step in small increments across a band where
-    // sections are entering the viewport.
-    for (let i = 0; i < 4; i++) {
-      await scrollTo(page, max * (0.16 + i * 0.035), 260);
-      await shot(page, `desktop-reveal-mid-${i + 1}`);
-    }
-
-    allErrors.push(...errors);
     await context.close();
   }
 
-  /* ------------------------------------------- pinned scene filmstrip */
-  console.log("\nfilmstrip — pinned signature scene (wheel-driven)");
+  /* -------------------------------------- home: pinned scene filmstrip */
+  console.log("\nhome — pinned scene filmstrip (wheel-driven)");
   {
-    const { context, page, errors } = await openPage(browser, DESKTOP);
-
-    // Find the pinned scene; fall back to a sensible band if absent.
+    const { context, page } = await openPage(browser, ROUTES.home, DESKTOP);
     const start = await page.evaluate(() => {
       const el = document.querySelector("[data-scene]");
-      if (!el) return null;
-      return window.scrollY + el.getBoundingClientRect().top;
+      return el ? window.scrollY + el.getBoundingClientRect().top : null;
     });
-
-    const height = await pageHeight(page);
-    const from = start ?? height * 0.35;
-
-    await scrollTo(page, Math.max(0, from - 200));
+    const height = await page.evaluate(() => document.documentElement.scrollHeight);
+    await scrollTo(page, Math.max(0, (start ?? height * 0.35) - 200));
     await page.mouse.move(DESKTOP.width / 2, DESKTOP.height / 2);
 
-    // Real wheel events, so the capture reflects genuine user scrolling
+    // Real wheel events, so these frames reflect genuine user scrolling
     // through Lenis rather than a programmatic jump.
-    const FRAMES = 14;
-    for (let i = 0; i < FRAMES; i++) {
-      await shot(page, `filmstrip-${String(i).padStart(2, "0")}`);
-      await page.mouse.wheel(0, 320);
+    for (let i = 0; i < 12; i++) {
+      await shot(page, `home-filmstrip-${String(i).padStart(2, "0")}`);
+      await page.mouse.wheel(0, 360);
       await page.waitForTimeout(240);
     }
-
-    allErrors.push(...errors);
     await context.close();
   }
 
-  /* ----------------------------------------------------------- mobile */
-  console.log("\nmobile 390x844");
+  /* ------------------------------------------------------- home: mobile */
+  console.log("\nhome — mobile");
   {
-    const { context, page, errors } = await openPage(browser, MOBILE);
-
-    await shot(page, "mobile-01-hero-on-load");
-    await shot(page, "mobile-02-full-page", true);
-
-    const height = await pageHeight(page);
-    const max = height - MOBILE.height;
-    for (const pct of [15, 30, 45, 60, 75, 90, 100]) {
-      await scrollTo(page, (max * pct) / 100);
-      await shot(page, `mobile-scroll-${String(pct).padStart(3, "0")}pct`);
+    const { context, page } = await openPage(browser, ROUTES.home, MOBILE);
+    await shot(page, "home-mobile-01-hero-on-load");
+    for (const pct of [30, 60, 90]) {
+      await scrollPct(page, pct, MOBILE.height);
+      await shot(page, `home-mobile-scroll-${String(pct).padStart(3, "0")}pct`);
     }
-
-    // Fullscreen menu.
     await scrollTo(page, 0);
     const toggle = page.locator('button[aria-controls="mobile-menu"]');
     if (await toggle.count()) {
       await toggle.first().click();
       await page.waitForTimeout(700);
-      await shot(page, "mobile-03-menu-open");
+      await shot(page, "home-mobile-menu-open");
     }
-
-    allErrors.push(...errors);
     await context.close();
+  }
+
+  /* ----------------------------------------------- experiences listing */
+  console.log("\nlisting — /experiences");
+  {
+    const { context, page } = await openPage(browser, ROUTES.listing, DESKTOP);
+    await shot(page, "listing-desktop-01-top");
+    await scrollPct(page, 55, DESKTOP.height);
+    await shot(page, "listing-desktop-02-cards");
+    await context.close();
+  }
+  {
+    const { context, page } = await openPage(browser, ROUTES.listing, MOBILE);
+    await shot(page, "listing-mobile-01-top");
+    await scrollPct(page, 45, MOBILE.height);
+    await shot(page, "listing-mobile-02-cards");
+    await context.close();
+  }
+
+  /* ------------------------------------------------------ detail pages */
+  for (const [key, route] of [
+    ["kourtaliotis", ROUTES.kourtaliotis],
+    ["tradition", ROUTES.tradition],
+    ["transfer", ROUTES.transfer],
+  ] as const) {
+    console.log(`\ndetail — ${key}`);
+    {
+      const { context, page } = await openPage(browser, route, DESKTOP);
+      await shot(page, `${key}-desktop-01-hero`);
+      await scrollPct(page, 12, DESKTOP.height);
+      await shot(page, `${key}-desktop-02-facts-and-cta`);
+      await scrollPct(page, 32, DESKTOP.height);
+      await shot(page, `${key}-desktop-03-story`);
+      await scrollPct(page, 62, DESKTOP.height);
+      await shot(page, `${key}-desktop-04-mid`);
+      await scrollPct(page, 84, DESKTOP.height);
+      await shot(page, `${key}-desktop-05-gallery`);
+
+      // Open the lightbox on the first gallery thumbnail.
+      const thumb = page.locator('#gallery button[aria-label^="View image"]');
+      if (await thumb.count()) {
+        await thumb.first().click();
+        await page.waitForTimeout(1100);
+        await shot(page, `${key}-desktop-06-lightbox`);
+        await page.keyboard.press("Escape");
+        await page.waitForTimeout(400);
+      }
+      await context.close();
+    }
+    {
+      const { context, page } = await openPage(browser, route, MOBILE);
+      await shot(page, `${key}-mobile-01-hero`);
+      // Scroll past the hero so the sticky request bar appears.
+      await scrollPct(page, 25, MOBILE.height);
+      await shot(page, `${key}-mobile-02-sticky-cta`);
+      await scrollPct(page, 70, MOBILE.height);
+      await shot(page, `${key}-mobile-03-gallery`);
+      await context.close();
+    }
   }
 
   /* ---------------------------------------------------- reduced motion */
   console.log("\nreduced motion");
-  {
-    const { context, page, errors } = await openPage(browser, DESKTOP, {
+  for (const [key, route] of [
+    ["home", ROUTES.home],
+    ["kourtaliotis", ROUTES.kourtaliotis],
+  ] as const) {
+    const { context, page } = await openPage(browser, route, DESKTOP, {
       reducedMotion: "reduce",
     });
-    await shot(page, "reduced-01-hero-on-load");
-    await shot(page, "reduced-02-full-page", true);
-
-    const height = await pageHeight(page);
-    await scrollTo(page, (height - DESKTOP.height) * 0.5);
-    await shot(page, "reduced-03-mid-page");
-
-    allErrors.push(...errors);
+    await shot(page, `reduced-${key}-01-top`);
+    await scrollPct(page, 40, DESKTOP.height);
+    await shot(page, `reduced-${key}-02-mid`);
     await context.close();
   }
 
   await browser.close();
 
-  console.log(`\n${captured} screenshot(s) → qa/screenshots/`);
+  console.log(`\n${captured} screenshot(s) -> qa/screenshots/`);
   if (allErrors.length) {
-    console.log(`\n⚠ ${allErrors.length} console error(s):`);
-    [...new Set(allErrors)].slice(0, 20).forEach((e) => console.log(`   ${e.slice(0, 200)}`));
+    console.log(`\n! ${allErrors.length} console error(s):`);
+    [...new Set(allErrors)].slice(0, 20).forEach((e) => console.log(`   ${e.slice(0, 240)}`));
     process.exitCode = 1;
   } else {
     console.log("no console errors");

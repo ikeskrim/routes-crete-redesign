@@ -11,10 +11,19 @@
   "qrImage": "/images/site/qr-code.png",
   "facts": {
     "region": "Central Crete",
-    "duration": null,
+    "duration": "Day trip",
     "price": null,
     "groupSize": null,
     "availability": null
+  },
+  "included": {
+    "label": "On this route",
+    "source": "Official Routes Crete brochure (/assets/files/entypo.pdf), text verified 2026-08-06: “This day trip invites you to explore the impressive Sfedoni Cave, step into the daily life of a traditional ‘Shepherd’s house’ through hands-on activities and authentic local food, and visit the family-run Paraschakis Olive Mill…”",
+    "items": [
+      "The impressive Sfedoni Cave",
+      "A traditional “Shepherd’s house”, with hands-on activities and authentic local food",
+      "The family-run Paraschakis Olive Mill"
+    ]
   },
   "locations": ["central-crete-cave", "mountain-village"],
   "body": [

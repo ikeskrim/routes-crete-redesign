@@ -42,3 +42,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Lighthouse reports and QA server logs are regenerated locally
+/qa/lighthouse/
+/qa/*.log
+/qa/*.err

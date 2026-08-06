@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "motion/react";
+import { useRef } from "react";
+import { motion } from "motion/react";
 import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
+import { useRevealTrigger } from "@/lib/use-reveal-trigger";
 import { cn } from "@/lib/utils";
 
 type Direction = "up" | "down" | "left" | "right" | "none";
@@ -33,29 +34,16 @@ export function Reveal({
   delay = 0,
   duration = 0.8,
   direction = "up",
-  amount = 0.25,
-  once = true,
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
   duration?: number;
   direction?: Direction;
-  /** Fraction of the element that must be visible before it triggers. */
-  amount?: number;
-  once?: boolean;
 }) {
   const reduced = useReducedMotionSafe();
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once, amount });
-  const [alreadyPassed, setAlreadyPassed] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    // Mounted already scrolled past this element — reveal without waiting.
-    if (el.getBoundingClientRect().bottom <= 0) setAlreadyPassed(true);
-  }, []);
+  const seen = useRevealTrigger(ref);
 
   if (reduced) {
     return (
@@ -66,7 +54,7 @@ export function Reveal({
   }
 
   const { x, y } = OFFSET[direction];
-  const show = inView || alreadyPassed;
+  const show = seen;
 
   return (
     <motion.div
@@ -75,11 +63,7 @@ export function Reveal({
       className={cn(className)}
       initial={{ opacity: 0, x, y }}
       animate={show ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x, y }}
-      transition={{
-        duration,
-        delay: alreadyPassed ? 0 : delay,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+      transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>

@@ -13,10 +13,20 @@
   "signature": true,
   "facts": {
     "region": "Rethymno, Southern Crete",
-    "duration": null,
+    "duration": "Full-day tour",
     "price": null,
     "groupSize": null,
-    "availability": null
+    "availability": null,
+    "vehicle": "Comfortable 12-seat van"
+  },
+  "included": {
+    "label": "On this route",
+    "source": "Official Routes Crete brochure (/assets/files/entypo.pdf), text verified 2026-08-06: “A full-day tour in a comfortable 12-seat van… Walk to breathtaking spring waterfalls, take photos, and experience the unique energy of the canyon. Enjoy a light tasting of local products.”",
+    "items": [
+      "A drive through the picturesque Cretan countryside — olive groves, mountain views, and authentic villages",
+      "A walk to breathtaking spring waterfalls",
+      "A light tasting of local products"
+    ]
   },
   "locations": ["rethymno-village", "kourtaliotis-gorge", "preveli-lagoon", "preveli-monastery"],
   "body": [

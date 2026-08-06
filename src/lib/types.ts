@@ -61,6 +61,11 @@ export interface ContentItem {
   facts: ContentFacts;
   locations: string[];
   body: BodyBlock[];
+  /**
+   * Verified facts from the printed brochure, kept separate from the website
+   * body copy so their provenance is never lost.
+   */
+  included?: { label: string; source: string; items: string[] };
   /** Chapters for the homepage scroll-storytelling scene. */
   scenes?: { bodyIndex: number; label: string; image: string }[];
   scenesNote?: string;
