@@ -32,13 +32,17 @@
   --color-olive-500: #646e54;
   --color-olive-400: #808a6d;
 
-  /* --- Colour: Stone Gray ------------------------------------- */
+  /* --- Colour: Stone Gray -------------------------------------
+     400–600 carry small text (labels, captions, eyebrows) on the light
+     backgrounds, so they are tuned to clear 4.5:1 against shell (#faf8f4)
+     and sand-50 (#faf6ef). The earlier values sat at ~2.8–3.9:1 and failed
+     Lighthouse colour-contrast. Same stone family, just weighted properly. */
   --color-rock-100: #eceae5;
   --color-rock-200: #d8d5ce;
   --color-rock-300: #bdb9b0;
-  --color-rock-400: #9c978d;
-  --color-rock-500: #7d786e;
-  --color-rock-600: #5f5b53;
+  --color-rock-400: #6e6a61;
+  --color-rock-500: #5c584f;
+  --color-rock-600: #47443d;
 
   /* --- Colour: Sunset Gold (accent — use sparingly) ------------ */
   --color-gold-300: #e2c893;

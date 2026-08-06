@@ -166,12 +166,15 @@ export function LocationsMap({
             <Link
               key={point.key}
               href={href}
+              // The visible label is hidden below `sm`, which left these
+              // links with no accessible name at all on mobile.
+              aria-label={point.name}
               style={style}
               onMouseEnter={() => setHovered(point.key)}
               onMouseLeave={() => setHovered(null)}
               onFocus={() => setHovered(point.key)}
               onBlur={() => setHovered(null)}
-              className="absolute -translate-x-1/2 -translate-y-1/2"
+              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-pill focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-400"
             >
               {pin}
             </Link>

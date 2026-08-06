@@ -96,16 +96,13 @@ export function ItemHero({
           className="mt-6 max-w-[17ch] text-display-xl text-sand-50"
         />
 
+        {/* Not opacity-gated, for the same reason as the homepage hero: this
+            is the largest contentful element here, so fading it in makes it
+            the LCP and pins LCP to the end of the animation chain. */}
         {subtitle && (
-          <motion.p
-            data-reveal
-            initial={reduced ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="text-body-lg mt-6 max-w-[42ch] text-sand-100/80"
-          >
+          <p className="text-body-lg mt-6 max-w-[42ch] text-sand-100/80">
             {subtitle}
-          </motion.p>
+          </p>
         )}
       </motion.div>
     </section>

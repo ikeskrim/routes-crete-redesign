@@ -16,8 +16,8 @@
     "keywords": "Crete transfers, VIP transfer Crete, private driver Crete, airport transfer Crete, Crete excursions, private tours Crete, luxury transport Crete, Rethymno transfers",
     "author": "Routes Crete",
     "locale": "en",
-    "ogImage": null,
-    "ogImageNote": "No OG image exists on the current site. Pending choice — see CONTENT_INVENTORY.md Q8."
+    "ogImage": "/images/site/hero-home.jpg",
+    "ogImageNote": "The homepage hero derivative, used as the default share image. Per-page images come from each content file's meta.ogImage. Closes CONTENT_INVENTORY.md Q8."
   },
 
   "nav": [

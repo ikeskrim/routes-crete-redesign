@@ -43,11 +43,13 @@ export function generateMetadata(): Metadata {
       description: site.meta.description,
       url: site.brand.url,
       locale: "en_GB",
+      images: site.meta.ogImage ? [{ url: site.meta.ogImage }] : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title: site.meta.title,
       description: site.meta.description,
+      images: site.meta.ogImage ? [site.meta.ogImage] : undefined,
     },
     robots: {
       index: true,
@@ -86,6 +88,35 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
+
+        {/* Organisation-level structured data. Only fields that actually
+            exist are emitted — there is no email, no rating and no price. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "TravelAgency",
+              name: site.brand.name,
+              url: site.brand.url,
+              description: site.meta.description,
+              image: `${site.brand.url}${site.meta.ogImage}`,
+              telephone: site.contact.phones.map((p) => p.dial),
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Rethymno",
+                addressRegion: "Crete",
+                addressCountry: "GR",
+              },
+              areaServed: { "@type": "Place", name: "Crete, Greece" },
+              identifier: {
+                "@type": "PropertyValue",
+                name: site.brand.gemiLabel,
+                value: site.brand.gemiNumber,
+              },
+            }),
+          }}
+        />
 
         <SmoothScroll legacyAnchorMap={site.legacyAnchorMap} />
 
