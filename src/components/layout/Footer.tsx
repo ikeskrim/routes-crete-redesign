@@ -15,21 +15,21 @@ export function Footer({ site }: { site: SiteContent }) {
   const copyright = footer.copyright.replace("{year}", String(year));
 
   const channels = [
+    ...contact.phones.map((phone) => ({
+      label: phone.label,
+      value: phone.display,
+      href: `tel:${phone.dial}`,
+    })),
+    contact.whatsapp && {
+      label: "WhatsApp",
+      value: contact.whatsapp.display,
+      href: `https://wa.me/${contact.whatsapp.dial}`,
+      external: true,
+    },
     contact.email && {
       label: "Email",
       value: contact.email,
       href: `mailto:${contact.email}`,
-    },
-    contact.phone && {
-      label: "Phone",
-      value: contact.phone,
-      href: `tel:${contact.phone.replace(/\s+/g, "")}`,
-    },
-    contact.whatsapp && {
-      label: "WhatsApp",
-      value: contact.whatsapp,
-      href: `https://wa.me/${contact.whatsapp.replace(/[^\d]/g, "")}`,
-      external: true,
     },
   ].filter(Boolean) as {
     label: string;
@@ -157,6 +157,7 @@ export function Footer({ site }: { site: SiteContent }) {
 
         <div className="mt-8 flex flex-col gap-2 text-caption text-sand-200/55 sm:flex-row sm:items-center sm:justify-between">
           <p>{copyright}</p>
+          {contact.address && <p>{contact.address}</p>}
           <p>
             {brand.gemiLabel}: {brand.gemiNumber}
           </p>

@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
 
 import type { NavItem } from "@/lib/types";
 import { cn, pad } from "@/lib/utils";
@@ -18,7 +19,7 @@ export function Nav({
   bookHref?: string;
 }) {
   const pathname = usePathname();
-  const reduced = useReducedMotion();
+  const reduced = useReducedMotionSafe();
   const [overHero, setOverHero] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -66,7 +67,9 @@ export function Nav({
 
   const isActive = useCallback(
     (href: string) => {
-      if (href.startsWith("/#") || href === "/") return pathname === "/";
+      // In-page hash links are not a route state — treating them as active
+      // lit up Why Us, Book Guide and Team all at once on the homepage.
+      if (href.startsWith("/#") || href === "/") return false;
       return pathname === href || pathname.startsWith(`${href}/`);
     },
     [pathname],

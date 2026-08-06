@@ -61,6 +61,9 @@ export interface ContentItem {
   facts: ContentFacts;
   locations: string[];
   body: BodyBlock[];
+  /** Chapters for the homepage scroll-storytelling scene. */
+  scenes?: { bodyIndex: number; label: string; image: string }[];
+  scenesNote?: string;
   pullQuote?: string;
   pullQuoteNote?: string;
   highlights?: string[];
@@ -96,6 +99,8 @@ export interface BookingStep {
   key: string;
   number: number;
   title: string;
+  /** Present when the live site's heading was corrected. */
+  titleOriginal?: string;
   titleFlag?: string;
   body: string;
   bodyLead?: string;
@@ -111,6 +116,15 @@ export interface TeamMember {
   height: number;
   oldUrl?: string;
   photoNote?: string;
+}
+
+export interface Phone {
+  key: string;
+  label: string;
+  /** Formatted for reading. */
+  display: string;
+  /** Digits for tel: / wa.me links. */
+  dial: string;
 }
 
 export interface MapLocation {
@@ -164,8 +178,8 @@ export interface SiteContent {
     formUrl: string;
     formProvider: string;
     email: string | null;
-    phone: string | null;
-    whatsapp: string | null;
+    phones: Phone[];
+    whatsapp: { display: string; dial: string } | null;
     address: string | null;
     openingHours: string | null;
   };

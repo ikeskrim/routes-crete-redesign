@@ -44,8 +44,9 @@
     "heading": "Routes Crete",
     "subheading": "Explore the unknown side of Crete",
     "originalCta": { "label": "Tell me more", "href": "#services" },
-    "backgroundImage": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg",
-    "backgroundImageNote": "Original masthead background. Native size only 1024×724 — see CONTENT_INVENTORY.md Q9."
+    "backgroundImage": "/images/experiences/kourtaliotis-temple-of-nature/ku1574-dsc06647.jpg",
+    "backgroundImageOriginal": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg",
+    "backgroundImageNote": "ART DIRECTION CHANGE. The original masthead (sp1-17.jpg) is a close-up of a goat behind a wire fence at 1024×724 — unusable as a cinematic fullscreen hero. Replaced with ku1574-dsc06647.jpg, the only genuinely high-resolution asset on the site (4000×6000): sharp at every viewport, natively portrait for mobile, and an olive grove reads unmistakably as Crete. Both images are original site photography — nothing external was introduced. See CONTENT_INVENTORY.md Q9."
   },
 
   "sections": {
@@ -97,8 +98,9 @@
       {
         "key": "contact",
         "number": 3,
-        "title": "We’ll respond promptly with availability, final details, and booking confirmation.",
-        "titleFlag": "SUSPECTED ERROR ON LIVE SITE — this heading duplicates step 4's body and does not describe step 3's content. See CONTENT_INVENTORY.md Q1.",
+        "title": "Send Us Your Details",
+        "titleOriginal": "We’ll respond promptly with availability, final details, and booking confirmation.",
+        "titleFlag": "CORRECTED. The live site's heading was a copy-paste of step 4's body and did not describe this step. Replacement supplied by the client. Body is unchanged and verbatim. See CONTENT_INVENTORY.md §4.4 / Q1.",
         "body": "Contact us via message or email with:\n\n• The excursion you selected\n\n• Preferred date\n\n• Number of participants\n\n• Your accommodation location",
         "bodyItems": [
           "The excursion you selected",
@@ -161,21 +163,24 @@
     "formUrl": "https://forms.monday.com/forms/embed/ec9deceb669815b3635612d83fe446fc?r=use1",
     "formProvider": "monday.com",
     "email": null,
-    "phone": null,
-    "whatsapp": null,
-    "address": null,
+    "phones": [
+      { "key": "mobile", "label": "Mobile", "display": "+30 697 406 9475", "dial": "+306974069475" },
+      { "key": "landline", "label": "Landline", "display": "+30 211 444 5757", "dial": "+302114445757" }
+    ],
+    "whatsapp": { "display": "+30 697 406 9475", "dial": "306974069475" },
+    "address": "Rethymno, Crete, Greece",
     "openingHours": null,
-    "note": "Only the embedded Monday.com form exists on the current site. Email, phone, WhatsApp, address and hours are all unknown — see CONTENT_INVENTORY.md Q2–Q5."
+    "note": "Phone numbers, WhatsApp and location verified against the official brochure (/assets/files/entypo.pdf): 'Rethymno, Crete, Greece — T: +30 6974069475, +30 211 4445757'. No email address appears anywhere in the brochure or on the site, so it stays null."
   },
 
   "social": {
-    "note": "No social links exist on the current site. The footer contains an empty placeholder block. See CONTENT_INVENTORY.md Q6.",
+    "note": "Routes Crete has no social accounts yet. The old footer had an empty placeholder block. The 'Cretan Routes' Facebook page is a DIFFERENT, UNRELATED business and must never be linked here.",
     "links": []
   },
 
   "newsletter": {
     "enabled": false,
-    "note": "Omitted until a real destination for the emails is confirmed. See CONTENT_INVENTORY.md Q7."
+    "note": "Omitted — no real destination exists for the emails."
   },
 
   "testimonials": {

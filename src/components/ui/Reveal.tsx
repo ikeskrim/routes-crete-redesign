@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { motion, useInView } from "motion/react";
+import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
 import { cn } from "@/lib/utils";
 
 type Direction = "up" | "down" | "left" | "right" | "none";
@@ -44,7 +45,7 @@ export function Reveal({
   amount?: number;
   once?: boolean;
 }) {
-  const reduced = useReducedMotion();
+  const reduced = useReducedMotionSafe();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once, amount });
   const [alreadyPassed, setAlreadyPassed] = useState(false);

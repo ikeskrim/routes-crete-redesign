@@ -77,6 +77,15 @@
       "text": "A story where they become explorers themselves — discovering one of the most remarkable natural landscapes in the Mediterranean."
     }
   ],
+  "scenes": [
+    { "bodyIndex": 3, "label": "The journal", "image": "/images/experiences/kourtaliotis-temple-of-nature/ku516-dsc03742.jpg" },
+    { "bodyIndex": 5, "label": "The village", "image": "/images/experiences/kourtaliotis-temple-of-nature/ku953-dsc05531.jpg" },
+    { "bodyIndex": 7, "label": "The gorge", "image": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03813.jpg" },
+    { "bodyIndex": 8, "label": "The river", "image": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06390.jpg" },
+    { "bodyIndex": 9, "label": "Heart of Paradise", "image": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06440.jpg" }
+  ],
+  "scenesNote": "Chapters for the homepage scroll-storytelling scene. `bodyIndex` points at a paragraph in `body` above — the text is never duplicated, only referenced, so it can never drift from the verbatim original. Labels are navigational, not content.",
+
   "pullQuote": "They become the protagonists of a story.",
   "pullQuoteNote": "Verbatim fragment from body paragraph 3.",
   "highlights": [

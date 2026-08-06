@@ -94,11 +94,12 @@ Mapping stored in `content/site.json` → `legacyAnchorMap`. A client-side redir
 |---|---|---|
 | 1 | Explore Our Excursions | Browse our available routes and experiences. Each excursion includes detailed information about locations, duration, and what's included — so you can choose the one that fits your interests best. |
 | 2 | Choose Your Preferred Date | Select the date that works for you and check availability. |
-| 3 | ⚠️ *We'll respond promptly with availability, final details, and booking confirmation.* | Contact us via message or email with: • The excursion you selected • Preferred date • Number of participants • Your accommodation location |
+| 3 | **Send Us Your Details** ✏️ *corrected* | Contact us via message or email with: • The excursion you selected • Preferred date • Number of participants • Your accommodation location |
 | 4 | Confirmation & Details | We'll respond promptly with availability, final details, and booking confirmation. |
 | 5 | Enjoy the Journey | Relax — we take care of the rest. Your Cretan adventure begins. |
 
-⚠️ **Step 3's heading is wrong on the live site** — it is a copy of step 4's body and does not describe step 3 at all. See **Q1**.
+✏️ **Intentional correction of a live-site error (step 3 heading).**
+The live site's heading for step 3 reads *"We'll respond promptly with availability, final details, and booking confirmation."* — a verbatim copy of **step 4's body**, which does not describe step 3 at all. Replacement heading **"Send Us Your Details"** supplied by the client on 2026-08-06. The step **body is unchanged and verbatim**. Same category as the `Expieriences` → `Experiences` typo fix. The original string is preserved in `content/site.json` → `howToBook.steps[2].titleOriginal`.
 
 ### 4.5 Team (verbatim)
 
@@ -240,9 +241,38 @@ These are real limits of the source material that affect how premium the result 
 
 ---
 
-## 10. Open questions — I need your input
+## 9b. Answered — client responses (2026-08-06)
 
-I have not guessed at any of these. Items marked **blocking** affect what gets built; the rest can be filled in later without rework.
+Verified independently against the brochure PDF by extracting its text streams:
+`Rethymno, Crete, Greece` · `T: +30 6974069475, +30 211 4445757` · `http://domisignature.com` · `https://domisi.group`.
+
+| # | Answer | Where it lives now |
+|---|---|---|
+| Q1 | Step 3 heading → **"Send Us Your Details"** | `site.json` → `howToBook.steps[2]`, §4.4 above |
+| Q2 | WhatsApp **+30 697 406 9475** | `site.json` → `contact.whatsapp` (for the `wa.me` deep link) |
+| Q3 | **No public email exists** — stays `null`, footer omits it | `site.json` → `contact.email: null` |
+| Q4 | Phones **+30 697 406 9475** (mobile) and **+30 211 444 5757** (landline) — show both | `site.json` → `contact.phones[]` |
+| Q5 | Location **"Rethymno, Crete, Greece"** | `site.json` → `contact.address` |
+| Q6 | **No socials.** ⚠️ The "Cretan Routes" Facebook page is a **different, unrelated business** and must never be linked. | `site.json` → `social.links: []` |
+| Q7 | Newsletter omitted — no destination exists | `site.json` → `newsletter.enabled: false` |
+| Q15 | No verified figures — counters stay off | — |
+| Q14 | Brochure QR codes point to domisignature.com / domisi.group (related group sites). On-site `qrimage.png` unchanged. | — |
+
+**Bonus verified content from the brochure** (for the Phase 4 experience pages):
+- *Kourtaliotis*: full-day tour, comfortable **12-seat van**, walk to **spring waterfalls**, **light tasting of local products**.
+- *Cretan Tradition*: **Sfedoni Cave**, hands-on visit at a traditional **"Shepherd's house"**, family-run **Paraschakis Olive Mill** with olive-oil tasting.
+
+### Q9 — hero photograph: resolved by art direction
+
+The original masthead image (`sp1-17.jpg`) is a close-up of **a goat behind a wire fence** at 1024×724 — unusable as a cinematic fullscreen hero. Replaced with **`ku1574-dsc06647.jpg`**, the only genuinely high-resolution asset on the site (**4000×6000**): sharp at every viewport, natively portrait for mobile, and an olive grove reads unmistakably as Crete.
+
+Both images are original Routes Crete photography — nothing external was introduced, and the original is preserved in `site.json` → `hero.backgroundImageOriginal`. **Say the word if you'd prefer a different frame** — `ku953-dsc05531.jpg` (turquoise river pool, the most arresting image on the site) and `ku516-dsc03742.jpg` (the stone bridge) are the strongest alternatives, both limited to 1024px.
+
+---
+
+## 10. Open questions — still outstanding
+
+Items marked **blocking** affect what gets built; the rest can be filled in later without rework.
 
 | # | Question | Why it matters | Blocking? |
 |---|---|---|---|

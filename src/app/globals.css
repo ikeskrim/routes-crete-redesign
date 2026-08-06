@@ -196,19 +196,20 @@
 @utility scrim {
   background: linear-gradient(
     to top,
-    color-mix(in srgb, var(--color-ocean-950) 88%, transparent) 0%,
-    color-mix(in srgb, var(--color-ocean-950) 55%, transparent) 38%,
-    color-mix(in srgb, var(--color-ocean-950) 22%, transparent) 68%,
-    color-mix(in srgb, var(--color-ocean-950) 34%, transparent) 100%
+    color-mix(in srgb, var(--color-ocean-950) 94%, transparent) 0%,
+    color-mix(in srgb, var(--color-ocean-950) 78%, transparent) 30%,
+    color-mix(in srgb, var(--color-ocean-950) 52%, transparent) 58%,
+    color-mix(in srgb, var(--color-ocean-950) 42%, transparent) 80%,
+    color-mix(in srgb, var(--color-ocean-950) 58%, transparent) 100%
   );
 }
 
 @utility scrim-soft {
   background: linear-gradient(
     to top,
-    color-mix(in srgb, var(--color-ocean-950) 72%, transparent) 0%,
-    color-mix(in srgb, var(--color-ocean-950) 24%, transparent) 55%,
-    transparent 100%
+    color-mix(in srgb, var(--color-ocean-950) 85%, transparent) 0%,
+    color-mix(in srgb, var(--color-ocean-950) 45%, transparent) 45%,
+    color-mix(in srgb, var(--color-ocean-950) 12%, transparent) 100%
   );
 }
 

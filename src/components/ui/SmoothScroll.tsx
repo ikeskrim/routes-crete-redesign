@@ -26,12 +26,18 @@ export function SmoothScroll({
     if (media.matches) return;
 
     const lenis = new Lenis({
-      duration: 1.05,
-      easing: (t: number) => 1 - Math.pow(1 - t, 3),
+      // Heavy, gliding scroll. lerp rather than duration so the weight is
+      // consistent regardless of how far a single wheel gesture travels.
+      lerp: 0.085,
       smoothWheel: true,
+      wheelMultiplier: 0.9,
       // Native scrolling on touch feels better than an emulated one.
       syncTouch: false,
     });
+
+    /* Exposed so tooling (and the QA screenshot harness) can position the
+       scroll deterministically instead of fighting the smoothing. */
+    (window as Window & { __lenis?: Lenis }).__lenis = lenis;
 
     let frame = 0;
     const raf = (time: number) => {
@@ -64,6 +70,7 @@ export function SmoothScroll({
       document.removeEventListener("click", onAnchorClick);
       cancelAnimationFrame(frame);
       lenis.destroy();
+      delete (window as Window & { __lenis?: Lenis }).__lenis;
     };
   }, [pathname]);
 
