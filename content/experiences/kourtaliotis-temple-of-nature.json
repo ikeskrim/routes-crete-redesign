@@ -1,0 +1,119 @@
+{
+  "slug": "kourtaliotis-temple-of-nature",
+  "order": 2,
+  "title": "Kourtaliotis – The Temple of Nature",
+  "titleVariantOnCard": "Kourtaliotis - The Temple of Nature",
+  "subtitle": "An Epic Journey into the Hidden Heart of Crete",
+  "category": "Experiences",
+  "categoryOriginal": "Expieriences",
+  "sourceModal": "portfolioModal2",
+  "cardImage": "/images/experiences/kourtaliotis-temple-of-nature/ku516-dsc03742.jpg",
+  "heroImage": "/images/experiences/kourtaliotis-temple-of-nature/ku1574-dsc06647.jpg",
+  "qrImage": "/images/site/qr-code.png",
+  "signature": true,
+  "facts": {
+    "region": "Rethymno, Southern Crete",
+    "duration": null,
+    "price": null,
+    "groupSize": null,
+    "availability": null
+  },
+  "locations": ["rethymno-village", "kourtaliotis-gorge", "preveli-lagoon", "preveli-monastery"],
+  "body": [
+    {
+      "type": "paragraph",
+      "text": "In today’s travel experience, people are no longer just looking for places to visit. They are looking for experiences to live, stories to discover, and journeys that make them feel connected to a place."
+    },
+    {
+      "type": "paragraph",
+      "text": "**Kourtaliotis – The Temple of Nature** was created with exactly this philosophy in mind."
+    },
+    {
+      "type": "paragraph",
+      "text": "This is not a typical excursion or a simple nature tour. It is an immersive exploration experience, where visitors are not just observers of the landscape — they become the protagonists of a story."
+    },
+    {
+      "type": "paragraph",
+      "text": "Throughout the journey, participants follow the traces of a mysterious explorer. In his journal, he describes the search for a lost place — a paradise that, according to his notes, lies in southern Crete in Rethymno."
+    },
+    {
+      "type": "paragraph",
+      "text": "Visitors step into his path, following the clues he left behind. Each stop reveals a new part of the story, bringing them closer to discovering the **“Heart of Paradise.”**"
+    },
+    {
+      "type": "paragraph",
+      "text": "The experience begins in one of the historic villages of Rethymno, known for its natural water springs and ancient plane trees. From there, the route continues into the lush valley, where the river, dense vegetation, and traditional stone settlements create a landscape that feels untouched by time."
+    },
+    {
+      "type": "paragraph",
+      "text": "Further along, a cave-like Byzantine chapel appears — a place of quiet spirituality that marks the transition into a different world: the wild nature of the gorge."
+    },
+    {
+      "type": "paragraph",
+      "text": "The journey then leads into the impressive and well-known Kourtaliotis Gorge, one of the most striking natural landscapes in Crete and the Mediterranean. Towering cliffs rise hundreds of meters above the gorge, while deep within it lies the small chapel of Saint Nicholas of Kourtaliotis, connected to the legend of the five springs that still flow from the rock today."
+    },
+    {
+      "type": "paragraph",
+      "text": "Following the river’s path, visitors continue through a unique natural environment that eventually leads to the lagoon and palm forest of Preveli, where the river meets the Libyan Sea."
+    },
+    {
+      "type": "paragraph",
+      "text": "The scenery here is truly unique. The rare Theophrastus palm creates an exotic setting that feels like a hidden paradise within the Mediterranean. In the sea, a rock shaped like a heart marks the symbolic destination of the journey — the **Heart of Paradise**."
+    },
+    {
+      "type": "paragraph",
+      "text": "The experience also reveals a deep historical dimension of the region. In the wider area, Paleolithic tools dating back 130,000 years have been discovered — among the earliest evidence of human presence and seafaring in the Mediterranean."
+    },
+    {
+      "type": "paragraph",
+      "text": "The journey concludes at Preveli Monastery, one of the most important spiritual landmarks of Crete, built in a dramatic location overlooking the Libyan Sea."
+    },
+    {
+      "type": "paragraph",
+      "text": "**Kourtaliotis – The Temple of Nature** is designed for modern travelers seeking something more than a simple excursion. Because on this journey, visitors don’t just explore. They live a story."
+    },
+    {
+      "type": "paragraph",
+      "text": "A story where they become explorers themselves — discovering one of the most remarkable natural landscapes in the Mediterranean."
+    }
+  ],
+  "pullQuote": "They become the protagonists of a story.",
+  "pullQuoteNote": "Verbatim fragment from body paragraph 3.",
+  "highlights": [
+    "A historic village of Rethymno, known for its natural water springs and ancient plane trees",
+    "A cave-like Byzantine chapel",
+    "Kourtaliotis Gorge and the chapel of Saint Nicholas of Kourtaliotis",
+    "The lagoon and palm forest of Preveli, where the river meets the Libyan Sea",
+    "Preveli Monastery, overlooking the Libyan Sea"
+  ],
+  "highlightsNote": "Derived verbatim from phrases in the body above. No new claims introduced.",
+  "meta": {
+    "title": "Kourtaliotis – The Temple of Nature | Routes Crete",
+    "description": "An Epic Journey into the Hidden Heart of Crete. Follow the traces of a mysterious explorer through Kourtaliotis Gorge to the palm forest of Preveli.",
+    "ogImage": "/images/experiences/kourtaliotis-temple-of-nature/ku516-dsc03742.jpg"
+  },
+  "gallery": [
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku516-dsc03742.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku516-DSC03742.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku1170-dsc06272.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku1170-DSC06272.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03814.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC03814.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03813.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC03813.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku953-dsc05531.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku953-DSC05531.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku335-dsc03721.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku335-DSC03721.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku312-dsc03718.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku312-DSC03718.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku1574-dsc06647.jpg", "width": 4000, "height": 6000, "oldUrl": "/media/ku1574-DSC06647.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku1558-dsc06631.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku1558-DSC06631.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03815.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC03815.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03817.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC03817.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc05568.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC05568.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06390.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC06390.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06394.jpg", "width": 683, "height": 1024, "oldUrl": "/media/kuDSC06394.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06427.jpg", "width": 683, "height": 1024, "oldUrl": "/media/kuDSC06427.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06440.jpg", "width": 683, "height": 1024, "oldUrl": "/media/kuDSC06440.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_8141.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_8141.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9015.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_9015.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9028.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_9028.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9438.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_9438.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9446.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_9446.jpg" },
+    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9462.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_9462.jpg" }
+  ]
+}

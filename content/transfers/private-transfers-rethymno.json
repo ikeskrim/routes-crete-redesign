@@ -1,0 +1,58 @@
+{
+  "slug": "private-transfers-rethymno",
+  "order": 1,
+  "title": "Private Transfer Services in Rethymno, Crete",
+  "subtitle": null,
+  "category": "Transfers",
+  "categoryOriginal": "Transfers",
+  "sourceModal": "portfolio1Modal1",
+  "cardImage": "/images/transfers/private-transfers-rethymno/mercedes-v300.jpg",
+  "heroImage": "/images/transfers/private-transfers-rethymno/mercedes-v300.jpg",
+  "qrImage": null,
+  "facts": {
+    "region": "Rethymno and throughout the island",
+    "vehicle": "Mercedes V-Class",
+    "vehicleNote": "Vehicle model taken from the original image filename MERCEDES-V300-930x620-1.jpg. Not stated in the body copy — confirm before displaying as a spec (CONTENT_INVENTORY.md Q12).",
+    "duration": null,
+    "price": null,
+    "groupSize": null,
+    "availability": "Available upon request"
+  },
+  "locations": ["chania-airport", "heraklion-airport", "rethymno-town"],
+  "body": [
+    {
+      "type": "paragraph",
+      "text": "We offer professional transfer services in Rethymno and throughout the island, smooth connections from Chania or Heraklion Airport to your villa, or destination of choice."
+    },
+    {
+      "type": "paragraph",
+      "text": "Our VIP transfers are designed for travelers who value calm journeys, clean vehicles, and experienced local drivers."
+    },
+    {
+      "type": "paragraph",
+      "text": "Your driver will be waiting for you at the airport."
+    },
+    {
+      "type": "paragraph",
+      "text": "Available upon request, our Crete transfer service is ideal for couples, families, and small groups seeking safe, comfortable transportation in Rethymno and beyond."
+    },
+    {
+      "type": "paragraph",
+      "text": "Because getting there should feel easy."
+    }
+  ],
+  "highlights": [
+    "Smooth connections from Chania or Heraklion Airport",
+    "Calm journeys, clean vehicles, and experienced local drivers",
+    "Your driver will be waiting for you at the airport"
+  ],
+  "highlightsNote": "Derived verbatim from phrases in the body above. No new claims introduced.",
+  "meta": {
+    "title": "Private Transfer Services in Rethymno, Crete | Routes Crete",
+    "description": "Professional VIP transfer services in Rethymno and throughout Crete — smooth connections from Chania or Heraklion Airport to your villa, or destination of choice.",
+    "ogImage": "/images/transfers/private-transfers-rethymno/mercedes-v300.jpg"
+  },
+  "gallery": [
+    { "src": "/images/transfers/private-transfers-rethymno/mercedes-v300.jpg", "width": 930, "height": 620, "oldUrl": "/media/MERCEDES-V300-930x620-1.jpg" }
+  ]
+}

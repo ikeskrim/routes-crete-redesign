@@ -1,0 +1,89 @@
+{
+  "slug": "heart-of-cretan-tradition",
+  "order": 1,
+  "title": "A Journey Into the Heart of Cretan Tradition",
+  "subtitle": null,
+  "category": "Experiences",
+  "categoryOriginal": " Experiences ",
+  "sourceModal": "portfolioModal1",
+  "cardImage": "/images/experiences/heart-of-cretan-tradition/sp1-103.jpg",
+  "heroImage": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg",
+  "qrImage": "/images/site/qr-code.png",
+  "facts": {
+    "region": "Central Crete",
+    "duration": null,
+    "price": null,
+    "groupSize": null,
+    "availability": null
+  },
+  "locations": ["central-crete-cave", "mountain-village"],
+  "body": [
+    {
+      "type": "paragraph",
+      "text": "A Journey Into the Heart of Cretan Tradition",
+      "note": "Duplicates the H2 title in the original modal. Rendered once as the page title; see CONTENT_INVENTORY.md open question Q11."
+    },
+    {
+      "type": "paragraph",
+      "text": "Do you ever wonder what Crete looks like beyond the coastline?\nLeave the sea behind for a day and travel into the mountains of central Crete, where nature, tradition, and local life are still deeply connected."
+    },
+    {
+      "type": "paragraph",
+      "text": "Begin your journey underground, exploring a remarkable cave shaped over thousands of years. Walk through its chambers filled with stalactites, stalagmites, natural stone columns, and shimmering mineral formations and a quiet, hidden world formed slowly by water and time."
+    },
+    {
+      "type": "paragraph",
+      "text": "The experience continues in the mountains, where you step into the life of a traditional Cretan shepherd. Through simple, hands-on moments, you’ll discover how people live in rhythm with the land, from caring for animals to preparing local food using fresh, seasonal ingredients. It’s a chance to slow down, share a meal, and experience genuine hospitality."
+    },
+    {
+      "type": "paragraph",
+      "text": "Finally, explore the story of olive oil, one of Crete’s most important traditions. Learn how production has evolved from old manual methods to modern techniques, while still respecting the land. The visit ends with a tasting, where you’ll experience the rich flavors and quality of authentic local olive oil."
+    },
+    {
+      "type": "paragraph",
+      "text": "This journey brings together nature, tradition, and taste — offering a quieter, more authentic side of Crete, far from the busy coastline."
+    }
+  ],
+  "highlights": [
+    "A remarkable cave shaped over thousands of years",
+    "The life of a traditional Cretan shepherd",
+    "The story of olive oil, from old manual methods to modern techniques"
+  ],
+  "highlightsNote": "Derived verbatim from phrases in the body above. No new claims introduced.",
+  "meta": {
+    "title": "A Journey Into the Heart of Cretan Tradition | Routes Crete",
+    "description": "Leave the sea behind for a day and travel into the mountains of central Crete, where nature, tradition, and local life are still deeply connected.",
+    "ogImage": "/images/experiences/heart-of-cretan-tradition/sp1-103.jpg"
+  },
+  "gallery": [
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-103.jpg", "width": 1024, "height": 629, "oldUrl": "/media/sp1-103.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-152.jpg", "width": 683, "height": 1024, "oldUrl": "/media/sp1-152.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-148.jpg", "width": 683, "height": 1024, "oldUrl": "/media/sp1-148.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-142.jpg", "width": 705, "height": 1024, "oldUrl": "/media/sp1-142.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-14.jpg", "width": 1024, "height": 668, "oldUrl": "/media/sp1-14.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-128.jpg", "width": 1024, "height": 553, "oldUrl": "/media/sp1-128.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-12.jpg", "width": 684, "height": 1024, "oldUrl": "/media/sp1-12.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-110.jpg", "width": 1024, "height": 650, "oldUrl": "/media/sp1-110.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-157.jpg", "width": 1024, "height": 570, "oldUrl": "/media/sp1-157.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-25.jpg", "width": 1024, "height": 742, "oldUrl": "/media/sp1-25.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-22.jpg", "width": 1024, "height": 683, "oldUrl": "/media/sp1-22.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg", "width": 1024, "height": 724, "oldUrl": "/media/sp1-17.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-45.jpg", "width": 1024, "height": 637, "oldUrl": "/media/sp1-45.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-5.jpg", "width": 768, "height": 972, "oldUrl": "/media/sp1-5.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-50.jpg", "width": 706, "height": 1024, "oldUrl": "/media/sp1-50.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-56.jpg", "width": 683, "height": 1024, "oldUrl": "/media/sp1-56.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-6.jpg", "width": 752, "height": 1024, "oldUrl": "/media/sp1-6.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-63.jpg", "width": 683, "height": 1024, "oldUrl": "/media/sp1-63.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-71.jpg", "width": 1024, "height": 731, "oldUrl": "/media/sp1-71.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-8.jpg", "width": 1024, "height": 653, "oldUrl": "/media/sp1-8.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-81.jpg", "width": 1024, "height": 683, "oldUrl": "/media/sp1-81.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-86.jpg", "width": 1024, "height": 588, "oldUrl": "/media/sp1-86.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-9.jpg", "width": 1024, "height": 683, "oldUrl": "/media/sp1-9.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-90.jpg", "width": 768, "height": 1017, "oldUrl": "/media/sp1-90.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-97.jpg", "width": 1024, "height": 683, "oldUrl": "/media/sp1-97.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/spimg_7582.jpg", "width": 1024, "height": 575, "oldUrl": "/media/spIMG_7582.JPG" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/spimg_7611.jpg", "width": 1024, "height": 575, "oldUrl": "/media/spIMG_7611.JPG" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp-kalits-2.jpg", "width": 960, "height": 640, "oldUrl": "/media/spΚΑΛΙΤΣ.2.jpg" },
+    { "src": "/images/experiences/heart-of-cretan-tradition/sp-tyrokom.jpg", "width": 640, "height": 960, "oldUrl": "/media/spΤΥΡΟΚΟΜ.jpg" }
+  ]
+}

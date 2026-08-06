@@ -1,0 +1,279 @@
+{
+  "brand": {
+    "name": "Routes Crete",
+    "domain": "routescrete.gr",
+    "url": "https://www.routescrete.gr",
+    "logo": "/images/brand/logo.png",
+    "favicon": "/assets/favicon.ico",
+    "gemi": "Γ.Ε.ΜΗ.:191661450000",
+    "gemiLabel": "Γ.Ε.ΜΗ.",
+    "gemiNumber": "191661450000"
+  },
+
+  "meta": {
+    "title": "VIP Transfers & Private Tours in Crete | Routes Crete",
+    "description": "Premium VIP transfers and private excursions in Crete. Enjoy comfortable pick-up from your villa, personalized routes, and authentic local experiences with Routes Crete.",
+    "keywords": "Crete transfers, VIP transfer Crete, private driver Crete, airport transfer Crete, Crete excursions, private tours Crete, luxury transport Crete, Rethymno transfers",
+    "author": "Routes Crete",
+    "locale": "en",
+    "ogImage": null,
+    "ogImageNote": "No OG image exists on the current site. Pending choice — see CONTENT_INVENTORY.md Q8."
+  },
+
+  "nav": [
+    { "key": "experiences", "label": "Experiences", "href": "/experiences", "legacyAnchor": "#portfolio" },
+    { "key": "transfers",   "label": "Transfers",   "href": "/transfers",   "legacyAnchor": "#portfolio1" },
+    { "key": "whyUs",       "label": "Why Us",      "href": "/#why-us",     "legacyAnchor": "#services" },
+    { "key": "bookGuide",   "label": "Book Guide",  "href": "/#how-to-book","legacyAnchor": "#about" },
+    { "key": "team",        "label": "Team",        "href": "/#team",       "legacyAnchor": "#team" },
+    { "key": "contact",     "label": "Contact",     "href": "/contact",     "legacyAnchor": "#contact" },
+    { "key": "brochure",    "label": "Brochure",    "href": "/assets/files/entypo.pdf", "external": true, "legacyAnchor": null }
+  ],
+
+  "legacyAnchorMap": {
+    "#portfolio":  "#experiences",
+    "#portfolio1": "#transfers",
+    "#services":   "#why-us",
+    "#about":      "#how-to-book",
+    "#team":       "#team",
+    "#contact":    "#contact"
+  },
+
+  "hero": {
+    "eyebrow": "Your Cretan adventure starts here",
+    "heading": "Routes Crete",
+    "subheading": "Explore the unknown side of Crete",
+    "originalCta": { "label": "Tell me more", "href": "#services" },
+    "backgroundImage": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg",
+    "backgroundImageNote": "Original masthead background. Native size only 1024×724 — see CONTENT_INVENTORY.md Q9."
+  },
+
+  "sections": {
+    "experiences": { "heading": "Experiences", "subheading": "" },
+    "transfers":   { "heading": "Transfers",   "subheading": "Our collection of transfers" },
+    "whyUs":       { "heading": "Why us",      "subheading": "" },
+    "howToBook":   { "heading": "How to Book Your Cretan Experience", "subheading": "Step by Step Guide" },
+    "team":        { "heading": "Our Amazing Team", "subheading": "Where professional excellence meets world-class hospitality." },
+    "contact":     { "heading": "Contact Form", "subheading": "We’d love to hear from you" }
+  },
+
+  "whyUs": [
+    {
+      "key": "pickup",
+      "icon": "shuttle-van",
+      "title": "Pick up & Travelling",
+      "text": "Pickup from your villa with our VIP van.\nEvery vehicle is equipped with a TV and A/C to make your trip comfortable."
+    },
+    {
+      "key": "localKnowledge",
+      "icon": "map-marked-alt",
+      "title": "Local Knowledge & Personal Approach",
+      "text": "We know the roads, the stories, the people. Every route is designed with care, adapted to your pace, your interests, and your curiosity."
+    },
+    {
+      "key": "comfort",
+      "icon": "handshake",
+      "title": "Comfort, Safety & Genuine Hospitality",
+      "text": "Exploring should feel relaxed. We make sure you travel comfortably, safely, and with the warm Cretan hospitality that makes every journey memorable."
+    }
+  ],
+
+  "howToBook": {
+    "image": "/images/site/booking-step.jpg",
+    "imageNote": "Single 160×160 image reused for all 5 steps on the original site. See CONTENT_INVENTORY.md Q10.",
+    "steps": [
+      {
+        "key": "explore",
+        "number": 1,
+        "title": "Explore Our Excursions",
+        "body": "Browse our available routes and experiences. Each excursion includes detailed information about locations, duration, and what’s included — so you can choose the one that fits your interests best."
+      },
+      {
+        "key": "date",
+        "number": 2,
+        "title": "Choose Your Preferred Date",
+        "body": "Select the date that works for you and check availability."
+      },
+      {
+        "key": "contact",
+        "number": 3,
+        "title": "We’ll respond promptly with availability, final details, and booking confirmation.",
+        "titleFlag": "SUSPECTED ERROR ON LIVE SITE — this heading duplicates step 4's body and does not describe step 3's content. See CONTENT_INVENTORY.md Q1.",
+        "body": "Contact us via message or email with:\n\n• The excursion you selected\n\n• Preferred date\n\n• Number of participants\n\n• Your accommodation location",
+        "bodyItems": [
+          "The excursion you selected",
+          "Preferred date",
+          "Number of participants",
+          "Your accommodation location"
+        ],
+        "bodyLead": "Contact us via message or email with:"
+      },
+      {
+        "key": "confirmation",
+        "number": 4,
+        "title": "Confirmation & Details",
+        "body": "We’ll respond promptly with availability, final details, and booking confirmation."
+      },
+      {
+        "key": "enjoy",
+        "number": 5,
+        "title": "Enjoy the Journey",
+        "body": "Relax — we take care of the rest. Your Cretan adventure begins."
+      }
+    ]
+  },
+
+  "team": {
+    "intro": "Our team consists of **highly trained, professional chauffeurs** dedicated to providing a seamless and secure travel experience for every passenger.",
+    "members": [
+      {
+        "key": "antonios",
+        "name": "Antonios Tzagkarakis",
+        "role": "Manager",
+        "photo": "/images/team/antonios-tzagkarakis.jpg",
+        "width": 500,
+        "height": 500,
+        "oldUrl": "/media/team3.jpg"
+      },
+      {
+        "key": "stavros",
+        "name": "Stavros Kapetanakis",
+        "role": "CEO",
+        "photo": "/images/team/stavros-kapetanakis.jpg",
+        "width": 200,
+        "height": 199,
+        "oldUrl": "/media/stavros.jpg",
+        "photoNote": "Only 200×199 — noticeably lower resolution than the other two. See CONTENT_INVENTORY.md Q10."
+      },
+      {
+        "key": "daria",
+        "name": "Daria",
+        "role": "Assistance",
+        "photo": "/images/team/daria.jpg",
+        "width": 500,
+        "height": 500,
+        "oldUrl": "/media/team2.jpg"
+      }
+    ]
+  },
+
+  "contact": {
+    "formUrl": "https://forms.monday.com/forms/embed/ec9deceb669815b3635612d83fe446fc?r=use1",
+    "formProvider": "monday.com",
+    "email": null,
+    "phone": null,
+    "whatsapp": null,
+    "address": null,
+    "openingHours": null,
+    "note": "Only the embedded Monday.com form exists on the current site. Email, phone, WhatsApp, address and hours are all unknown — see CONTENT_INVENTORY.md Q2–Q5."
+  },
+
+  "social": {
+    "note": "No social links exist on the current site. The footer contains an empty placeholder block. See CONTENT_INVENTORY.md Q6.",
+    "links": []
+  },
+
+  "newsletter": {
+    "enabled": false,
+    "note": "Omitted until a real destination for the emails is confirmed. See CONTENT_INVENTORY.md Q7."
+  },
+
+  "testimonials": {
+    "enabled": false,
+    "items": [],
+    "note": "No testimonials exist. Component renders only when items are added."
+  },
+
+  "footer": {
+    "copyright": "© {year} routescrete.gr",
+    "copyrightOriginal": "© 2026 routescrete.gr",
+    "gemi": "Γ.Ε.ΜΗ.:191661450000",
+    "brochure": { "label": "Brochure", "href": "/assets/files/entypo.pdf" }
+  },
+
+  "brochure": {
+    "label": "Brochure",
+    "href": "/assets/files/entypo.pdf",
+    "bytes": 1120049
+  },
+
+  "locations": [
+    {
+      "key": "rethymno-town",
+      "name": "Rethymno",
+      "lat": 35.3667,
+      "lng": 24.4747,
+      "type": "town",
+      "source": "Named in the transfers copy and the Kourtaliotis story."
+    },
+    {
+      "key": "rethymno-village",
+      "name": "Historic village of Rethymno",
+      "lat": null,
+      "lng": null,
+      "type": "village",
+      "needsInput": true,
+      "source": "Kourtaliotis story: 'one of the historic villages of Rethymno, known for its natural water springs and ancient plane trees'. The village is never named — see CONTENT_INVENTORY.md Q13."
+    },
+    {
+      "key": "kourtaliotis-gorge",
+      "name": "Kourtaliotis Gorge",
+      "lat": 35.2472,
+      "lng": 24.4622,
+      "type": "gorge",
+      "source": "Named in the Kourtaliotis story."
+    },
+    {
+      "key": "preveli-lagoon",
+      "name": "Preveli lagoon & palm forest",
+      "lat": 35.1531,
+      "lng": 24.4739,
+      "type": "beach",
+      "source": "Named in the Kourtaliotis story."
+    },
+    {
+      "key": "preveli-monastery",
+      "name": "Preveli Monastery",
+      "lat": 35.1611,
+      "lng": 24.4736,
+      "type": "monastery",
+      "source": "Named in the Kourtaliotis story."
+    },
+    {
+      "key": "central-crete-cave",
+      "name": "Central Crete cave",
+      "lat": null,
+      "lng": null,
+      "type": "cave",
+      "needsInput": true,
+      "source": "Cretan Tradition story: 'a remarkable cave shaped over thousands of years'. The cave is never named — see CONTENT_INVENTORY.md Q13."
+    },
+    {
+      "key": "mountain-village",
+      "name": "Mountains of central Crete",
+      "lat": null,
+      "lng": null,
+      "type": "village",
+      "needsInput": true,
+      "source": "Cretan Tradition story: 'the mountains of central Crete'. No specific place named — see CONTENT_INVENTORY.md Q13."
+    },
+    {
+      "key": "chania-airport",
+      "name": "Chania Airport",
+      "lat": 35.5317,
+      "lng": 24.1497,
+      "type": "airport",
+      "source": "Named in the transfers copy."
+    },
+    {
+      "key": "heraklion-airport",
+      "name": "Heraklion Airport",
+      "lat": 35.3397,
+      "lng": 25.1803,
+      "type": "airport",
+      "source": "Named in the transfers copy."
+    }
+  ],
+
+  "coordinatesNote": "Coordinates for named public places are real published geographic locations, not invented business data. Entries with needsInput:true are places the copy references but never names — no pin is rendered until confirmed."
+}
