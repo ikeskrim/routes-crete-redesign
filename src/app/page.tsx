@@ -1,8 +1,23 @@
+import dynamic from "next/dynamic";
+
 import { Hero } from "@/components/sections/Hero";
 import { Gallery } from "@/components/sections/Gallery";
 import { HowToBook } from "@/components/sections/HowToBook";
 import { LocationsMap } from "@/components/sections/LocationsMap";
-import { SignatureScene, type Scene } from "@/components/sections/SignatureScene";
+import type { Scene } from "@/components/sections/SignatureScene";
+
+/**
+ * GSAP + ScrollTrigger are only ever used by the pinned scene, and the scene
+ * sits well below the fold — so its client chunk is split out and fetched
+ * after first paint instead of riding in the initial bundle.
+ *
+ * SSR stays on deliberately: the scene renders verbatim story paragraphs, and
+ * dropping them from the server HTML would cost content parity and SEO to buy
+ * a synthetic score. Only the JavaScript is deferred, never the words.
+ */
+const SignatureScene = dynamic(() =>
+  import("@/components/sections/SignatureScene").then((m) => m.SignatureScene),
+);
 import { Team } from "@/components/sections/Team";
 import { TransferSpotlight } from "@/components/sections/TransferSpotlight";
 import { WhyUs } from "@/components/sections/WhyUs";

@@ -142,6 +142,56 @@ hand-written. Any image without an entry simply renders without a blur-up — no
 
 ---
 
+## Performance posture — read before "optimising" this site
+
+**Final Lighthouse (mobile, production build, Lighthouse's simulated Slow-4G + 4× CPU):**
+
+| Route | Perf | A11y | Best practices | SEO | LCP | TBT | CLS |
+|---|---|---|---|---|---|---|---|
+| `/` | 92–95 | 100 | 100 | 100 | 3.0–3.4 s | 20–30 ms | **0** |
+| `/experiences/[slug]` | 89 | 100 | 100 | 100 | 3.8 s | 10 ms | **0** |
+
+Performance on `/` straddles 95 — it measured 95, 92 and 93 on **identical code**. Treat any
+single run as ±3.
+
+**Real-device measurement.** A `PerformanceObserver` probe (`largest-contentful-paint`,
+buffered) under mobile emulation at 412×823 / DPR 2.625 with 4× CPU throttling and a normal
+network measures **LCP ≈ 992 ms** on `/`. Method is in git history; re-create it with Playwright
+plus `Emulation.setCPUThrottlingRate`.
+
+**Where the remaining synthetic gap lives.** It is transfer time on a simulated 1.6 Mbps link,
+not execution. TBT of 10–30 ms and CLS of exactly 0 across every page say the motion layer —
+GSAP, ScrollTrigger, Lenis, Motion, the pinned scrubbed scene, line-mask reveals — costs users
+essentially nothing at runtime. The only opportunity Lighthouse still reports is "reduce unused
+JavaScript" (220–510 ms), which **is** that motion layer.
+
+Two things worth knowing before touching this:
+
+1. **The hero photograph is not the LCP element and never was.** Chrome does not treat a
+   full-viewport image as an LCP candidate — it never appears in the candidate list at all,
+   even though it is by far the largest element. LCP here is *hero text*. Two separate bugs
+   came from this: an opacity-gated subheading paragraph in `Hero` (3420 ms → 992 ms once
+   ungated) and the identical pattern in `ItemHero`. **Never wrap the largest text block in an
+   entrance animation.**
+2. **Deferring the scene chunk was tried and bought nothing.** `SignatureScene` is loaded via
+   `next/dynamic` so GSAP leaves the initial bundle. It is kept because a smaller initial
+   bundle is a genuine benefit to real users, but it moved the Lighthouse score by less than
+   the run-to-run noise. `ssr` stays **on**: the scene renders verbatim story paragraphs, and
+   dropping them from the server HTML would cost content parity and SEO to buy a synthetic
+   score.
+
+### The decision
+
+**The cinematic layer is not to be removed to buy Lighthouse points.** This was decided
+explicitly, with the tradeoff on the table: the last few synthetic points cost the pinned
+scrubbed scene, Lenis smooth scroll, or the line-mask reveals — the things this project exists
+to deliver — while real users already get a ~1 s LCP and a 0 CLS. If a future audit flags
+"unused JavaScript" here, that is the finding being re-reported, not a regression.
+
+Legitimate wins that do **not** touch the design: a CDN in front of `next/image` (see
+[`DEPLOYMENT.md`](DEPLOYMENT.md)), and higher-resolution source photography, which would let the
+hero carry more detail at the same byte weight.
+
 ## Things that are deliberately absent
 
 No testimonials, statistics, counters, prices, durations, ratings, availability calendar,
