@@ -1,6 +1,7 @@
 /** Direction-checkpoint captures: stills + a short scroll filmstrip per candidate. */
 import { chromium, type Page } from "playwright";
 import fs from "node:fs/promises";
+import { preflight } from "./preflight.mts";
 import path from "node:path";
 
 const BASE = process.env.QA_BASE_URL ?? "http://localhost:3009";
@@ -27,6 +28,7 @@ async function scrollTo(page: Page, y: number, wait = 900) {
 
 const browser = await chromium.launch();
 await fs.mkdir(OUT, { recursive: true });
+await preflight(BASE, OUT);
 
 for (const variant of ["a", "b"]) {
   for (const [device, vp] of [

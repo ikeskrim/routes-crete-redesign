@@ -13,6 +13,7 @@
  */
 import { chromium, type Browser, type Page } from "playwright";
 import fs from "node:fs/promises";
+import { preflight } from "./preflight.mts";
 import path from "node:path";
 
 const BASE = process.env.QA_BASE_URL ?? "http://localhost:3009";
@@ -138,6 +139,7 @@ async function openPage(
 
 async function run() {
   await fs.mkdir(OUT, { recursive: true });
+  await preflight(BASE, OUT);
   const browser = await chromium.launch();
 
   /* ------------------------------------------------------ home: desktop */
