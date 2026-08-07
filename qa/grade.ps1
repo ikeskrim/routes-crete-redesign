@@ -24,6 +24,62 @@ param(
 Add-Type -AssemblyName System.Drawing
 $ErrorActionPreference = 'Stop'
 
+# The tone/saturation/vignette pass is identical maths to the original
+# PowerShell implementation, moved into a compiled loop. A per-pixel loop in
+# PowerShell cost 43s for a single 2400px frame — ~14 minutes to regrade the
+# corpus, which made iterating on a grade impractical. ColorMatrix was the
+# obvious alternative but is purely linear: it cannot express the per-channel
+# gamma or the contrast-around-mid pivot the approved look depends on. Keeping
+# the maths and compiling the loop reproduces the approved grade exactly rather
+# than approximately.
+if (-not ("RoutesCrete.Grader" -as [type])) {
+  Add-Type -TypeDefinition @'
+namespace RoutesCrete {
+  public static class Grader {
+    public static void Apply(
+      byte[] buf, int stride, int width, int height,
+      byte[] lutR, byte[] lutG, byte[] lutB,
+      double sat, double vignette)
+    {
+      double cx = width / 2.0, cy = height / 2.0;
+      double maxD = System.Math.Sqrt(cx * cx + cy * cy);
+
+      for (int y = 0; y < height; y++) {
+        int row = y * stride;
+        double dy = (y - cy) / maxD;
+        for (int x = 0; x < width; x++) {
+          int i = row + x * 3;
+
+          double b = lutB[buf[i]];
+          double g = lutG[buf[i + 1]];
+          double r = lutR[buf[i + 2]];
+
+          double l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          r = l + (r - l) * sat;
+          g = l + (g - l) * sat;
+          b = l + (b - l) * sat;
+
+          if (vignette > 0.0) {
+            double dx = (x - cx) / maxD;
+            double d = System.Math.Sqrt(dx * dx + dy * dy);
+            double v = 1.0 - vignette * (d * d);
+            r *= v; g *= v; b *= v;
+          }
+
+          int ib = (int)System.Math.Round(b);
+          int ig = (int)System.Math.Round(g);
+          int ir = (int)System.Math.Round(r);
+          buf[i]     = (byte)(ib < 0 ? 0 : (ib > 255 ? 255 : ib));
+          buf[i + 1] = (byte)(ig < 0 ? 0 : (ig > 255 ? 255 : ig));
+          buf[i + 2] = (byte)(ir < 0 ? 0 : (ir > 255 ? 255 : ir));
+        }
+      }
+    }
+  }
+}
+'@
+}
+
 $proj = (Get-Item "C:\Users\mcapt\Downloads\*\routes-crete").FullName
 $srcRoot = Join-Path $proj 'public\images'
 $outRoot = Join-Path $proj ("public\images\graded\" + $Grade.ToLower())
@@ -95,37 +151,7 @@ foreach ($f in $files) {
     $bytes = New-Object 'byte[]' ($stride * $h)
     [System.Runtime.InteropServices.Marshal]::Copy($data.Scan0, $bytes, 0, $bytes.Length)
 
-    $cx = $w / 2.0; $cy = $h / 2.0
-    $maxD = [math]::Sqrt($cx * $cx + $cy * $cy)
-    $sat = $P.sat; $vig = $P.vignette
-
-    for ($y = 0; $y -lt $h; $y++) {
-      $row = $y * $stride
-      $dy = ($y - $cy) / $maxD
-      for ($x = 0; $x -lt $w; $x++) {
-        $i = $row + $x * 3
-        $b = $lutB[$bytes[$i]]
-        $gg = $lutG[$bytes[$i + 1]]
-        $r = $lutR[$bytes[$i + 2]]
-
-        # desaturate toward Rec.709 luma
-        $l = 0.2126 * $r + 0.7152 * $gg + 0.0722 * $b
-        $r = $l + ($r - $l) * $sat
-        $gg = $l + ($gg - $l) * $sat
-        $b = $l + ($b - $l) * $sat
-
-        if ($vig -gt 0) {
-          $dx = ($x - $cx) / $maxD
-          $d = [math]::Sqrt($dx * $dx + $dy * $dy)
-          $v = 1.0 - $vig * ($d * $d)
-          $r *= $v; $gg *= $v; $b *= $v
-        }
-
-        $bytes[$i] = [byte][math]::Min(255, [math]::Max(0, [math]::Round($b)))
-        $bytes[$i + 1] = [byte][math]::Min(255, [math]::Max(0, [math]::Round($gg)))
-        $bytes[$i + 2] = [byte][math]::Min(255, [math]::Max(0, [math]::Round($r)))
-      }
-    }
+    [RoutesCrete.Grader]::Apply($bytes, $stride, $w, $h, $lutR, $lutG, $lutB, [double]$P.sat, [double]$P.vignette)
 
     [System.Runtime.InteropServices.Marshal]::Copy($bytes, 0, $data.Scan0, $bytes.Length)
     $bmp.UnlockBits($data)
