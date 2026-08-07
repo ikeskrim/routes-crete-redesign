@@ -8,9 +8,59 @@ import type { Collection, ContentItem, SiteContent } from "./types";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
+/* ------------------------------------------------------------------ *
+ * Colour grade
+ *
+ * The content files keep pointing at the ORIGINAL photographs. The grade is a
+ * rendering concern, so it is resolved here rather than rewritten into every
+ * JSON file — which means changing direction, or regrading, is a one-constant
+ * edit instead of a migration across all content, and the originals are never
+ * lost.
+ * ------------------------------------------------------------------ */
+
+const GRADE = "b";
+const GRADED_PREFIX = `/images/graded/${GRADE}`;
+
+/**
+ * Assets that must never be graded: a desaturated, vignetted QR code can stop
+ * scanning, and the wordmark is a brand asset, not photography.
+ */
+const NEVER_GRADE = ["/images/site/qr-code.png", "/images/brand/logo.png"];
+
+export function graded(src: string): string {
+  if (typeof src !== "string") return src;
+  if (!src.startsWith("/images/")) return src;
+  if (src.startsWith("/images/graded/")) return src;
+  if (NEVER_GRADE.includes(src)) return src;
+  // The pipeline writes every derivative as .jpg.
+  return src
+    .replace(/^\/images\//, `${GRADED_PREFIX}/`)
+    .replace(/\.(png|jpeg|JPG|PNG)$/i, ".jpg");
+}
+
+/** Deep-map every image path in a loaded content tree through the grade. */
+function regrade<T>(value: T): T {
+  if (typeof value === "string") return graded(value) as unknown as T;
+  if (Array.isArray(value)) return value.map(regrade) as unknown as T;
+  if (value && typeof value === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      // Keep the provenance fields pointing at where the file really came from.
+      out[k] = k === "oldUrl" || k.endsWith("Original") ? v : regrade(v);
+    }
+    return out as T;
+  }
+  return value;
+}
+
 function readJson<T>(...segments: string[]): T {
   const file = path.join(CONTENT_DIR, ...segments);
   return JSON.parse(fs.readFileSync(file, "utf8")) as T;
+}
+
+/** Content read + grade resolution in one step. */
+function readContent<T>(...segments: string[]): T {
+  return regrade(readJson<T>(...segments));
 }
 
 /** Route prefix for each collection. Transfers live at /transfers/<slug>. */
@@ -27,7 +77,7 @@ function loadCollection(collection: Collection): ContentItem[] {
     .readdirSync(dir)
     .filter((f) => f.endsWith(".json"))
     .map((f) => {
-      const item = readJson<ContentItem>(collection, f);
+      const item = readContent<ContentItem>(collection, f);
       return {
         ...item,
         collection,
@@ -42,7 +92,7 @@ function loadCollection(collection: Collection): ContentItem[] {
  * content in several places only touches the filesystem once.
  * ------------------------------------------------------------------ */
 
-export const getSite = cache((): SiteContent => readJson<SiteContent>("site.json"));
+export const getSite = cache((): SiteContent => readContent<SiteContent>("site.json"));
 
 export const getBlurMap = cache((): Record<string, string> => {
   try {

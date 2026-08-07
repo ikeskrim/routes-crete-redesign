@@ -27,7 +27,6 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SplitLines } from "@/components/ui/SplitLines";
 import {
   getBlur,
-  getBlurMap,
   getExperiences,
   getMappableLocations,
   getSignatureExperience,
@@ -41,7 +40,6 @@ export default function HomePage() {
   const transfers = getTransfers();
   const signature = getSignatureExperience();
   const locations = getMappableLocations();
-  const blurMap = getBlurMap();
 
   /* Chapters reference paragraphs by index so the storytelling scene can never
      drift from the verbatim source text. */
@@ -55,7 +53,11 @@ export default function HomePage() {
 
   /* Every photograph from every collection, for the closing gallery. */
   const galleryImages = [...experiences, ...transfers].flatMap((item) =>
-    item.gallery.map((image) => ({ ...image, alt: item.title })),
+    item.gallery.map((image) => ({
+      ...image,
+      alt: item.title,
+      blurDataURL: getBlur(image.src),
+    })),
   );
 
   const locationLinks: Record<string, string> = {};
@@ -200,7 +202,7 @@ export default function HomePage() {
           />
 
           <div className="mt-14 lg:mt-20">
-            <Gallery images={galleryImages} blurMap={blurMap} />
+            <Gallery images={galleryImages} />
           </div>
         </div>
       </section>

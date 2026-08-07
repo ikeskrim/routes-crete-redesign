@@ -14,12 +14,15 @@ import { cn } from "@/lib/utils";
  * CSS columns keep the masonry free of layout JS; every image keeps its true
  * aspect ratio so nothing shifts as they load.
  */
+/**
+ * Each image carries its own blur placeholder. Passing the whole blur map as a
+ * prop serialised all 128 entries (~122 KB of base64) into the RSC payload of
+ * every page with a gallery, whether or not those images appeared on it.
+ */
 export function Gallery({
   images,
-  blurMap,
 }: {
-  images: (GalleryImage & { alt: string })[];
-  blurMap: Record<string, string>;
+  images: (GalleryImage & { alt: string; blurDataURL?: string })[];
 }) {
   const reduced = useReducedMotionSafe();
   const [open, setOpen] = useState<number | null>(null);
@@ -71,8 +74,8 @@ export function Gallery({
                 width={image.width}
                 height={image.height}
                 sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 24vw"
-                placeholder={blurMap[image.src] ? "blur" : undefined}
-                blurDataURL={blurMap[image.src]}
+                placeholder={image.blurDataURL ? "blur" : undefined}
+                blurDataURL={image.blurDataURL}
                 className="h-auto w-full transition-transform duration-[1.1s] ease-luxe group-hover:scale-[1.06]"
               />
               <span
@@ -128,8 +131,8 @@ export function Gallery({
                   fill
                   sizes="100vw"
                   quality={75}
-                  placeholder={blurMap[current.src] ? "blur" : undefined}
-                  blurDataURL={blurMap[current.src]}
+                  placeholder={current.blurDataURL ? "blur" : undefined}
+                  blurDataURL={current.blurDataURL}
                   className="object-contain"
                 />
               </motion.div>

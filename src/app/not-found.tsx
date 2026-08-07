@@ -1,10 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { getBlur } from "@/lib/content";
+import { getBlur, graded } from "@/lib/content";
 
-/** The strongest frame we have at its native size — no upscaling. */
-const IMAGE = "/images/experiences/kourtaliotis-temple-of-nature/ku953-dsc05531.jpg";
+/** The strongest frame we have at its native size — no upscaling.
+ *  Resolved through the grade like every other image on the site. */
+const IMAGE = graded(
+  "/images/experiences/kourtaliotis-temple-of-nature/ku953-dsc05531.jpg",
+);
 
 export const metadata = {
   title: "Page not found",

@@ -11,7 +11,6 @@ import { SplitLines } from "@/components/ui/SplitLines";
 import { ItemHero } from "@/components/sections/ItemHero";
 import {
   getBlur,
-  getBlurMap,
   getMappableLocations,
   getRelatedItems,
   getSite,
@@ -26,7 +25,6 @@ import { pad } from "@/lib/utils";
 export function ItemDetail({ item }: { item: ContentItem }) {
   const site = getSite();
   const related = getRelatedItems(item.slug, 2);
-  const blurMap = getBlurMap();
 
   /* Only the locations this route actually visits, and only those we can
      place — unnamed places stay off the map entirely. */
@@ -248,8 +246,11 @@ export function ItemDetail({ item }: { item: ContentItem }) {
             />
             <div className="mt-12">
               <Gallery
-                images={item.gallery.map((g) => ({ ...g, alt: item.title }))}
-                blurMap={blurMap}
+                images={item.gallery.map((g) => ({
+                  ...g,
+                  alt: item.title,
+                  blurDataURL: getBlur(g.src),
+                }))}
               />
             </div>
           </div>
