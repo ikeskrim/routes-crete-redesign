@@ -120,8 +120,28 @@ $codec = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Obj
 $ep = New-Object System.Drawing.Imaging.EncoderParameters(1)
 $ep.Param[0] = New-Object System.Drawing.Imaging.EncoderParameter([System.Drawing.Imaging.Encoder]::Quality, [int64]$Quality)
 
-$files = Get-ChildItem $srcRoot -Recurse -File |
+# Never graded, at the pipeline level so a future regrade cannot sweep them in
+# by accident: a desaturated, vignetted QR code can stop scanning, and the
+# wordmark is a brand asset rather than photography. Mirrors NEVER_GRADE in
+# src/lib/content.ts — both lists must agree.
+# Paths are relative to public\images — no "images\" prefix.
+$NeverGrade = @(
+  'site\qr-code.png',
+  'brand\logo.png'
+)
+
+$all = Get-ChildItem $srcRoot -Recurse -File |
   Where-Object { $_.Extension -match '^\.(jpg|jpeg|png)$' -and $_.FullName -notlike "*\graded\*" }
+
+# Split rather than filter inside a pipeline: `+=` inside a Where-Object
+# scriptblock mutates a copy, so the skip list would silently come back empty.
+$files = @()
+foreach ($f in $all) {
+  $rel = $f.FullName.Substring($srcRoot.Length + 1)
+  if ($NeverGrade -contains $rel) { "excluded from grading: $rel"; continue }
+  $files += $f
+}
+
 if ($Only) { $files = $files | Where-Object { $_.FullName -like "*$Only*" } }
 
 $n = 0
