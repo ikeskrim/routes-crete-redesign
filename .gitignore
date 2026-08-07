@@ -47,3 +47,4 @@ next-env.d.ts
 /qa/lighthouse/
 /qa/*.log
 /qa/*.err
+/qa/direction/
