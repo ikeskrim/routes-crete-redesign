@@ -73,10 +73,52 @@ export function SplitLines({
           grouped.push([]);
           lastTop = top;
         }
-        grouped[grouped.length - 1].push(wordEl.textContent ?? "");
+        // trim(): each word span carries a trailing space *inside* it, so the
+        // raw textContent is "word ". Joining those with another space gave
+        // doubled spacing and lines wider than the box they render into.
+        grouped[grouped.length - 1].push((wordEl.textContent ?? "").trim());
       });
 
-      setLines(grouped.map((g) => g.join(" ")));
+      /* Fit correction.
+       *
+       * Grouping by offsetTop measures the inline-block proxy layout, which
+       * does not reproduce normal text flow exactly — measured lines came out
+       * 4–80px wider than their container and wrapped again on render,
+       * leaving orphan fragments ("its natural", "lush valley,") on their own
+       * lines. Rather than trust the proxy, every candidate line is measured
+       * as it will actually be typeset and any overflow is pushed to the next
+       * line. Guarantees each rendered line occupies exactly one line box. */
+      const containerWidth = root.getBoundingClientRect().width;
+      const probe = document.createElement("span");
+      const cs = getComputedStyle(measureEl);
+      probe.style.cssText =
+        "position:absolute;visibility:hidden;white-space:nowrap;left:-9999px;top:0";
+      probe.style.font = cs.font;
+      probe.style.letterSpacing = cs.letterSpacing;
+      probe.style.wordSpacing = cs.wordSpacing;
+      probe.style.textRendering = cs.textRendering;
+      document.body.appendChild(probe);
+
+      const widthOf = (s: string) => {
+        probe.textContent = s;
+        return probe.getBoundingClientRect().width;
+      };
+
+      const queue = grouped.map((g) => [...g]);
+      for (let i = 0; i < queue.length; i++) {
+        const line = queue[i];
+        // Sub-pixel tolerance: a line landing within 1px of the box still
+        // wraps once layout rounds it.
+        while (line.length > 1 && widthOf(line.join(" ")) > containerWidth - 1) {
+          const moved = line.pop();
+          if (moved === undefined) break;
+          if (!queue[i + 1]) queue.push([]);
+          queue[i + 1].unshift(moved);
+        }
+      }
+      probe.remove();
+
+      setLines(queue.filter((g) => g.length > 0).map((g) => g.join(" ")));
     };
 
     lastWidth.current = root.getBoundingClientRect().width;
