@@ -79,6 +79,7 @@ export function DesignDraft({ variant }: { variant: keyof typeof VARIANTS }) {
       {/* ---------------------------------------------------------- HERO */}
       <section
         data-hero
+        data-hero-tone={variant === "a" ? "dark" : "light"}
         className={cn(
           "grain relative flex h-[100svh] min-h-[34rem] items-end overflow-hidden",
           v.ground,

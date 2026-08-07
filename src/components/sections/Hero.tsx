@@ -50,6 +50,7 @@ export function Hero({
     <section
       ref={ref}
       data-hero
+      data-hero-tone="dark"
       className="grain relative flex h-[100svh] min-h-[34rem] items-end overflow-hidden bg-ocean-950"
     >
       {/* Photograph: scroll parallax on the outer layer, Ken Burns on the

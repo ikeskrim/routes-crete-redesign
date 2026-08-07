@@ -37,6 +37,7 @@ export function ItemHero({
     <section
       ref={ref}
       data-hero
+      data-hero-tone="dark"
       className="grain relative flex h-[82svh] min-h-[30rem] items-end overflow-hidden bg-ocean-950"
     >
       <motion.div

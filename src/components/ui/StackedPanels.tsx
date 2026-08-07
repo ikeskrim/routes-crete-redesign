@@ -1,0 +1,178 @@
+"use client";
+
+import { useRef, useState } from "react";
+import Image from "next/image";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
+
+import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
+import { cn, pad } from "@/lib/utils";
+
+export interface StackedPanel {
+  /** Small uppercase label above the statement. */
+  eyebrow: string;
+  /** The centred statement. Kept short — this is punctuation, not prose. */
+  statement: string;
+  /** Optional supporting line beneath. */
+  detail?: string;
+  image?: string;
+  blurDataURL?: string;
+}
+
+/**
+ * A section that holds while its content transitions, then releases.
+ *
+ * Generalises the machinery proven in the signature scene. The section is
+ * `panels.length` viewports tall; an inner sticky frame pins the view while
+ * scroll progress crossfades the imagery and advances the statement, and the
+ * page carries on when the last panel is done.
+ *
+ * Deliberately built on `position: sticky` plus scroll progress rather than a
+ * ScrollTrigger pin: sticky needs no pin-spacer, cannot desynchronise from
+ * Lenis, and reflows correctly on resize for free.
+ *
+ * Under prefers-reduced-motion the pin is dropped entirely and the panels
+ * render as a plain stacked sequence.
+ */
+export function StackedPanels({
+  panels,
+  index,
+  id,
+  className,
+}: {
+  panels: StackedPanel[];
+  /** Section number for the editorial ledger. */
+  index?: number;
+  id?: string;
+  className?: string;
+}) {
+  const ref = useRef<HTMLElement>(null);
+  const reduced = useReducedMotionSafe();
+  const [active, setActive] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end end"],
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    const next = Math.min(
+      panels.length - 1,
+      Math.max(0, Math.floor(v * panels.length + 0.12)),
+    );
+    setActive((current) => (current === next ? current : next));
+  });
+
+  /* Ambient: the imagery drifts the whole way through the hold, so the scene
+     is never fully still even while the statement is settled. */
+  const drift = useTransform(scrollYProgress, [0, 1], ["-3%", "3%"]);
+  const zoom = useTransform(scrollYProgress, [0, 1], [1.06, 1.14]);
+
+  if (reduced) {
+    return (
+      <section id={id} className={cn("grain relative bg-olive-700 py-section-lg", className)}>
+        <div aria-hidden className="grain-overlay" />
+        <div className="relative mx-auto flex max-w-[92rem] flex-col gap-20 px-6 sm:px-8 lg:px-12">
+          {panels.map((panel, i) => (
+            <article key={i} className="max-w-[36ch]">
+              <p className="text-eyebrow uppercase text-gold-300">
+                {pad(i + 1)} — {panel.eyebrow}
+              </p>
+              <p className="text-display-md mt-5 text-sand-50">{panel.statement}</p>
+              {panel.detail && (
+                <p className="text-body mt-5 text-sand-200/75">{panel.detail}</p>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section
+      id={id}
+      ref={ref}
+      data-stacked
+      className={cn("relative bg-olive-700", className)}
+      style={{ height: `${panels.length * 100}svh` }}
+    >
+      <div className="grain sticky top-0 flex h-[100svh] items-center overflow-hidden">
+        {/* Imagery: one layer per panel, crossfading. */}
+        {panels.map((panel, i) =>
+          panel.image ? (
+            <motion.div
+              key={i}
+              className="absolute inset-0"
+              animate={{ opacity: i === active ? 1 : 0 }}
+              transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <motion.div
+                className="absolute inset-[-8%] will-change-transform"
+                style={{ y: drift, scale: zoom }}
+              >
+                <Image
+                  src={panel.image}
+                  alt=""
+                  fill
+                  quality={68}
+                  sizes="100vw"
+                  placeholder={panel.blurDataURL ? "blur" : undefined}
+                  blurDataURL={panel.blurDataURL}
+                  className="object-cover"
+                />
+              </motion.div>
+            </motion.div>
+          ) : null,
+        )}
+
+        <div aria-hidden className="absolute inset-0 bg-olive-700/72" />
+        <div aria-hidden className="grain-overlay" />
+
+        {/* Centred statement — punctuation between the lighter sections. */}
+        <div className="relative mx-auto w-full max-w-[92rem] px-6 text-center sm:px-8 lg:px-12">
+          {panels.map((panel, i) => (
+            <div
+              key={i}
+              aria-hidden={i !== active}
+              className={cn(
+                "ease-luxe",
+                i === active
+                  ? "opacity-100 transition-opacity delay-300 duration-500"
+                  : "pointer-events-none absolute inset-x-0 top-0 opacity-0 transition-opacity duration-200",
+              )}
+            >
+              <p className="text-eyebrow uppercase text-gold-300">
+                {index !== undefined && `${pad(index)} · `}
+                {panel.eyebrow}
+              </p>
+              <p className="text-display-lg mx-auto mt-7 max-w-[20ch] text-balance text-sand-50">
+                {panel.statement}
+              </p>
+              {panel.detail && (
+                <p className="text-body mx-auto mt-7 max-w-[46ch] text-sand-100/75">
+                  {panel.detail}
+                </p>
+              )}
+            </div>
+          ))}
+
+          {/* Ledger */}
+          <div className="mt-14 flex items-center justify-center gap-3">
+            {panels.map((_, i) => (
+              <span
+                key={i}
+                aria-hidden
+                className={cn(
+                  "font-display text-eyebrow tabular-nums transition-colors duration-500",
+                  i === active ? "text-gold-300" : "text-sand-100/35",
+                )}
+              >
+                {pad(i + 1)}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

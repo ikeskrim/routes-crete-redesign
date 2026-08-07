@@ -21,6 +21,13 @@ export function Nav({
   const pathname = usePathname();
   const reduced = useReducedMotionSafe();
   const [overHero, setOverHero] = useState(false);
+  /**
+   * Whether the hero behind the bar is light or dark. Direction B's heroes sit
+   * on warm sand rather than a dark scrim, and light-on-light left the nav
+   * unreadable in the draft. The hero declares its own tone via
+   * `data-hero-tone`; the bar inverts to match.
+   */
+  const [heroTone, setHeroTone] = useState<"dark" | "light">("dark");
   const [open, setOpen] = useState(false);
 
   /* Close the menu when the route changes. Adjusting state during render is
@@ -43,7 +50,11 @@ export function Nav({
     if (!hero) return;
 
     const io = new IntersectionObserver(
-      ([entry]) => setOverHero(entry.intersectionRatio > 0.12),
+      ([entry]) => {
+        setOverHero(entry.intersectionRatio > 0.12);
+        const tone = (entry.target as HTMLElement).dataset.heroTone;
+        setHeroTone(tone === "light" ? "light" : "dark");
+      },
       { threshold: [0, 0.12, 0.5, 1] },
     );
     io.observe(hero);
@@ -76,6 +87,8 @@ export function Nav({
   );
 
   const transparent = overHero && !open;
+  /** Transparent over a light hero: ink, not sand. */
+  const onLight = transparent && heroTone === "light";
 
   return (
     <>
@@ -95,7 +108,7 @@ export function Nav({
             href="/"
             className={cn(
               "font-display text-[0.9375rem] font-bold uppercase tracking-[0.16em] transition-colors duration-500",
-              transparent ? "text-sand-50" : "text-ink",
+              transparent && !onLight ? "text-sand-50" : "text-ink",
             )}
           >
             {brandName}
@@ -109,6 +122,7 @@ export function Nav({
                   item={item}
                   active={isActive(item.href)}
                   transparent={transparent}
+                  onLight={onLight}
                 />
               </li>
             ))}
@@ -119,7 +133,7 @@ export function Nav({
               href={bookHref}
               className={cn(
                 "hidden h-11 items-center rounded-pill px-6 font-display text-[0.6875rem] font-medium uppercase tracking-[0.16em] transition-all duration-500 ease-luxe hover:-translate-y-0.5 sm:inline-flex",
-                transparent
+                transparent && !onLight
                   ? "bg-sand-50 text-ocean-950 hover:bg-white"
                   : "bg-ocean-950 text-sand-50 hover:bg-ocean-800",
               )}
@@ -134,7 +148,7 @@ export function Nav({
               aria-controls="mobile-menu"
               className={cn(
                 "relative z-50 -mr-2 flex h-11 w-11 items-center justify-center rounded-pill transition-colors duration-500 lg:hidden",
-                open || !transparent ? "text-ink" : "text-sand-50",
+                open || !transparent || onLight ? "text-ink" : "text-sand-50",
               )}
             >
               <span className="sr-only">
@@ -211,17 +225,20 @@ function NavLink({
   item,
   active,
   transparent,
+  onLight,
 }: {
   item: NavItem;
   active: boolean;
   transparent: boolean;
+  onLight: boolean;
 }) {
+  const light = transparent && !onLight;
   const className = cn(
     "group relative inline-block py-1 text-[0.75rem] font-medium uppercase tracking-[0.16em] transition-colors duration-500",
-    transparent
+    light
       ? "text-sand-100/85 hover:text-sand-50"
       : "text-rock-600 hover:text-ink",
-    active && (transparent ? "text-sand-50" : "text-ink"),
+    active && (light ? "text-sand-50" : "text-ink"),
   );
 
   const underline = (
@@ -229,7 +246,7 @@ function NavLink({
       aria-hidden
       className={cn(
         "absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-500 ease-luxe group-hover:scale-x-100",
-        transparent ? "bg-sand-50" : "bg-ink",
+        light ? "bg-sand-50" : "bg-ink",
         active && "scale-x-100",
       )}
     />

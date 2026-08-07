@@ -258,6 +258,34 @@
   }
 }
 
+/* Marquee — two identical halves; travelling exactly -50% lands the second
+   half where the first began, so the loop is seamless. Transform only. */
+@keyframes marquee-track {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@utility marquee-track {
+  animation: marquee-track linear infinite;
+  will-change: transform;
+}
+
+@utility marquee-track-reverse {
+  animation: marquee-track linear infinite reverse;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .marquee-track-reverse {
+    animation: none;
+  }
+}
+
 /* Loading sweep — transform only, so it never triggers layout. */
 @keyframes loading-sweep {
   from {

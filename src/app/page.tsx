@@ -20,7 +20,8 @@ const SignatureScene = dynamic(() =>
 );
 import { Team } from "@/components/sections/Team";
 import { TransferSpotlight } from "@/components/sections/TransferSpotlight";
-import { WhyUs } from "@/components/sections/WhyUs";
+import { Marquee } from "@/components/ui/Marquee";
+import { StackedPanels } from "@/components/ui/StackedPanels";
 import { Bridge } from "@/components/ui/Cinematic";
 import { ContentCard } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
@@ -66,6 +67,14 @@ export default function HomePage() {
   }
 
   const bridge = signature?.gallery[1] ?? experiences[0]?.gallery[0];
+
+  /* One real photograph behind each Why-Us panel, so the scene is never
+     fully still and never generic. */
+  const whyUsImages = [
+    signature?.gallery[4]?.src,
+    experiences[0]?.gallery[6]?.src,
+    signature?.gallery[9]?.src,
+  ].filter(Boolean) as string[];
 
   return (
     <>
@@ -113,6 +122,18 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Marquee — a dark band between the light sections. Every claim in
+          it is literally true: private, family-run, 12 seats, licensed. */}
+      <Marquee
+        items={[
+          "Private journeys",
+          "Twelve seats",
+          "Family-run",
+          "Rethymno · Crete",
+          "Booked by conversation",
+        ]}
+      />
+
       {/* Cinematic bridge into the signature journey */}
       {bridge && (
         <Bridge
@@ -133,10 +154,19 @@ export default function HomePage() {
         />
       )}
 
-      {/* 03 — Why Routes Crete */}
-      <WhyUs
-        heading="We know the roads, the stories, the people"
-        blocks={site.whyUs}
+      {/* 03 — Why Routes Crete, as a scene that holds while it transitions.
+          The three value blocks keep their copy; only the presentation
+          changes from a static trio to punctuation on a dark ground. */}
+      <StackedPanels
+        id="why-us"
+        index={3}
+        panels={site.whyUs.map((block, i) => ({
+          eyebrow: block.title,
+          statement: block.text.split(/\r?\n/)[0],
+          detail: block.text.split(/\r?\n/).slice(1).join(" ") || undefined,
+          image: whyUsImages[i],
+          blurDataURL: whyUsImages[i] ? getBlur(whyUsImages[i]) : undefined,
+        }))}
       />
 
       {/* 04 — The route, from real coordinates */}
