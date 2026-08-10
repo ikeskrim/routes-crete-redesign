@@ -111,6 +111,58 @@ async function settleLoad(page: Page) {
 }
 
 const allErrors: string[] = [];
+const failedGroups: string[] = [];
+
+/**
+ * Scroll a section into view by SELECTOR, not by page percentage.
+ *
+ * Fixed percentages silently stopped pointing at the thing they were meant to
+ * capture the moment the page grew — a stacked scene added three viewports and
+ * every rung landed somewhere else. Targeting the element means a layout change
+ * can never quietly invalidate a capture again.
+ */
+async function shotAt(
+  page: Page,
+  selector: string,
+  name: string,
+  { offset = 0, settle = 1100 }: { offset?: number; settle?: number } = {},
+) {
+  const found = await page.evaluate(
+    ({ sel, off }) => {
+      const el = document.querySelector(sel);
+      if (!el) return false;
+      const y = window.scrollY + el.getBoundingClientRect().top + off;
+      const lenis = (
+        window as unknown as { __lenis?: { scrollTo: (v: number, o?: object) => void } }
+      ).__lenis;
+      if (lenis) lenis.scrollTo(y, { immediate: true });
+      else window.scrollTo(0, y);
+      return true;
+    },
+    { sel: selector, off: offset },
+  );
+
+  if (!found) {
+    console.log(`  ! ${name} — selector not found: ${selector}`);
+    failedGroups.push(`${name} (missing ${selector})`);
+    return;
+  }
+  await page.waitForTimeout(settle);
+  await shot(page, name);
+}
+
+/** One capture group must never take down the rest of the run. */
+async function group(label: string, fn: () => Promise<void>) {
+  console.log(`
+${label}`);
+  try {
+    await fn();
+  } catch (err) {
+    const msg = (err as Error).message.split(/\r?\n/)[0];
+    console.log(`  ! GROUP FAILED: ${label} — ${msg}`);
+    failedGroups.push(`${label}: ${msg}`);
+  }
+}
 
 async function openPage(
   browser: Browser,
@@ -132,7 +184,12 @@ async function openPage(
 
   // NOT networkidle: the dev server holds an HMR websocket open, so "no
   // network activity" never happens and the wait hangs forever.
-  await page.goto(`${BASE}${route}`, { waitUntil: "load", timeout: 60_000 });
+  // NOT "load" either: /contact embeds a third-party form whose iframe can
+  // stall for minutes, and waiting on it once aborted an entire run.
+  await page.goto(`${BASE}${route}`, {
+    waitUntil: "domcontentloaded",
+    timeout: 45_000,
+  });
   await settleLoad(page);
   return { context, page };
 }
@@ -196,6 +253,47 @@ async function run() {
       await shot(page, "home-mobile-menu-open");
     }
     await context.close();
+  }
+
+
+  /* ------------------------------ motion patterns, targeted by selector */
+  for (const [device, vp] of [["desktop", DESKTOP], ["mobile", MOBILE]] as const) {
+    for (const motion of ["normal", "reduce"] as const) {
+      const tag = motion === "reduce" ? `${device}-reduced` : device;
+      await group(`motion patterns — ${tag}`, async () => {
+        const { context, page } = await openPage(browser, ROUTES.home, vp, {
+          reducedMotion: motion === "reduce" ? "reduce" : "no-preference",
+        });
+
+        // Marquee: framed so the band fills the shot.
+        await shotAt(page, "[data-marquee]", `pattern-marquee-${tag}`, {
+          offset: -(vp.height / 2) + 90,
+        });
+
+        // Stacked panels: a short filmstrip through the hold so the
+        // statement change and the ledger advance are both visible.
+        const stacked = await page.evaluate(() => {
+          const el = document.querySelector("[data-stacked]");
+          if (!el) return null;
+          return {
+            top: window.scrollY + el.getBoundingClientRect().top,
+            height: (el as HTMLElement).offsetHeight,
+          };
+        });
+
+        if (!stacked) {
+          failedGroups.push(`stacked scene missing (${tag})`);
+        } else {
+          const frames = motion === "reduce" ? 2 : 6;
+          for (let i = 0; i < frames; i++) {
+            await scrollTo(page, stacked.top + (stacked.height * i) / frames, 900);
+            await shot(page, `pattern-stacked-${tag}-${String(i).padStart(2, "0")}`);
+          }
+        }
+
+        await context.close();
+      });
+    }
   }
 
   /* ----------------------------------------------- experiences listing */

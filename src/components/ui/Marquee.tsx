@@ -57,6 +57,7 @@ export function Marquee({
 
   return (
     <div
+      data-marquee
       className={cn(
         "grain relative w-full overflow-hidden bg-olive-700 py-7 lg:py-9",
         className,
