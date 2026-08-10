@@ -69,7 +69,11 @@ export function StackedPanels({
 
   if (reduced) {
     return (
-      <section id={id} className={cn("grain relative bg-olive-700 py-section-lg", className)}>
+      <section
+        id={id}
+        data-stacked
+        className={cn("grain relative bg-olive-700 py-section-lg", className)}
+      >
         <div aria-hidden className="grain-overlay" />
         <div className="relative mx-auto flex max-w-[92rem] flex-col gap-20 px-6 sm:px-8 lg:px-12">
           {panels.map((panel, i) => (
@@ -125,7 +129,16 @@ export function StackedPanels({
           ) : null,
         )}
 
-        <div aria-hidden className="absolute inset-0 bg-olive-700/72" />
+        {/* The photograph is atmosphere, not subject. Side by side with the
+            benchmark a 72% wash left the image still legible and the statement
+            reading washy; the reference holds its centred statements on a
+            near-black ground. Deeper wash plus a vignette gives the type the
+            same punch while the imagery still drifts behind it. */}
+        <div aria-hidden className="absolute inset-0 bg-olive-700/90" />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,transparent_10%,rgba(20,23,26,0.55)_100%)]"
+        />
         <div aria-hidden className="grain-overlay" />
 
         {/* Centred statement — punctuation between the lighter sections. */}

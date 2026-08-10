@@ -60,23 +60,27 @@
     "contact":     { "heading": "Contact Form", "subheading": "We’d love to hear from you" }
   },
 
+  "whyUsNote": "`statement` is the short punctuation line used by the homepage stacked scene, written under the brand voice; `text` is the ORIGINAL live-site copy, preserved verbatim and still used wherever the full block is shown. Pulled forward from the copy deck ahead of increment 3 because the scene is judged against a benchmark whose centred statements are one line. See CONTENT_INVENTORY.md copy map.",
   "whyUs": [
     {
       "key": "pickup",
       "icon": "shuttle-van",
       "title": "Pick up & Travelling",
+      "statement": "We collect you from your door.",
       "text": "Pickup from your villa with our VIP van.\nEvery vehicle is equipped with a TV and A/C to make your trip comfortable."
     },
     {
       "key": "localKnowledge",
       "icon": "map-marked-alt",
       "title": "Local Knowledge & Personal Approach",
+      "statement": "We know the roads, the stories, the people.",
       "text": "We know the roads, the stories, the people. Every route is designed with care, adapted to your pace, your interests, and your curiosity."
     },
     {
       "key": "comfort",
       "icon": "handshake",
       "title": "Comfort, Safety & Genuine Hospitality",
+      "statement": "Exploring should feel relaxed.",
       "text": "Exploring should feel relaxed. We make sure you travel comfortably, safely, and with the warm Cretan hospitality that makes every journey memorable."
     }
   ],

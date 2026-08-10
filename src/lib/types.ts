@@ -97,6 +97,11 @@ export interface WhyUsBlock {
   key: string;
   icon: string;
   title: string;
+  /**
+   * Short punctuation line for the stacked scene, written under the brand
+   * voice. `text` remains the original live-site copy, verbatim.
+   */
+  statement?: string;
   text: string;
 }
 

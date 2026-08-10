@@ -162,8 +162,10 @@ export default function HomePage() {
         index={3}
         panels={site.whyUs.map((block, i) => ({
           eyebrow: block.title,
-          statement: block.text.split(/\r?\n/)[0],
-          detail: block.text.split(/\r?\n/).slice(1).join(" ") || undefined,
+          // Short punctuation line; the full original copy stays available in
+          // `text` and is what any non-scene presentation of this block uses.
+          statement: block.statement ?? block.text.split(/\r?\n/)[0],
+          detail: undefined,
           image: whyUsImages[i],
           blurDataURL: whyUsImages[i] ? getBlur(whyUsImages[i]) : undefined,
         }))}

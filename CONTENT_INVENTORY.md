@@ -294,6 +294,32 @@ Items marked **blocking** affect what gets built; the rest can be filled in late
 
 ---
 
+## 10b. Copy map — original → rewritten
+
+Every original string is **preserved** in the content files. Rewrites live alongside them
+under new keys; nothing is overwritten.
+
+### Why-Us stacked scene statements (pulled forward from the deck)
+
+Written under the brand voice in `DIRECTION.md` §1. Pulled forward ahead of the full deck
+because the homepage stacked scene is judged against a benchmark whose centred statements are
+one-line punctuation, and the type retune would otherwise have been fitted around copy due to
+change. Stored as `whyUs[].statement`; `whyUs[].text` remains the **verbatim original** and is
+what any non-scene presentation of these blocks uses.
+
+| Block | Original (`text`, preserved verbatim) | Scene statement (`statement`) |
+|---|---|---|
+| Pick up & Travelling | Pickup from your villa with our VIP van. Every vehicle is equipped with a TV and A/C to make your trip comfortable. | **We collect you from your door.** |
+| Local Knowledge & Personal Approach | We know the roads, the stories, the people. Every route is designed with care, adapted to your pace, your interests, and your curiosity. | **We know the roads, the stories, the people.** |
+| Comfort, Safety & Genuine Hospitality | Exploring should feel relaxed. We make sure you travel comfortably, safely, and with the warm Cretan hospitality that makes every journey memorable. | **Exploring should feel relaxed.** |
+
+Two of the three are the original's own opening sentence — the live copy already contained the
+short version, buried behind a longer one. Nothing is claimed that wasn't already true.
+
+The remaining deck (hero, sections, CTAs, microcopy, experience pages) lands in increment 3.
+
+---
+
 ## 11. What is deliberately *not* on the new site
 
 Per brief §2 and §8 — recording these so the omissions are visible rather than silent:
