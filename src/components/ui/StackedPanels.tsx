@@ -141,6 +141,34 @@ export function StackedPanels({
         />
         <div aria-hidden className="grain-overlay" />
 
+        {/* Sticky chapter index: a vertical ledger pinned to the edge for the
+            whole hold, so you always know how far through the scene you are.
+            Hidden on small screens, where the horizontal ledger below carries
+            it instead. */}
+        <div
+          aria-hidden
+          className="absolute top-1/2 left-6 hidden -translate-y-1/2 flex-col gap-4 lg:left-12 lg:flex"
+        >
+          {panels.map((_, i) => (
+            <span key={i} className="flex items-center gap-3">
+              <span
+                className={cn(
+                  "h-px transition-all duration-700 ease-luxe",
+                  i === active ? "w-8 bg-gold-400" : "w-4 bg-sand-100/30",
+                )}
+              />
+              <span
+                className={cn(
+                  "font-display text-eyebrow tabular-nums transition-colors duration-700",
+                  i === active ? "text-gold-300" : "text-sand-100/35",
+                )}
+              >
+                {pad(i + 1)}
+              </span>
+            </span>
+          ))}
+        </div>
+
         {/* Centred statement — punctuation between the lighter sections. */}
         <div className="relative mx-auto w-full max-w-[92rem] px-6 text-center sm:px-8 lg:px-12">
           {panels.map((panel, i) => (

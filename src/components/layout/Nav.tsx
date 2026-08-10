@@ -100,6 +100,17 @@ export function Nav({
             : "bg-shell/85 py-3 shadow-[0_1px_0_0_rgba(20,23,26,0.08)] backdrop-blur-xl",
         )}
       >
+        {/* Over a LIGHT hero, ink alone was not enough: the links sat against
+            bright, busy rock and read as marginal. A soft top-down scrim lifts
+            them without making the bar look solid — chosen over simply
+            darkening the ink, which fails on any bright photograph rather than
+            just this one. */}
+        {onLight && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-sand-50/85 via-sand-50/45 to-transparent"
+          />
+        )}
         <nav
           aria-label="Primary"
           className="mx-auto flex w-full max-w-[92rem] items-center justify-between px-6 sm:px-8 lg:px-12"
@@ -237,7 +248,9 @@ function NavLink({
     "group relative inline-block py-1 text-[0.75rem] font-medium uppercase tracking-[0.16em] transition-colors duration-500",
     light
       ? "text-sand-100/85 hover:text-sand-50"
-      : "text-rock-600 hover:text-ink",
+      : onLight
+        ? "text-ink/85 hover:text-ink"
+        : "text-rock-600 hover:text-ink",
     active && (light ? "text-sand-50" : "text-ink"),
   );
 

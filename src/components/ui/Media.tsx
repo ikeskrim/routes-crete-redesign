@@ -104,8 +104,12 @@ export function MediaFrame({
         sizes={sizes}
         priority={priority}
         imgClassName={cn(
-          "transition-transform duration-[1.2s] ease-luxe will-change-transform",
-          zoom && "group-hover:scale-[1.045]",
+          // Slow scale plus a grade shift: on hover the frame warms and opens
+          // very slightly, as though the same photograph were graded a stop
+          // brighter. Transform and filter only.
+          "transition-[transform,filter] duration-[1.2s] ease-luxe will-change-transform",
+          zoom &&
+            "group-hover:scale-[1.045] group-hover:brightness-[1.06] group-hover:saturate-[1.12] group-hover:contrast-[1.03]",
         )}
       />
       {children}
