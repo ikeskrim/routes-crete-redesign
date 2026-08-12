@@ -254,7 +254,7 @@ async function run() {
       await shot(page, `home-mobile-scroll-${String(pct).padStart(3, "0")}pct`);
     }
     await scrollTo(page, 0);
-    const toggle = page.locator('button[aria-controls="mobile-menu"]');
+    const toggle = page.locator('button[aria-controls="overlay-menu"]');
     if (await toggle.count()) {
       await toggle.first().click();
       await page.waitForTimeout(700);
@@ -299,6 +299,47 @@ async function run() {
           }
         }
 
+        await context.close();
+      });
+    }
+  }
+
+  /* ------------------------------- overlay menu: open + close, both tones */
+  for (const [device, vp] of [["desktop", DESKTOP], ["mobile", MOBILE]] as const) {
+    for (const motion of ["normal", "reduce"] as const) {
+      const tag = motion === "reduce" ? `${device}-reduced` : device;
+      await group(`overlay menu — ${tag}`, async () => {
+        const { context, page } = await openPage(browser, ROUTES.home, vp, {
+          reducedMotion: motion === "reduce" ? "reduce" : "no-preference",
+        });
+        const toggle = page.locator('button[aria-controls="overlay-menu"]');
+        if (!(await toggle.count())) {
+          failedGroups.push(`menu trigger missing (${tag})`);
+          await context.close();
+          return;
+        }
+
+        // Opening filmstrip: the stagger is the point.
+        await toggle.first().click();
+        for (const [i, wait] of [140, 200, 260, 700].entries()) {
+          await page.waitForTimeout(wait);
+          await shot(page, `menu-open-${tag}-${String(i).padStart(2, "0")}`);
+        }
+
+        // Hover a link so the preview is exercised (desktop only).
+        if (device === "desktop" && motion === "normal") {
+          const link = page.locator('[role="dialog"] nav a').first();
+          if (await link.count()) {
+            await link.hover();
+            await page.waitForTimeout(1100);
+            await shot(page, `menu-preview-${tag}`);
+          }
+        }
+
+        // ESC closes.
+        await page.keyboard.press("Escape");
+        await page.waitForTimeout(700);
+        await shot(page, `menu-closed-${tag}`);
         await context.close();
       });
     }

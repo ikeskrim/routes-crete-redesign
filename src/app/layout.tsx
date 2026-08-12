@@ -4,7 +4,7 @@ import { Inter, Manrope } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
-import { getSite } from "@/lib/content";
+import { getExperiences, getSite, getTransfers } from "@/lib/content";
 
 import "./globals.css";
 
@@ -68,6 +68,20 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   const site = getSite();
 
+  /* One real photograph per menu item, drawn from the content itself so the
+     overlay previews can never drift from what the pages actually show. */
+  const experiences = getExperiences();
+  const transfers = getTransfers();
+  const menuPreviews: Record<string, string | undefined> = {
+    experiences: experiences[0]?.cardImage,
+    transfers: transfers[0]?.cardImage,
+    whyUs: experiences[1]?.gallery[3]?.src,
+    bookGuide: experiences[0]?.gallery[5]?.src,
+    team: site.team.members[0]?.photo,
+    contact: experiences[1]?.gallery[1]?.src,
+    brochure: experiences[0]?.gallery[2]?.src,
+  };
+
   return (
     <html
       lang="en"
@@ -120,7 +134,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
         <SmoothScroll legacyAnchorMap={site.legacyAnchorMap} />
 
-        <Nav items={site.nav} brandName={site.brand.name} />
+        <Nav
+          items={site.nav}
+          brandName={site.brand.name}
+          previews={menuPreviews}
+        />
 
         <main id="main" className="flex-1">
           {children}

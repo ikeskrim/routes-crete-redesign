@@ -1,25 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "motion/react";
-import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
 
+
+import { OverlayMenu } from "@/components/layout/OverlayMenu";
 import type { NavItem } from "@/lib/types";
-import { cn, pad } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 export function Nav({
   items,
   brandName,
+  previews,
   bookHref = "/contact",
 }: {
   items: NavItem[];
   brandName: string;
+  /** One photograph per nav item, shown behind the overlay on hover. */
+  previews: Record<string, string | undefined>;
   bookHref?: string;
 }) {
   const pathname = usePathname();
-  const reduced = useReducedMotionSafe();
   const [overHero, setOverHero] = useState(false);
   /**
    * Whether the hero behind the bar is light or dark. Direction B's heroes sit
@@ -76,26 +78,19 @@ export function Nav({
     };
   }, [open]);
 
-  const isActive = useCallback(
-    (href: string) => {
-      // In-page hash links are not a route state — treating them as active
-      // lit up Why Us, Book Guide and Team all at once on the homepage.
-      if (href.startsWith("/#") || href === "/") return false;
-      return pathname === href || pathname.startsWith(`${href}/`);
-    },
-    [pathname],
-  );
 
   const transparent = overHero && !open;
   /** Transparent over a light hero: ink, not sand. */
   const onLight = transparent && heroTone === "light";
+  /** Open overlay: the bar sits on the dark panel and must read light. */
+  const onDarkPanel = open;
 
   return (
     <>
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-all duration-500 ease-luxe",
-          transparent
+          transparent || onDarkPanel
             ? "bg-transparent py-5"
             : "bg-shell/85 py-3 shadow-[0_1px_0_0_rgba(20,23,26,0.08)] backdrop-blur-xl",
         )}
@@ -119,32 +114,19 @@ export function Nav({
             href="/"
             className={cn(
               "font-display text-[0.9375rem] font-bold uppercase tracking-[0.16em] transition-colors duration-500",
-              transparent && !onLight ? "text-sand-50" : "text-ink",
+              (transparent && !onLight) || onDarkPanel ? "text-sand-50" : "text-ink",
             )}
           >
             {brandName}
           </Link>
 
-          {/* Desktop links */}
-          <ul className="hidden items-center gap-8 lg:flex">
-            {items.map((item) => (
-              <li key={item.key}>
-                <NavLink
-                  item={item}
-                  active={isActive(item.href)}
-                  transparent={transparent}
-                  onLight={onLight}
-                />
-              </li>
-            ))}
-          </ul>
 
           <div className="flex items-center gap-3">
             <Link
               href={bookHref}
               className={cn(
                 "hidden h-11 items-center rounded-pill px-6 font-display text-[0.6875rem] font-medium uppercase tracking-[0.16em] transition-all duration-500 ease-luxe hover:-translate-y-0.5 sm:inline-flex",
-                transparent && !onLight
+                (transparent && !onLight) || onDarkPanel
                   ? "bg-sand-50 text-ocean-950 hover:bg-white"
                   : "bg-ocean-950 text-sand-50 hover:bg-ocean-800",
               )}
@@ -156,14 +138,20 @@ export function Nav({
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
-              aria-controls="mobile-menu"
+              aria-controls="overlay-menu"
               className={cn(
-                "relative z-50 -mr-2 flex h-11 w-11 items-center justify-center rounded-pill transition-colors duration-500 lg:hidden",
-                open || !transparent || onLight ? "text-ink" : "text-sand-50",
+                "relative z-50 -mr-2 flex h-11 items-center justify-center gap-3 rounded-pill px-2 transition-colors duration-500",
+                onDarkPanel || (transparent && !onLight) ? "text-sand-50" : "text-ink",
               )}
             >
               <span className="sr-only">
                 {open ? "Close menu" : "Open menu"}
+              </span>
+              <span
+                aria-hidden
+                className="hidden text-[0.6875rem] font-medium uppercase tracking-[0.16em] lg:inline"
+              >
+                {open ? "Close" : "Menu"}
               </span>
               <span aria-hidden className="relative block h-3.5 w-6">
                 <span
@@ -184,134 +172,13 @@ export function Nav({
         </nav>
       </header>
 
-      {/* Fullscreen mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            id="mobile-menu"
-            key="mobile-menu"
-            initial={reduced ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={reduced ? undefined : { opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-40 flex flex-col bg-shell lg:hidden"
-          >
-            <div className="flex-1 overflow-y-auto px-6 pt-28 pb-8">
-              <ul className="flex flex-col">
-                {items.map((item, i) => (
-                  <motion.li
-                    key={item.key}
-                    initial={reduced ? false : { opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.5,
-                      delay: reduced ? 0 : 0.06 + i * 0.045,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="border-b border-ink/10"
-                  >
-                    <MobileLink item={item} index={i + 1} />
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Thumb-friendly, bottom-safe CTA */}
-            <div className="border-t border-ink/10 px-6 pt-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-              <Link
-                href={bookHref}
-                className="flex h-14 w-full items-center justify-center rounded-pill bg-ocean-950 font-display text-[0.75rem] font-medium uppercase tracking-[0.16em] text-sand-50"
-              >
-                Book Now
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <OverlayMenu
+        items={items}
+        open={open}
+        onClose={() => setOpen(false)}
+        previews={previews}
+        bookHref={bookHref}
+      />
     </>
-  );
-}
-
-function NavLink({
-  item,
-  active,
-  transparent,
-  onLight,
-}: {
-  item: NavItem;
-  active: boolean;
-  transparent: boolean;
-  onLight: boolean;
-}) {
-  const light = transparent && !onLight;
-  const className = cn(
-    "group relative inline-block py-1 text-[0.75rem] font-medium uppercase tracking-[0.16em] transition-colors duration-500",
-    light
-      ? "text-sand-100/85 hover:text-sand-50"
-      : onLight
-        ? "text-ink/85 hover:text-ink"
-        : "text-rock-600 hover:text-ink",
-    active && (light ? "text-sand-50" : "text-ink"),
-  );
-
-  const underline = (
-    <span
-      aria-hidden
-      className={cn(
-        "absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-500 ease-luxe group-hover:scale-x-100",
-        light ? "bg-sand-50" : "bg-ink",
-        active && "scale-x-100",
-      )}
-    />
-  );
-
-  if (item.external) {
-    return (
-      <a
-        href={item.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={className}
-      >
-        {item.label}
-        {underline}
-      </a>
-    );
-  }
-
-  return (
-    <Link href={item.href} className={className} aria-current={active ? "page" : undefined}>
-      {item.label}
-      {underline}
-    </Link>
-  );
-}
-
-function MobileLink({ item, index }: { item: NavItem; index: number }) {
-  const inner = (
-    <>
-      <span className="font-display text-eyebrow tabular-nums text-gold-600">
-        {pad(index)}
-      </span>
-      <span className="text-display-md text-ink">{item.label}</span>
-    </>
-  );
-
-  const className =
-    "flex min-h-[4.25rem] items-baseline gap-5 py-4 active:opacity-60";
-
-  return item.external ? (
-    <a
-      href={item.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className}
-    >
-      {inner}
-    </a>
-  ) : (
-    <Link href={item.href} className={className}>
-      {inner}
-    </Link>
   );
 }
