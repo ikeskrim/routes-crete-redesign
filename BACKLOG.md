@@ -33,6 +33,35 @@ not a one-line patch. That is increment-3 shaped work.
 harness asserts the header's computed background at first paint — before any
 observer can run — on both a hero page and a non-hero page.
 
+### Header text contrast during the menu's open/close crossfade
+
+**What.** For roughly 70–130 ms while the overlay fades in or out, the header's
+text contrast collapses — measured floors of `1.02:1` opening and `1.08:1`
+closing, against `16.96:1` closed and `17.36:1` open. The wordmark is
+genuinely absent from the rendered frame, not merely predicted to be.
+
+**Why it happens.** The header text crossfades ink→sand while its ground
+crossfades shell→transparent-over-ocean-950. The two endpoints are light-on-dark
+inversions of each other, so *any* simultaneous crossfade of foreground and
+background passes through mid-grey on mid-grey. No retuning of the two
+durations fixes it: earlier gives sand-on-shell, later gives ink-on-ocean-950,
+both ≈1.1:1.
+
+**The fix.** Make the inverted header state discrete rather than animated, and
+gate it on the panel being fully opaque (`onAnimationComplete`) instead of on
+`open`. The colour transition must stay live for the scroll-driven hero↔solid
+swap, so it can only be suppressed while the menu is involved.
+
+**Why deferred.** It is a sub-150 ms transient, and it is the only change in
+this area with real design risk — it alters how the bar reads on every page,
+to fix something most visitors will never consciously see. It wants a visual
+diff and a considered look, not a same-day patch.
+
+**Done when.** Sampling `getComputedStyle` per frame for 800 ms across both
+open and close, on `/experiences` and on `/` scrolled past the hero, never
+drops below 4.5:1 — corroborated by clipped screenshots of the wordmark
+region, since a compositing model can be wrong.
+
 ---
 
 ## Scheduled: increment 4 (enhancement & audit), optional

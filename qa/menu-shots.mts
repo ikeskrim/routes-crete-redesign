@@ -70,6 +70,7 @@ async function strip(
     taken.push(stamp);
   }
   await click;
+  console.log(`  ${name.padEnd(16)} ${width}x${height}${reduced ? "  (reduced motion)" : ""}`);
   console.log(`    frames at ${taken.map((t) => `${t}ms`).join(", ")} (measured, not nominal)`);
 
   if (hover) {
@@ -85,7 +86,6 @@ async function strip(
     }
   }
 
-  console.log(`  ${name.padEnd(16)} ${width}x${height}${reduced ? "  (reduced motion)" : ""}`);
   await ctx.close();
 }
 

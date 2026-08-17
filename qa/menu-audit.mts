@@ -78,6 +78,184 @@ async function scrollAndReport(page: Page) {
   }));
 }
 
+/**
+ * Does the overlay actually overlay?
+ *
+ * Nineteen behavioural assertions passed on a build where the panel was
+ * `position: relative` — an in-flow block that added its own height to the
+ * document and covered only the top 601px of an 844px phone screen. Every
+ * assertion was about what the menu *did*; not one asked whether it was
+ * *there*. Focus moved correctly, Escape worked, the tones were right, and a
+ * quarter of the page was still showing underneath.
+ */
+async function auditCoverage(browser: Browser) {
+  console.log("\n[coverage] the overlay actually covers the page");
+  for (const [w, h] of [
+    [1440, 900],
+    [390, 844],
+  ] as const) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+    const page = await ctx.newPage();
+    await page.goto(`${BASE}${DARK_HERO}`, { waitUntil: "domcontentloaded", timeout: 45_000 });
+    await page.waitForTimeout(1500);
+
+    // Scroll away from the top first: an in-flow panel only *looks* correct at
+    // scroll 0 on a tall viewport.
+    await page.mouse.move(w / 2, h / 2);
+    await page.mouse.wheel(0, 800);
+
+    /* Wait for the scroller to actually settle before sampling. Lenis eases
+       asymptotically, so a fixed pause leaves it still creeping a pixel or two
+       — which reads as the menu having moved the page when it did not. Sample
+       until two consecutive frames agree. */
+    let settled = -1;
+    for (let i = 0; i < 20; i++) {
+      await page.waitForTimeout(200);
+      const y = await page.evaluate(() => Math.round(window.scrollY));
+      if (y === settled) break;
+      settled = y;
+    }
+
+    const before = await page.evaluate(() => ({
+      y: Math.round(window.scrollY),
+      docHeight: document.documentElement.scrollHeight,
+    }));
+
+    await openMenu(page);
+
+    const state = await page.evaluate(() => {
+      const panel = document.querySelector('[role="dialog"]') as HTMLElement;
+      const r = panel.getBoundingClientRect();
+      const cx = Math.round(window.innerWidth / 2);
+      // Hit-test the four corners plus the centre: whatever is topmost there
+      // must belong to the panel.
+      const probes: [number, number][] = [
+        [cx, 4],
+        [cx, Math.round(window.innerHeight / 2)],
+        [cx, window.innerHeight - 4],
+        [4, window.innerHeight - 4],
+        [window.innerWidth - 4, window.innerHeight - 4],
+      ];
+      return {
+        position: getComputedStyle(panel).position,
+        rect: { top: Math.round(r.top), bottom: Math.round(r.bottom) },
+        viewport: { w: window.innerWidth, h: window.innerHeight },
+        docHeight: document.documentElement.scrollHeight,
+        y: Math.round(window.scrollY),
+        outside: probes
+          .map(([x, y]) => {
+            const el = document.elementFromPoint(x, y);
+            // The header legitimately sits above the panel.
+            const ok = !el || panel.contains(el) || !!el.closest("header");
+            return ok ? null : `(${x},${y})->${el?.tagName}.${(el?.className ?? "").toString().slice(0, 30)}`;
+          })
+          .filter(Boolean),
+      };
+    });
+
+    check(
+      `${w}x${h}: panel is position:fixed`,
+      state.position === "fixed",
+      `computed position "${state.position}"`,
+    );
+    check(
+      `${w}x${h}: panel covers the whole viewport`,
+      state.rect.top <= 0 && state.rect.bottom >= state.viewport.h - 1,
+      `panel spans ${state.rect.top}..${state.rect.bottom} of a ${state.viewport.h}px viewport`,
+    );
+    check(
+      `${w}x${h}: nothing behind the panel is hit-testable`,
+      state.outside.length === 0,
+      state.outside.length ? `page reachable at ${state.outside.join(", ")}` : "all probes hit the menu",
+    );
+    check(
+      `${w}x${h}: opening does not grow the document`,
+      state.docHeight === before.docHeight,
+      `scrollHeight ${before.docHeight} -> ${state.docHeight}`,
+    );
+    check(
+      `${w}x${h}: opening keeps the reader's place`,
+      state.y === before.y,
+      `scrollY ${before.y} -> ${state.y}`,
+    );
+
+    // The panel lingers for its exit fade — invisible, but it must not still
+    // be swallowing clicks or focus.
+    const urlBefore = page.url();
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(150);
+    const midExit = await page.evaluate(() => {
+      const panel = document.querySelector('[role="dialog"]') as HTMLElement | null;
+      if (!panel) return { gone: true, inert: true, hitsPanel: false };
+      const el = document.elementFromPoint(
+        Math.round(window.innerWidth / 2),
+        Math.round(window.innerHeight / 2),
+      );
+      return { gone: false, inert: panel.hasAttribute("inert"), hitsPanel: !!el && panel.contains(el) };
+    });
+    check(
+      `${w}x${h}: the fading panel stops taking input`,
+      midExit.gone || (midExit.inert && !midExit.hitsPanel),
+      midExit.gone
+        ? "panel already unmounted 150ms after Escape"
+        : `inert=${midExit.inert}, centre still hits panel=${midExit.hitsPanel}`,
+    );
+    await page.waitForTimeout(600);
+    check(
+      `${w}x${h}: clicking mid-fade does not navigate`,
+      page.url() === urlBefore,
+      `url ${page.url() === urlBefore ? "unchanged" : `changed to ${page.url()}`}`,
+    );
+
+    await ctx.close();
+  }
+}
+
+async function auditBackgroundHidden(browser: Browser) {
+  console.log("\n[assistive tech] the page behind is hidden while open");
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`${BASE}${DARK_HERO}`, { waitUntil: "domcontentloaded", timeout: 45_000 });
+  await page.waitForTimeout(1200);
+  await openMenu(page);
+
+  const open = await page.evaluate(() => ({
+    main: (document.querySelector("main") as HTMLElement | null)?.inert ?? null,
+    footer: (document.querySelector("footer") as HTMLElement | null)?.inert ?? null,
+    header: (document.querySelector("header") as HTMLElement | null)?.inert ?? null,
+    navLabels: [...document.querySelectorAll("nav")]
+      .filter((n) => !n.closest("[inert]"))
+      .map((n) => n.getAttribute("aria-label")),
+  }));
+
+  check(
+    "main and footer are inert while the menu is open",
+    open.main === true && open.footer === true,
+    `main.inert=${open.main}, footer.inert=${open.footer}`,
+  );
+  check(
+    "the header stays live (it holds Close)",
+    open.header === false,
+    `header.inert=${open.header}`,
+  );
+  check(
+    "no two exposed navigation landmarks share a name",
+    new Set(open.navLabels).size === open.navLabels.length,
+    `exposed nav labels: ${open.navLabels.map((l) => `"${l}"`).join(", ")}`,
+  );
+
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(900);
+  const after = await page.evaluate(() => document.querySelectorAll("[inert]").length);
+  check(
+    "inert is fully released after close",
+    after === 0,
+    `${after} element(s) still inert`,
+  );
+
+  await ctx.close();
+}
+
 async function auditBehaviour(browser: Browser) {
   console.log("\n[behaviour] escape, scroll lock, focus trap");
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -392,6 +570,8 @@ const browser = await chromium.launch();
 
 // Each audit gets its own context so one failure cannot poison the next.
 for (const [name, fn] of [
+  ["coverage", auditCoverage],
+  ["background hidden", auditBackgroundHidden],
   ["behaviour", auditBehaviour],
   ["lazy previews", auditLazyPreviews],
   ["tones", auditTones],

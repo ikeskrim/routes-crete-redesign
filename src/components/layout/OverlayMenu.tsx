@@ -66,6 +66,28 @@ export function OverlayMenu({
     document.body.style.overflow = "hidden";
     lenis?.stop();
 
+    /* Hide the page behind from assistive tech. `aria-modal="true"` alone is
+       not reliably honoured — a screen reader in browse mode still walks the
+       278 named nodes behind the overlay, including all 52 gallery buttons.
+       The panel is reopened on the same DOM node by AnimatePresence, so it is
+       un-inerted at the top of the effect as well as on cleanup.
+       The <header> is deliberately left live: it sits above the overlay and
+       holds the Close control, and the focus trap below depends on it. */
+    const panel = panelRef.current;
+    if (panel) panel.inert = false;
+    const backdrop = [...document.body.children].filter(
+      (el): el is HTMLElement =>
+        el instanceof HTMLElement &&
+        el !== panel &&
+        el.tagName !== "HEADER" &&
+        el.tagName !== "SCRIPT" &&
+        el.tagName !== "NOSCRIPT",
+    );
+    // Snapshot and restore rather than clearing, so this cannot stomp inert
+    // state that something else owns.
+    const wasInert = backdrop.map((el) => el.inert);
+    backdrop.forEach((el) => (el.inert = true));
+
     /* The trap spans the header as well as the panel. The header sits above
        the overlay (z-50 over z-40) and holds the Close control, so it is part
        of the open menu's chrome, not background content — excluding it would
@@ -120,13 +142,25 @@ export function OverlayMenu({
      * preview — so merely opening the menu downloaded a full-bleed photograph
      * nobody had pointed at. Focusing the dialog also lets a screen reader
      * announce the dialog and its label before reading the list. */
-    const id = window.setTimeout(() => panelRef.current?.focus(), 60);
+    // preventScroll: focusing an element is allowed to scroll it into view,
+    // which is exactly how the reader's scroll position was being destroyed.
+    const id = window.setTimeout(
+      () => panelRef.current?.focus({ preventScroll: true }),
+      60,
+    );
 
     return () => {
       document.removeEventListener("keydown", onKey);
       clearTimeout(id);
       document.body.style.overflow = previousOverflow;
       lenis?.start();
+      backdrop.forEach((el, i) => (el.inert = wasInert[i]));
+
+      /* The panel stays mounted for its whole exit fade, invisible but still
+         hit-testable and still focusable — a click where a link used to be
+         navigated the site. `inert` must be set BEFORE focus is restored,
+         or the restore races the blur that inert forces. */
+      if (panelRef.current) panelRef.current.inert = true;
       previouslyFocused?.focus?.();
     };
   }, [open, onClose]);
@@ -147,7 +181,17 @@ export function OverlayMenu({
           // Focused on open (see the effect above), so it needs to be
           // programmatically focusable without entering the tab order.
           tabIndex={-1}
-          className="grain fixed inset-0 z-40 flex flex-col bg-ocean-950 outline-none"
+          /* NOT `grain` here, deliberately. `@utility grain` sets
+             position: relative, and Tailwind emits it AFTER `.fixed` at equal
+             specificity (`.fixed{position:fixed}.grain,.relative{position:relative}`),
+             so `grain fixed` silently computed to position: relative — the
+             "fullscreen" overlay was an in-flow block that added its own
+             height to the document, left 243px of page visible below it at
+             390x844, and threw away the reader's scroll position when focus
+             moved into it. The grain still paints: `grain-overlay` is the
+             child that draws it, and `fixed` is itself a containing block.
+             qa/preflight.mts fails the build if this pairing comes back. */
+          className="fixed inset-0 z-40 flex flex-col bg-ocean-950 outline-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -181,8 +225,11 @@ export function OverlayMenu({
           </div>
 
           <div className="relative flex flex-1 items-center overflow-y-auto">
+            {/* "Menu", not "Primary": the header's own nav already claims
+                "Primary" and stays live while the overlay is open, so two
+                identically-named navigation landmarks were exposed at once. */}
             <nav
-              aria-label="Primary"
+              aria-label="Menu"
               className="mx-auto w-full max-w-[92rem] px-6 py-24 sm:px-8 lg:px-12"
             >
               <ul className="flex flex-col">

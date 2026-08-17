@@ -130,3 +130,40 @@ same shape as the LCP investigation that found the hero *text* rather than the
 hero image. Three times now, the plausible story and the true cause have been
 different things, and instrumenting past the framing is what closed the gap
 each time. It is the standard for this project.
+
+## A harness that tests behaviour will not notice an absent element
+
+`qa/menu-audit.mts` passed 19 assertions on a build where the overlay menu was
+not an overlay.
+
+`@utility grain { position: relative }` is emitted into the same utilities
+layer as Tailwind's position utilities, at equal specificity, and **after**
+them:
+
+```
+.absolute{position:absolute}.fixed{position:fixed}.grain,.relative{position:relative}
+```
+
+So `className="grain fixed inset-0"` computed to `position: relative`. The
+"fullscreen" panel was an in-flow block: it added its own height to the
+document, covered only the top 601px of an 844px phone screen, and threw away
+the reader's scroll position when it took focus. (`.sticky` is emitted *after*
+`.grain`, which is why the two pinned scenes were unaffected — the bug was
+real but narrower than it first looked.)
+
+Every one of those 19 assertions was about what the menu **did**: focus moved
+correctly, Escape closed it, the tones inverted, the previews were lazy, the
+tap targets were large enough. Not one asked whether the panel was **there**.
+A mid-transition capture even showed the page visible below the panel's bottom
+edge, and it was read as the panel still fading up.
+
+> Assert existence and extent before behaviour. `position`, bounding box
+> against the viewport, hit-testing the corners, document height, scroll
+> position. A component can do everything right and still not be on screen.
+
+The clash is now a build-time failure in `qa/preflight.mts` rather than a
+comment, because nothing about the class list looks wrong when you read it.
+That guard promptly failed on the comment *explaining* it — prose quoting both
+the emitted CSS and the offending pairing — so it blanks comments before
+scanning. Fourth instance of the same rule: **a guard must measure the thing,
+not text that resembles the thing.**

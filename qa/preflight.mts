@@ -26,10 +26,68 @@ function git(cmd: string): string {
 }
 
 /**
+ * `@utility grain { position: relative }` is emitted into the same utilities
+ * layer as Tailwind's position utilities, at equal specificity — and AFTER
+ * `.absolute` and `.fixed`:
+ *
+ *     .absolute{position:absolute}.fixed{position:fixed}.grain,.relative{position:relative}
+ *
+ * so `grain fixed` silently resolves to position: relative. That shipped: the
+ * "fullscreen" overlay menu was an in-flow block that added its own height to
+ * the document, left 243px of the page visible below it at 390x844, and threw
+ * away the reader's scroll position whenever it took focus. Nothing about the
+ * class list looks wrong, which is why this is a build-time guard rather than
+ * a comment. `.sticky` is emitted after `.grain` and is therefore safe.
+ */
+async function assertNoGrainPositionClash(): Promise<void> {
+  const roots = ["src"];
+  const offenders: string[] = [];
+
+  const walk = async (dir: string): Promise<void> => {
+    for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        await walk(full);
+      } else if (/\.(tsx|ts)$/.test(entry.name)) {
+        const source = await fs.readFile(full, "utf8");
+        /* Blank out comments before scanning, preserving newlines so line
+           numbers still point at the real thing. Without this the guard fires
+           on the comment *explaining* the guard — prose that quotes both the
+           emitted CSS and the offending pairing. */
+        const code = source.replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, (m) =>
+          m.replace(/[^\n]/g, " "),
+        );
+        code.split("\n").forEach((line, i) => {
+          for (const [, classes] of line.matchAll(/["'`]([^"'`]*\bgrain\b[^"'`]*)["'`]/g)) {
+            if (/\bgrain\b/.test(classes) && /\b(fixed|absolute)\b/.test(classes)) {
+              offenders.push(`${full}:${i + 1}  ${classes.trim()}`);
+            }
+          }
+        });
+      }
+    }
+  };
+
+  await Promise.all(roots.map(walk));
+
+  if (offenders.length) {
+    throw new Error(
+      `PREFLIGHT FAILED: \`grain\` combined with \`fixed\`/\`absolute\`.\n` +
+        `\`.grain\` sets position: relative and wins over both, so the element ` +
+        `will NOT be positioned as written.\n` +
+        `Put the grain on an inner element instead (grain-overlay paints it):\n` +
+        offenders.map((o) => `  ${o}`).join("\n"),
+    );
+  }
+}
+
+/**
  * Throws if the target isn't serving. Never let a capture run report success
  * against a server that isn't there.
  */
 export async function preflight(base: string, outDir: string): Promise<BuildStamp> {
+  await assertNoGrainPositionClash();
+
   let res: Response;
   try {
     res = await fetch(base, { redirect: "manual" });
