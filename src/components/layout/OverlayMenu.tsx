@@ -39,13 +39,47 @@ export function OverlayMenu({
   const [hovered, setHovered] = useState<string | null>(null);
 
   /* Escape, focus trap, and scroll lock all live for exactly as long as the
-     menu is open. */
+     menu is open. This effect is the SINGLE owner of all three — an earlier
+     version had Nav install its own Escape handler and its own overflow lock
+     as well, and because child effects commit before parent effects, the two
+     cleanups restored in an order that left `overflow: hidden` on the body
+     after the menu closed. Two locks are not safer than one. */
   useEffect(() => {
     if (!open) return;
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    /* Locking scroll needs BOTH of these, for different readers.
+     *
+     * `overflow: hidden` stops a *user* gesture, but by spec it still permits
+     * *programmatic* scrolling — and Lenis works by swallowing the wheel event
+     * and scrolling programmatically from its own rAF loop. So with smooth
+     * scroll running, the overflow lock alone did nothing at all: the page
+     * scrolled a measured 1050px behind the open menu. Stopping Lenis is what
+     * actually holds it.
+     *
+     * The overflow lock still earns its place: under prefers-reduced-motion
+     * Lenis is never constructed, and then it is the only lock there is. */
+    const lenis = (window as Window & { __lenis?: { stop: () => void; start: () => void } })
+      .__lenis;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    lenis?.stop();
+
+    /* The trap spans the header as well as the panel. The header sits above
+       the overlay (z-50 over z-40) and holds the Close control, so it is part
+       of the open menu's chrome, not background content — excluding it would
+       leave a keyboard user unable to reach Close at all. Everything else on
+       the page is behind the overlay and must stay unreachable. */
+    const chrome = () =>
+      [document.querySelector("header"), panelRef.current]
+        .filter((el): el is HTMLElement => !!el)
+        .flatMap((el) => [
+          ...el.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ),
+        ])
+        .filter((el) => el.offsetParent !== null || el === document.activeElement);
 
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -54,19 +88,25 @@ export function OverlayMenu({
       }
       if (event.key !== "Tab") return;
 
-      const panel = panelRef.current;
-      if (!panel) return;
-      const focusables = panel.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      );
+      const focusables = chrome();
       if (!focusables.length) return;
 
       const first = focusables[0];
       const last = focusables[focusables.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+      const active = document.activeElement as HTMLElement | null;
+
+      // Focus can also be lost entirely — clicking the backdrop, or returning
+      // from the browser's own chrome. A trap that only handles first/last
+      // cannot recover from that, so anything outside is pulled back in.
+      if (!active || !focusables.includes(active)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+        return;
+      }
+      if (event.shiftKey && active === first) {
         event.preventDefault();
         last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
+      } else if (!event.shiftKey && active === last) {
         event.preventDefault();
         first.focus();
       }
@@ -74,17 +114,19 @@ export function OverlayMenu({
 
     document.addEventListener("keydown", onKey);
 
-    // Move focus into the panel so the keyboard lands somewhere sensible.
-    const id = window.setTimeout(() => {
-      panelRef.current
-        ?.querySelector<HTMLElement>('a[href], button:not([disabled])')
-        ?.focus();
-    }, 60);
+    /* Focus the panel itself, not its first link.
+     *
+     * Focusing the first link fired that link's onFocus, which sets the hover
+     * preview — so merely opening the menu downloaded a full-bleed photograph
+     * nobody had pointed at. Focusing the dialog also lets a screen reader
+     * announce the dialog and its label before reading the list. */
+    const id = window.setTimeout(() => panelRef.current?.focus(), 60);
 
     return () => {
       document.removeEventListener("keydown", onKey);
       clearTimeout(id);
       document.body.style.overflow = previousOverflow;
+      lenis?.start();
       previouslyFocused?.focus?.();
     };
   }, [open, onClose]);
@@ -98,14 +140,18 @@ export function OverlayMenu({
       {open && (
         <motion.div
           ref={panelRef}
+          id="overlay-menu"
           role="dialog"
           aria-modal="true"
           aria-label="Menu"
-          initial={reduced ? { opacity: 0 } : { opacity: 0 }}
+          // Focused on open (see the effect above), so it needs to be
+          // programmatically focusable without entering the tab order.
+          tabIndex={-1}
+          className="grain fixed inset-0 z-40 flex flex-col bg-ocean-950 outline-none"
+          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: reduced ? 0.2 : 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="grain fixed inset-0 z-40 flex flex-col bg-ocean-950"
         >
           <div aria-hidden className="grain-overlay" />
 

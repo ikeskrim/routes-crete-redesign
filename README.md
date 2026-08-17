@@ -204,3 +204,11 @@ and inventing them was out of scope by instruction. Each is tracked in
 [`CONTENT_INVENTORY.md`](CONTENT_INVENTORY.md) is the line-by-line record of every text block
 and image extracted from the original site, the two intentional corrections of live-site errors,
 and the open questions. `node qa/parity.mts` checks it mechanically.
+
+## What was deferred
+
+[`BACKLOG.md`](BACKLOG.md) tracks everything consciously postponed — what it is, which increment
+it is scheduled into, and why it was deferred rather than dropped. Deferred means scheduled, not
+forgotten; items leave that file by being done or by being cancelled, never by going quiet. It
+also carries the standing constraints that are easy to erode (no invented facts, no AI-generated
+imagery, benchmark captures never published, secrets only in environment variables).

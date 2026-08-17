@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -63,21 +63,18 @@ export function Nav({
     return () => io.disconnect();
   }, [pathname]);
 
-  /* Escape to close + lock background scroll while the menu is open. */
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = previous;
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
+  /* Escape and the scroll lock deliberately do NOT live here. OverlayMenu owns
+     both. When they were duplicated in each component, child effects committed
+     before parent effects and the two cleanups restored `body.style.overflow`
+     in an order that left it stuck at "hidden" after the menu closed — a
+     latent freeze of the entire site, hidden only because the lock was not
+     working in the first place. One owner. */
 
+  /* Stable identity: OverlayMenu's open-effect depends on onClose, so a fresh
+     closure each render would tear the effect down and rebuild it — restoring
+     focus and re-locking scroll mid-interaction — every time this bar
+     re-rendered. */
+  const handleClose = useCallback(() => setOpen(false), []);
 
   const transparent = overHero && !open;
   /** Transparent over a light hero: ink, not sand. */
@@ -175,7 +172,7 @@ export function Nav({
       <OverlayMenu
         items={items}
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={handleClose}
         previews={previews}
         bookHref={bookHref}
       />
