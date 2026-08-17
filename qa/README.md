@@ -228,3 +228,39 @@ The before/after stills do not reconstruct the old styling by editing CSS back.
 They are captured from the last **real deployment** that still carries the old
 values, using the per-deployment Vercel URL. Two shipped builds, not one build
 and a guess — and it doubles as proof the two deployments genuinely differ.
+
+## Which Vercel URL to measure, and why it matters
+
+Three URLs point at the same production deployment, and they are not
+interchangeable:
+
+| URL | use it for | why not the others |
+|---|---|---|
+| `<project>-<hash>-<team>.vercel.app` | proving what a deployment contains | per-deployment, immune to alias caching |
+| `<project>-git-main-<team>.vercel.app` | content verification | **carries `X-Robots-Tag: noindex`** |
+| `<project>.vercel.app` | Lighthouse, sharing | can serve a stale cached copy at some edges |
+
+The git-main alias is the right way to confirm a push actually landed — it
+bypasses the production alias's edge cache, which is what made a shipped build
+look missing. But measuring Lighthouse there reports **SEO 69**, because Vercel
+marks branch aliases `noindex` and the `is-crawlable` audit fails. That looks
+exactly like a catastrophic SEO regression in your own code. It isn't; the
+production alias returns no such header and scores 100.
+
+> Verify content on the git-main alias. Measure Lighthouse on the production
+> alias. Say which one a number came from.
+
+## Performance posture — the CDN paid for the design
+
+Stage 0 and Stage 1 both measured better deployed than locally:
+
+| | local | deployed |
+|---|---|---|
+| home | 91 → 88 | 97 → **94** |
+| experience | 89 → 88 | 91 → **99** |
+
+The edge and the image optimizer delivered the transfer-bound points we
+explicitly refused to buy by cutting the design. Absolute LCP is *slower*
+deployed (a real network round trip), yet the scores are higher. This is the
+evidence behind the accepted 89–95 band: the local numbers are a pessimistic
+floor, not the visitor's experience.
