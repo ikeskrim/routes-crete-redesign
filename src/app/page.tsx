@@ -98,9 +98,10 @@ export default function HomePage() {
           other. They are one grid now, and it scales with the content: adding
           an experience or a transfer changes nothing here.
 
-          Both legacy anchors stay alive — #experiences on the section, and
-          #transfers on the transfers group inside it — so the printed material
-          and old inbound links still land somewhere correct. */}
+          #experiences lives on this section. #transfers is NOT duplicated
+          here: TransferSpotlight already owns that id, and adding a second
+          copy made the anchor resolve to an empty sr-only span instead of the
+          transfer content. One id, one owner. */}
       <section
         id="experiences"
         aria-labelledby="journeys-heading"
@@ -131,10 +132,6 @@ export default function HomePage() {
               />
             ))}
           </div>
-
-          <span id="transfers" className="sr-only">
-            {site.sections.transfers.subheading}
-          </span>
         </div>
       </section>
 
