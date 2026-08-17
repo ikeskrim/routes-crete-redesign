@@ -52,7 +52,14 @@ Merging transfers into the journeys grid, I added a defensive
 to an empty screen-reader span instead of the transfer content. My Stage 1
 anchor check counted *presence*, not *uniqueness*, so it passed.
 
-Fixed tonight: one id, one owner. The check now counts duplicates.
+Fixed tonight: one id, one owner. The asset audit now asserts every legacy
+anchor id appears **exactly once**, and it passes on production:
+
+```
+ok  #experiences appears 1 time(s)      ok  #how-to-book appears 1 time(s)
+ok  #transfers   appears 1 time(s)      ok  #team        appears 1 time(s)
+ok  #why-us      appears 1 time(s)
+```
 
 ---
 
@@ -84,6 +91,13 @@ stamp and correctly reads `(unstamped)`.
 | result | both aliases serve `e615e73`, then `d259511`, matching HEAD |
 
 **`--prod` fallback used once**, per the overnight protocol, and logged here.
+
+**Later the same night, git auto-deploy worked unaided.** The final push
+advanced the production alias to `f14d8df` on its own, verified by the stamp.
+So the earlier non-deployment was **intermittent, not a permanent
+misconfiguration** — which makes the dashboard check more important, not less:
+an intermittent silent non-deployment is the kind that ships a stale site on
+the day it matters.
 
 ---
 

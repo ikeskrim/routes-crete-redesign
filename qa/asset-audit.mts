@@ -76,6 +76,21 @@ console.log(`\nchecked ${checked} paths, ${failures} dangling`);
  * image was fine. The canonical link deliberately still points at
  * routescrete.gr; that is the duplicate-content guard and is checked here too
  * so a future "fix" cannot quietly move it. */
+/* Anchor ids must be UNIQUE, not merely present. A Stage 1 check counted
+ * presence and passed while the homepage shipped id="transfers" twice — so the
+ * legacy anchor resolved to an empty sr-only span instead of the transfer
+ * content. Duplicate ids are invalid HTML and silently break deep links. */
+console.log("\nlegacy anchor ids");
+{
+  const html = await (await fetch(`${BASE}/`)).text();
+  for (const id of ["experiences", "transfers", "why-us", "how-to-book", "team"]) {
+    const n = html.split(`id="${id}"`).length - 1;
+    const ok = n === 1;
+    console.log(`  ${ok ? "ok   " : "FAIL "} #${id} appears ${n} time(s)`);
+    if (!ok) failures++;
+  }
+}
+
 console.log("\nsocial images");
 let socialFailures = 0;
 for (const route of ["/", "/experiences/kourtaliotis-temple-of-nature"]) {
