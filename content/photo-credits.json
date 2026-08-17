@@ -1,0 +1,81 @@
+{
+  "note": "Provenance for every photograph on this site that we did not take ourselves. Each entry was verified by SHA-1: the local master is byte-for-byte the file at the source URL, so these are identity matches rather than resemblances. Licences were read off the file page's own wikitext and extmetadata, never inferred from a category, a filename, or a sibling file by the same author. CC BY-SA and NonCommercial files were excluded on purpose: the site applies a colour grade to every image, which creates a derivative, and share-alike would oblige the graded result to carry BY-SA too.",
+  "verifiedOn": "2026-08-17",
+  "photographs": [
+    {
+      "file": "gorge-saint-nicholas-aerial.jpg",
+      "subject": "Kourtaliotiko Gorge and the chapel of Saint Nicholas",
+      "title": "Aerial view of Kourtaliotiko Gorge with the Church of Saint Nicholas in Rethymno on Crete, Greece",
+      "author": "dronepicr",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Kourtaliotiko_Gorge_with_the_Church_of_Saint_Nicholas_in_Rethymno_on_Crete,_Greece.jpg",
+      "sha1": "e72d3ad7e156708f2b949d417164290d462e8165",
+      "bytes": 18434294,
+      "dimensions": "4160 × 6240",
+      "attributionRequired": true,
+      "modified": true,
+      "note": "The file's own title says \"aerial\", but its EXIF (Canon EOS 6D Mark II, 24mm) shows a clifftop shot rather than a drone frame. We do not describe it as aerial in our own captions."
+    },
+    {
+      "file": "kourtaliotis-gorge-aerial.jpg",
+      "subject": "Kourtaliotiko Gorge",
+      "title": "Kourtaliotiko Gorge in Rethymno on the island of Crete, Greece",
+      "author": "dronepicr",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:Kourtaliotiko_Gorge_in_Rethymno_on_the_island_of_Crete,_Greece.jpg",
+      "sha1": "cac664b8455c1a245e38be273b9bb9ad6d321972",
+      "bytes": 18058795,
+      "dimensions": "6240 × 4160",
+      "attributionRequired": true,
+      "modified": true,
+      "note": ""
+    },
+    {
+      "file": "kourtaliotis-river.jpg",
+      "subject": "The river running through Kourtaliotiko Gorge",
+      "title": "Crystal clear waters of Kourtaliotiko River on the island of Crete, Greece",
+      "author": "dronepicr",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:Crystal_clear_waters_of_Kourtaliotiko_River_on_the_island_of_Crete,_Greece.jpg",
+      "sha1": "d533ad27282d91336ff42ccd61af9764a5090ed2",
+      "bytes": 22331665,
+      "dimensions": "6240 × 4160",
+      "attributionRequired": true,
+      "modified": true,
+      "note": ""
+    },
+    {
+      "file": "preveli-monastery.jpg",
+      "subject": "Preveli Monastery",
+      "title": "Monastère de Preveli - 1",
+      "author": "Benoît Prieur",
+      "licence": "CC0 1.0",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:Monast%C3%A8re_de_Preveli_-_1.JPG",
+      "sha1": "10bcd76bb79777dcf66d213247eec125d45483ff",
+      "bytes": 8026197,
+      "dimensions": "4320 × 3240",
+      "attributionRequired": false,
+      "modified": true,
+      "note": "READ THIS BEFORE 'CORRECTING' THIS ENTRY. Wikimedia's Structured Data for this file still carries a stale CC BY-SA 4.0 copyright claim alongside the CC0 one, so any tool that reads Structured Data instead of the page wikitext will report this file as BY-SA — a licence we forbid. The operative licence is CC0. The file was uploaded in 2013 with an empty permission field; a third party tagged it BY-SA 4.0 in 2015 from the uploader's credit page; the author and sole copyright holder then dedicated it CC0 himself in the revision of 2022-09-03. A bot wrote the Structured Data claims in 2020, while the page genuinely said BY-SA, and later bot passes never purged the superseded value. CC0 is the only licence the author has personally written onto this page. Attribution is not legally required here; we credit him anyway."
+    },
+    {
+      "file": "preveli-palm-beach-aerial.jpg",
+      "subject": "Preveli palm beach and river mouth",
+      "title": "Aerial view of the palm beach Preveli on Crete, Greece",
+      "author": "dronepicr",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_the_palm_beach_Preveli_on_Crete,_Greece.jpg",
+      "sha1": "9f2dd7a36f818efe202cd1e57c7cdc748d15b4d2",
+      "bytes": 14422960,
+      "dimensions": "6240 × 4160",
+      "attributionRequired": true,
+      "modified": true,
+      "note": "Also not a drone frame despite the title — EXIF shows a Canon EOS 6D Mark II at 24mm from a viewpoint on the approach path. The upstream Flickr photostream has since been deleted (404/410), so the Wikimedia file page plus its 2021 automated licence review is the durable record. A Creative Commons grant is irrevocable, so the deletion does not affect our right to use it."
+    }
+  ]
+}

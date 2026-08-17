@@ -205,3 +205,30 @@ export interface SiteContent {
   brochure: { label: string; href: string; bytes: number };
   locations: MapLocation[];
 }
+
+/**
+ * Provenance for a photograph we did not take. Verified by SHA-1 against the
+ * source file, so the record is an identity claim rather than a resemblance.
+ */
+export interface PhotoCredit {
+  file: string;
+  subject: string;
+  title: string;
+  author: string;
+  licence: string;
+  licenceUrl: string;
+  source: string;
+  sha1: string;
+  bytes: number;
+  dimensions: string;
+  attributionRequired: boolean;
+  /** We colour-grade every image, and CC BY requires changes to be marked. */
+  modified: boolean;
+  note: string;
+}
+
+export interface PhotoCredits {
+  note: string;
+  verifiedOn: string;
+  photographs: PhotoCredit[];
+}

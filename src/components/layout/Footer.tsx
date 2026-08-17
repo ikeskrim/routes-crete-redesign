@@ -220,6 +220,14 @@ export function Footer({ site }: { site: SiteContent }) {
           <p>
             {brand.gemiLabel}: {brand.gemiNumber}
           </p>
+          {/* Not decoration: the licences on our sourced photographs require
+              attribution, and this is where it is discharged. */}
+          <Link
+            href="/credits"
+            className="transition-colors duration-300 hover:text-sand-50"
+          >
+            Photography credits
+          </Link>
         </div>
       </div>
     </footer>

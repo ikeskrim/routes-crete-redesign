@@ -4,7 +4,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { cache } from "react";
 
-import type { Collection, ContentItem, SiteContent } from "./types";
+import type {
+  Collection,
+  ContentItem,
+  PhotoCredits,
+  SiteContent,
+} from "./types";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -158,4 +163,8 @@ export const getMappableLocations = cache(() =>
     (l): l is typeof l & { lat: number; lng: number } =>
       typeof l.lat === "number" && typeof l.lng === "number",
   ),
+);
+
+export const getPhotoCredits = cache((): PhotoCredits =>
+  readContent<PhotoCredits>("photo-credits.json"),
 );

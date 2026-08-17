@@ -137,6 +137,30 @@ not trusted by caption:
 | `preveli-monastery` | Whitewashed church, red tile roof, stone monastery buildings | **CC0** | Benoît Prieur |
 | `preveli-palm-beach-aerial` | Turquoise water, headland, palm-lined river mouth | **CC BY 2.0** | dronepicr |
 
+**This table is no longer the record — [`content/photo-credits.json`](content/photo-credits.json) is.**
+It was written from memory of the sourcing session and carried no source URLs, which meant
+the licence claims above could not be checked by anyone, including us. Each file has since
+been matched to its source by **SHA-1 checksum** — the master on disk is byte-for-byte the
+file at the recorded URL — and each licence was read off that file page's own wikitext rather
+than inferred from a category or a neighbouring file. Every licence above turned out to be
+correct; two of the *titles* did not, so the URLs a reader would have guessed were the wrong
+files.
+
+Three things that verification surfaced, all recorded in the JSON:
+
+- **`preveli-monastery` has a stale `CC BY-SA 4.0` claim in Wikimedia's Structured Data**
+  alongside the CC0 one. The operative licence is CC0 — the author dedicated it himself in
+  2022 — but any tool that reads Structured Data instead of the page wikitext will report a
+  licence we forbid. The ledger entry says so, so a future audit does not "correct" it the
+  wrong way.
+- **Two files titled "aerial" are not aerial** (EXIF shows a Canon EOS 6D Mark II from a
+  clifftop). We do not repeat that word in our own captions.
+- **CC BY requires modifications to be marked.** We grade every image, so `/credits` says so.
+
+`node qa/credits-guard.mts` enforces all of it: no forbidden licence, no unrecorded master, no
+missing URL, checksums still matching, and every author, licence and source actually rendered
+and linked from the footer.
+
 **Licensing note.** I deliberately avoided CC BY-SA files — several excellent Preveli shots are
 BY-SA, but applying our grade creates a derivative, which under share-alike would oblige us to
 license the graded result under BY-SA too. CC BY 2.0 and CC0 carry no such obligation.
