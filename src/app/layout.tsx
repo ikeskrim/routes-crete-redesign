@@ -56,6 +56,23 @@ export function generateMetadata(): Metadata {
         ? [socialImage(site.meta.ogImage)!]
         : undefined,
     },
+    /* Which commit is actually live, readable with a single curl.
+     *
+     * This session lost real time twice to not knowing: a shipped build that
+     * looked missing (stale alias cache), and deployments whose output did not
+     * match origin/main with no way to see which source they were built from —
+     * `vercel inspect` does not print the commit. Now every response carries
+     * it, so "is my fix live?" is one fetch instead of an inference:
+     *
+     *   curl -s <url> | grep build-commit
+     */
+    other: {
+      "build-commit":
+        process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ??
+        process.env.BUILD_COMMIT ??
+        "local",
+      "build-ref": process.env.VERCEL_GIT_COMMIT_REF ?? "local",
+    },
     robots: {
       index: true,
       follow: true,
