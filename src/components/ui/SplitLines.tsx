@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
 import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
 import { cn } from "@/lib/utils";
@@ -148,13 +148,19 @@ export function SplitLines({
   }, [text, reduced]);
 
   if (reduced) {
-    return <Tag className={className}>{text}</Tag>;
+    return (
+      <Tag className={className} data-split-source={text}>
+        {text}
+      </Tag>
+    );
   }
 
   const show = active !== undefined ? active : onMount || inView;
 
   return (
-    <Tag className={className}>
+    // data-split-source carries the exact source string so the harness can
+    // assert that what renders equals what was written.
+    <Tag className={className} data-split-source={text}>
       <span ref={rootRef} className="relative block">
       {/* Measuring copy. Visible (and the only copy) until lines are known. */}
       <span
@@ -165,11 +171,19 @@ export function SplitLines({
           lines && "pointer-events-none invisible absolute inset-x-0 top-0",
         )}
       >
+        {/* The separating space MUST live outside the inline-block.
+            Inside it, it is trailing whitespace at the end of that box's own
+            line and CSS discards it — which rendered the headline with every
+            word jammed together ("Exploretheunknown") for as long as the
+            measuring copy is the visible one. Outside, it is ordinary inline
+            whitespace between two boxes and survives. */}
         {words.map((word, i) => (
-          <span key={i} data-word className="inline-block">
-            {word}
+          <Fragment key={i}>
+            <span data-word className="inline-block">
+              {word}
+            </span>
             {i < words.length - 1 ? " " : ""}
-          </span>
+          </Fragment>
         ))}
       </span>
 

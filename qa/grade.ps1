@@ -84,6 +84,13 @@ $proj = (Get-Item "C:\Users\mcapt\Downloads\*\routes-crete").FullName
 $srcRoot = Join-Path $proj 'public\images'
 $outRoot = Join-Path $proj ("public\images\graded\" + $Grade.ToLower())
 
+# Web-sourced masters live OUTSIDE public/ so the deploy does not ship 78 MB of
+# originals nobody requests — the site only ever serves the graded tree. They
+# are still in the repo (provenance for the licence ledger), just not routable.
+# Their relative paths carry through unchanged: assets-src\sourced\x.jpg still
+# grades to public\images\graded\<g>\sourced\x.jpg.
+$extRoot = Join-Path $proj 'assets-src'
+
 # --- grade definitions -----------------------------------------------------
 # lift      : black point raised (matte)
 # gain      : per-channel multiplier
@@ -130,23 +137,36 @@ $NeverGrade = @(
   'brand\logo.png'
 )
 
-$all = Get-ChildItem $srcRoot -Recurse -File |
-  Where-Object { $_.Extension -match '^\.(jpg|jpeg|png)$' -and $_.FullName -notlike "*\graded\*" }
+# Each file is paired with the relative path it grades to, because the two
+# roots produce that path differently. Carrying it alongside the file beats
+# recomputing it later and guessing which root it came from.
+$all = @()
+foreach ($root in @($srcRoot, $extRoot)) {
+  if (-not (Test-Path $root)) { continue }
+  Get-ChildItem $root -Recurse -File |
+    Where-Object { $_.Extension -match '^\.(jpg|jpeg|png)$' -and $_.FullName -notlike "*\graded\*" } |
+    ForEach-Object {
+      $all += [pscustomobject]@{
+        File = $_
+        Rel  = $_.FullName.Substring($root.Length + 1)
+      }
+    }
+}
 
 # Split rather than filter inside a pipeline: `+=` inside a Where-Object
 # scriptblock mutates a copy, so the skip list would silently come back empty.
 $files = @()
-foreach ($f in $all) {
-  $rel = $f.FullName.Substring($srcRoot.Length + 1)
-  if ($NeverGrade -contains $rel) { "excluded from grading: $rel"; continue }
-  $files += $f
+foreach ($item in $all) {
+  if ($NeverGrade -contains $item.Rel) { "excluded from grading: $($item.Rel)"; continue }
+  $files += $item
 }
 
-if ($Only) { $files = $files | Where-Object { $_.FullName -like "*$Only*" } }
+if ($Only) { $files = $files | Where-Object { $_.File.FullName -like "*$Only*" } }
 
 $n = 0
-foreach ($f in $files) {
-  $rel = $f.FullName.Substring($srcRoot.Length + 1)
+foreach ($item in $files) {
+  $f = $item.File
+  $rel = $item.Rel
   $dest = Join-Path $outRoot ([System.IO.Path]::ChangeExtension($rel, '.jpg'))
   $destDir = Split-Path $dest -Parent
   if (-not (Test-Path $destDir)) { New-Item -ItemType Directory -Force $destDir | Out-Null }

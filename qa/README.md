@@ -51,3 +51,30 @@ When reporting a motion pattern, tag where it is judged from:
   side-by-side.
 - **vocabulary-derived** — comes from the brief, not the reference; no side-by-side
   exists and none should be manufactured.
+
+## Deploy failures: read the error, not the coincidence
+
+A Vercel deploy failed while direction drafts (`/design/a`, `/design/b`) were
+still in the tree. The first failure named `/design/a`, so the drafts were
+deleted as the suspected cause. **They were innocent.** The next failure named
+an ordinary production route, which is what finally identified the real cause:
+
+> `vercel deploy --temporary` builds **locally** and uploads the prebuilt
+> output. Vercel's builder mishandles Windows path separators in the prebuilt
+> manifest for dynamic `[slug]` routes, so the first dynamic route it reaches
+> fails — whichever one that happens to be.
+
+Deploy through the Git integration (Vercel builds on Linux from the pushed
+commit) rather than `--temporary` from this machine.
+
+The lesson is the same one the rest of this directory is built on: the first
+name in a stack trace is a *symptom's location*, not a diagnosis. Deleting the
+thing the error happened to mention cost real work and fixed nothing.
+
+## Web-sourced masters live outside `public/`
+
+Originals are in `assets-src/sourced/` (78 MB), not `public/`. The site only
+ever serves the graded tree, so shipping the masters in the deploy bundle paid
+78 MB for files no request can reach. They stay in the repo — they are the
+provenance behind the licence ledger — just not routable. `qa/grade.ps1` reads
+both roots and grades them to the same destination paths as before.
