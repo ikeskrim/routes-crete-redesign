@@ -15,7 +15,20 @@ import { chromium, type Page } from "playwright";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const URL = process.argv[2] ?? "https://www.alethia.earth/";
+/**
+ * The reference URL is supplied at call time and deliberately not hardcoded:
+ * this repository is public, and naming someone else's site as a baked-in
+ * default is neither necessary nor courteous.
+ *
+ *   node qa/benchmark-shots.mts https://example.com/
+ */
+const URL = process.argv[2] ?? process.env.QA_BENCHMARK_URL;
+if (!URL) {
+  console.error(
+    "Usage: node qa/benchmark-shots.mts <url>   (or set QA_BENCHMARK_URL)",
+  );
+  process.exit(1);
+}
 const OUT = path.join(process.cwd(), "qa", "benchmark");
 const DESKTOP = { width: 1440, height: 900 };
 const MOBILE = { width: 390, height: 844 };

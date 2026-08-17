@@ -5,7 +5,14 @@
 import { chromium } from "playwright";
 import fs from "node:fs";
 
-const URL = process.argv[2] ?? "https://www.alethia.earth/";
+/** Supplied at call time — see the note in benchmark-shots.mts. */
+const URL = process.argv[2] ?? process.env.QA_BENCHMARK_URL;
+if (!URL) {
+  console.error(
+    "Usage: node qa/study-benchmark.mts <url>   (or set QA_BENCHMARK_URL)",
+  );
+  process.exit(1);
+}
 const log = (m: string) => fs.appendFileSync("qa/benchmark.log", m + "\n");
 fs.writeFileSync("qa/benchmark.log", "");
 
