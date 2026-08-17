@@ -35,13 +35,10 @@ export interface StackedPanel {
  */
 export function StackedPanels({
   panels,
-  index,
   id,
   className,
 }: {
   panels: StackedPanel[];
-  /** Section number for the editorial ledger. */
-  index?: number;
   id?: string;
   className?: string;
 }) {
@@ -182,8 +179,14 @@ export function StackedPanels({
                   : "pointer-events-none absolute inset-x-0 top-0 opacity-0 transition-opacity duration-200",
               )}
             >
+              {/* pad(i + 1), NOT the section `index` prop. This read the
+                  component-level section number inside a per-panel loop, so
+                  all three statements printed the same "03 ·" while the
+                  ledger below them counted 01 02 03 correctly — the two
+                  disagreed on screen. The reduced-motion branch above always
+                  had this right. */}
               <p className="text-eyebrow uppercase text-gold-300">
-                {index !== undefined && `${pad(index)} · `}
+                {`${pad(i + 1)} · `}
                 {panel.eyebrow}
               </p>
               <p className="text-display-lg mx-auto mt-7 max-w-[20ch] text-balance text-sand-50">

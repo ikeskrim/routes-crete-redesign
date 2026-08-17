@@ -147,7 +147,7 @@ export function LocationsMap({
                       ? "right-0"
                       : "left-1/2 -translate-x-1/2",
                   point.type === "airport"
-                    ? "text-sand-200/50"
+                    ? "text-sand-200/70"
                     : "text-sand-100/85",
                   isHovered && "text-gold-300",
                 )}
@@ -207,7 +207,7 @@ export function LocationsMap({
                 className={cn(
                   "text-eyebrow uppercase",
                   point.type === "airport"
-                    ? "text-sand-200/50"
+                    ? "text-sand-200/70"
                     : "text-sand-100/85",
                 )}
               >

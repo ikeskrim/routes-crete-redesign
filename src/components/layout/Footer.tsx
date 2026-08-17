@@ -141,7 +141,7 @@ export function Footer({ site }: { site: SiteContent }) {
       <div className="relative mx-auto w-full max-w-[92rem] px-6 pb-10 sm:px-8 lg:px-12">
         <div className="grid gap-12 border-t border-sand-100/10 pt-12 lg:grid-cols-12 lg:gap-8">
           <nav aria-label="Footer" className="lg:col-span-4">
-            <h3 className="text-eyebrow uppercase text-sand-200/50">Navigate</h3>
+            <h3 className="text-eyebrow uppercase text-sand-200/70">Navigate</h3>
             <ul className="mt-6 flex flex-col gap-3.5">
               {pageLinks.map((item) => (
                 <li key={item.key}>
@@ -157,7 +157,7 @@ export function Footer({ site }: { site: SiteContent }) {
           </nav>
 
           <div className="lg:col-span-4">
-            <h3 className="text-eyebrow uppercase text-sand-200/50">Contact</h3>
+            <h3 className="text-eyebrow uppercase text-sand-200/70">Contact</h3>
             <ul className="mt-6 flex flex-col gap-3.5">
               {channels.map((channel) => (
                 <li key={channel.label}>
@@ -168,7 +168,7 @@ export function Footer({ site }: { site: SiteContent }) {
                       : {})}
                     className="group inline-flex items-baseline gap-3"
                   >
-                    <span className="text-eyebrow uppercase text-sand-200/45">
+                    <span className="text-eyebrow uppercase text-sand-200/65">
                       {channel.label}
                     </span>
                     <span className="text-body-sm text-sand-100/85 transition-colors duration-300 group-hover:text-gold-300">
@@ -181,7 +181,7 @@ export function Footer({ site }: { site: SiteContent }) {
           </div>
 
           <div className="lg:col-span-4">
-            <h3 className="text-eyebrow uppercase text-sand-200/50">More</h3>
+            <h3 className="text-eyebrow uppercase text-sand-200/70">More</h3>
             <ul className="mt-6 flex flex-col gap-3.5">
               <li>
                 <a

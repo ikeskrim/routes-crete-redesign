@@ -159,7 +159,6 @@ export default function HomePage() {
           changes from a static trio to punctuation on a dark ground. */}
       <StackedPanels
         id="why-us"
-        index={3}
         panels={site.whyUs.map((block, i) => ({
           eyebrow: block.title,
           // Short punctuation line; the full original copy stays available in

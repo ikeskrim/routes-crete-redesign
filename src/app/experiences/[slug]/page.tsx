@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ItemDetail } from "@/components/sections/ItemDetail";
 import { ItemJsonLd } from "@/components/seo/ItemJsonLd";
 import { getExperience, getExperiences } from "@/lib/content";
+import { socialImage } from "@/lib/site-url";
 
 export function generateStaticParams() {
   return getExperiences().map((experience) => ({ slug: experience.slug }));
@@ -24,8 +25,8 @@ export async function generateMetadata(
       title: experience.meta.title,
       description: experience.meta.description,
       url: experience.href,
-      images: experience.meta.ogImage
-        ? [{ url: experience.meta.ogImage }]
+      images: socialImage(experience.meta.ogImage)
+        ? [{ url: socialImage(experience.meta.ogImage)! }]
         : undefined,
     },
   };

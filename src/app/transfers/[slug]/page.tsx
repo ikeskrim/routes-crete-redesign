@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ItemDetail } from "@/components/sections/ItemDetail";
 import { ItemJsonLd } from "@/components/seo/ItemJsonLd";
 import { getTransfer, getTransfers } from "@/lib/content";
+import { socialImage } from "@/lib/site-url";
 
 export function generateStaticParams() {
   return getTransfers().map((transfer) => ({ slug: transfer.slug }));
@@ -24,8 +25,8 @@ export async function generateMetadata(
       title: transfer.meta.title,
       description: transfer.meta.description,
       url: transfer.href,
-      images: transfer.meta.ogImage
-        ? [{ url: transfer.meta.ogImage }]
+      images: socialImage(transfer.meta.ogImage)
+        ? [{ url: socialImage(transfer.meta.ogImage)! }]
         : undefined,
     },
   };

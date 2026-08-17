@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { getExperiences, getSite, getTransfers } from "@/lib/content";
+import { socialImage } from "@/lib/site-url";
 
 import "./globals.css";
 
@@ -43,13 +44,17 @@ export function generateMetadata(): Metadata {
       description: site.meta.description,
       url: site.brand.url,
       locale: "en_GB",
-      images: site.meta.ogImage ? [{ url: site.meta.ogImage }] : undefined,
+      images: socialImage(site.meta.ogImage)
+        ? [{ url: socialImage(site.meta.ogImage)! }]
+        : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title: site.meta.title,
       description: site.meta.description,
-      images: site.meta.ogImage ? [site.meta.ogImage] : undefined,
+      images: socialImage(site.meta.ogImage)
+        ? [socialImage(site.meta.ogImage)!]
+        : undefined,
     },
     robots: {
       index: true,

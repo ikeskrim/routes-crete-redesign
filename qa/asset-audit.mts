@@ -69,6 +69,57 @@ for (const src of [...seen.keys()].sort()) {
 
 console.log(`\nchecked ${checked} paths, ${failures} dangling`);
 
+/* Social images are the one class of image URL that must be ABSOLUTE and must
+ * resolve on the origin actually serving this build. They shipped pointing at
+ * https://www.routescrete.gr/..., which 404s until DNS cutover — so every
+ * share of the preview rendered with no image at all, while every on-page
+ * image was fine. The canonical link deliberately still points at
+ * routescrete.gr; that is the duplicate-content guard and is checked here too
+ * so a future "fix" cannot quietly move it. */
+console.log("\nsocial images");
+let socialFailures = 0;
+for (const route of ["/", "/experiences/kourtaliotis-temple-of-nature"]) {
+  const html = await (await fetch(`${BASE}${route}`)).text();
+  const grab = (re: RegExp) => html.match(re)?.[1];
+  const ogImage = grab(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
+  const canonical = grab(/<link[^>]+rel="canonical"[^>]+href="([^"]+)"/);
+
+  if (!ogImage) {
+    console.log(`  FAIL  ${route} — no og:image`);
+    socialFailures++;
+    continue;
+  }
+  if (!/^https?:\/\//.test(ogImage)) {
+    console.log(`  FAIL  ${route} — og:image is not absolute: ${ogImage}`);
+    socialFailures++;
+    continue;
+  }
+
+  /* A local build has no serving origin to bake in — there is no port at
+     build time — so it correctly falls back to the canonical origin, which
+     does not resolve yet. That is by design, not a regression, so the
+     resolve check only runs against a real deployment. */
+  const local = /^https?:\/\/(localhost|127\.0\.0\.1)/.test(BASE);
+  if (local) {
+    console.log(`  skip  ${route} — og:image resolution not assertable on a local build (${ogImage})`);
+  } else {
+    const sameOrigin = new URL(ogImage).origin === new URL(BASE).origin;
+    const res = await fetch(ogImage, { method: "HEAD" }).catch(() => null);
+    const ok = !!res && res.status < 400 && sameOrigin;
+    console.log(
+      `  ${ok ? "ok   " : "FAIL "} ${route} — og:image ${res?.status ?? "unreachable"}${sameOrigin ? "" : ", WRONG ORIGIN"} ${ogImage}`,
+    );
+    if (!ok) socialFailures++;
+  }
+
+  const canonicalOk = !!canonical && /routescrete\.gr/.test(canonical);
+  console.log(
+    `  ${canonicalOk ? "ok   " : "FAIL "} ${route} — canonical stays on routescrete.gr: ${canonical}`,
+  );
+  if (!canonicalOk) socialFailures++;
+}
+failures += socialFailures;
+
 if (ungraded.length) {
   console.log(`\n${ungraded.length} path(s) still bypassing the grade:`);
   ungraded.forEach((s) => console.log(`  ${s}`));
