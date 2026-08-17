@@ -68,3 +68,5 @@ yarn-error.log*
 # these files a deploy serves broken images. Regenerate and recommit after any
 # regrade: powershell -File qa/grade.ps1 -Grade B
 # ---------------------------------------------------------------------------
+
+.vercel

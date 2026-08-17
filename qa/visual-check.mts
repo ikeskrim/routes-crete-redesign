@@ -31,14 +31,6 @@ const ROUTES = {
   transfer: "/transfers/private-transfers-rethymno",
   contact: "/contact",
   notFound: "/this-route-does-not-exist",
-
-  /**
-   * TEMPORARY. The only light hero in the build, and therefore the only place
-   * nav inversion can currently be proven. When the restructure gives real
-   * pages light heroes the proof moves to those routes, and this entry leaves
-   * the ladder together with the draft routes at rollout end.
-   */
-  designBLightHero: "/design/b",
 };
 
 const filters = process.argv.slice(2).map((a) => a.toLowerCase());
@@ -345,22 +337,10 @@ async function run() {
     }
   }
 
-  /* --------------------------- nav inversion over a LIGHT hero (temp) */
-  for (const [device, vp] of [["desktop", DESKTOP], ["mobile", MOBILE]] as const) {
-    await group(`nav inversion over light hero — ${device}`, async () => {
-      const { context, page } = await openPage(
-        browser,
-        ROUTES.designBLightHero,
-        vp,
-      );
-      // Over the hero: the bar must be ink, not sand.
-      await shot(page, `nav-light-hero-over-${device}`);
-      // Past the hero: the bar returns to its solid state.
-      await scrollTo(page, vp.height * 1.4);
-      await shot(page, `nav-light-hero-solid-${device}`);
-      await context.close();
-    });
-  }
+  /* Nav inversion over a LIGHT hero has no route to prove it against right
+     now: the direction drafts that carried the only light hero are gone, and
+     no real page has one yet. Proof lives in git at d282948; this group
+     returns when the restructure gives a real page a light hero. */
 
   /* ----------------------------------------------- experiences listing */
   console.log("\nlisting — /experiences");
