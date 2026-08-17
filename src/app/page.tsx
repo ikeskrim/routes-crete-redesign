@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 
 import { Hero } from "@/components/sections/Hero";
-import { Gallery } from "@/components/sections/Gallery";
 import { HowToBook } from "@/components/sections/HowToBook";
+import { Positioning } from "@/components/sections/Positioning";
 import { LocationsMap } from "@/components/sections/LocationsMap";
 import type { Scene } from "@/components/sections/SignatureScene";
 
@@ -52,19 +52,16 @@ export default function HomePage() {
       blurDataURL: getBlur(scene.image),
     })) ?? [];
 
-  /* Every photograph from every collection, for the closing gallery. */
-  const galleryImages = [...experiences, ...transfers].flatMap((item) =>
-    item.gallery.map((image) => ({
-      ...image,
-      alt: item.title,
-      blurDataURL: getBlur(image.src),
-    })),
-  );
-
   const locationLinks: Record<string, string> = {};
   for (const item of [...experiences, ...transfers]) {
     for (const key of item.locations) locationLinks[key] ??= item.href;
   }
+
+  /* One grid, both collections, in a deliberate order: the experiences first,
+     transfers last, because a transfer is how you reach a journey rather than
+     the reason for one. Adding items to either collection extends the grid
+     with no code change. */
+  const journeys = [...experiences, ...transfers];
 
   const bridge = signature?.gallery[1] ?? experiences[0]?.gallery[0];
 
@@ -88,17 +85,32 @@ export default function HomePage() {
         secondaryCta={{ label: "Book Now", href: "/contact" }}
       />
 
-      {/* 01 — Experiences */}
+      {/* 02 — The positioning statement, said once and early. */}
+      <Positioning
+        eyebrow={site.positioning.eyebrow}
+        statement={site.positioning.statement}
+        body={site.positioning.body}
+        attributes={site.positioning.attributes}
+      />
+
+      {/* 03 — The Journeys.
+          Experiences and Transfers were two near-identical grids one after the
+          other. They are one grid now, and it scales with the content: adding
+          an experience or a transfer changes nothing here.
+
+          Both legacy anchors stay alive — #experiences on the section, and
+          #transfers on the transfers group inside it — so the printed material
+          and old inbound links still land somewhere correct. */}
       <section
         id="experiences"
-        aria-labelledby="experiences-heading"
+        aria-labelledby="journeys-heading"
         className="bg-shell py-section-lg text-ink"
       >
         <div className="mx-auto w-full max-w-[92rem] px-6 sm:px-8 lg:px-12">
           <div className="flex items-center gap-4">
             <span aria-hidden className="h-px w-10 bg-gold-600/60" />
             <p className="text-eyebrow uppercase text-rock-500">
-              {site.sections.experiences.heading}
+              {site.sections.experiences.heading} &amp; {site.sections.transfers.heading}
             </p>
           </div>
 
@@ -109,16 +121,20 @@ export default function HomePage() {
           />
 
           <div className="mt-16 grid gap-x-10 gap-y-16 sm:grid-cols-2 lg:mt-24">
-            {experiences.map((experience, i) => (
+            {journeys.map((item, i) => (
               <ContentCard
-                key={experience.slug}
-                item={experience}
+                key={item.href}
+                item={item}
                 index={i + 1}
                 className={i % 2 === 1 ? "sm:mt-28" : undefined}
                 ratio="aspect-[4/5]"
               />
             ))}
           </div>
+
+          <span id="transfers" className="sr-only">
+            {site.sections.transfers.subheading}
+          </span>
         </div>
       </section>
 
@@ -144,7 +160,7 @@ export default function HomePage() {
         />
       )}
 
-      {/* 02 — The signature journey, told as a pinned film */}
+      {/* 04 — The signature journey, told as a pinned film */}
       {signature && scenes.length > 0 && (
         <SignatureScene
           eyebrow="The signature journey"
@@ -154,7 +170,7 @@ export default function HomePage() {
         />
       )}
 
-      {/* 03 — Why Routes Crete, as a scene that holds while it transitions.
+      {/* Why Routes Crete, as a scene that holds while it transitions.
           The three value blocks keep their copy; only the presentation
           changes from a static trio to punctuation on a dark ground. */}
       <StackedPanels
@@ -170,7 +186,7 @@ export default function HomePage() {
         }))}
       />
 
-      {/* 04 — The route, from real coordinates */}
+      {/* The route, from real coordinates */}
       <section
         aria-labelledby="map-heading"
         className="grain relative bg-ocean-950 py-section-lg text-sand-50"
@@ -196,17 +212,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 05 — VIP transfers */}
+      {/* VIP transfers */}
       {transfers[0] && <TransferSpotlight item={transfers[0]} />}
 
-      {/* 06 — How to book */}
+      {/* 05 — How to book */}
       <HowToBook
         heading={site.sections.howToBook.heading}
         subheading={site.sections.howToBook.subheading}
         steps={site.howToBook.steps}
+        responsePromise={site.howToBook.responsePromise}
       />
 
-      {/* 07 — Team */}
+      {/* 06 — Team */}
       <Team
         heading={site.sections.team.heading}
         subheading={site.sections.team.subheading}
@@ -214,29 +231,10 @@ export default function HomePage() {
         members={site.team.members}
       />
 
-      {/* 08 — Gallery */}
-      <section
-        id="gallery"
-        aria-labelledby="gallery-heading"
-        className="bg-sand-50 py-section-lg text-ink"
-      >
-        <div className="mx-auto w-full max-w-[92rem] px-6 sm:px-8 lg:px-12">
-          <div className="flex items-center gap-4">
-            <span aria-hidden className="h-px w-10 bg-gold-600/60" />
-            <p className="text-eyebrow uppercase text-rock-500">Gallery</p>
-          </div>
-
-          <SplitLines
-            as="h2"
-            text="Every frame, from the road"
-            className="text-display-lg mt-6 max-w-[14ch] text-ink"
-          />
-
-          <div className="mt-14 lg:mt-20">
-            <Gallery images={galleryImages} />
-          </div>
-        </div>
-      </section>
+      {/* The 52-image homepage gallery is gone. Every frame still exists —
+          curated selections live on the experience pages, where someone
+          looking at a specific journey actually wants them. Nothing was
+          deleted from the content. */}
     </>
   );
 }

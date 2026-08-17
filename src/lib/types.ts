@@ -109,6 +109,8 @@ export interface BookingStep {
   key: string;
   number: number;
   title: string;
+  /** Original step titles this one absorbed when five became three. */
+  absorbed?: string[];
   /** Present when the live site's heading was corrected. */
   titleOriginal?: string;
   titleFlag?: string;
@@ -182,7 +184,24 @@ export interface SiteContent {
   };
   sections: Record<string, SectionCopy>;
   whyUs: WhyUsBlock[];
-  howToBook: { image: string; steps: BookingStep[] };
+  howToBook: {
+    image: string;
+    steps: BookingStep[];
+    /** The complete original five, kept verbatim. Never rendered; never lost. */
+    stepsOriginal?: BookingStep[];
+    /**
+     * A stated reply time is a claim about how the business operates, so it is
+     * null until the client supplies a real one and the line is omitted
+     * entirely rather than guessed.
+     */
+    responsePromise?: string | null;
+  };
+  positioning: {
+    eyebrow: string;
+    statement: string;
+    body: string;
+    attributes: string[];
+  };
   team: { intro: string; members: TeamMember[] };
   contact: {
     formUrl: string;

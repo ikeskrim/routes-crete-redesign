@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SplitLines } from "@/components/ui/SplitLines";
 
 /**
- * The five booking steps as an editorial timeline.
+ * The booking steps as an editorial timeline.
  *
  * The original site reused a single 160×160 image for every step, which is far
  * too small to show at any meaningful size — the numbering carries the sequence
@@ -15,10 +15,13 @@ export function HowToBook({
   heading,
   subheading,
   steps,
+  responsePromise,
 }: {
   heading: string;
   subheading: string;
   steps: BookingStep[];
+  /** Omitted entirely when null — we do not promise a time we were not given. */
+  responsePromise?: string | null;
 }) {
   return (
     <section
@@ -78,6 +81,17 @@ export function HowToBook({
           ))}
         </ol>
         <div aria-hidden className="h-px w-full bg-sand-100/15" />
+
+        {/* Renders only if the client has supplied a real number. There is no
+            fallback string on purpose: an invented reply time is exactly the
+            kind of claim this project does not make. */}
+        {responsePromise && (
+          <Reveal delay={0.08}>
+            <p className="text-body mt-10 max-w-[46ch] text-sand-200/75">
+              {responsePromise}
+            </p>
+          </Reveal>
+        )}
       </div>
     </section>
   );
