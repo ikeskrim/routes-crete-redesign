@@ -167,3 +167,24 @@ That guard promptly failed on the comment *explaining* it — prose quoting both
 the emitted CSS and the offending pairing — so it blanks comments before
 scanning. Fourth instance of the same rule: **a guard must measure the thing,
 not text that resembles the thing.**
+
+## Never trust the first Lighthouse run after a deploy
+
+Measured on the same commit, minutes apart, against the same URL:
+
+| | performance | LCP | TBT | SI |
+|---|---|---|---|---|
+| first run after deploy | **79** | 3.8 s | 190 ms | 7.8 s |
+| after two warming fetches | **96** | 2.7 s | 60 ms | 2.5 s |
+
+Nothing changed but the cache. A fresh deployment has no generated
+`/_next/image` variants, so the first visitor pays for every derivative of
+every image on the page at once — which lands almost entirely on Speed Index.
+
+A 17-point swing is more than enough to fake a regression, and the temptation
+is to go hunting for what "broke". Warm the edge first (`curl` the route a
+couple of times), then measure. Report which one you ran.
+
+The same effect is why the deployed numbers beat the local baseline (home
+91 → 96, experience 89 → 99) despite LCP being *slower* in absolute time: the
+CDN and the image optimizer improve everything except the round trip.
