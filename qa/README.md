@@ -264,3 +264,45 @@ explicitly refused to buy by cutting the design. Absolute LCP is *slower*
 deployed (a real network round trip), yet the scores are higher. This is the
 evidence behind the accepted 89–95 band: the local numbers are a pessimistic
 floor, not the visitor's experience.
+
+## Read the type before rewriting the data it describes
+
+Collapsing the five booking steps to three, I rewrote `howToBook.steps` with
+fields of my own invention (`title`, `text`, `absorbed`) and **destroyed the
+original bodies** — including the documented client correction on step 3
+(`titleOriginal` + `titleFlag` citing `CONTENT_INVENTORY.md §4.4 / Q1`). The
+real shape was `key` / `number` / `title` / `body`.
+
+Nothing was lost, and it is worth being precise about why — three independent
+mechanisms caught it in sequence:
+
+1. **`parity.mts` constrained the change before it started.** Its required-string
+   list meant the collapse *had* to keep three specific titles on the homepage,
+   which is what forced a careful design instead of a free rewrite.
+2. **The TypeScript interface exposed the invented fields** the moment I went to
+   render them.
+3. **`git checkout -- content/site.json` restored the destroyed originals**,
+   because the loss had not yet been committed.
+
+> Before rewriting a content file, read the interface that consumes it. A JSON
+> file has a schema whether or not it is written down here — and in this project
+> it is written down, in `src/lib/types.ts`.
+
+## "Which commit is live?" must never be an inference
+
+Two separate incidents, one root cause: no way to see what a deployment was
+built from. A shipped build looked missing (stale alias cache), and later the
+production alias served a homepage that did not match `origin/main` while
+`vercel inspect` printed no commit at all.
+
+Every response now carries the answer:
+
+```bash
+curl -s https://<url>/ | grep build-commit
+```
+
+`build-commit` and `build-ref` come from `VERCEL_GIT_COMMIT_SHA` /
+`VERCEL_GIT_COMMIT_REF`, falling back to `BUILD_COMMIT` for local builds and
+`local` otherwise. Check it *first* whenever deployed behaviour disagrees with
+the repo — before reading code, before re-running a guard, before believing a
+regression is real.
