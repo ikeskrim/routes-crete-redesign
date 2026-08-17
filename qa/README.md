@@ -188,3 +188,43 @@ couple of times), then measure. Report which one you ran.
 The same effect is why the deployed numbers beat the local baseline (home
 91 → 96, experience 89 → 99) despite LCP being *slower* in absolute time: the
 CDN and the image optimizer improve everything except the round trip.
+
+## Don't parse colours — make the browser composite them
+
+`qa/contrast-shots.mts` first measured contrast by regexing the numbers out of
+`getComputedStyle().color` and feeding them to an sRGB luminance formula. But
+Tailwind v4 authors these colours in **oklab**, so the computed value is
+`oklab(0.898 0.004 0.032 / 0.7)`. The regex happily read those three oklab
+components as if they were 0–255 channels and reported:
+
+```
+before  text-sand-200/50   1.12:1
+after   text-sand-200/70   1.12:1
+```
+
+A real fix, reported as literally no change. Worse than a wrong number: a
+number that says "nothing happened".
+
+The browser already knows how to composite alpha and resolve any colour space
+to sRGB pixels. So the ratio is now computed in-page — paint the background on
+a canvas, paint the semi-transparent foreground over it, read the pixel back:
+
+```
+before  /50 → rgb(118,120,113) = 4.18:1 FAIL   /45 → 3.61:1 FAIL
+after   /70 → rgb(164,160,147) = 7.15:1 pass   /65 → 6.30:1 pass
+```
+
+Which matched the by-hand sRGB estimate that justified the fix (4.18 and 6.29)
+to two decimal places — the arithmetic was never the problem, the colour space
+was.
+
+> Fifth instance of the same rule in this directory: **a guard must measure the
+> thing, not a representation of the thing.** Here the representation was a
+> colour space the formula didn't speak.
+
+### Capturing an honest "before"
+
+The before/after stills do not reconstruct the old styling by editing CSS back.
+They are captured from the last **real deployment** that still carries the old
+values, using the per-deployment Vercel URL. Two shipped builds, not one build
+and a guess — and it doubles as proof the two deployments genuinely differ.
