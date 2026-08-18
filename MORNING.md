@@ -546,6 +546,82 @@ closed-dropdown screenshot for evidence of a hover mechanic.
 "reference-derived" in this project's strict sense until someone captures the
 mechanic. The idea is legitimately Fitzroy's; the evidence file is not there.
 
+
+---
+
+## Block 10 — Editorial place breaks on the experience pages ✅  `3293d24`
+
+Each journey now breaks its story with a licensed photograph of a real place
+it actually visits:
+
+| journey | place breaks |
+|---|---|
+| Kourtaliotis — Temple of Nature | the waterfall in Kourtaliotiko Gorge · the palm forest at Preveli |
+| Heart of Cretan Tradition | Anogeia · an ancient olive tree in eastern Crete |
+
+**The caption rule is the whole point.** The galleries on these pages are the
+operator's *own* tour photography. A sourced landscape sitting among them
+would quietly imply we took it — so every place break renders a credit line,
+**"Licensed photograph — see credits"**, beneath its caption. `Bridge` gained a
+`creditNote` prop for exactly this, with the reason written where the prop is
+declared rather than left to be rediscovered.
+
+Content-driven: `placeBreaks` in the item JSON, so adding one is a content
+edit. Each is SHA-1 ledgered and attributed on `/credits`.
+
+### Parity caught a real gap in itself
+
+It reported all four photographs as **"missing file"** — because it checks
+content paths against `public/`, and the web-sourced masters deliberately live
+*outside* it, in `assets-src/`, since the site only ever serves the graded
+tree. Four present, graded, correct files reported missing the moment content
+referenced them.
+
+Parity now resolves the way the site resolves: an original under
+`/images/sourced/` is satisfied by its master in `assets-src/` **or** by its
+graded copy. The check kept its meaning instead of being relaxed to pass.
+
+### Deployed
+
+| route | perf | a11y | BP | SEO | CLS |
+|---|---|---|---|---|---|
+| home | 93 | 100 | 100 | 100 | 0 |
+| experience | 93 | 100 | 100 | 100 | 0 |
+
+Seven guards green on the deployment.
+
+---
+
+## Stage 2c item 4 — Journeys grid imagery: no change, deliberately
+
+The grid's cards use `cardImage`, which is the operator's own tour
+photography. Replacing any of it with a sourced landscape would be the same
+mistake as swapping the hero: a gain in resolution bought with a loss of
+authenticity, on the one surface where a visitor is deciding whether these are
+*your* journeys.
+
+The one open question here is the curator's recommendation to swap **Heart of
+Cretan Tradition's** card from the loom room to the golden-hour ridge —
+already on your decisions list as item 7, still a taste call, still unshipped.
+
+---
+
+## Stage 2d — enhancement crops: BLOCKED FOR YOU
+
+The bounded pipeline (2× max, sharp originals only, restoration not
+generation) **cannot run on this machine.** There is no Real-ESRGAN, no
+Upscayl, no waifu2x, no ImageMagick — and installing tooling is outside the
+repo, which the standing rules forbid.
+
+I did **not** substitute a plain Lanczos resize. That is resampling, not
+restoration: it would produce a softer file, add no detail, and calling it
+"enhanced" would be exactly the kind of dressed-up claim this project refuses.
+
+**To unblock:** install Upscayl (GUI, drag-and-drop, AGPLv3 backend) or the
+`realesrgan-ncnn-vulkan` binary. Then the pipeline runs 2× on sharp originals
+only, writes 100% crop side-by-sides into `qa/review/enhanced/`, and **nothing
+is wired into the site** until you accept the crops.
+
 ---
 
 ## Deployment verification trail
