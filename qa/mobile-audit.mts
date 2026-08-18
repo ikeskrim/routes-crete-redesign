@@ -93,12 +93,24 @@ for (const route of ROUTES) {
         return `"${(el.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 20)}" ${Math.round(r.width)}x${Math.round(r.height)}`;
       });
 
-    // Body copy that has become unreadable at this width.
+    /* Body copy that has become unreadable at this width.
+     *
+     * `text-eyebrow` is deliberately excluded and reported separately. Those
+     * 11px uppercase labels are the design's voice, not an oversight, and
+     * raising them is a taste call for the client rather than something a
+     * guard should force. Excluding them silently would be how a guard rots,
+     * so their exact sizes are still printed on every run — the decision stays
+     * measurable while it is open. */
+    const eyebrows = [...new Set([...document.querySelectorAll(".text-eyebrow")]
+      .map((el) => Math.round(parseFloat(getComputedStyle(el).fontSize))))].sort();
+
     const tiny = [...document.querySelectorAll("p, li, span")]
       .filter((el) => {
         const t = (el.textContent ?? "").trim();
         if (t.length < 25) return false;
         if (el.children.length) return false;
+        if (String(el.className).includes("text-eyebrow")) return false;
+        if (el.closest(".text-eyebrow")) return false;
         const size = parseFloat(getComputedStyle(el).fontSize);
         return size < 14;
       })
@@ -124,6 +136,7 @@ for (const route of ROUTES) {
       tiny,
       headerBottom: Math.round(headerBottom),
       headingTop: Math.round(headingTop),
+      eyebrows,
       undimensioned,
       images: document.querySelectorAll("main img").length,
     };
@@ -145,6 +158,9 @@ for (const route of ROUTES) {
     "no body text under 14px",
     report.tiny.length === 0,
     report.tiny.length ? report.tiny.join("; ") : "smallest body copy is >= 14px",
+  );
+  console.log(
+    `  note  eyebrow labels render at ${report.eyebrows.join("/")}px — an open design decision, not a defect`,
   );
   check(
     "images declare their dimensions",

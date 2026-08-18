@@ -275,7 +275,7 @@ export function SignatureScene({
               ))}
               <Link
                 href={href}
-                className="ml-6 inline-flex items-center gap-3 text-eyebrow uppercase text-sand-100/80 transition-colors duration-300 hover:text-gold-300"
+                className="ml-6 inline-flex min-h-11 items-center gap-3 text-eyebrow uppercase text-sand-100/80 transition-colors duration-300 hover:text-gold-300"
               >
                 {ctaLabel}
               </Link>
