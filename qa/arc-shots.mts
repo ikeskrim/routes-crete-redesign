@@ -33,6 +33,13 @@ async function inventory(page: import("playwright").Page) {
     const stamp =
       document.querySelector('meta[name="build-commit"]')?.getAttribute("content") ??
       "(unstamped)";
+    /* TWO different counts, both true, reported separately so the digest
+       never reads them as a contradiction:
+         movements  = top-level sections of <main>  (what the arc guard asserts)
+         structural = movements PLUS nested scenes  (what a scroller feels)
+       The stacked why-us scene is nested inside the positioning section on
+       purpose, so it is structural but not a movement of its own. */
+    const movements = document.querySelectorAll("main > section").length;
     const sections = [...document.querySelectorAll("main section, main [data-stacked], main [data-scene]")]
       .map((s) => {
         const heading = s.querySelector("h1, h2")?.textContent ?? "";
@@ -46,6 +53,7 @@ async function inventory(page: import("playwright").Page) {
       .filter((s, i, all) => i === 0 || s.heading !== all[i - 1].heading || s.id !== all[i - 1].id);
     return {
       stamp,
+      movements,
       sections,
       docHeightVh: Math.round(
         (document.documentElement.scrollHeight / window.innerHeight) * 100,
@@ -77,7 +85,10 @@ async function shoot(browser: Browser, label: string, base: string) {
     results[vp.name] = inv;
     if (vp.name === "desktop") {
       console.log(`\n${label}  build-commit=${inv.stamp}  ${base}`);
-      console.log(`  ${inv.sections.length} sections, ${inv.docHeightVh}vh tall, ${inv.images} images in <main>`);
+      console.log(
+        `  ${inv.movements} movements (${inv.sections.length} structural incl. nested scenes), ` +
+          `${inv.docHeightVh}vh tall, ${inv.images} images in <main>`,
+      );
       inv.sections.forEach((s, i) =>
         console.log(`   ${String(i + 1).padStart(2, "0")}  #${s.id.padEnd(14)} ${s.heading}`),
       );

@@ -78,6 +78,87 @@ Every frame records the `build-commit` of the build it came from, so a capture
 cannot be attributed to the wrong build. The "before" deployment predates the
 stamp and correctly reads `(unstamped)`.
 
+
+---
+
+## Block 2 — The arc, completed to six movements ✅  `7893cd3`
+
+The approved decision, executed. **The correction above is now closed.**
+
+| | before (`n13f7cb8i`) | after (`7893cd3`) |
+|---|---|---|
+| movements | 9 | **6** |
+| structural elements (incl. nested scenes) | 9 | 7 |
+| page height | 2422vh | **1888vh** |
+| images in `<main>` | 68 | **16** |
+
+**534vh shorter, 52 fewer images.** Two counts are reported because two are
+true: six top-level *movements*, seven *structural elements* — the stacked
+why-us scene is nested inside the positioning section on purpose, so it is
+structural but not a movement of its own. Labelled explicitly in the capture
+so the digest never reads them as a contradiction.
+
+What moved:
+
+- **The stacked why-us scene now renders inside the positioning section.**
+  Stating the case and evidencing it are one movement, not two. `#why-us`
+  stays on the scene so the legacy anchor still lands on the panels.
+- **The island map folded into the Journeys section.** Every pin and link
+  unchanged — verified, 6 labelled links.
+- **The VIP-transfer spotlight is cut.** It restated the transfers item
+  sitting in the grid above it: same photograph, same title, a third time.
+
+Nothing vanished with it. `availability` now renders on the grid card — the
+spotlight was the only place that fact appeared on the homepage — `region`
+already did, and the full body, gallery and facts live on the item's own page,
+which the card links to.
+
+### A hard wall caught me mid-cut
+
+Removing the spotlight removed the element owning `#transfers`, and
+`legacyAnchorMap` points `#portfolio1` at it — a legacy inbound link would
+have landed nowhere. **The exactly-once anchor guard, written the night before
+after the duplicate-id bug, failed the build on it.** The transfers *card*
+owns `#transfers` now, which is a better target anyway: the anchor lands on
+the transfers content rather than on a section that restated it.
+
+### The arc guard
+
+`qa/arc-guard.mts` asserts the six movements by id, in order; that each
+carries its content; that the bands survive; and that the content of the cut
+sections is still on the page. Marquee and bridge are whitelisted **by name**,
+so "uncounted" is a decision on the record rather than an oversight.
+
+It caught its own first instrument too: it reported 0/3 why-us panels using
+`innerText`, which approximates *rendered* text and drops the scene's inactive
+panels (opacity-0, absolutely positioned) — on a page whose HTML plainly
+contained all three. `textContent` is the instrument that answers "is this
+content on the page".
+
+### Deployed, warm
+
+| route | perf | a11y | BP | SEO | CLS |
+|---|---|---|---|---|---|
+| home | **89 / 89 / 93** (three runs) | 100 | 100 | 100 | 0 |
+| experience | 93 | 100 | 100 | 100 | 0 |
+
+Guards on the deployment: arc OK · asset 56/0 (anchors exactly-once, og 200) ·
+parity OK · headline 52/0 · credits 34/0 · menu 37/0.
+
+**Flagged honestly: home lost headroom.** It was 94; it now measures 89–93, and
+89 *is* the floor. The likely cause is structural rather than a defect — the
+stacked scene moved from mid-page to immediately after the hero, so three
+full-bleed images and their client JS now compete with the hero's LCP (TBT rose
+to 80–140ms from ~70). The floor holds on every run, but the margin is thin.
+The cheapest lever, untried tonight rather than guessed at: defer the
+non-active panel images in the stacked scene.
+
+Alias verified: pushed and advanced to `7893cd3` unaided in ~45s.
+
+Captures: `qa/screenshots/arc/` — before/after at desktop and 390, full-page
+and fold, plus `_inventory.json` with the section list, height and image count
+for each build. Every frame records its `build-commit`.
+
 ---
 
 ## Deployment verification trail
@@ -107,14 +188,11 @@ the day it matters.
    were coming from something other than the pushed commit. I can inspect and
    deploy but must not touch project settings. Until this is resolved, every
    push needs its alias verified and may need a manual `vercel deploy --prod`.
-2. **Whether to finish the arc to six sections**, and how. The remaining work is
-   a genuine design decision, not a mechanical merge: `#why-us` is the most
-   cinematic thing on the homepage, and folding it into a text block to hit a
-   section count would remove motion from a page you have asked to be *more*
-   cinematic. My recommendation is to keep the stacked scene and re-target the
-   count — six *movements*, where the map folds into the journeys section and
-   the transfer spotlight is cut in favour of the merged grid that replaced it.
-   That is a proposal, not a decision taken.
+2. ~~Whether to finish the arc to six sections~~ — **decided and shipped**
+   (Block 2, `7893cd3`). One open sub-question: home performance now measures
+   89–93 where it was 94, with 89 as the floor. Accept the thinner margin, or
+   spend a block deferring the stacked scene's non-active images to buy it
+   back?
 3. **Label warmth** — the contrast retune (`/50`→`/70`, `/45`→`/65`). Before/after
    stills in `qa/screenshots/contrast/`. It arrived as an accessibility fix and
    changed how every small label reads.
