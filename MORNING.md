@@ -402,6 +402,90 @@ variant a real fraction of visitors get.
 **Not captured, because not built:** photo swaps (none shipped — see above),
 enhancement crops, serif A/B. Those stages were not reached.
 
+
+---
+
+## Block 7 — 390px pass ✅  `6e97dae` + type-token reporting
+
+`qa/mobile-audit.mts` walks all seven routes at 390 and checks what a visitor
+can feel: no sideways scroll, tap targets ≥ 44px (WCAG 2.5.8), no ad-hoc tiny
+text, images declaring dimensions. **Now 0 failures across every route.**
+
+Every one of these was failing on every page before this block:
+
+| target | was |
+|---|---|
+| the wordmark (home link) | 139×23 |
+| footer navigation | 87×19 |
+| contact channels | — |
+| back links | 186×13 |
+| `/credits` licence + source ×30 | 76×13 |
+| map mobile legend | 163×13 |
+| "Read the full journey" | 158×26 |
+
+The wordmark uses `-my-3` so the bar keeps its visual height while the target
+grows — **a fix must not become a redesign.** The map legend mattered most:
+it *is* the map on a phone, where the 8px pins are unusable.
+
+### The audit lied three times before it told the truth
+
+- It reported the **skip link** as a 1×1 target. That link is 1×1 until
+  focused; the pattern was working.
+- It listed **ken-burns layers** as overflowing at `right=406`. They are
+  deliberately oversized inside `overflow-hidden` frames, and page
+  `scrollWidth` was exactly 390. It now ignores anything an ancestor clips.
+- Excluding map pins by their Tailwind class produced an **invalid CSS
+  selector** that threw inside `page.evaluate` and killed the run silently.
+  The chart carries a `data-map` marker now — a real hook, not a class match.
+
+And once, the run itself lied: I chained the audit onto an alias-wait that had
+not yet succeeded, and measured the **old deployment**. A stale measurement
+looks exactly like an unchanged one. That is what the alias assertion is for,
+and I had bypassed it by chaining.
+
+### The type tokens are reported, not enforced
+
+The 11px `text-eyebrow` and 13px `text-caption` are the design's voice, not
+oversights, and raising them is a taste call — not one to take unattended.
+But silently exempting them is how a guard rots, so every run prints:
+
+```
+note  type tokens at this width: text-eyebrow 11px, text-caption 13px
+      — design decisions, reported not enforced
+```
+
+The decision stays visible and measurable while it is open, and the check
+still catches genuinely ad-hoc small text.
+
+---
+
+# NEXT SESSION STARTS HERE
+
+**State:** tree clean, alias verified at the committed HEAD, eight guards green
+on the deployment (arc · asset · parity · headline · credits · nav-flash ·
+menu · mobile). Stage 1 closed. Stage 2 complete through curation, ingest and
+placement. The digest is assembled — 30 frames, `qa/screenshots/digest/`.
+
+**Where the run ended and why:** context boundary, not credits. Closed at a
+block boundary with everything verified and pushed.
+
+**Exact next action — burn-down item 2, the reduced-motion pass:**
+
+1. Review `qa/screenshots/digest/reduced-motion-*.png` (10 frames already
+   captured). The variant should feel *designed*, not disabled.
+2. Known shape of the problem: reduced-motion drops the pinned scenes to plain
+   stacked sequences. Check that the stacked why-us scene and the signature
+   scene still read as compositions rather than as lists, and that nothing
+   sits at a resting opacity below 1.
+3. Then burn-down 3 (benchmark side-by-sides), 4 (Stage 7 dry run), 5 (qa
+   hardening), 6 (README + DEPLOYMENT refresh).
+
+**Not started:** Stage 3 (cinematic build), Stage 4 (copy deck), Stage 5
+(serif A/B). Those are the largest remaining pieces of the master brief.
+
+**Standing trap, now written down:** never chain a measurement onto the same
+command as the alias-wait. Wait, confirm the commit, *then* measure.
+
 ---
 
 ## Deployment verification trail

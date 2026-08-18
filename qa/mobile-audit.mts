@@ -101,16 +101,23 @@ for (const route of ROUTES) {
      * guard should force. Excluding them silently would be how a guard rots,
      * so their exact sizes are still printed on every run — the decision stays
      * measurable while it is open. */
-    const eyebrows = [...new Set([...document.querySelectorAll(".text-eyebrow")]
-      .map((el) => Math.round(parseFloat(getComputedStyle(el).fontSize))))].sort();
+    const tokenSize = (sel: string) =>
+      [...new Set([...document.querySelectorAll(sel)]
+        .map((el) => Math.round(parseFloat(getComputedStyle(el).fontSize))))].sort().join("/");
+    const eyebrows = tokenSize(".text-eyebrow");
+    const captions = tokenSize(".text-caption");
 
     const tiny = [...document.querySelectorAll("p, li, span")]
       .filter((el) => {
         const t = (el.textContent ?? "").trim();
         if (t.length < 25) return false;
         if (el.children.length) return false;
-        if (String(el.className).includes("text-eyebrow")) return false;
-        if (el.closest(".text-eyebrow")) return false;
+        /* Named type-scale tokens are design decisions, reported below by
+           name and size. This check exists to catch AD HOC small text — a
+           stray text-[11px] on a paragraph — which is a defect rather than a
+           decision. */
+        if (/text-(eyebrow|caption)/.test(String(el.className))) return false;
+        if (el.closest(".text-eyebrow, .text-caption")) return false;
         const size = parseFloat(getComputedStyle(el).fontSize);
         return size < 14;
       })
@@ -137,6 +144,7 @@ for (const route of ROUTES) {
       headerBottom: Math.round(headerBottom),
       headingTop: Math.round(headingTop),
       eyebrows,
+      captions,
       undimensioned,
       images: document.querySelectorAll("main img").length,
     };
@@ -160,7 +168,8 @@ for (const route of ROUTES) {
     report.tiny.length ? report.tiny.join("; ") : "smallest body copy is >= 14px",
   );
   console.log(
-    `  note  eyebrow labels render at ${report.eyebrows.join("/")}px — an open design decision, not a defect`,
+    `  note  type tokens at this width: text-eyebrow ${report.eyebrows || "-"}px, ` +
+      `text-caption ${report.captions || "-"}px — design decisions, reported not enforced`,
   );
   check(
     "images declare their dimensions",
