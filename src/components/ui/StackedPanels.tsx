@@ -69,7 +69,11 @@ export function StackedPanels({
      planes disagree — matching rates just looks like the whole scene sliding.
      Transform only, so it composites and costs no layout. */
   const textDrift = useTransform(scrollYProgress, [0, 1], ["1.4%", "-1.4%"]);
-  const vignetteScale = useTransform(scrollYProgress, [0, 1], [1.08, 1]);
+  /* A third plane on the vignette was measured and REMOVED. It promoted a
+     full-viewport gradient to its own compositor layer for a movement almost
+     nobody could see, and home performance went 90-95 -> 88-90 with one
+     reading under the 89 floor. Two planes that disagree already read as
+     depth; the third was cost without effect. */
 
   if (reduced) {
     return (
@@ -139,10 +143,9 @@ export function StackedPanels({
             near-black ground. Deeper wash plus a vignette gives the type the
             same punch while the imagery still drifts behind it. */}
         <div aria-hidden className="absolute inset-0 bg-olive-700/90" />
-        <motion.div
+        <div
           aria-hidden
-          style={{ scale: vignetteScale }}
-          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,transparent_10%,rgba(20,23,26,0.55)_100%)] will-change-transform"
+          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,transparent_10%,rgba(20,23,26,0.55)_100%)]"
         />
         <div aria-hidden className="grain-overlay" />
 
