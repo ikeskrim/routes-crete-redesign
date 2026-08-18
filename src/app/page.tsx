@@ -27,6 +27,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SplitLines } from "@/components/ui/SplitLines";
 import {
   getBlur,
+  graded,
   getExperiences,
   getMappableLocations,
   getSignatureExperience,
@@ -67,6 +68,23 @@ export default function HomePage() {
       image: scene.image,
       blurDataURL: getBlur(scene.image),
     })) ?? [];
+
+  /* A real photograph for the places we can honestly show one of. Each is
+     licence-verified and credited on /credits; the alt text says only what the
+     photograph actually depicts. Locations with no honest match — the cave,
+     the unnamed "historic village", the airports — simply have no preview
+     rather than borrowing a lookalike. */
+  const locationImages: Record<string, { src: string; alt: string; blurDataURL?: string }> = {};
+  for (const [key, file, alt] of [
+    ["rethymno-town", "rethymno-harbour-mountains", "Rethymno harbour, with the snow-covered mountains behind it"],
+    ["kourtaliotis-gorge", "kourtaliotiko-waterfall", "The waterfall in Kourtaliotiko Gorge"],
+    ["preveli-lagoon", "preveli-palms-aerial", "The palm forest along the river at Preveli"],
+    ["preveli-monastery", "preveli-monastery", "Preveli Monastery"],
+    ["mountain-village", "anogeia-village", "The mountain village of Anogeia"],
+  ] as const) {
+    const src = graded(`/images/sourced/${file}.jpg`);
+    locationImages[key] = { src, alt, blurDataURL: getBlur(src) };
+  }
 
   const locationLinks: Record<string, string> = {};
   for (const item of [...experiences, ...transfers]) {
@@ -191,7 +209,11 @@ export default function HomePage() {
                 Where these journeys take you
               </h3>
               <div className="mt-12">
-                <LocationsMap locations={locations} links={locationLinks} />
+                <LocationsMap
+                  locations={locations}
+                  links={locationLinks}
+                  images={locationImages}
+                />
               </div>
             </div>
           </Reveal>

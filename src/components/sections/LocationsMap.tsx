@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
@@ -23,12 +24,27 @@ import { cn } from "@/lib/utils";
 export function LocationsMap({
   locations,
   links,
+  images = {},
 }: {
   locations: (MapLocation & { lat: number; lng: number })[];
   links: Record<string, string>;
+  /**
+   * One real, licence-verified photograph per location key.
+   *
+   * The chart plots where the journeys go; these show what is actually there.
+   * Every one is credited on /credits and captioned only with what it truly
+   * depicts — a place with no photograph we can honestly caption simply has
+   * no preview, which is why this is a partial map rather than a required one.
+   *
+   * Mounted only while a pin is hovered or focused, so the chart costs nothing
+   * until someone reaches for it — the same contract the overlay menu keeps.
+   */
+  images?: Record<string, { src: string; alt: string; blurDataURL?: string }>;
 }) {
   const reduced = useReducedMotionSafe();
   const [hovered, setHovered] = useState<string | null>(null);
+
+  const preview = hovered ? images[hovered] : undefined;
 
   if (locations.length === 0) return null;
 
@@ -99,6 +115,35 @@ export function LocationsMap({
             />
           ))}
         </svg>
+
+        {/* The place itself, behind the chart.
+            Sits at low opacity under the pins rather than beside them: the
+            chart keeps its exact geometry, so nothing moves and CLS stays 0.
+            Desktop only — at 390 the chart is already the whole width and a
+            wash behind it would only cost legibility. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
+          {preview && !reduced && (
+            <motion.div
+              key={preview.src}
+              initial={{ opacity: 0, scale: 1.04 }}
+              animate={{ opacity: 0.3, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0"
+            >
+              <Image
+                src={preview.src}
+                alt=""
+                fill
+                sizes="(max-width: 1024px) 0px, 60vw"
+                quality={62}
+                placeholder={preview.blurDataURL ? "blur" : undefined}
+                blurDataURL={preview.blurDataURL}
+                className="object-cover"
+              />
+            </motion.div>
+          )}
+        </div>
 
         {/* Pins */}
         {points.map((point, i) => {
