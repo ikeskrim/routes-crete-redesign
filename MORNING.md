@@ -276,43 +276,86 @@ unstyled page passes content checks and produces worthless captures.**
 
 ---
 
+---
+
+## Block 11 — Stage 3 opens: the unclip reveal reaches the cards ✅  `49b603f`
+
+Stage 3's clip-path "unclip" already existed as `ImageReveal` — but the two
+surfaces a visitor meets first, **the Journeys cards and the galleries**, were
+not using it. They went through `MediaFrame`, which had a hover zoom and no
+entrance at all.
+
+`Unclip` is that reveal for frames that already own their geometry: the
+photograph wipes open from its lower edge over **1.3s** while settling out of a
+1.12 push-in over **1.8s**. The lengths differ on purpose — the frame is fully
+open a beat before the image stops moving, which is what makes it read as a
+photograph settling rather than a box opening.
+
+Rendered as an absolutely-positioned layer inside the existing ratio frame, so
+it changes nothing about layout.
+
+`priority` images are exempt: **an LCP candidate must never wait behind a
+reveal.** Not hypothetical — this project already shipped an opacity-gated
+subheading that became the LCP element at 3420ms.
+
+### Fixed while passing
+
+The `noscript` fallback forced `opacity` and `transform` but **not
+`clip-path`** — so with JavaScript disabled, a clip-path reveal would have
+stayed permanently shut. That gap predates this change (`ImageReveal` has the
+same shape) and now releases clip-path too.
+
+### Two of my own traps, both already written down
+
+- **`scrollIntoView` reported the reveal never firing.** Lenis owns the scroll
+  and ignores it. Real wheel events show `inset(100% 0% 0%)` → `inset(0%)`.
+- **`pkill -f "next start"` does not kill the server on this machine**, so my
+  first probe read a stale build with no wrapper at all. Kill by port.
+
+Both traps were already in my own notes. I walked into them anyway.
+
+### Deployed, four runs
+
+| run | performance | TBT | CLS |
+|---|---|---|---|
+| 1 (first after deploy) | 93 | 180ms | **0.011** |
+| 2 | 92 | 120ms | **0** |
+| 3 | — | 120ms | **0** |
+| 4 | — | 230ms | **0** |
+
+**CLS holds at 0** — the single 0.011 was the first run after deploy, matching
+the cold-edge pattern already documented. I did not accept it on one reading,
+because CLS 0 is a hard wall.
+
+**TBT rose from ~60ms to 120–230ms.** That is the reveals' main-thread cost,
+and it is the honest price of this block. Performance 92–93, floor intact,
+experience route 95.
+
+---
+
 # NEXT SESSION STARTS HERE
 
-**State:** tree clean, alias verified, eight guards green on the deployment
-(arc · asset · parity · headline · credits · nav-flash · menu · mobile).
-Stage 1 closed. Stage 2 complete through curation, ingest, and placement
-items 1–2. The digest is assembled — 30 frames in `qa/screenshots/digest/`.
+**State:** tree clean, alias verified, seven guards green on the deployment.
+Stage 1 closed. Stage 2 closed except 2d (blocked on tooling — see above).
+Stage 3 item 1 (overlay menu) and item 2 (unclip reveals) done.
 
 **Where the run ended and why:** context boundary, not credits. Closed at a
-block boundary, everything verified and pushed.
+block boundary, verified and pushed.
 
-**Exact next action — Stage 2c item 3, experience-page placement:**
+**Exact next action — Stage 3 item 3, SVG-mask scene transitions** between key
+homepage sections. Then item 4 (layered-zoom depth inside the stacked scenes),
+item 5 (warm sand-texture layer joining the grain system), item 6 (drag-inertia
+strips), item 7 (refined sticky chapter indices).
 
-1. Add **editorial image breaks** between body sections on the two experience
-   pages, using the new high-resolution sourced files where they depict that
-   experience's actual places:
-   - `kourtaliotis-temple-of-nature` → `kourtaliotiko-waterfall`,
-     `preveli-palms-aerial`, `gorge-saint-nicholas-aerial`
-   - `heart-of-cretan-tradition` → `anogeia-village`, `olive-tree-kavousi`,
-     `messara-plain-phaistos`
-2. **Caption them as what they are** — a licensed photograph of the named
-   place, never presented as a tour snapshot. That distinction is the whole
-   honesty line here: the galleries are the operator's own tour photography,
-   and a sourced landscape must not be mistaken for it.
-3. Then item 4, the Journeys grid imagery.
-4. Everything flows through the existing machinery: ledger (already has all
-   15), credits guard, grade B (already applied), asset audit, captures.
+**Watch TBT.** It is now 120–230ms on home. Each further motion block adds
+main-thread work, and the 89 floor is the wall — measure after every one, and
+prefer transform/opacity/clip-path over anything that reads layout.
 
-**Then:** Stage 3 cinematic → Stage 4 copy → Stage 5 serif A/B → Stage 6
-digest refresh → burn-down items 2–6 (reduced-motion pass, benchmark
-coverage, Stage 7 dry run, qa hardening, README/DEPLOYMENT refresh).
-
-**Standing traps, learned the hard way:**
-- Never chain a measurement onto the same command as the alias-wait. Wait,
-  confirm the commit, *then* measure.
-- Restart the local server after every rebuild — a stale one serves HTML
-  referencing the previous build's CSS chunk, which 500s, and the page renders
-  unstyled while every content guard still passes. `preflight` catches it now.
+**Standing traps, all three learned twice:**
+- Never chain a measurement onto the alias-wait. Wait, confirm, then measure.
+- `pkill` does not stop the dev server here — kill by port (PowerShell
+  `Get-NetTCPConnection -LocalPort 3009`).
+- `scrollIntoView` does nothing while Lenis owns scroll — use real wheel events.
 - No generated patches for JSX. Direct writes only.
 
 ---
