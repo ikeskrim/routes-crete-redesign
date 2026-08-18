@@ -64,6 +64,13 @@ export function StackedPanels({
   const drift = useTransform(scrollYProgress, [0, 1], ["-3%", "3%"]);
   const zoom = useTransform(scrollYProgress, [0, 1], [1.06, 1.14]);
 
+  /* Layered depth: the words travel the opposite way to the photograph behind
+     them, and a third of the distance. Parallax reads as depth only when the
+     planes disagree — matching rates just looks like the whole scene sliding.
+     Transform only, so it composites and costs no layout. */
+  const textDrift = useTransform(scrollYProgress, [0, 1], ["1.4%", "-1.4%"]);
+  const vignetteScale = useTransform(scrollYProgress, [0, 1], [1.08, 1]);
+
   if (reduced) {
     return (
       <section
@@ -132,9 +139,10 @@ export function StackedPanels({
             near-black ground. Deeper wash plus a vignette gives the type the
             same punch while the imagery still drifts behind it. */}
         <div aria-hidden className="absolute inset-0 bg-olive-700/90" />
-        <div
+        <motion.div
           aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,transparent_10%,rgba(20,23,26,0.55)_100%)]"
+          style={{ scale: vignetteScale }}
+          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,transparent_10%,rgba(20,23,26,0.55)_100%)] will-change-transform"
         />
         <div aria-hidden className="grain-overlay" />
 
@@ -167,7 +175,10 @@ export function StackedPanels({
         </div>
 
         {/* Centred statement — punctuation between the lighter sections. */}
-        <div className="relative mx-auto w-full max-w-[92rem] px-6 text-center sm:px-8 lg:px-12">
+        <motion.div
+          style={{ y: textDrift }}
+          className="relative mx-auto w-full max-w-[92rem] px-6 text-center will-change-transform sm:px-8 lg:px-12"
+        >
           {panels.map((panel, i) => (
             <div
               key={i}
@@ -215,7 +226,7 @@ export function StackedPanels({
               </span>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
