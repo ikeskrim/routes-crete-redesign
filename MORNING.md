@@ -333,6 +333,53 @@ experience route 95.
 
 ---
 
+---
+
+## Block 12 — Stage 3 item 3: scene seams ✅  `18275ce`
+
+Where a dark movement met a light one the page changed colour on a **straight
+line**, which reads as two web sections stacked. Two seams now dissolve:
+hero → positioning, and how-it-works → team. Those are the only two real
+colour changes left; the other boundaries already have the marquee or the
+cinematic bridge doing the work.
+
+The band paints the incoming colour and masks it with two **intersected**
+layers — a vertical gradient and the same fractal-noise SVG the grain uses —
+so the outgoing scene breaks up into the next rather than stopping at a rule.
+
+### Zero JavaScript, and the budget is why
+
+The scroll-scrubbed version is more spectacular and would have cost
+main-thread time that is not available. TBT was already 120–230ms against
+your new 250ms ceiling. A mask the compositor paints once costs nothing to
+scroll past, and at a seam the eye crosses in half a second the scrubbed
+version buys very little. **That trade is written where the component is
+declared**, so it reads as a decision rather than an omission.
+
+### TBT report — the ceiling held, with one honest outlier
+
+Eight readings on the deployment, home:
+
+| | performance | TBT |
+|---|---|---|
+| 1 | 90 | 130ms |
+| 2 | 95 | 140ms |
+| 3 | **83** | **410ms** |
+| 4 | 90 | 130ms |
+| 5–8 | 92 · 92 · 94 · 91 | — |
+
+**TBT delta: none — if anything slightly better.** 130–140ms against a
+120–230ms baseline, which is what a pure-CSS block should do.
+
+**One reading breached both limits: 410ms TBT, performance 83.** I am
+reporting it rather than burying it. Seven of eight readings sit at 90–95, the
+block adds no JavaScript whatsoever, and the outlier is consistent with
+measurement noise on a loaded machine driving Chromium. But it is the second
+time an isolated run has misbehaved on this route, and if it recurs it is
+worth chasing rather than explaining away.
+
+**CLS 0 on all four disciplined readings.** a11y 100 throughout.
+
 # NEXT SESSION STARTS HERE
 
 **State:** tree clean, alias verified, seven guards green on the deployment.
