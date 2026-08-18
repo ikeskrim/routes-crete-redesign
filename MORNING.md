@@ -159,6 +159,52 @@ Captures: `qa/screenshots/arc/` — before/after at desktop and 390, full-page
 and fold, plus `_inventory.json` with the section list, height and image count
 for each build. Every frame records its `build-commit`.
 
+
+---
+
+## Block 3 — Server-side hero flag ✅  `3ae8c0b`  → **STAGE 1 CLOSES AT 100%**
+
+The nav no longer discovers whether it is over a hero; it knows before the HTML
+is sent. `usePathname` is available during server rendering of a client
+component, so the state is chosen from the route. Which routes have heroes was
+**verified against the deployment**, not assumed: homepage and item detail
+pages, tone always dark; index pages, `/contact` and `/credits` have none.
+
+### The guard found two bugs, both mine
+
+**First, my own fix caused the flash it was meant to prevent.** I added a
+"route guessed wrong" branch that forced the bar solid when no hero was in the
+DOM — but on a heavy page under a throttled CPU the document is still
+streaming and the hero simply is not there *yet*. It now retries until
+`document.readyState === "complete"` before concluding anything.
+
+**That did not fix it.** So I stopped theorising and recorded a timeline. The
+real cause: the observer fires while the hero has **height 0** — present but
+not yet sized — and a zero-height target reports `intersectionRatio: 0`, which
+reads as "scrolled away".
+
+```
+t=355ms   hero present, height 0     → observer says ratio 0 → bar goes SOLID
+t=1040ms  hero present, height 738   → observer corrects     → bar TRANSPARENT
+```
+
+A zero-height hero tells us nothing, so that reading is now ignored rather
+than believed. **Two wrong hypotheses, one measurement.**
+
+### The guard checks two different things
+
+Because only one of them is about JavaScript:
+
+1. **with JS disabled** — the header markup already carries the right state
+2. **with JS enabled, CPU throttled 6×** — sampled 40 times across the whole
+   load, asserting exactly one state was ever observed
+
+8 assertions, 0 failures, across a hero page, an item page, an index page and
+`/contact`. Verified on the deployment as well as locally.
+
+Seven guards now green: arc · nav-flash · asset · parity · headline 52/0 ·
+credits 34/0 · menu 37/0.
+
 ---
 
 ## Deployment verification trail
