@@ -141,6 +141,13 @@ export function LocationsMap({
                 blurDataURL={preview.blurDataURL}
                 className="object-cover"
               />
+              {/* A scrim over the photograph, under the pins.
+                  Without it the pin labels sit on whatever the photograph
+                  happens to be — bright limestone in the gorge frame — and
+                  their contrast becomes a property of the image rather than of
+                  the design. Lighthouse cannot catch this because it never
+                  hovers. */}
+              <div className="absolute inset-0 bg-ocean-950/55" />
             </motion.div>
           )}
         </div>
