@@ -278,31 +278,42 @@ unstyled page passes content checks and produces worthless captures.**
 
 # NEXT SESSION STARTS HERE
 
-**State:** tree clean, all seven guards green, alias verified. Stage 1 closed.
-Stage 2 is half done: galleries curated, photography sourced and verified, but
-**no new image is in the repo yet**.
+**State:** tree clean, alias verified, eight guards green on the deployment
+(arc · asset · parity · headline · credits · nav-flash · menu · mobile).
+Stage 1 closed. Stage 2 complete through curation, ingest, and placement
+items 1–2. The digest is assembled — 30 frames in `qa/screenshots/digest/`.
 
-**Exact next action — Stage 2b, ingest the sourced photography:**
+**Where the run ended and why:** context boundary, not credits. Closed at a
+block boundary, everything verified and pushed.
 
-1. Read `qa/sourcing-candidates.json` (18 verified entries, each with
-   `directImageUrl`, `confirmedLicence`, `author`, `filePageUrl`, `dimensions`).
-2. Download each to `assets-src/sourced/` with a descriptive slug
-   (`rethymno-lighthouse-harbour.jpg`, `spili-fountains.jpg`, …).
-3. SHA-1 each file and add a full entry to `content/photo-credits.json` —
-   same shape as the existing five. `qa/credits-guard.mts` enforces
-   completeness and will fail on anything missing.
-4. Grade: `powershell -File qa/grade.ps1 -Grade B` (it already reads
-   `assets-src/` as a second root).
-5. Rebuild, run `qa/credits-guard.mts` and `qa/asset-audit.mts`.
-6. **Then** Stage 2c: hero/section swaps — clear wins shipped and flagged,
-   taste calls captured both ways with the current image left shipped.
+**Exact next action — Stage 2c item 3, experience-page placement:**
 
-**Do not** wire any enhanced/upscaled file into the site — Stage 2d produces
-review crops only.
+1. Add **editorial image breaks** between body sections on the two experience
+   pages, using the new high-resolution sourced files where they depict that
+   experience's actual places:
+   - `kourtaliotis-temple-of-nature` → `kourtaliotiko-waterfall`,
+     `preveli-palms-aerial`, `gorge-saint-nicholas-aerial`
+   - `heart-of-cretan-tradition` → `anogeia-village`, `olive-tree-kavousi`,
+     `messara-plain-phaistos`
+2. **Caption them as what they are** — a licensed photograph of the named
+   place, never presented as a tour snapshot. That distinction is the whole
+   honesty line here: the galleries are the operator's own tour photography,
+   and a sourced landscape must not be mistaken for it.
+3. Then item 4, the Journeys grid imagery.
+4. Everything flows through the existing machinery: ledger (already has all
+   15), credits guard, grade B (already applied), asset audit, captures.
 
-**Watch:** two candidates are near-duplicates of each other (three Rethymno
-lighthouse frames of the same tower). Ship one, not three.
+**Then:** Stage 3 cinematic → Stage 4 copy → Stage 5 serif A/B → Stage 6
+digest refresh → burn-down items 2–6 (reduced-motion pass, benchmark
+coverage, Stage 7 dry run, qa hardening, README/DEPLOYMENT refresh).
 
+**Standing traps, learned the hard way:**
+- Never chain a measurement onto the same command as the alias-wait. Wait,
+  confirm the commit, *then* measure.
+- Restart the local server after every rebuild — a stale one serves HTML
+  referencing the previous build's CSS chunk, which 500s, and the page renders
+  unstyled while every content guard still passes. `preflight` catches it now.
+- No generated patches for JSX. Direct writes only.
 
 ---
 
@@ -485,6 +496,55 @@ block boundary with everything verified and pushed.
 
 **Standing trap, now written down:** never chain a measurement onto the same
 command as the alias-wait. Wait, confirm the commit, *then* measure.
+
+
+---
+
+## Block 8 — A touch equivalent for the map previews ✅  `f6b74df`
+
+The hover preview I shipped had no counterpart on touch, where hover does not
+exist — phones got the chart and nothing else while desktop got the
+photography. **A gap I created, not one I inherited.**
+
+The mobile legend now carries a 40px thumbnail per row, and drops to a single
+column so a row holds a thumbnail and a place name without cramping either.
+Rows with no honest photograph have no thumbnail — the same rule the chart
+follows.
+
+Mobile audit still 0 failures across all seven routes; asset and credits
+guards green on the deployment.
+
+---
+
+## Block 9 — Provenance: a third tag, "attested" ✅  `9e395ae`
+
+You asked for the map preview's benchmark side-by-side on the basis that it
+is the Fitzroy destination-hover pattern. **I could not produce one honestly,
+and that is the finding.**
+
+- The research brief describes a Fitzroy hero with an "interactive map +
+  rotating destination list" whose images swap on hover. **Captured, that hero
+  is a full-bleed photograph with no map.**
+- Probing the live site, the *behaviour* is real: hovering a destination
+  fetches destination-specific photographs — five image requests on a single
+  hover, `okavango-delta-botswana…`, `chem-chem-lodge…`.
+- But three attempts to capture the *visual* state produced **byte-identical
+  frames**. The destination items sit inside a closed dropdown: hovering
+  prefetches without changing the screen, and reaching for the dropdown moves
+  the pointer off it.
+
+So the pattern is **attested, not captured** — now an explicit third
+provenance tag in `qa/README.md`, alongside reference-derived and
+vocabulary-derived. It gets the instrumental observation on the record and
+**no side-by-side**, because a manufactured pairing is worse than an absent
+one.
+
+The attempt frames were deleted rather than kept, so nobody later mistakes a
+closed-dropdown screenshot for evidence of a hover mechanic.
+
+**This slightly revises your ratification.** The pattern's provenance is not
+"reference-derived" in this project's strict sense until someone captures the
+mechanic. The idea is legitimately Fitzroy's; the evidence file is not there.
 
 ---
 
