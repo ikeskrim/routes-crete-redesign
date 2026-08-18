@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Unclip } from "./Unclip";
 import { getBlur } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
@@ -78,6 +79,8 @@ export function MediaFrame({
   className,
   ratio = "aspect-[4/5]",
   zoom = true,
+  reveal = true,
+  revealDelay = 0,
   children,
 }: {
   src: string;
@@ -87,6 +90,9 @@ export function MediaFrame({
   className?: string;
   ratio?: string;
   zoom?: boolean;
+  /** The unclip reveal. Off for anything above the fold that must paint at once. */
+  reveal?: boolean;
+  revealDelay?: number;
   children?: React.ReactNode;
 }) {
   return (
@@ -97,21 +103,34 @@ export function MediaFrame({
         className,
       )}
     >
-      <Media
-        src={src}
-        alt={alt}
-        fill
-        sizes={sizes}
-        priority={priority}
-        imgClassName={cn(
-          // Slow scale plus a grade shift: on hover the frame warms and opens
-          // very slightly, as though the same photograph were graded a stop
-          // brighter. Transform and filter only.
-          "transition-[transform,filter] duration-[1.2s] ease-luxe will-change-transform",
-          zoom &&
-            "group-hover:scale-[1.045] group-hover:brightness-[1.06] group-hover:saturate-[1.12] group-hover:contrast-[1.03]",
-        )}
-      />
+      {(() => {
+        const media = (
+          <Media
+            src={src}
+            alt={alt}
+            fill
+            sizes={sizes}
+            priority={priority}
+            imgClassName={cn(
+              // Slow scale plus a grade shift: on hover the frame warms and
+              // opens very slightly, as though the same photograph were graded
+              // a stop brighter. Transform and filter only.
+              "transition-[transform,filter] duration-[1.2s] ease-luxe will-change-transform",
+              zoom &&
+                "group-hover:scale-[1.045] group-hover:brightness-[1.06] group-hover:saturate-[1.12] group-hover:contrast-[1.03]",
+            )}
+          />
+        );
+        /* An LCP candidate must never wait behind a reveal — that is the
+           mistake this project already made once, when an opacity-gated
+           subheading became the LCP element at 3420ms. `priority` marks the
+           image the page is measured on, so it paints immediately. */
+        return reveal && !priority ? (
+          <Unclip delay={revealDelay}>{media}</Unclip>
+        ) : (
+          media
+        );
+      })()}
       {children}
     </div>
   );

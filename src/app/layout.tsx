@@ -115,7 +115,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             runs, force every one of them visible rather than shipping a blank
             page. */}
         <noscript>
-          <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
+          <style>{`[data-reveal]{opacity:1!important;transform:none!important;clip-path:none!important}`}</style>
         </noscript>
 
         <a
