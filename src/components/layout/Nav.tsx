@@ -9,6 +9,26 @@ import { OverlayMenu } from "@/components/layout/OverlayMenu";
 import type { NavItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
+/**
+ * Does this route server-render a full-bleed hero behind the bar?
+ *
+ * The bar used to initialise `overHero = false` and discover the truth from an
+ * IntersectionObserver after hydration, which meant a page with a dark hero
+ * painted a solid light bar for the first frames — visible on a throttled
+ * first paint, and reported from a real device.
+ *
+ * `usePathname` is available during server rendering of a client component, so
+ * the correct state can be chosen before the HTML is sent instead of corrected
+ * afterwards. Heroes live on the homepage and on item detail pages; the
+ * collection index pages, /contact and /credits have none. The observer still
+ * runs and still has the last word — this only removes the wrong first frame.
+ */
+function routeHasHero(pathname: string): boolean {
+  if (pathname === "/") return true;
+  // Detail pages only. /experiences and /transfers are index pages with no hero.
+  return /^\/(experiences|transfers)\/[^/]+$/.test(pathname);
+}
+
 export function Nav({
   items,
   brandName,
@@ -22,7 +42,10 @@ export function Nav({
   bookHref?: string;
 }) {
   const pathname = usePathname();
-  const [overHero, setOverHero] = useState(false);
+  /* Initialised from the route, not discovered after hydration — see
+     routeHasHero above. Every hero on this site declares tone "dark", so the
+     default tone below is already correct for the first paint. */
+  const [overHero, setOverHero] = useState(() => routeHasHero(pathname));
   /**
    * Whether the hero behind the bar is light or dark. Direction B's heroes sit
    * on warm sand rather than a dark scrim, and light-on-light left the nav
@@ -48,19 +71,52 @@ export function Nav({
    * the bar stays solid, which is the correct default.
    */
   useEffect(() => {
-    const hero = document.querySelector("[data-hero]");
-    if (!hero) return;
+    let io: IntersectionObserver | null = null;
+    let cancelled = false;
 
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        setOverHero(entry.intersectionRatio > 0.12);
-        const tone = (entry.target as HTMLElement).dataset.heroTone;
-        setHeroTone(tone === "light" ? "light" : "dark");
-      },
-      { threshold: [0, 0.12, 0.5, 1] },
-    );
-    io.observe(hero);
-    return () => io.disconnect();
+    const attach = () => {
+      if (cancelled) return;
+      const hero = document.querySelector("[data-hero]");
+
+      if (!hero) {
+        /* The hero may simply not be in the DOM YET. The document streams, and
+           on a heavy page under a throttled CPU this effect can run first —
+           an earlier version concluded "no hero" here and forced the bar
+           solid, producing exactly the flash the server-side flag exists to
+           remove. Only conclude once the document is actually complete. */
+        if (document.readyState !== "complete") {
+          requestAnimationFrame(attach);
+          return;
+        }
+        // Genuinely no hero: the route guessed wrong. Correct it rather than
+        // leave a transparent bar over a light page.
+        setOverHero(false);
+        return;
+      }
+
+      io = new IntersectionObserver(
+        ([entry]) => {
+          /* A zero-height hero is one the browser has not laid out yet, not a
+             hero that has scrolled away. Its intersectionRatio is 0, and
+             acting on that flipped the bar solid for ~700ms on a throttled
+             item page — measured: height 0 at t=355ms, 738px at t=1040ms.
+             Ignore the reading rather than believe it; the observer fires
+             again once layout lands. */
+          if (entry.boundingClientRect.height === 0) return;
+          setOverHero(entry.intersectionRatio > 0.12);
+          const tone = (entry.target as HTMLElement).dataset.heroTone;
+          setHeroTone(tone === "light" ? "light" : "dark");
+        },
+        { threshold: [0, 0.12, 0.5, 1] },
+      );
+      io.observe(hero);
+    };
+
+    attach();
+    return () => {
+      cancelled = true;
+      io?.disconnect();
+    };
   }, [pathname]);
 
   /* Escape and the scroll lock deliberately do NOT live here. OverlayMenu owns
