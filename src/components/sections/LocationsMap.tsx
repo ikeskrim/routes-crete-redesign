@@ -246,9 +246,10 @@ export function LocationsMap({
       </div>
 
       {/* Mobile legend — the labels can't live on the chart at this width. */}
-      <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2 sm:hidden">
+      <ul className="mt-6 grid grid-cols-1 gap-y-1 sm:hidden">
         {points.map((point) => {
           const href = links[point.key];
+          const image = images[point.key];
           const label = (
             <span className="flex items-baseline gap-2">
               <span
@@ -275,12 +276,46 @@ export function LocationsMap({
             <li key={point.key}>
               {/* min-h-11: this legend IS the map on a phone, where the 8px
                   pins are unusable — so its rows have to be real targets. */}
+              {/* Touch has no hover, so the desktop preview has no counterpart
+                  here unless the photograph comes to the legend. A small
+                  thumbnail per row is the tasteful equivalent: it shows the
+                  place without pretending a hover state exists. Rows with no
+                  honest photograph simply have no thumbnail — the same rule as
+                  the chart. */}
               {href ? (
-                <Link href={href} className="flex min-h-11 items-center">
+                <Link href={href} className="flex min-h-11 items-center gap-3">
+                  {image && (
+                    <Image
+                      src={image.src}
+                      alt=""
+                      width={40}
+                      height={40}
+                      quality={55}
+                      sizes="40px"
+                      placeholder={image.blurDataURL ? "blur" : undefined}
+                      blurDataURL={image.blurDataURL}
+                      className="size-10 shrink-0 rounded-media object-cover"
+                    />
+                  )}
                   {label}
                 </Link>
               ) : (
-                <span className="flex min-h-11 items-center">{label}</span>
+                <span className="flex min-h-11 items-center gap-3">
+                  {image && (
+                    <Image
+                      src={image.src}
+                      alt=""
+                      width={40}
+                      height={40}
+                      quality={55}
+                      sizes="40px"
+                      placeholder={image.blurDataURL ? "blur" : undefined}
+                      blurDataURL={image.blurDataURL}
+                      className="size-10 shrink-0 rounded-media object-cover"
+                    />
+                  )}
+                  {label}
+                </span>
               )}
             </li>
           );
