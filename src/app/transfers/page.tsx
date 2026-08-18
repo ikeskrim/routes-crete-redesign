@@ -117,7 +117,7 @@ export default function TransfersPage() {
 
                   <Link
                     href={primary.href}
-                    className="group mt-10 inline-flex items-center gap-3"
+                    className="group mt-10 inline-flex min-h-11 items-center gap-3"
                   >
                     <span
                       aria-hidden

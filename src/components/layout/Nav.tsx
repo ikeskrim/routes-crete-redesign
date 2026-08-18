@@ -166,7 +166,9 @@ export function Nav({
           <Link
             href="/"
             className={cn(
-              "font-display text-[0.9375rem] font-bold uppercase tracking-[0.16em] transition-colors duration-500",
+              // -my-3 keeps the bar's visual height while giving the home link a
+              // real 44px target: it was 23px tall on every page.
+              "inline-flex min-h-11 -my-3 items-center font-display text-[0.9375rem] font-bold uppercase tracking-[0.16em] transition-colors duration-500",
               (transparent && !onLight) || onDarkPanel ? "text-sand-50" : "text-ink",
             )}
           >

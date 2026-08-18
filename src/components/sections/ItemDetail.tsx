@@ -285,7 +285,7 @@ export function ItemDetail({ item }: { item: ContentItem }) {
 
             <Link
               href="/experiences"
-              className="group mt-14 inline-flex items-center gap-3"
+              className="group mt-14 inline-flex min-h-11 items-center gap-3"
             >
               <span
                 aria-hidden

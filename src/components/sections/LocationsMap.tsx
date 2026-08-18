@@ -68,7 +68,10 @@ export function LocationsMap({
 
   return (
     <div className="relative">
-      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-media border border-sand-100/12 bg-ocean-900 sm:aspect-[2/1]">
+      <div
+        data-map
+        className="relative aspect-[16/10] w-full overflow-hidden rounded-media border border-sand-100/12 bg-ocean-900 sm:aspect-[2/1]"
+      >
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="none"

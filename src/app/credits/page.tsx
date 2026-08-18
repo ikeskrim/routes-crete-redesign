@@ -75,7 +75,7 @@ export default function CreditsPage() {
                         href={photo.licenceUrl}
                         target="_blank"
                         rel="noopener noreferrer license"
-                        className="text-ink underline decoration-ink/25 underline-offset-4 transition-colors duration-300 hover:text-gold-600"
+                        className="inline-flex min-h-11 items-center text-ink underline decoration-ink/25 underline-offset-4 transition-colors duration-300 hover:text-gold-600"
                       >
                         {photo.licence}
                       </a>
@@ -83,7 +83,7 @@ export default function CreditsPage() {
                         href={photo.source}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-ink/55 underline decoration-ink/20 underline-offset-4 transition-colors duration-300 hover:text-gold-600"
+                        className="inline-flex min-h-11 items-center text-ink/55 underline decoration-ink/20 underline-offset-4 transition-colors duration-300 hover:text-gold-600"
                       >
                         Source
                       </a>

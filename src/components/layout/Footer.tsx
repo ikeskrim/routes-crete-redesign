@@ -147,7 +147,7 @@ export function Footer({ site }: { site: SiteContent }) {
                 <li key={item.key}>
                   <Link
                     href={item.href}
-                    className="text-body-sm text-sand-100/85 transition-colors duration-300 hover:text-gold-300"
+                    className="inline-flex min-h-11 items-center text-body-sm text-sand-100/85 transition-colors duration-300 hover:text-gold-300"
                   >
                     {item.label}
                   </Link>
@@ -166,7 +166,7 @@ export function Footer({ site }: { site: SiteContent }) {
                     {...(channel.external
                       ? { target: "_blank", rel: "noopener noreferrer" }
                       : {})}
-                    className="group inline-flex items-baseline gap-3"
+                    className="group inline-flex min-h-11 items-baseline gap-3 py-1"
                   >
                     <span className="text-eyebrow uppercase text-sand-200/65">
                       {channel.label}
