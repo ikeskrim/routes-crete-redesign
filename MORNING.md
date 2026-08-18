@@ -205,6 +205,104 @@ Because only one of them is about JavaScript:
 Seven guards now green: arc · nav-flash · asset · parity · headline 52/0 ·
 credits 34/0 · menu 37/0.
 
+
+---
+
+## Block 4 — Stage 2 photography, part 1 ✅  `d6a9cdc`
+
+### Galleries curated: 51 frames → 28
+
+Two agents **viewed every frame** — not ranked by filename or file size — and
+cut each gallery to its strongest 14.
+
+| gallery | before | after | removed |
+|---|---|---|---|
+| heart-of-cretan-tradition | 29 | **14** | 15 |
+| kourtaliotis-temple-of-nature | 22 | **14** | 8 |
+
+**Nothing was deleted.** Every removed frame stays in the repo, stays graded,
+and is listed in `galleryRemoved` with the reason it was cut and — where it
+was a near-duplicate — which kept frame it defers to. Restoring one means
+moving its entry back into `gallery`.
+
+The reasons are checkable against the picture, which was the point:
+
+> "Third near-identical held-out-food frame on the same patch of gravel, and
+> chips on a plate say nothing about Crete."
+
+Each gallery now opens on a chosen frame: the old stone arch bridge for
+Kourtaliotis (already the card and og image, so it opens on the picture that
+brought the visitor in), and the golden-hour ridge line for Heart of Cretan
+Tradition (the only frame in the 29 with real light).
+
+### Sourcing: 18 verified licence-clean candidates, 2 rejected
+
+Four agents sourced, four adversarial verifiers re-read every licence from the
+file page itself. Saved to `qa/sourcing-candidates.json` with full reasoning.
+
+- **Rethymno** — the Venetian-harbour lighthouse (three frames), the Fortezza,
+  an old-town lane
+- **Villages** — Spili and its lion-head fountains (three), Anogeia
+- **Olive groves** — five, incl. an ancient olive near Kavousi and the Messara plain
+- **Kourtaliotiko / Preveli** — four NEW frames incl. a gorge waterfall
+
+**Two rejected on licence**, which is the system working: a Margarites frame
+tagged CC BY 3.0 **Greece** and a Kourtaliotiko chapel frame that did not
+survive verification.
+
+The verifiers did more than rubber-stamp. One **corrected a proposer's
+description outright** — the proposer had reconstructed a scene it could not
+see, describing a low up-angle and omitting the harbour water and the tower's
+reflection that occupy the bottom third. Flagged as "must not be reused as
+caption source". That is exactly the failure mode that would have put a false
+caption on the site.
+
+Every Commons candidate was also checked for the **stale Structured Data**
+trap: all clean, and the check is recorded so a future audit knows wikitext is
+operative.
+
+### A stale server cost me twenty minutes — preflight now catches it
+
+The headline guard began reporting exact doubling on every headline. It looked
+like the sr-only regression from days ago. It was not: a server left running
+across a rebuild served HTML referencing the **previous** build's CSS chunk,
+which returned **500**. The page rendered completely unstyled, `invisible`
+never applied to the measuring copy, so both copies were visible — and the
+guard correctly reported two.
+
+Every content guard passed throughout, because the words were all there. **An
+unstyled page passes content checks and produces worthless captures.**
+`preflight` now asserts the stylesheet returns 200 before any run starts.
+
+---
+
+# NEXT SESSION STARTS HERE
+
+**State:** tree clean, all seven guards green, alias verified. Stage 1 closed.
+Stage 2 is half done: galleries curated, photography sourced and verified, but
+**no new image is in the repo yet**.
+
+**Exact next action — Stage 2b, ingest the sourced photography:**
+
+1. Read `qa/sourcing-candidates.json` (18 verified entries, each with
+   `directImageUrl`, `confirmedLicence`, `author`, `filePageUrl`, `dimensions`).
+2. Download each to `assets-src/sourced/` with a descriptive slug
+   (`rethymno-lighthouse-harbour.jpg`, `spili-fountains.jpg`, …).
+3. SHA-1 each file and add a full entry to `content/photo-credits.json` —
+   same shape as the existing five. `qa/credits-guard.mts` enforces
+   completeness and will fail on anything missing.
+4. Grade: `powershell -File qa/grade.ps1 -Grade B` (it already reads
+   `assets-src/` as a second root).
+5. Rebuild, run `qa/credits-guard.mts` and `qa/asset-audit.mts`.
+6. **Then** Stage 2c: hero/section swaps — clear wins shipped and flagged,
+   taste calls captured both ways with the current image left shipped.
+
+**Do not** wire any enhanced/upscaled file into the site — Stage 2d produces
+review crops only.
+
+**Watch:** two candidates are near-duplicates of each other (three Rethymno
+lighthouse frames of the same tower). Ship one, not three.
+
 ---
 
 ## Deployment verification trail
