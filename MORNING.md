@@ -423,29 +423,78 @@ element's own range is the only reading that means anything.
 Reduced motion untouched: that branch drops the pin entirely, so there are no
 transforms to disagree.
 
+---
+
+## Block 14 — Stage 3 item 5: sand, the light sections join the texture system ✅  `0496ea5`
+
+`grain` gave the dark movements depth by breaking up large flat fields of
+ocean-950. The light movements had **nothing** — `bg-shell` rendered as a
+perfectly even field, which is what made them read as "web section" next to
+the photography rather than as paper.
+
+`sand` is the counterpart, built the same way so the two are one system (a
+fractal-noise SVG, no image request) but warmer, weaker, and **multiplied**
+rather than overlaid, so it settles into the light ground instead of lifting
+it. A single very wide gold wash sits beneath it so the field has a centre of
+gravity.
+
+Applied to the three light movements: positioning, journeys, team.
+
+**TBT report:** 110 · 140 · 120 · 100ms — delta within noise, as a pure-CSS
+block should be. Performance 90 · 92 · 92 · 93, **CLS 0 on all four**, a11y 100.
+
+---
+
+## Stage 3 progress
+
+| item | state |
+|---|---|
+| 1 fullscreen overlay menu | ✅ shipped, 37 assertions |
+| 2 clip-path unclip reveals | ✅ shipped |
+| 3 SVG-mask scene seams | ✅ shipped, zero JS |
+| 4 layered-zoom depth | ✅ shipped, then cut back on measurement |
+| 5 warm sand texture | ✅ shipped |
+| 6 drag-inertia strips | not started |
+| 7 refined sticky indices | not started |
+
+**Running TBT picture across the block:** 130 → 220 (cut back) → 80 → 140.
+The ceiling held everywhere except the three-plane experiment, which is
+exactly the case the ceiling exists to catch.
+
+
+---
+
 # NEXT SESSION STARTS HERE
 
-**State:** tree clean, alias verified, seven guards green on the deployment.
-Stage 1 closed. Stage 2 closed except 2d (blocked on tooling — see above).
-Stage 3 item 1 (overlay menu) and item 2 (unclip reveals) done.
+**State:** tree clean, alias verified, all guards green on the deployment
+(arc · asset · parity · headline · credits · nav-flash · menu · mobile).
+Stage 1 closed. Stage 2 closed except 2d (blocked on tooling). Stage 3 items
+1–5 shipped.
 
 **Where the run ended and why:** context boundary, not credits. Closed at a
 block boundary, verified and pushed.
 
-**Exact next action — Stage 3 item 3, SVG-mask scene transitions** between key
-homepage sections. Then item 4 (layered-zoom depth inside the stacked scenes),
-item 5 (warm sand-texture layer joining the grain system), item 6 (drag-inertia
-strips), item 7 (refined sticky chapter indices).
+**Exact next action — Stage 3 item 6, drag-inertia horizontal strips.** Then
+item 7 (refined sticky chapter indices). After that: Stage 4 copy deck,
+Stage 5 serif A/B, Stage 6 digest refresh, then the burn-down list.
 
-**Watch TBT.** It is now 120–230ms on home. Each further motion block adds
-main-thread work, and the 89 floor is the wall — measure after every one, and
-prefer transform/opacity/clip-path over anything that reads layout.
+**Budget discipline, now proven twice:**
+- TBT ceiling 250ms, floor 89, CLS 0 — measure four readings after every
+  motion block, on the deployment, warm.
+- Pure-CSS blocks cost nothing (seams, sand: delta within noise). Anything
+  that promotes a **full-viewport** element to its own compositor layer is
+  expensive — the vignette plane cost ~4 performance points and ~60ms TBT for
+  a movement nobody could see. **The effect has to earn the layer.**
 
-**Standing traps, all three learned twice:**
+**Standing traps — check this list at every block start:**
 - Never chain a measurement onto the alias-wait. Wait, confirm, then measure.
-- `pkill` does not stop the dev server here — kill by port (PowerShell
+- `pkill` does not stop the server here — kill by port (PowerShell
   `Get-NetTCPConnection -LocalPort 3009`).
 - `scrollIntoView` does nothing while Lenis owns scroll — use real wheel events.
+- Sample scroll-driven transforms **inside** the element's own scroll range,
+  or every reading returns the same number.
+- Restart the server after every rebuild, or a stale one serves HTML against
+  a dead CSS chunk and the page renders unstyled while content guards pass.
 - No generated patches for JSX. Direct writes only.
 
 ---
