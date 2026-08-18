@@ -306,3 +306,38 @@ curl -s https://<url>/ | grep build-commit
 `local` otherwise. Check it *first* whenever deployed behaviour disagrees with
 the repo — before reading code, before re-running a guard, before believing a
 regression is real.
+
+
+## Provenance: attested is not the same as captured
+
+The project tags every motion pattern as **reference-derived** (has a
+counterpart in `qa/benchmark/`, ships with a side-by-side) or
+**vocabulary-derived** (no counterpart exists, and none should be
+manufactured). The map's hover photo-preview sat awkwardly between the two,
+and it is worth writing down why.
+
+The research brief describes Fitzroy's homepage as an "interactive map +
+rotating destination list" where "large photographic country images swap on
+hover". Captured, the hero is a full-bleed photograph with **no map**, and the
+map-ish section below it had not rendered its content at capture time.
+
+Probing the live site directly, the *behaviour* is real: hovering a
+destination item fetches destination-specific photographs
+(`okavango-delta-botswana…`, `chem-chem-lodge…`) — five image requests on a
+single hover. So the mechanic exists.
+
+But three attempts to capture the **visual** state produced byte-identical
+frames: the destination items live inside a closed dropdown, so hovering them
+prefetches without changing anything on screen, and reaching for the dropdown
+moved the pointer off it.
+
+**So this pattern is attested, not captured.** The honest tag is a third one:
+
+> **attested** — the behaviour was observed instrumentally (network, DOM), but
+> no benchmark frame shows it. It gets the observation on the record and
+> **no side-by-side**, because a manufactured pairing is worse than an absent
+> one.
+
+The frames from those attempts were deleted rather than kept, precisely so
+nobody later mistakes a closed-dropdown screenshot for evidence of a hover
+mechanic.
