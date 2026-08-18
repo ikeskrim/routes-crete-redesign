@@ -380,6 +380,49 @@ worth chasing rather than explaining away.
 
 **CLS 0 on all four disciplined readings.** a11y 100 throughout.
 
+---
+
+## Block 13 — Stage 3 item 4: layered depth, then measured and cut back ✅  `78e1df4`
+
+The stacked scene drifted and zoomed its photograph, but everything else moved
+with it — which reads as one flat picture sliding rather than a space with
+depth. Planes only read as depth when they **disagree**.
+
+Shipped first with three planes: photograph (`y -3%→3%`, `scale 1.06→1.14`),
+vignette (`scale 1.08→1`), and the words (`y 1.4%→-1.4%` — opposite direction,
+a third the travel).
+
+### Then the budget did its job
+
+| | three planes | vignette cut |
+|---|---|---|
+| performance | 89 · 90 · **88** · 89 | **98 · 92 · 92 · 93** |
+| TBT | 170 · 220 · 150 · 120ms | **80 · 120 · 130 · 80ms** |
+| CLS | 0 | 0 |
+
+One reading was **below the 89 floor**, so under your standing rule it got
+simplified before it shipped rather than after. The vignette plane promoted a
+full-viewport radial gradient to its own compositor layer in order to move it
+8% — almost imperceptible behind a photograph and a wash.
+
+Cutting that one layer bought back **~4 performance points and ~60ms of TBT**.
+The photograph and the words still disagree, which is where the depth actually
+reads. **Two planes that disagree are enough; the third was cost without
+effect.**
+
+Worth keeping as a rule: `will-change` on a full-viewport element is not free,
+and the effect has to earn the layer.
+
+### Measured inside the scene, not guessed
+
+The text plane reads `-0.25` at 20% of the scene's scroll progress and `-3.06`
+at 80%. A first probe sampled twice *outside* the range and got the same
+number both times — the scene had already passed. Sampling within the
+element's own range is the only reading that means anything.
+
+Reduced motion untouched: that branch drops the pin entirely, so there are no
+transforms to disagree.
+
 # NEXT SESSION STARTS HERE
 
 **State:** tree clean, alias verified, seven guards green on the deployment.
