@@ -24,6 +24,7 @@ import { StackedPanels } from "@/components/ui/StackedPanels";
 import { Bridge } from "@/components/ui/Cinematic";
 import { ContentCard } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
+import { SceneEdge } from "@/components/ui/SceneEdge";
 import { SplitLines } from "@/components/ui/SplitLines";
 import {
   getBlur,
@@ -119,6 +120,10 @@ export default function HomePage() {
         primaryCta={{ label: "Explore Experiences", href: "/experiences" }}
         secondaryCta={{ label: "Book Now", href: "/contact" }}
       />
+
+      {/* The hero dissolves into the positioning statement rather than
+          meeting it on a ruled line. */}
+      <SceneEdge to="bg-shell" />
 
       {/* 02 — the positioning statement, and the panels that evidence it. */}
       <Positioning
@@ -247,6 +252,9 @@ export default function HomePage() {
         steps={site.howToBook.steps}
         responsePromise={site.howToBook.responsePromise}
       />
+
+      {/* Dark how-it-works dissolves into the light team movement. */}
+      <SceneEdge to="bg-shell" />
 
       {/* 06 — The team, which hands over to the footer-as-destination. */}
       <Team

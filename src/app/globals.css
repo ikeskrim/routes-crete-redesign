@@ -361,3 +361,37 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Scene edge — the dissolve between two movements.
+
+   Two mask layers intersected: a vertical gradient that fades the incoming
+   colour in, and the same fractal-noise SVG the grain uses, so the fade breaks
+   up into grain instead of banding. The result is a torn seam rather than a
+   ruled line, and because it is a mask the compositor paints it once — no
+   JavaScript, no scroll listener, nothing charged against TBT.
+   -------------------------------------------------------------------------- */
+@utility scene-edge {
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0%, black 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  mask-image:
+    linear-gradient(to bottom, transparent 0%, black 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  mask-size: 100% 100%, 140px 140px;
+  -webkit-mask-size: 100% 100%, 140px 140px;
+  mask-repeat: no-repeat, repeat;
+  -webkit-mask-repeat: no-repeat, repeat;
+}
+
+/* A light-into-dark seam dissolves the other way. */
+@utility scene-edge--flip {
+  -webkit-mask-image:
+    linear-gradient(to top, transparent 0%, black 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  mask-image:
+    linear-gradient(to top, transparent 0%, black 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
