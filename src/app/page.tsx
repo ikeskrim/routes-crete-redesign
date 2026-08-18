@@ -172,9 +172,11 @@ export default function HomePage() {
       <section
         id="experiences"
         aria-labelledby="journeys-heading"
-        className="bg-shell py-section-lg text-ink"
+        className="sand bg-shell py-section-lg text-ink"
       >
-        <div className="mx-auto w-full max-w-[92rem] px-6 sm:px-8 lg:px-12">
+        <div aria-hidden className="sand-wash" />
+        <div aria-hidden className="sand-overlay" />
+        <div className="relative mx-auto w-full max-w-[92rem] px-6 sm:px-8 lg:px-12">
           <div className="flex items-center gap-4">
             <span aria-hidden className="h-px w-10 bg-gold-600/60" />
             <p className="text-eyebrow uppercase text-rock-500">

@@ -37,8 +37,10 @@ export function Positioning({
     <section
       id="positioning"
       aria-labelledby="positioning-heading"
-      className="bg-shell text-ink"
+      className="sand bg-shell text-ink"
     >
+      <div aria-hidden className="sand-wash" />
+      <div aria-hidden className="sand-overlay" />
       <div className="mx-auto w-full max-w-[92rem] px-6 py-section-lg sm:px-8 lg:px-12">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-7">

@@ -395,3 +395,44 @@
     linear-gradient(to top, transparent 0%, black 72%),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+
+/* --------------------------------------------------------------------------
+   Sand — the light-section counterpart to `grain`.
+
+   `grain` gives the dark movements depth by breaking up large flat areas of
+   ocean-950. The light movements had nothing: bg-shell rendered as a perfectly
+   even field, which is what made the page read as "web section" next to the
+   photography rather than as paper.
+
+   Same construction as the grain so the two belong to one system — a
+   fractal-noise SVG, no image request — but warmer, weaker, and multiplied
+   instead of overlaid, so it settles INTO the sand rather than lifting it.
+   A single very wide warm radial sits under it so the field is not uniform.
+
+   Pure CSS. Nothing here is animated and nothing is charged against TBT.
+   -------------------------------------------------------------------------- */
+@utility sand {
+  position: relative;
+}
+
+@utility sand-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23s)' opacity='0.85'/%3E%3C/svg%3E");
+}
+
+/* A wide, very low-contrast warm wash so the light field has a centre of
+   gravity instead of being flat. */
+@utility sand-wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    120% 90% at 50% 0%,
+    color-mix(in srgb, var(--color-gold-400) 7%, transparent) 0%,
+    transparent 62%
+  );
+}
