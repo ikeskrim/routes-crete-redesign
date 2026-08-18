@@ -188,7 +188,7 @@ export function Footer({ site }: { site: SiteContent }) {
                   href={footer.brochure.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-body-sm text-sand-100/85 transition-colors duration-300 hover:text-gold-300"
+                  className="inline-flex min-h-11 items-center text-body-sm text-sand-100/85 transition-colors duration-300 hover:text-gold-300"
                 >
                   {footer.brochure.label}
                 </a>
@@ -199,7 +199,7 @@ export function Footer({ site }: { site: SiteContent }) {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-body-sm text-sand-100/85 transition-colors duration-300 hover:text-gold-300"
+                    className="inline-flex min-h-11 items-center text-body-sm text-sand-100/85 transition-colors duration-300 hover:text-gold-300"
                   >
                     {link.label}
                   </a>
@@ -224,7 +224,7 @@ export function Footer({ site }: { site: SiteContent }) {
               attribution, and this is where it is discharged. */}
           <Link
             href="/credits"
-            className="transition-colors duration-300 hover:text-sand-50"
+            className="inline-flex min-h-11 items-center transition-colors duration-300 hover:text-sand-50"
           >
             Photography credits
           </Link>

@@ -273,7 +273,15 @@ export function LocationsMap({
 
           return (
             <li key={point.key}>
-              {href ? <Link href={href}>{label}</Link> : label}
+              {/* min-h-11: this legend IS the map on a phone, where the 8px
+                  pins are unusable — so its rows have to be real targets. */}
+              {href ? (
+                <Link href={href} className="flex min-h-11 items-center">
+                  {label}
+                </Link>
+              ) : (
+                <span className="flex min-h-11 items-center">{label}</span>
+              )}
             </li>
           );
         })}
