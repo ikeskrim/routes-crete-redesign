@@ -25,7 +25,10 @@
       "The family-run Paraschakis Olive Mill"
     ]
   },
-  "locations": ["central-crete-cave", "mountain-village"],
+  "locations": [
+    "central-crete-cave",
+    "mountain-village"
+  ],
   "body": [
     {
       "type": "paragraph",
@@ -65,34 +68,182 @@
     "ogImage": "/images/experiences/heart-of-cretan-tradition/sp1-103.jpg"
   },
   "gallery": [
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-103.jpg", "width": 1024, "height": 629, "oldUrl": "/media/sp1-103.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-152.jpg", "width": 683, "height": 1024, "oldUrl": "/media/sp1-152.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-148.jpg", "width": 683, "height": 1024, "oldUrl": "/media/sp1-148.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-142.jpg", "width": 705, "height": 1024, "oldUrl": "/media/sp1-142.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-14.jpg", "width": 1024, "height": 668, "oldUrl": "/media/sp1-14.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-128.jpg", "width": 1024, "height": 553, "oldUrl": "/media/sp1-128.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-12.jpg", "width": 684, "height": 1024, "oldUrl": "/media/sp1-12.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-110.jpg", "width": 1024, "height": 650, "oldUrl": "/media/sp1-110.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-157.jpg", "width": 1024, "height": 570, "oldUrl": "/media/sp1-157.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-25.jpg", "width": 1024, "height": 742, "oldUrl": "/media/sp1-25.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-22.jpg", "width": 1024, "height": 683, "oldUrl": "/media/sp1-22.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg", "width": 1024, "height": 724, "oldUrl": "/media/sp1-17.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-45.jpg", "width": 1024, "height": 637, "oldUrl": "/media/sp1-45.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-5.jpg", "width": 768, "height": 972, "oldUrl": "/media/sp1-5.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-50.jpg", "width": 706, "height": 1024, "oldUrl": "/media/sp1-50.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-56.jpg", "width": 683, "height": 1024, "oldUrl": "/media/sp1-56.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-6.jpg", "width": 752, "height": 1024, "oldUrl": "/media/sp1-6.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-63.jpg", "width": 683, "height": 1024, "oldUrl": "/media/sp1-63.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-71.jpg", "width": 1024, "height": 731, "oldUrl": "/media/sp1-71.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-8.jpg", "width": 1024, "height": 653, "oldUrl": "/media/sp1-8.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-81.jpg", "width": 1024, "height": 683, "oldUrl": "/media/sp1-81.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-86.jpg", "width": 1024, "height": 588, "oldUrl": "/media/sp1-86.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-9.jpg", "width": 1024, "height": 683, "oldUrl": "/media/sp1-9.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-90.jpg", "width": 768, "height": 1017, "oldUrl": "/media/sp1-90.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp1-97.jpg", "width": 1024, "height": 683, "oldUrl": "/media/sp1-97.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/spimg_7582.jpg", "width": 1024, "height": 575, "oldUrl": "/media/spIMG_7582.JPG" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/spimg_7611.jpg", "width": 1024, "height": 575, "oldUrl": "/media/spIMG_7611.JPG" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp-kalits-2.jpg", "width": 960, "height": 640, "oldUrl": "/media/spΚΑΛΙΤΣ.2.jpg" },
-    { "src": "/images/experiences/heart-of-cretan-tradition/sp-tyrokom.jpg", "width": 640, "height": 960, "oldUrl": "/media/spΤΥΡΟΚΟΜ.jpg" }
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-152.jpg",
+      "width": 683,
+      "height": 1024,
+      "oldUrl": "/media/sp1-152.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-6.jpg",
+      "width": 752,
+      "height": 1024,
+      "oldUrl": "/media/sp1-6.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-22.jpg",
+      "width": 1024,
+      "height": 683,
+      "oldUrl": "/media/sp1-22.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg",
+      "width": 1024,
+      "height": 724,
+      "oldUrl": "/media/sp1-17.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-63.jpg",
+      "width": 683,
+      "height": 1024,
+      "oldUrl": "/media/sp1-63.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp-tyrokom.jpg",
+      "width": 640,
+      "height": 960,
+      "oldUrl": "/media/spΤΥΡΟΚΟΜ.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-45.jpg",
+      "width": 1024,
+      "height": 637,
+      "oldUrl": "/media/sp1-45.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-86.jpg",
+      "width": 1024,
+      "height": 588,
+      "oldUrl": "/media/sp1-86.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/spimg_7611.jpg",
+      "width": 1024,
+      "height": 575,
+      "oldUrl": "/media/spIMG_7611.JPG"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp-kalits-2.jpg",
+      "width": 960,
+      "height": 640,
+      "oldUrl": "/media/spΚΑΛΙΤΣ.2.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-50.jpg",
+      "width": 706,
+      "height": 1024,
+      "oldUrl": "/media/sp1-50.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-90.jpg",
+      "width": 768,
+      "height": 1017,
+      "oldUrl": "/media/sp1-90.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-97.jpg",
+      "width": 1024,
+      "height": 683,
+      "oldUrl": "/media/sp1-97.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-8.jpg",
+      "width": 1024,
+      "height": 653,
+      "oldUrl": "/media/sp1-8.jpg"
+    }
+  ],
+  "galleryCurationNote": "Curated from 29 frames to 14. Every frame was viewed, not ranked by metadata. Nothing was deleted: the removed frames are listed below with the reason each was cut, and every file is still in the repository and still graded — restoring one means moving its entry back into `gallery`.",
+  "galleryRemoved": [
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-103.jpg",
+      "alt": "",
+      "reason": "The loom is a good subject shot badly: a flat frontal record shot where the bottom 40 percent is bare tile floor, a modern printed vinyl banner occupies the right edge, and a contemporary bulb fitting hangs into the top of the frame. Currently the card image, so worth reshooting rather than keeping.",
+      "duplicateOf": ""
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-148.jpg",
+      "alt": "",
+      "reason": "Second of three near-identical held-out-food frames shot on the same patch of gravel with the same arm across the bottom. The salad itself is generic — it could be any taverna anywhere.",
+      "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp1-50.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-142.jpg",
+      "alt": "",
+      "reason": "Third of the three held-out-food frames and the least specific of them — chips on a plate say nothing about Crete, and the bare forearm cutting up through the bottom third is the weakest composition of the group.",
+      "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp1-50.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-14.jpg",
+      "alt": "",
+      "reason": "Snapshot framing: eight backs of heads, red wire fencing crossing the whole left half, a blue metal shed at right, and the bottom third given over to empty dirt. The thing being looked at is not visible.",
+      "duplicateOf": ""
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-128.jpg",
+      "alt": "",
+      "reason": "Second roadside arrival frame and the emptier of the two: the top third is a washed-out white sky with no cloud detail, and the gate at the vanishing point is too small to read. The stele frame does this beat with something to look at.",
+      "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp1-6.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-12.jpg",
+      "alt": "",
+      "reason": "Same milking station as the keeper but caught before anything happens — the basin is empty, both faces are hidden under hat brims, and a wooden gate frame cuts hard down the right edge. Soft and hazy throughout.",
+      "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp1-63.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-110.jpg",
+      "alt": "",
+      "reason": "An object on a wall, dead-centre, in flat even light, with no hand, room or context around it. Half the frame is empty masonry. It is a museum label photograph, not a moment from the journey.",
+      "duplicateOf": ""
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-157.jpg",
+      "alt": "",
+      "reason": "Nobody in it and nothing happening — the lower half is bare concrete slab and the sky is a featureless wash. Reads as a property listing rather than an experience.",
+      "duplicateOf": ""
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-25.jpg",
+      "alt": "",
+      "reason": "Genuinely warm moment, but the right edge is a mess of cropped legs, a bare knee and a phone in someone's hand, and the whole frame is hazy and low in contrast. Same garden as the keeper.",
+      "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp1-22.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-5.jpg",
+      "alt": "",
+      "reason": "Second of three near-identical group-standing-in-a-circle frames. Hard midday light, faces in shadow under caps, and the group is arranged as an inattentive ring with two children turned away.",
+      "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp1-86.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-56.jpg",
+      "alt": "",
+      "reason": "Flat overhead of the same pastries covered better twice over. The white parchment is blown out across the centre-right, and a thumb and forearm intrude at both the top and bottom edges.",
+      "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp-kalits-2.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-71.jpg",
+      "alt": "",
+      "reason": "The doorway at left is blown to pure white and takes a quarter of the frame with it; the rest sits in muddy grey-brown with no separation between the men and the stone behind them. The weakest grade in the set.",
+      "duplicateOf": ""
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-81.jpg",
+      "alt": "",
+      "reason": "Third frame of the same curd-making station and the clinical one — no faces, and the frame is ringed by cropped legs, trainers and sandals on all three sides. All process, no place.",
+      "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp-tyrokom.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/sp1-9.jpg",
+      "alt": "",
+      "reason": "Third near-identical group-standing frame from the same hour, and the flattest of them — the host is half-hidden behind a guest, and steel scaffolding poles run across the top right of the wall.",
+      "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp1-86.jpg"
+    },
+    {
+      "src": "/images/experiences/heart-of-cretan-tradition/spimg_7582.jpg",
+      "alt": "",
+      "reason": "Same action as the far better lit keeper of the same station, and noticeably softer — a video-frame grab at 1024x575 with mushy detail in the shadows. The modern camo trousers and hoodie also pull against the traditional setting.",
+      "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp-tyrokom.jpg"
+    }
   ]
 }

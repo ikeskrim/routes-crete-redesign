@@ -101,6 +101,35 @@ export async function preflight(base: string, outDir: string): Promise<BuildStam
     throw new Error(`PREFLIGHT FAILED: ${base} returned ${res.status}`);
   }
 
+  /* The stylesheet must actually load.
+   *
+   * A server left running across a rebuild serves HTML that references the
+   * PREVIOUS build's CSS chunk, which no longer exists — it 500s, the page
+   * renders completely unstyled, and every content-based guard still passes
+   * because the words are all there. What it looked like downstream: the
+   * headline guard reporting exact doubling on every headline, because
+   * `invisible` was not applying to the measuring copy so both copies were
+   * "visible". Twenty minutes chasing a SplitLines bug that did not exist.
+   *
+   * Any capture taken in that state is worthless, so no run should start in
+   * it. */
+  const html = await res.clone().text();
+  const cssHref = html.match(/\/_next\/static\/[^"']+\.css/)?.[0];
+  if (cssHref) {
+    const cssRes = await fetch(new URL(cssHref, base)).catch(() => null);
+    if (!cssRes || cssRes.status >= 400) {
+      throw new Error(
+        `PREFLIGHT FAILED: the stylesheet ${cssHref} returned ` +
+          `${cssRes?.status ?? "no response"}.
+` +
+          `The page will render UNSTYLED and every capture will be worthless, ` +
+          `while content guards still pass.
+` +
+          `Usually a server left running across a rebuild: restart it.`,
+      );
+    }
+  }
+
   const stamp: BuildStamp = {
     commit: git("rev-parse --short HEAD"),
     dirty: git("status --porcelain").length > 0,

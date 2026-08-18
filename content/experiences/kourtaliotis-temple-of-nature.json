@@ -28,7 +28,12 @@
       "A light tasting of local products"
     ]
   },
-  "locations": ["rethymno-village", "kourtaliotis-gorge", "preveli-lagoon", "preveli-monastery"],
+  "locations": [
+    "rethymno-village",
+    "kourtaliotis-gorge",
+    "preveli-lagoon",
+    "preveli-monastery"
+  ],
   "body": [
     {
       "type": "paragraph",
@@ -88,14 +93,33 @@
     }
   ],
   "scenes": [
-    { "bodyIndex": 3, "label": "The journal", "image": "/images/experiences/kourtaliotis-temple-of-nature/ku516-dsc03742.jpg" },
-    { "bodyIndex": 5, "label": "The village", "image": "/images/experiences/kourtaliotis-temple-of-nature/ku953-dsc05531.jpg" },
-    { "bodyIndex": 7, "label": "The gorge", "image": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03813.jpg" },
-    { "bodyIndex": 8, "label": "The river", "image": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06390.jpg" },
-    { "bodyIndex": 9, "label": "Heart of Paradise", "image": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06440.jpg" }
+    {
+      "bodyIndex": 3,
+      "label": "The journal",
+      "image": "/images/experiences/kourtaliotis-temple-of-nature/ku516-dsc03742.jpg"
+    },
+    {
+      "bodyIndex": 5,
+      "label": "The village",
+      "image": "/images/experiences/kourtaliotis-temple-of-nature/ku953-dsc05531.jpg"
+    },
+    {
+      "bodyIndex": 7,
+      "label": "The gorge",
+      "image": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03813.jpg"
+    },
+    {
+      "bodyIndex": 8,
+      "label": "The river",
+      "image": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06390.jpg"
+    },
+    {
+      "bodyIndex": 9,
+      "label": "Heart of Paradise",
+      "image": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06440.jpg"
+    }
   ],
   "scenesNote": "Chapters for the homepage scroll-storytelling scene. `bodyIndex` points at a paragraph in `body` above — the text is never duplicated, only referenced, so it can never drift from the verbatim original. Labels are navigational, not content.",
-
   "pullQuote": "They become the protagonists of a story.",
   "pullQuoteNote": "Verbatim fragment from body paragraph 3.",
   "highlights": [
@@ -112,27 +136,140 @@
     "ogImage": "/images/experiences/kourtaliotis-temple-of-nature/ku516-dsc03742.jpg"
   },
   "gallery": [
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku516-dsc03742.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku516-DSC03742.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku1170-dsc06272.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku1170-DSC06272.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03814.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC03814.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03813.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC03813.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku953-dsc05531.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku953-DSC05531.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku335-dsc03721.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku335-DSC03721.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku312-dsc03718.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku312-DSC03718.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku1574-dsc06647.jpg", "width": 4000, "height": 6000, "oldUrl": "/media/ku1574-DSC06647.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/ku1558-dsc06631.jpg", "width": 1024, "height": 683, "oldUrl": "/media/ku1558-DSC06631.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03815.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC03815.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03817.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC03817.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc05568.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC05568.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06390.jpg", "width": 1024, "height": 683, "oldUrl": "/media/kuDSC06390.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06394.jpg", "width": 683, "height": 1024, "oldUrl": "/media/kuDSC06394.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06427.jpg", "width": 683, "height": 1024, "oldUrl": "/media/kuDSC06427.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06440.jpg", "width": 683, "height": 1024, "oldUrl": "/media/kuDSC06440.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_8141.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_8141.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9015.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_9015.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9028.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_9028.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9438.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_9438.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9446.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_9446.jpg" },
-    { "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9462.jpg", "width": 768, "height": 1024, "oldUrl": "/media/kuIMG_9462.jpg" }
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/ku516-dsc03742.jpg",
+      "width": 1024,
+      "height": 683,
+      "oldUrl": "/media/ku516-DSC03742.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03814.jpg",
+      "width": 1024,
+      "height": 683,
+      "oldUrl": "/media/kuDSC03814.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/ku953-dsc05531.jpg",
+      "width": 1024,
+      "height": 683,
+      "oldUrl": "/media/ku953-DSC05531.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/ku335-dsc03721.jpg",
+      "width": 1024,
+      "height": 683,
+      "oldUrl": "/media/ku335-DSC03721.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/ku1574-dsc06647.jpg",
+      "width": 4000,
+      "height": 6000,
+      "oldUrl": "/media/ku1574-DSC06647.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06390.jpg",
+      "width": 1024,
+      "height": 683,
+      "oldUrl": "/media/kuDSC06390.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06394.jpg",
+      "width": 683,
+      "height": 1024,
+      "oldUrl": "/media/kuDSC06394.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06427.jpg",
+      "width": 683,
+      "height": 1024,
+      "oldUrl": "/media/kuDSC06427.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc06440.jpg",
+      "width": 683,
+      "height": 1024,
+      "oldUrl": "/media/kuDSC06440.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9015.jpg",
+      "width": 768,
+      "height": 1024,
+      "oldUrl": "/media/kuIMG_9015.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9028.jpg",
+      "width": 768,
+      "height": 1024,
+      "oldUrl": "/media/kuIMG_9028.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9438.jpg",
+      "width": 768,
+      "height": 1024,
+      "oldUrl": "/media/kuIMG_9438.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9446.jpg",
+      "width": 768,
+      "height": 1024,
+      "oldUrl": "/media/kuIMG_9446.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_9462.jpg",
+      "width": 768,
+      "height": 1024,
+      "oldUrl": "/media/kuIMG_9462.jpg"
+    }
+  ],
+  "galleryCurationNote": "Curated from 22 frames to 14. Every frame was viewed, not ranked by metadata. Nothing was deleted: the removed frames are listed below with the reason each was cut, and every file is still in the repository and still graded — restoring one means moving its entry back into `gallery`.",
+  "galleryRemoved": [
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/ku1170-dsc06272.jpg",
+      "alt": "",
+      "reason": "A frame about nothing in particular — no subject, no focal point, no light. It is a wall of branches; the stream that might have justified it is a few dark pixels lost in the middle.",
+      "duplicateOf": ""
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03813.jpg",
+      "alt": "",
+      "reason": "Third-best of three near-identical mountain panoramas shot from the same pull-off. The sky is blown to blank white across the middle, the ridges lose all separation in haze, and an unlit tree blocks the right edge.",
+      "duplicateOf": "kudsc03814.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/ku312-dsc03718.jpg",
+      "alt": "",
+      "reason": "Same falls from a few metres away, and the weaker of the two: two thick cables cut across the top third, and the right half collapses into an unreadable black void. The kept frame gets the same subject clean.",
+      "duplicateOf": "ku335-dsc03721.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/ku1558-dsc06631.jpg",
+      "alt": "",
+      "reason": "Same grove, same visit, same trees as the kept portrait frame, but with duller light and a sky that is neither dramatic nor clean. Trunks are scattered evenly with no dominant subject.",
+      "duplicateOf": "ku1574-dsc06647.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03815.jpg",
+      "alt": "",
+      "reason": "Second frame from the same spot as the kept panorama, with a flatter sky and no foreground anchor — the eye has nowhere to enter the picture. Adds nothing the kept frame does not already show better.",
+      "duplicateOf": "kudsc03814.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc03817.jpg",
+      "alt": "",
+      "reason": "The exposure fails at both ends: sky is completely blown out, and the foreground weeds and the building's base are muddy shadow with no recoverable detail. The subject is good but this frame cannot be shown large.",
+      "duplicateOf": ""
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kudsc05568.jpg",
+      "alt": "",
+      "reason": "Cluttered and directionless — the boulders read as random scatter with no lead-in, and the flat overhead light gives the water no colour. Three stronger water frames are already kept, including one of this same river.",
+      "duplicateOf": "kuimg_9462.jpg"
+    },
+    {
+      "src": "/images/experiences/kourtaliotis-temple-of-nature/kuimg_8141.jpg",
+      "alt": "",
+      "reason": "The cairn is a nice narrative beat but the framing buries it: branches and twigs cross in front of the subject at three levels, the light is flat grey, and the whole scene reads as brown-grey mush at gallery size.",
+      "duplicateOf": ""
+    }
   ]
 }
