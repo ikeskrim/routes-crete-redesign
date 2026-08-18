@@ -303,6 +303,105 @@ review crops only.
 **Watch:** two candidates are near-duplicates of each other (three Rethymno
 lighthouse frames of the same tower). Ship one, not three.
 
+
+---
+
+## Block 5 — Photography ingested, ledgered, graded ✅  `3f989ce`
+
+The ledger goes from **5 photographs to 15**. All ten new files are Crete, all
+per-file licence-verified, all SHA-1'd, all graded, all credited.
+
+| licence | photographs |
+|---|---|
+| CC0 1.0 | Rethymno harbour + snowy mountains · Rethymno old-town lane · Spili lion-head fountains · Messara plain |
+| CC BY 2.0 | Kourtaliotiko waterfall · Preveli palm forest · Anogeia |
+| CC BY 3.0 | The Fortezza · Spili village |
+| CC BY 4.0 | Ancient olive tree near Kavousi |
+
+**Eight of eighteen candidates were deliberately not taken** (reasons in
+`qa/ingest-plan.json`). Two Pexels olive groves were licence-clean but verified
+as **Greece, not Crete** — this site names real places, so a Greek stand-in
+cannot honestly be captioned as Cretan. That is an honesty rejection, not a
+licensing one. One was below resolution; five were redundant.
+
+**The downloads failed silently at first.** Seven files arrived as identical
+1963-byte Wikimedia rate-limit pages rather than images. A naive ingest would
+have written seven HTML error pages into the repo as `.jpg`, hashed them, and
+credited them. The size check caught it; a descriptive User-Agent fixed it.
+Then every downloaded file's real pixel dimensions were measured and matched
+the verified record exactly — that is what proves we hold the file the licence
+describes.
+
+---
+
+## Block 6 — The photography finally appears on the site ✅  `a191205`
+
+**A finding worth stating plainly: none of the sourced photographs rendered
+anywhere.** All five originals — and then the ten just ingested — were
+verified, graded and credited, and appeared on zero pages, surviving only as
+leftovers in `blur-map.json` from the deleted design drafts. We were
+maintaining a licence ledger for photographs nobody could see.
+
+So this block is not "swaps". The island map already tracked a hovered pin; it
+now reveals a real photograph of that actual place behind the chart:
+
+| pin | photograph |
+|---|---|
+| Rethymno | the harbour, snow-covered mountains behind |
+| Kourtaliotis Gorge | the waterfall inside the gorge |
+| Preveli lagoon | the palm forest along the river |
+| Preveli Monastery | the monastery |
+| Mountains of Crete | Anogeia |
+
+**Five of nine.** The cave, the deliberately unnamed "historic village" and the
+two airports have **no preview rather than a lookalike**. A place we cannot
+honestly caption gets nothing.
+
+The photograph sits behind the chart, not beside it, so geometry never moves
+and CLS stays 0. Desktop only. Mounted only on hover or focus — verified by
+network: nothing eager, and hovering the gorge pin fetches exactly one file.
+
+A scrim sits over the photograph and under the pins. Without it, label
+legibility would be a property of whichever image loaded — bright limestone in
+the gorge frame — and **Lighthouse cannot catch that, because it never
+hovers.**
+
+**No hero swap, deliberately.** The hero is tour-specific photography, and
+DIRECTION is explicit that original Routes Crete photography stays the only
+source for tour-specific moments. A sourced landscape would be a downgrade in
+authenticity dressed up as an upgrade in resolution.
+
+---
+
+## THE DIGEST — 30 frames, `qa/screenshots/digest/`
+
+Captured from the **deployed alias**, not localhost, so every frame is of a
+build you can open yourself. Each records its `build-commit` (`a191205`).
+
+Three passes — `desktop-*`, `mobile-*` (390), `reduced-motion-*`:
+
+```
+01-hero              06-map
+02-menu-open         07-map-place-preview   (desktop only)
+03-positioning       08-signature
+04-stacked-scene     09-how-it-works
+05-journeys          10-footer              11-credits
+```
+
+The reduced-motion pass is a full walkthrough, not a spot check — it is the
+variant a real fraction of visitors get.
+
+### Other before/afters
+
+| what | where |
+|---|---|
+| the arc, 9 movements → 6 | `qa/screenshots/arc/` + `_inventory.json` |
+| eyebrow contrast retune | `qa/screenshots/contrast/` |
+| menu open/close filmstrips | `qa/screenshots/menu/` |
+
+**Not captured, because not built:** photo swaps (none shipped — see above),
+enhancement crops, serif A/B. Those stages were not reached.
+
 ---
 
 ## Deployment verification trail
@@ -329,19 +428,34 @@ the day it matters.
 ## Decisions awaiting you
 
 1. **The Vercel dashboard check** — Project → Settings → Git. Production builds
-   were coming from something other than the pushed commit. I can inspect and
-   deploy but must not touch project settings. Until this is resolved, every
-   push needs its alias verified and may need a manual `vercel deploy --prod`.
-2. ~~Whether to finish the arc to six sections~~ — **decided and shipped**
-   (Block 2, `7893cd3`). One open sub-question: home performance now measures
-   89–93 where it was 94, with 89 as the floor. Accept the thinner margin, or
-   spend a block deferring the stacked scene's non-active images to buy it
-   back?
-3. **Label warmth** — the contrast retune (`/50`→`/70`, `/45`→`/65`). Before/after
-   stills in `qa/screenshots/contrast/`. It arrived as an accessibility fix and
-   changed how every small label reads.
-4. **`responsePromise`** — still `null`, still omitted from the page. Needs a
-   real number from you or it stays out.
+   were once coming from something other than the pushed commit. It has behaved
+   since (every push this run advanced the alias unaided), which makes it
+   **intermittent** — the kind that ships a stale site on the day it matters.
+   I can inspect and deploy but must not touch project settings.
+2. **Home performance headroom.** Home measures 89–93 where it was 94, and 89
+   is the floor. Cause is structural, not a defect: the stacked scene moved
+   from mid-page to just after the hero, so three full-bleed images and their
+   client JS compete with the hero's LCP. Accept the thinner margin, or spend a
+   block deferring the scene's non-active images to buy it back?
+3. **Label warmth** — the contrast retune (`/50`→`/70`, `/45`→`/65`), measured
+   4.18:1 → 7.15:1. Before/after in `qa/screenshots/contrast/`. It arrived as
+   an accessibility fix and changed how every small label reads.
+4. **`responsePromise`** — still `null`, still omitted from the page. It stays
+   out until you give me a real number.
+5. **The map's place photographs** — five pins now reveal a real photograph.
+   Frames 06 and 07 in the digest. Right call, or too much?
+6. **Gallery curation** — 51 frames → 28. Every removal is listed in
+   `galleryRemoved` with its reason; restoring one is moving a JSON entry.
+   Worth reading the reasons: they are specific enough to disagree with.
+7. **Gallery opening frames changed.** Kourtaliotis opens on the stone arch
+   bridge; Heart of Cretan Tradition opens on the golden-hour ridge. The
+   curator also recommends replacing that item's **card image** (currently the
+   loom room) with the same ridge frame — I did **not** ship that, because a
+   card image is a taste call and the brief says taste calls stay as they are
+   until you rule.
+8. **Eight sourced candidates rejected**, listed with reasons in
+   `qa/ingest-plan.json` — including two licence-clean olive groves rejected
+   for being Greek rather than Cretan. Agree with that line?
 
 ---
 
