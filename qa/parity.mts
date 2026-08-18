@@ -60,8 +60,30 @@ const collect = (v: unknown) => {
 collect(items);
 collect(site);
 
+/* Web-sourced masters deliberately live OUTSIDE public/ — in assets-src/ —
+ * because the site only ever serves the graded tree and shipping 78MB of
+ * originals nobody can request is pure deploy weight. So "does this file
+ * exist" has two right answers depending on where the master lives, and
+ * checking only public/ reported four perfectly good photographs as missing
+ * the moment they were referenced from content.
+ *
+ * Resolve the way the site resolves: an original under /images/sourced/ is
+ * satisfied by its master in assets-src/ OR by its graded copy. */
+const existsSomewhere = (src: string): boolean => {
+  const rel = src.replace(/^\//, "");
+  if (fs.existsSync(path.join(PUBLIC, rel))) return true;
+  if (src.startsWith("/images/sourced/")) {
+    const bare = rel.replace(/^images\/sourced\//, "");
+    if (fs.existsSync(path.join(process.cwd(), "assets-src", "sourced", bare))) return true;
+    const graded = path.join(PUBLIC, "images", "graded", "b", "sourced",
+      bare.replace(/\.(png|jpeg|JPG|PNG)$/i, ".jpg"));
+    if (fs.existsSync(graded)) return true;
+  }
+  return false;
+};
+
 for (const src of referenced) {
-  if (!fs.existsSync(path.join(PUBLIC, src.replace(/^\//, "")))) fail(`missing file ${src}`);
+  if (!existsSomewhere(src)) fail(`missing file ${src}`);
 }
 console.log(`  ${referenced.size} referenced images, all present: ${failures === 0}`);
 

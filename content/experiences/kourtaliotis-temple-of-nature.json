@@ -271,5 +271,16 @@
       "reason": "The cairn is a nice narrative beat but the framing buries it: branches and twigs cross in front of the subject at three levels, the light is flat grey, and the whole scene reads as brown-grey mush at gallery size.",
       "duplicateOf": ""
     }
-  ]
+  ],
+  "placeBreaks": [
+    {
+      "src": "/images/sourced/kourtaliotiko-waterfall.jpg",
+      "place": "The waterfall in Kourtaliotiko Gorge"
+    },
+    {
+      "src": "/images/sourced/preveli-palms-aerial.jpg",
+      "place": "The palm forest along the river at Preveli"
+    }
+  ],
+  "placeBreaksNote": "Licensed photographs of the places this journey visits, used as editorial breaks. They are NOT ours and must never be captioned as though they were: each renders with a credit line, and every one is SHA-1 ledgered in content/photo-credits.json and attributed on /credits."
 }

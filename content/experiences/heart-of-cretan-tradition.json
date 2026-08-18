@@ -245,5 +245,16 @@
       "reason": "Same action as the far better lit keeper of the same station, and noticeably softer — a video-frame grab at 1024x575 with mushy detail in the shadows. The modern camo trousers and hoodie also pull against the traditional setting.",
       "duplicateOf": "public/images/graded/b/experiences/heart-of-cretan-tradition/sp-tyrokom.jpg"
     }
-  ]
+  ],
+  "placeBreaks": [
+    {
+      "src": "/images/sourced/anogeia-village.jpg",
+      "place": "The mountain village of Anogeia"
+    },
+    {
+      "src": "/images/sourced/olive-tree-kavousi.jpg",
+      "place": "An ancient olive tree in eastern Crete"
+    }
+  ],
+  "placeBreaksNote": "Licensed photographs of the places this journey visits, used as editorial breaks. They are NOT ours and must never be captioned as though they were: each renders with a credit line, and every one is SHA-1 ledgered in content/photo-credits.json and attributed on /credits."
 }

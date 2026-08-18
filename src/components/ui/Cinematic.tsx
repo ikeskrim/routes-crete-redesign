@@ -95,6 +95,7 @@ export function Bridge({
   alt,
   blurDataURL,
   caption,
+  creditNote,
   className,
   height = "h-[62vh] min-h-[22rem] lg:h-[78vh]",
 }: {
@@ -102,6 +103,13 @@ export function Bridge({
   alt: string;
   blurDataURL?: string;
   caption?: string;
+  /**
+   * Marks a frame as a LICENSED photograph of the place rather than one of
+   * ours from a tour. The galleries on these pages are the operator's own
+   * work, so a sourced landscape sitting among them has to say what it is —
+   * otherwise the page quietly implies we took it.
+   */
+  creditNote?: string;
   className?: string;
   height?: string;
 }) {
@@ -142,6 +150,9 @@ export function Bridge({
       {caption && (
         <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 lg:p-14">
           <p className="text-eyebrow uppercase text-sand-100/70">{caption}</p>
+          {creditNote && (
+            <p className="text-caption mt-1.5 text-sand-200/55">{creditNote}</p>
+          )}
         </div>
       )}
     </div>

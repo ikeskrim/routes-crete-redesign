@@ -77,6 +77,12 @@ export interface ContentItem {
   gallery: GalleryImage[];
   /** Injected by the loader: "experiences" | "transfers". */
   collection: Collection;
+  /**
+   * Licensed photographs of the real places this journey visits, shown as
+   * editorial breaks in the story. Distinct from `gallery`, which is the
+   * operator's own tour photography — see the caption rule in Bridge.
+   */
+  placeBreaks?: { src: string; place: string }[];
   /** Injected by the loader: the canonical route for this item. */
   href: string;
 }

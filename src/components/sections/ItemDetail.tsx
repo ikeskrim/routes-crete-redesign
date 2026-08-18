@@ -14,6 +14,7 @@ import {
   getMappableLocations,
   getRelatedItems,
   getSite,
+  graded,
 } from "@/lib/content";
 import type { ContentItem } from "@/lib/types";
 import { pad } from "@/lib/utils";
@@ -199,6 +200,24 @@ export function ItemDetail({ item }: { item: ContentItem }) {
           </div>
         </section>
       )}
+
+      {/* Editorial place breaks.
+          Licensed photographs of the real places this journey visits. They sit
+          apart from the gallery on purpose: the gallery is the operator's own
+          tour photography, and these are not, so each carries a credit line
+          saying so. A sourced landscape passing as our own would be the exact
+          dishonesty this project refuses. */}
+      {item.placeBreaks?.map((place) => (
+        <Bridge
+          key={place.src}
+          src={graded(place.src)}
+          alt={place.place}
+          blurDataURL={getBlur(graded(place.src))}
+          caption={place.place}
+          creditNote="Licensed photograph — see credits"
+          height="h-[56vh] min-h-[20rem] lg:h-[70vh]"
+        />
+      ))}
 
       {/* Cinematic bridge */}
       {item.gallery[2] && (
