@@ -16,6 +16,7 @@ export function ContentCard({
   ratio = "aspect-[4/5]",
   priority = false,
   className,
+  id,
 }: {
   item: ContentItem;
   index?: number;
@@ -23,13 +24,27 @@ export function ContentCard({
   ratio?: string;
   priority?: boolean;
   className?: string;
+  /**
+   * Anchor target. The transfers card carries #transfers now that the
+   * standalone spotlight is gone — legacyAnchorMap sends #portfolio1 there,
+   * and a legacy link must still land on the transfers content, not nowhere.
+   */
+  id?: string;
 }) {
-  const facts = [item.facts.region, item.facts.duration ?? "Duration on request"]
+  /* availability carries transfers, duration carries experiences. The
+     transfer spotlight used to be the only place `availability` appeared on
+     the homepage; folding it in here is what let that section be cut without
+     losing the fact. */
+  const facts = [
+    item.facts.region,
+    item.facts.duration ?? item.facts.availability ?? "Duration on request",
+  ]
     .filter(Boolean)
     .slice(0, 2);
 
   return (
     <Link
+      id={id}
       href={item.href}
       className={cn(
         "group block focus-visible:outline-none",

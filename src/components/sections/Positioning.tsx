@@ -18,19 +18,28 @@ export function Positioning({
   statement,
   body,
   attributes,
+  children,
 }: {
   eyebrow: string;
   statement: string;
   body: string;
   attributes: string[];
+  /**
+   * The stacked why-us scene renders here, inside this section rather than
+   * after it. The positioning statement and the three value panels are one
+   * argument — stating it, then evidencing it — so they are one movement of
+   * the page, not two. Rendered full-bleed: the padding lives on the intro
+   * container, never on the section.
+   */
+  children?: React.ReactNode;
 }) {
   return (
     <section
       id="positioning"
       aria-labelledby="positioning-heading"
-      className="bg-shell py-section-lg text-ink"
+      className="bg-shell text-ink"
     >
-      <div className="mx-auto w-full max-w-[92rem] px-6 sm:px-8 lg:px-12">
+      <div className="mx-auto w-full max-w-[92rem] px-6 py-section-lg sm:px-8 lg:px-12">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-7">
             <div className="flex items-center gap-4">
@@ -68,6 +77,8 @@ export function Positioning({
           </div>
         </div>
       </div>
+
+      {children}
     </section>
   );
 }

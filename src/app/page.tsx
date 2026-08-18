@@ -19,7 +19,6 @@ const SignatureScene = dynamic(() =>
   import("@/components/sections/SignatureScene").then((m) => m.SignatureScene),
 );
 import { Team } from "@/components/sections/Team";
-import { TransferSpotlight } from "@/components/sections/TransferSpotlight";
 import { Marquee } from "@/components/ui/Marquee";
 import { StackedPanels } from "@/components/ui/StackedPanels";
 import { Bridge } from "@/components/ui/Cinematic";
@@ -35,6 +34,23 @@ import {
   getTransfers,
 } from "@/lib/content";
 
+/**
+ * The homepage, in six movements:
+ *
+ *   1 Hero
+ *   2 Positioning        — the statement, evidenced by the stacked why-us scene
+ *   3 The Journeys       — experiences + transfers in one grid, with the map
+ *   4 The signature journey
+ *   5 How it works
+ *   6 The team, handing over to the footer-as-destination
+ *
+ * The marquee and the cinematic bridge are bands BETWEEN movements, not
+ * movements themselves — they carry no heading and make no argument.
+ *
+ * `qa/arc-guard.mts` asserts this list, in this order, against the rendered
+ * page. An earlier restructure was reported as six sections and shipped as
+ * nine, because the claim came from the diff rather than from the page.
+ */
 export default function HomePage() {
   const site = getSite();
   const experiences = getExperiences();
@@ -75,6 +91,7 @@ export default function HomePage() {
 
   return (
     <>
+      {/* 01 */}
       <Hero
         eyebrow={site.hero.eyebrow}
         heading={site.hero.subheading}
@@ -85,23 +102,50 @@ export default function HomePage() {
         secondaryCta={{ label: "Book Now", href: "/contact" }}
       />
 
-      {/* 02 — The positioning statement, said once and early. */}
+      {/* 02 — the positioning statement, and the panels that evidence it. */}
       <Positioning
         eyebrow={site.positioning.eyebrow}
         statement={site.positioning.statement}
         body={site.positioning.body}
         attributes={site.positioning.attributes}
+      >
+        {/* Inside the section, not after it: stating the case and evidencing
+            it are one movement. #why-us stays on the scene so the legacy
+            anchor still lands on the panels themselves. */}
+        <StackedPanels
+          id="why-us"
+          panels={site.whyUs.map((block, i) => ({
+            eyebrow: block.title,
+            // Short punctuation line; the full original copy stays in `text`
+            // and is what any non-scene presentation of this block uses.
+            statement: block.statement ?? block.text.split(/\r?\n/)[0],
+            detail: undefined,
+            image: whyUsImages[i],
+            blurDataURL: whyUsImages[i] ? getBlur(whyUsImages[i]) : undefined,
+          }))}
+        />
+      </Positioning>
+
+      {/* Marquee — a dark band between movements. Every claim in it is
+          literally true: private, family-run, 12 seats, licensed. */}
+      <Marquee
+        items={[
+          "Private journeys",
+          "Twelve seats",
+          "Family-run",
+          "Rethymno · Crete",
+          "Booked by conversation",
+        ]}
       />
 
       {/* 03 — The Journeys.
           Experiences and Transfers were two near-identical grids one after the
-          other. They are one grid now, and it scales with the content: adding
-          an experience or a transfer changes nothing here.
+          other, and a VIP-transfer spotlight below them restated the transfers
+          item a third time. One grid now, scaling with the content.
 
-          #experiences lives on this section. #transfers is NOT duplicated
-          here: TransferSpotlight already owns that id, and adding a second
-          copy made the anchor resolve to an empty sr-only span instead of the
-          transfer content. One id, one owner. */}
+          #experiences lives on this section. #transfers is deliberately NOT
+          duplicated here — it belongs to the transfers item's own page, which
+          the card links to. One id, one owner. */}
       <section
         id="experiences"
         aria-labelledby="journeys-heading"
@@ -111,7 +155,8 @@ export default function HomePage() {
           <div className="flex items-center gap-4">
             <span aria-hidden className="h-px w-10 bg-gold-600/60" />
             <p className="text-eyebrow uppercase text-rock-500">
-              {site.sections.experiences.heading} &amp; {site.sections.transfers.heading}
+              {site.sections.experiences.heading} &amp;{" "}
+              {site.sections.transfers.heading}
             </p>
           </div>
 
@@ -127,27 +172,33 @@ export default function HomePage() {
                 key={item.href}
                 item={item}
                 index={i + 1}
+                /* The transfers card owns #transfers now. legacyAnchorMap
+                   points #portfolio1 at it, and cutting the spotlight must
+                   not leave that link pointing at nothing. */
+                id={item.href.startsWith("/transfers") ? "transfers" : undefined}
                 className={i % 2 === 1 ? "sm:mt-28" : undefined}
                 ratio="aspect-[4/5]"
               />
             ))}
           </div>
+
+          {/* The island map, folded in from what used to be a section of its
+              own. Every pin and every link is unchanged — a map of where these
+              journeys go belongs with the journeys. */}
+          <Reveal delay={0.1}>
+            <div className="mt-24 border-t border-ink/10 pt-16 lg:mt-32">
+              <h3 className="text-heading-lg max-w-[18ch] text-ink">
+                Where these journeys take you
+              </h3>
+              <div className="mt-12">
+                <LocationsMap locations={locations} links={locationLinks} />
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* Marquee — a dark band between the light sections. Every claim in
-          it is literally true: private, family-run, 12 seats, licensed. */}
-      <Marquee
-        items={[
-          "Private journeys",
-          "Twelve seats",
-          "Family-run",
-          "Rethymno · Crete",
-          "Booked by conversation",
-        ]}
-      />
-
-      {/* Cinematic bridge into the signature journey */}
+      {/* Cinematic bridge into the signature journey — a band, not a movement. */}
       {bridge && (
         <Bridge
           src={bridge.src}
@@ -157,7 +208,7 @@ export default function HomePage() {
         />
       )}
 
-      {/* 04 — The signature journey, told as a pinned film */}
+      {/* 04 — The signature journey, told as a pinned film. */}
       {signature && scenes.length > 0 && (
         <SignatureScene
           eyebrow="The signature journey"
@@ -167,52 +218,7 @@ export default function HomePage() {
         />
       )}
 
-      {/* Why Routes Crete, as a scene that holds while it transitions.
-          The three value blocks keep their copy; only the presentation
-          changes from a static trio to punctuation on a dark ground. */}
-      <StackedPanels
-        id="why-us"
-        panels={site.whyUs.map((block, i) => ({
-          eyebrow: block.title,
-          // Short punctuation line; the full original copy stays available in
-          // `text` and is what any non-scene presentation of this block uses.
-          statement: block.statement ?? block.text.split(/\r?\n/)[0],
-          detail: undefined,
-          image: whyUsImages[i],
-          blurDataURL: whyUsImages[i] ? getBlur(whyUsImages[i]) : undefined,
-        }))}
-      />
-
-      {/* The route, from real coordinates */}
-      <section
-        aria-labelledby="map-heading"
-        className="grain relative bg-ocean-950 py-section-lg text-sand-50"
-      >
-        <div aria-hidden className="grain-overlay" />
-        <div className="relative mx-auto w-full max-w-[92rem] px-6 sm:px-8 lg:px-12">
-          <div className="flex items-center gap-4">
-            <span aria-hidden className="h-px w-10 bg-gold-400/70" />
-            <p className="text-eyebrow uppercase text-sand-200/60">The island</p>
-          </div>
-
-          <SplitLines
-            as="h2"
-            text="Where these journeys take you"
-            className="text-display-lg mt-6 max-w-[16ch] text-sand-50"
-          />
-
-          <Reveal delay={0.1}>
-            <div className="mt-14 lg:mt-20">
-              <LocationsMap locations={locations} links={locationLinks} />
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* VIP transfers */}
-      {transfers[0] && <TransferSpotlight item={transfers[0]} />}
-
-      {/* 05 — How to book */}
+      {/* 05 — How to book. */}
       <HowToBook
         heading={site.sections.howToBook.heading}
         subheading={site.sections.howToBook.subheading}
@@ -220,18 +226,13 @@ export default function HomePage() {
         responsePromise={site.howToBook.responsePromise}
       />
 
-      {/* 06 — Team */}
+      {/* 06 — The team, which hands over to the footer-as-destination. */}
       <Team
         heading={site.sections.team.heading}
         subheading={site.sections.team.subheading}
         intro={site.team.intro}
         members={site.team.members}
       />
-
-      {/* The 52-image homepage gallery is gone. Every frame still exists —
-          curated selections live on the experience pages, where someone
-          looking at a specific journey actually wants them. Nothing was
-          deleted from the content. */}
     </>
   );
 }
