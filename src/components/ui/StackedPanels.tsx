@@ -157,8 +157,23 @@ export function StackedPanels({
           aria-hidden
           className="absolute top-1/2 left-6 hidden -translate-y-1/2 flex-col gap-4 lg:left-12 lg:flex"
         >
+          {/* A rail behind the numbers, filled by the scene's own scroll
+              progress. The numbers alone said WHICH chapter; the rail says how
+              far through it you are, which is the question you actually have
+              while a scene is holding you in place.
+
+              It reuses `scrollYProgress` — already computed for the imagery —
+              and animates scaleY only, so it is a transform on a 1px element
+              and adds no listener and no measurable time. */}
+          <span className="absolute left-[3px] top-0 bottom-0 w-px bg-sand-100/15">
+            <motion.span
+              className="absolute inset-x-0 top-0 block origin-top bg-gold-400/70 will-change-transform"
+              style={{ height: "100%", scaleY: scrollYProgress }}
+            />
+          </span>
+
           {panels.map((_, i) => (
-            <span key={i} className="flex items-center gap-3">
+            <span key={i} className="relative flex items-center gap-3 pl-3">
               <span
                 className={cn(
                   "h-px transition-all duration-700 ease-luxe",
