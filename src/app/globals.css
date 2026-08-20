@@ -436,3 +436,15 @@
     transparent 62%
   );
 }
+
+/* A strip you drag should not also show a scrollbar — the grab cursor and the
+   motion are the affordance. Native overflow scrolling is deliberately kept,
+   so the wheel and the keyboard still work. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

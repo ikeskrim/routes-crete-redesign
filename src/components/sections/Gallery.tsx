@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { DragStrip } from "@/components/ui/DragStrip";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
@@ -19,10 +20,37 @@ import { cn } from "@/lib/utils";
  * prop serialised all 128 entries (~122 KB of base64) into the RSC payload of
  * every page with a gallery, whether or not those images appeared on it.
  */
+/** Masonry block, or a strip you can throw. */
+function Frame({
+  strip,
+  count,
+  children,
+}: {
+  strip: boolean;
+  count: number;
+  children: React.ReactNode;
+}) {
+  if (!strip) {
+    return <div className="columns-2 gap-3 sm:gap-4 lg:columns-3 xl:columns-4">{children}</div>;
+  }
+  return (
+    <DragStrip ariaLabel={`${count} photographs — drag or scroll sideways`}>
+      {children}
+    </DragStrip>
+  );
+}
+
 export function Gallery({
   images,
+  variant = "masonry",
 }: {
   images: (GalleryImage & { alt: string; blurDataURL?: string })[];
+  /**
+   * "strip" lays the frames out as one horizontal run you can throw, instead
+   * of a masonry block. Curated to ~14 frames, a strip reads as a sequence —
+   * the order the day happened in — where a masonry reads as an archive.
+   */
+  variant?: "masonry" | "strip";
 }) {
   const reduced = useReducedMotionSafe();
   const [open, setOpen] = useState<number | null>(null);
@@ -58,25 +86,38 @@ export function Gallery({
 
   return (
     <>
-      <div className="columns-2 gap-3 sm:gap-4 lg:columns-3 xl:columns-4">
+      <Frame strip={variant === "strip"} count={images.length}>
         {images.map((image, i) => (
           <button
             key={image.src}
             type="button"
             onClick={() => setOpen(i)}
             aria-label={`View image ${i + 1} of ${images.length}`}
-            className="group mb-3 block w-full overflow-hidden rounded-media bg-rock-200 sm:mb-4"
+            className={cn(
+              "group block overflow-hidden rounded-media bg-rock-200",
+              variant === "strip"
+                ? "h-[58vw] w-[78vw] shrink-0 sm:h-[34vw] sm:w-[46vw] lg:h-[26rem] lg:w-[34rem]"
+                : "mb-3 w-full sm:mb-4",
+            )}
           >
-            <span className="relative block">
+            <span className={cn("relative block", variant === "strip" && "h-full w-full")}>
               <Image
                 src={image.src}
                 alt={image.alt}
-                width={image.width}
-                height={image.height}
-                sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 24vw"
+                {...(variant === "strip"
+                  ? { fill: true }
+                  : { width: image.width, height: image.height })}
+                sizes={
+                  variant === "strip"
+                    ? "(max-width: 640px) 78vw, (max-width: 1024px) 46vw, 34rem"
+                    : "(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 24vw"
+                }
                 placeholder={image.blurDataURL ? "blur" : undefined}
                 blurDataURL={image.blurDataURL}
-                className="h-auto w-full transition-transform duration-[1.1s] ease-luxe group-hover:scale-[1.06]"
+                className={cn(
+                  "transition-transform duration-[1.1s] ease-luxe group-hover:scale-[1.06]",
+                  variant === "strip" ? "object-cover" : "h-auto w-full",
+                )}
               />
               <span
                 aria-hidden
@@ -85,7 +126,7 @@ export function Gallery({
             </span>
           </button>
         ))}
-      </div>
+      </Frame>
 
       <AnimatePresence>
         {current && (

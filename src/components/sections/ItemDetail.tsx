@@ -270,6 +270,7 @@ export function ItemDetail({ item }: { item: ContentItem }) {
                   alt: item.title,
                   blurDataURL: getBlur(g.src),
                 }))}
+              variant="strip"
               />
             </div>
           </div>
