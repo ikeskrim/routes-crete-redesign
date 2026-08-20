@@ -556,38 +556,98 @@ full reduced-motion walkthrough, every frame stamped with its build-commit.
 
 ---
 
+---
+
+## Block 17 — Stage 4: the copy deck, and parity split in two ✅  `7958a21`
+
+Eight homepage slots now carry the approved deck copy. **Every original is
+preserved** in `site.json` under a `*_original` key.
+
+| slot | before | after |
+|---|---|---|
+| hero eyebrow | Your Cretan adventure starts here | Rethymno · Crete |
+| hero sub | *(was the SEO description)* | a real sub-line |
+| how heading | How to Book Your Cretan Experience | Booking is a conversation |
+| team heading | Our Amazing Team | The three people you'll actually meet |
+| transfers sub | Our collection of transfers | Airport to villa, and anywhere after |
+| steps | Explore / Send / Enjoy | Tell us the day · Send us the details · We confirm, then you travel |
+
+### One deck line deviates, and it is flagged
+
+The deck was written against the **original five steps**. Mapping its three
+lines positionally onto the three that survived the 5→3 collapse put **"We
+confirm everything"** above a body reading *"Contact us via message or email
+with: the excursion you selected, preferred date, number of participants"* — a
+title contradicting its own verbatim body.
+
+So step 2 takes **"Send us the details"**, which is *not* a deck line, and step
+3 merges deck lines 2 and 3 because its body merged the original steps 4 and 5.
+**Your call** — the deck line can be restored if you prefer it, but not above
+that body.
+
+### The hero sub is a new field, on purpose
+
+`site.meta.description` is neither reused nor rewritten. It is the SEO
+description; the deck governs what a **reader** sees, not what a crawler
+indexes. Verified on the deployment: the description meta tag is still the
+original, and SEO scores 100.
+
+### Parity v2 — both halves
+
+v1 asserted the *originals* appeared on the homepage. Right while the rebuild
+was a faithful port; **wrong the moment the deck replaced them**. It would have
+forced the site to say "Our Amazing Team" forever — or been deleted to let the
+deck through, and deleting a guard to pass it is how content quietly goes
+missing.
+
+```
+RENDERED    15 strings of new deck copy are on the page
+PRESERVED    9 originals still exist in the content files
+```
+
+**The originals are no longer required to be visible. They are required to be
+kept.** That is the promise this project actually made.
+
+The arc guard failed on this change and was **right to** — it asserts movement
+5 carries "How to Book". Updated to the new heading: the guard tracks what the
+page *says*, parity tracks what was *kept*.
+
+**Deployed:** performance 92 · 92 · 92, TBT 90–150ms, CLS 0, a11y 100, SEO 100.
+Six guards green.
+
+
+---
+
 # NEXT SESSION STARTS HERE
 
-**State:** tree clean, alias verified, all guards green on the deployment
-(arc · asset · parity · headline · credits · nav-flash · menu · mobile).
-Stage 1 closed. Stage 2 closed except 2d (blocked on tooling). Stage 3 items
-1–5 shipped.
+**State:** tree clean, alias verified, six guards green on the deployment.
+Stage 1 closed · Stage 2 closed except 2d (blocked on tooling) · **Stage 3
+closed, all seven items** · Stage 4 homepage deck applied.
 
-**Where the run ended and why:** context boundary, not credits. Closed at a
-block boundary, verified and pushed.
+**Exact next action — finish Stage 4 on the experience pages.** DIRECTION §4
+carries a before→after for Kourtaliotis: subtitle, opening and closing lines.
+Same rules — originals into `*_original`, apply by meaning not position, H1
+kept ("Kourtaliotis — The Temple of Nature" is explicitly marked *kept: it is
+genuinely good*).
 
-**Exact next action — Stage 3 item 6, drag-inertia horizontal strips.** Then
-item 7 (refined sticky chapter indices). After that: Stage 4 copy deck,
-Stage 5 serif A/B, Stage 6 digest refresh, then the burn-down list.
+**Then:** Stage 5 serif A/B (one licensed face, headlines only, captures only,
+no default change) → Stage 6 digest refresh + decision list → burn-down.
 
-**Budget discipline, now proven twice:**
-- TBT ceiling 250ms, floor 89, CLS 0 — measure four readings after every
-  motion block, on the deployment, warm.
-- Pure-CSS blocks cost nothing (seams, sand: delta within noise). Anything
-  that promotes a **full-viewport** element to its own compositor layer is
-  expensive — the vignette plane cost ~4 performance points and ~60ms TBT for
-  a movement nobody could see. **The effect has to earn the layer.**
-
-**Standing traps — check this list at every block start:**
-- Never chain a measurement onto the alias-wait. Wait, confirm, then measure.
-- `pkill` does not stop the server here — kill by port (PowerShell
-  `Get-NetTCPConnection -LocalPort 3009`).
-- `scrollIntoView` does nothing while Lenis owns scroll — use real wheel events.
-- Sample scroll-driven transforms **inside** the element's own scroll range,
-  or every reading returns the same number.
-- Restart the server after every rebuild, or a stale one serves HTML against
-  a dead CSS chunk and the page renders unstyled while content guards pass.
-- No generated patches for JSX. Direct writes only.
+**Standing traps — check at every block start:**
+- Never chain a measurement onto the alias-wait.
+- `pkill` does not stop the server here — kill by port.
+- `scrollIntoView` does nothing under Lenis — real wheel events.
+- Sample scroll transforms **inside** the element's own range.
+- A probe fallback must never collide with a legitimate value (`'none'` is
+  both "missing" and a real transform).
+- Restart the server after every rebuild.
+- **No generated patches for JSX or for strings containing `
+`** — it
+  collapsed a `console.log("
+…")` into a literal newline again this session
+  and broke parity until it was fixed with a direct edit.
+- `cmd | tail` masks the exit code: a guard piped into `tail` never gates a
+  `&&` chain.
 
 ---
 
