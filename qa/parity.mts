@@ -134,25 +134,64 @@ for (const item of items) {
 /* ------------------------------------------------------ homepage bits */
 console.log("\n4. homepage sections");
 const home = decode(await (await fetch(`${BASE}/`)).text());
-const mustHave = [
-  "Your Cretan adventure starts here",
+/* PARITY v2 — both halves.
+ *
+ * v1 asserted that the ORIGINAL live-site strings appeared on the homepage.
+ * That was right while the rebuild was a faithful port, and wrong the moment
+ * the approved copy deck replaced them: it would have forced the site to keep
+ * saying "Our Amazing Team" forever, or been deleted to let the deck through —
+ * and deleting a guard to pass it is how content quietly goes missing.
+ *
+ * So the check splits in two, and both halves must hold:
+ *
+ *   RENDERED   — the new deck copy is actually on the page
+ *   PRESERVED  — every original string still exists in the content files,
+ *                under a *_original key, recoverable and never overwritten
+ *
+ * The originals are no longer required to be VISIBLE. They are required to be
+ * KEPT. That is the promise this project actually made.
+ */
+const mustRender = [
+  "Rethymno · Crete",
   "Explore the unknown side of Crete",
-  "Pick up & Travelling",
-  "Local Knowledge & Personal Approach",
-  "Comfort, Safety & Genuine Hospitality",
-  "Explore Our Excursions",
-  "Send Us Your Details",
-  "Enjoy the Journey",
+  "Booking is a conversation",
+  "Tell us the day",
+  "Send us the details",
+  "We confirm, then you travel",
+  "The three people you'll actually meet",
   "Antonios Tzagkarakis",
   "Stavros Kapetanakis",
   "Daria",
   "highly trained, professional chauffeurs",
   "191661450000",
+  "Pick up & Travelling",
+  "Local Knowledge & Personal Approach",
+  "Comfort, Safety & Genuine Hospitality",
 ];
-for (const needle of mustHave) {
-  if (!home.includes(needle)) fail(`homepage missing "${needle}"`);
+for (const needle of mustRender) {
+  if (!home.includes(needle)) fail(`homepage missing rendered copy "${needle}"`);
 }
-console.log(`  ${mustHave.length} required strings checked`);
+console.log(`  ${mustRender.length} rendered strings checked`);
+
+console.log("\n5. originals preserved (not necessarily visible)");
+const raw = JSON.stringify(
+  JSON.parse(fs.readFileSync(path.join(process.cwd(), "content", "site.json"), "utf8")),
+);
+const mustPreserve = [
+  "Your Cretan adventure starts here",
+  "How to Book Your Cretan Experience",
+  "Our Amazing Team",
+  "Our collection of transfers",
+  "Explore Our Excursions",
+  "Choose Your Preferred Date",
+  "Send Us Your Details",
+  "Confirmation & Details",
+  "Enjoy the Journey",
+];
+for (const needle of mustPreserve) {
+  if (!raw.includes(needle)) fail(`ORIGINAL LOST from content: "${needle}"`);
+}
+console.log(`  ${mustPreserve.length} originals still in the content files`);
 
 console.log(
   failures === 0

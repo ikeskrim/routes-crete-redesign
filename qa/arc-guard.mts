@@ -26,7 +26,11 @@ const ARC = [
   { id: "positioning", must: "A family runs this" },
   { id: "experiences", must: "Journeys into the unknown side of the island" },
   { id: "signature", must: "" },
-  { id: "how-to-book", must: "How to Book" },
+  // Renamed by the approved copy deck: "How to Book Your Cretan Experience"
+  // became "Booking is a conversation". The original is preserved in
+  // site.json under `heading_original` and parity v2 asserts it is still
+  // there — this guard tracks what the page SAYS, parity tracks what was KEPT.
+  { id: "how-to-book", must: "Booking is a conversation" },
   { id: "team", must: "" },
 ];
 

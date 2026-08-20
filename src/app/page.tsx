@@ -114,7 +114,7 @@ export default function HomePage() {
       <Hero
         eyebrow={site.hero.eyebrow}
         heading={site.hero.subheading}
-        subheading={site.meta.description}
+        subheading={site.hero.sub ?? site.meta.description}
         image={site.hero.backgroundImage}
         blurDataURL={getBlur(site.hero.backgroundImage)}
         primaryCta={{ label: "Explore Experiences", href: "/experiences" }}

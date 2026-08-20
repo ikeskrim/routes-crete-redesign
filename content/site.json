@@ -72,7 +72,7 @@
     "#contact": "#contact"
   },
   "hero": {
-    "eyebrow": "Your Cretan adventure starts here",
+    "eyebrow": "Rethymno · Crete",
     "heading": "Routes Crete",
     "subheading": "Explore the unknown side of Crete",
     "originalCta": {
@@ -83,7 +83,10 @@
     "backgroundImageMaster": "/images/experiences/kourtaliotis-temple-of-nature/ku1574-dsc06647.jpg",
     "backgroundImageOriginal": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg",
     "backgroundImageLcpNote": "hero-home.jpg is a 1600×2400 derivative of the 4000×6000 master. The master is 24 megapixels, which the image optimiser had to decode and re-encode on demand — the dominant cost in a 4.9s mobile LCP. The derivative still covers a 1440px desktop slot and any phone at 3x.",
-    "backgroundImageNote": "ART DIRECTION CHANGE. The original masthead (sp1-17.jpg) is a close-up of a goat behind a wire fence at 1024×724 — unusable as a cinematic fullscreen hero. Replaced with ku1574-dsc06647.jpg, the only genuinely high-resolution asset on the site (4000×6000): sharp at every viewport, natively portrait for mobile, and an olive grove reads unmistakably as Crete. Both images are original site photography — nothing external was introduced. See CONTENT_INVENTORY.md Q9."
+    "backgroundImageNote": "ART DIRECTION CHANGE. The original masthead (sp1-17.jpg) is a close-up of a goat behind a wire fence at 1024×724 — unusable as a cinematic fullscreen hero. Replaced with ku1574-dsc06647.jpg, the only genuinely high-resolution asset on the site (4000×6000): sharp at every viewport, natively portrait for mobile, and an olive grove reads unmistakably as Crete. Both images are original site photography — nothing external was introduced. See CONTENT_INVENTORY.md Q9.",
+    "eyebrow_original": "Your Cretan adventure starts here",
+    "sub": "Private, family-run journeys into the gorges, villages and olive country of Rethymno. Twelve seats. Booked by conversation, not by cart.",
+    "subNote": "New visible sub-line. site.meta.description is deliberately NOT reused here any more and is deliberately NOT rewritten: it is the SEO description, and the copy deck governs what a reader sees, not what a crawler indexes."
   },
   "sections": {
     "experiences": {
@@ -92,19 +95,22 @@
     },
     "transfers": {
       "heading": "Transfers",
-      "subheading": "Our collection of transfers"
+      "subheading": "Airport to villa, and anywhere after",
+      "subheading_original": "Our collection of transfers"
     },
     "whyUs": {
       "heading": "Why us",
       "subheading": ""
     },
     "howToBook": {
-      "heading": "How to Book Your Cretan Experience",
-      "subheading": "Step by Step Guide"
+      "heading": "Booking is a conversation",
+      "subheading": "Step by Step Guide",
+      "heading_original": "How to Book Your Cretan Experience"
     },
     "team": {
-      "heading": "Our Amazing Team",
-      "subheading": "Where professional excellence meets world-class hospitality."
+      "heading": "The three people you'll actually meet",
+      "subheading": "Where professional excellence meets world-class hospitality.",
+      "heading_original": "Our Amazing Team"
     },
     "contact": {
       "heading": "Contact Form",
@@ -142,33 +148,36 @@
       {
         "key": "explore",
         "number": 1,
-        "title": "Explore Our Excursions",
+        "title": "Tell us the day",
         "body": "Browse our available routes and experiences. Each excursion includes detailed information about locations, duration, and what’s included — so you can choose the one that fits your interests best.\n\nSelect the date that works for you and check availability.",
         "absorbed": [
           "Explore Our Excursions",
           "Choose Your Preferred Date"
-        ]
+        ],
+        "title_original": "Explore Our Excursions"
       },
       {
         "key": "contact",
         "number": 2,
-        "title": "Send Us Your Details",
+        "title": "Send us the details",
         "body": "Contact us via message or email with:\n\n• The excursion you selected\n\n• Preferred date\n\n• Number of participants\n\n• Your accommodation location",
         "titleOriginal": "We’ll respond promptly with availability, final details, and booking confirmation.",
         "titleFlag": "CORRECTED. The live site's heading was a copy-paste of step 4's body and did not describe this step. Replacement supplied by the client. Body is unchanged and verbatim. See CONTENT_INVENTORY.md §4.4 / Q1.",
         "absorbed": [
           "Send Us Your Details"
-        ]
+        ],
+        "title_original": "Send Us Your Details"
       },
       {
         "key": "enjoy",
         "number": 3,
-        "title": "Enjoy the Journey",
+        "title": "We confirm, then you travel",
         "body": "We’ll respond promptly with availability, final details, and booking confirmation.\n\nRelax — we take care of the rest. Your Cretan adventure begins.",
         "absorbed": [
           "Confirmation & Details",
           "Enjoy the Journey"
-        ]
+        ],
+        "title_original": "Enjoy the Journey"
       }
     ],
     "stepsOriginal": [
@@ -214,7 +223,8 @@
     ],
     "stepsNote": "Cut from five to three. Originals 1-2 were not steps, they were the website: browsing and choosing a date happen on the page itself. Originals 4-5 described one moment twice. Every original title and body is preserved verbatim in `stepsOriginal`, and each surviving step lists what it absorbed. The three retained titles are also the three the parity scan requires on the homepage.",
     "responsePromise": null,
-    "responsePromiseNote": "A stated reply time is a claim about how the business actually operates. It stays null and the line is omitted from the page entirely until the client supplies a real number. Never fill this in from research or assumption."
+    "responsePromiseNote": "A stated reply time is a claim about how the business actually operates. It stays null and the line is omitted from the page entirely until the client supplies a real number. Never fill this in from research or assumption.",
+    "deckNote": "Copy deck applied by MEANING, not by position. The deck was written against the original five steps; these are the three that survived the collapse, so a positional mapping put \"We confirm everything\" above a body that reads \"Contact us via message or email with...\" — a title contradicting its own verbatim body. Deck line 1 (\"Tell us the day\") fits step 1 exactly. Step 2 takes \"Send us the details\", which is not a deck line and is FLAGGED in MORNING.md. Step 3 merges deck lines 2 and 3 because its body merged the original steps 4 and 5."
   },
   "team": {
     "intro": "Our team consists of **highly trained, professional chauffeurs** dedicated to providing a seamless and secure travel experience for every passenger.",

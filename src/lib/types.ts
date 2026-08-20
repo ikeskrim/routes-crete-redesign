@@ -182,6 +182,8 @@ export interface SiteContent {
   nav: NavItem[];
   legacyAnchorMap: Record<string, string>;
   hero: {
+    /** The visible sub-line. Distinct from meta.description, which is SEO. */
+    sub?: string;
     eyebrow: string;
     heading: string;
     subheading: string;
