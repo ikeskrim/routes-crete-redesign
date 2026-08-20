@@ -506,6 +506,56 @@ runs 0 → 480 → glides to 787 and opens nothing.
 
 ---
 
+---
+
+## Block 16 — Stage 3 item 7, and **STAGE 3 CLOSES** ✅  `b569644`
+
+The sticky ledger told you *which* chapter you were in. While a scene holds
+you in place, the question you actually have is **how far through** — so a rail
+behind the numbers now fills with the scene's own scroll progress.
+
+It reuses `scrollYProgress`, already computed for the imagery, and animates
+`scaleY` on a 1px element: no new listener, no new observer, no measurable
+time.
+
+Verified against the scene's real progress rather than eyeballed: at
+`scrollY 2688` the rail reads `scaleY 0.539`, and the scene's own progress
+there is `(2688−1717)/(2700−900) = 0.54`. Exact.
+
+**One instrument note worth keeping:** motion writes `transform: none` when a
+scale reaches its default of 1, so a *full* rail reads as `none`. My first
+probe used `'none'` as both the element-missing fallback **and** a legitimate
+value, which made a working rail look broken. **A fallback must never collide
+with a real reading.**
+
+### Stage 3, complete
+
+| item | | TBT impact |
+|---|---|---|
+| 1 fullscreen overlay menu | ✅ | — |
+| 2 clip-path unclip reveals | ✅ | +60ms, accepted |
+| 3 SVG-mask scene seams | ✅ | none (zero JS) |
+| 4 layered-zoom depth | ✅ | +50ms, then **cut back** to ~0 |
+| 5 warm sand texture | ✅ | none (zero JS) |
+| 6 drag-inertia strip | ✅ | **10–40ms** on its own route |
+| 7 refined chapter indices | ✅ | none (reuses an existing value) |
+
+**Stage 3 close, deployed:** performance 90 · 91 · 91, TBT **80 · 90 · 110ms**
+against the 250 ceiling, **CLS 0**, a11y 100.
+
+The pattern across seven items: **the cheap ones were the good ones.** Three
+of the seven cost literally nothing because they are CSS or reuse a value that
+already exists, and the only item that threatened the budget was the one that
+promoted a full-viewport element to its own layer.
+
+### Captures
+
+`qa/screenshots/digest/` refreshed on `b569644` — 30 frames, desktop + 390 +
+full reduced-motion walkthrough, every frame stamped with its build-commit.
+
+
+---
+
 # NEXT SESSION STARTS HERE
 
 **State:** tree clean, alias verified, all guards green on the deployment
