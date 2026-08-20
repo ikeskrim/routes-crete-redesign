@@ -464,6 +464,48 @@ exactly the case the ceiling exists to catch.
 
 ---
 
+---
+
+## Block 15 — Stage 3 item 6: the gallery becomes a strip you can throw ✅  `87599d5`
+
+Curated to fourteen frames, a gallery reads better as a **sequence** — the
+order the day happened in — than as a masonry block, which reads as an
+archive. The experience pages now lay their frames out as one horizontal run.
+
+**Idle at load, which was the constraint.** No effect, no rAF, no scroll
+listener, no observer on mount — the only thing wired up is `onPointerDown`.
+The animation frame starts on release and stops itself when the throw dies.
+
+**TBT on the route that carries it: 30 · 10 · 40ms.** That is the idle-at-load
+claim proven rather than asserted. Home, which has no strip, is unchanged at
+89–90. CLS 0 on every reading, a11y 100.
+
+### Two bugs, both found only because the test used real pointer events
+
+**1. The throw travelled 0px.** `snap-x snap-mandatory` and inertia are
+mutually exclusive — the browser snaps to the nearest point the instant the
+pointer lifts, overriding the glide entirely. Snapping removed; now measured
+at 298px of glide.
+
+**2. Far worse: `setPointerCapture` on pointerdown silently broke every
+gallery tile.** Capturing redirects the eventual `click` to the capturing
+container, so the tile's own `onClick` never fired — clicking a photograph
+opened nothing at all. Capture is now taken only once a drag actually starts
+(>4px).
+
+I nearly filed that second one as "my detector is wrong", because the first
+probe used a selector the lightbox does not carry. Checking the markup showed
+the lightbox **does** use `role="dialog" aria-modal="true"` — so the failure
+was real. **Verifying the instrument before dismissing the result is what
+caught it**, and it would otherwise have shipped a gallery whose photographs
+could not be opened.
+
+Verified end to end: a click opens the lightbox, Escape closes it, a throw
+runs 0 → 480 → glides to 787 and opens nothing.
+
+
+---
+
 # NEXT SESSION STARTS HERE
 
 **State:** tree clean, alias verified, all guards green on the deployment
