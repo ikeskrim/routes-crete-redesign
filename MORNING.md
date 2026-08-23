@@ -618,6 +618,46 @@ Six guards green.
 
 ---
 
+---
+
+## Block 18 — Stage 4 complete: the deck reaches the item pages ✅  `9988596`
+
+**Kourtaliotis** — deck applied in full: subtitle, opening and closing
+paragraphs. H1 kept, because the deck itself marks it *"kept: it is genuinely
+good"*. The middle of the story is untouched for a mechanical reason as well as
+an editorial one — the pinned scene reads paragraphs **3, 5, 7, 8 and 9**
+verbatim, and the deck explicitly keeps the explorer's-journal conceit for it.
+
+**Heart of Cretan Tradition** — the deck specifies no subtitle, and the
+original copy already held the best one, so it was **surfaced, not written**:
+*"Leave the sea behind for a day"* is a verbatim clause from body[1].
+
+Its `body[0]` is character-for-character the item's **own title**, so the page
+printed the title twice — once as the H1, again as the opening line. The
+paragraph stays in the content file; `ItemDetail` simply does not render a
+paragraph identical to the title. **Cutting a repetition is not cutting
+content.** Verified: 0 rendered paragraphs now equal the title.
+
+**Transfers** — no subtitle added, deliberately. Its closing line, *"Because
+getting there should feel easy."*, is already surfaced as a heading (it renders
+twice), so a subtitle would have repeated the page's own best line back at it.
+
+### COPY-MAP.md
+
+Every changed line with one of three provenances — **surfaced · written ·
+kept** — plus the surfaces deliberately left alone: `meta.description`, every
+H1, `responsePromise`, and the place-true captions.
+
+**Deployed:** home 94, experience 92, TBT 90/40ms, CLS 0, a11y 100, SEO 100.
+Seven guards green, run **un-piped** so their exit codes actually gate.
+
+*(One transient: the headline guard exited non-zero once on the deployment and
+passed on re-run — 48 assertions, 0 mismatches. Logged rather than ignored, in
+case it recurs.)*
+
+
+---
+
 # NEXT SESSION STARTS HERE
 
 **State:** tree clean, alias verified, six guards green on the deployment.
@@ -976,6 +1016,18 @@ So the earlier non-deployment was **intermittent, not a permanent
 misconfiguration** — which makes the dashboard check more important, not less:
 an intermittent silent non-deployment is the kind that ships a stale site on
 the day it matters.
+
+---
+
+## Decisions RESOLVED by the client
+
+- **Stage 2d — enhancement: SKIP.** With 4000px+ sourced photography now
+  placed, 2× upscaling the 1024px originals is no longer worth its risk. The
+  prepared pipeline stays in `qa/review/enhanced/` for the day a real upscaler
+  is installed; nothing enhanced ships. **Client-reversible.**
+- **The deck deviation on step 2 — approved as executed.** Meaning-preserving
+  reconciliation is now the standing default when an approved artifact
+  collides with a later-approved structural change.
 
 ---
 
