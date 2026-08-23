@@ -83,16 +83,46 @@ export function StackedPanels({
         className={cn("grain relative bg-olive-700 py-section-lg", className)}
       >
         <div aria-hidden className="grain-overlay" />
-        <div className="relative mx-auto flex max-w-[92rem] flex-col gap-20 px-6 sm:px-8 lg:px-12">
+        {/* Reduced motion means no MOTION, not no PICTURES.
+            An earlier version of this branch dropped `panel.image` entirely
+            and left three statements ranged left on a flat olive field with
+            two thirds of the page empty — a bulleted list, not a scene. The
+            photographs are the whole point of the scene, and they cost a
+            reduced-motion visitor nothing: they simply do not move.
+            Composed instead as alternating editorial pairs, so the sequence
+            still has a rhythm without a single transform. */}
+        <div className="relative mx-auto flex max-w-[92rem] flex-col gap-24 px-6 sm:px-8 lg:px-12">
           {panels.map((panel, i) => (
-            <article key={i} className="max-w-[36ch]">
-              <p className="text-eyebrow uppercase text-gold-300">
-                {pad(i + 1)} — {panel.eyebrow}
-              </p>
-              <p className="text-display-md mt-5 text-sand-50">{panel.statement}</p>
-              {panel.detail && (
-                <p className="text-body mt-5 text-sand-200/75">{panel.detail}</p>
+            <article
+              key={i}
+              className={cn(
+                "grid items-center gap-8 lg:grid-cols-2 lg:gap-16",
+                i % 2 === 1 && "lg:[&>figure]:order-last",
               )}
+            >
+              {panel.image && (
+                <figure className="relative aspect-[4/3] overflow-hidden rounded-media">
+                  <Image
+                    src={panel.image}
+                    alt=""
+                    fill
+                    quality={68}
+                    sizes="(max-width: 1024px) 100vw, 44vw"
+                    placeholder={panel.blurDataURL ? "blur" : undefined}
+                    blurDataURL={panel.blurDataURL}
+                    className="object-cover"
+                  />
+                </figure>
+              )}
+              <div className="max-w-[36ch]">
+                <p className="text-eyebrow uppercase text-gold-300">
+                  {pad(i + 1)} — {panel.eyebrow}
+                </p>
+                <p className="text-display-md mt-5 text-sand-50">{panel.statement}</p>
+                {panel.detail && (
+                  <p className="text-body mt-5 text-sand-200/75">{panel.detail}</p>
+                )}
+              </div>
             </article>
           ))}
         </div>
