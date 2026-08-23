@@ -752,36 +752,75 @@ becomes a no-op, `/serif-preview` gets deleted.
 
 ---
 
+---
+
+## Block 21 — the temporary /review page ✅  `a4f327e`
+
+**https://routes-crete-redesign.vercel.app/review**
+
+The ten open decisions as a page you can scroll on a phone. Each states the
+choice, why it is a choice rather than a question, and shows the frames that
+answer it — plus a walkthrough of the site as it stands.
+
+**Own captures only.** Nothing from `qa/benchmark/` appears there and nothing
+ever may: those are screenshots of someone else's site, kept for study and
+gitignored precisely so they are never published. Asserted on the deployed
+page — **0 references** to any benchmark frame.
+
+20 frames re-encoded from our own capture sets at 1100px / q74 into
+`public/review-assets` — **1.2MB total** rather than the 60MB the PNG sets
+weigh, because this is a page opened on a phone.
+
+Verified on the deployment: `200`, `noindex, nofollow`, assets serve,
+**0 benchmark leakage**, and **0 links to it from the site** — it is reachable
+only if you have the URL.
+
+### Deleting it, when the decisions land
+
+1. `rm -rf src/app/review public/review-assets`
+2. drop this block's link from `MORNING.md`
+
+That is all it is — one route and one asset folder, both temporary by
+construction.
+
+*(Local-server note for future blocks: the production server does not survive
+between tool calls on this machine. Start it and run the guards in the SAME
+invocation, or every browser-driven guard reports a preflight failure that
+looks like a defect and is not.)*
+
+
+---
+
 # NEXT SESSION STARTS HERE
 
-**State:** tree clean, alias verified, **all eight guards green on the
-deployment**. Stages 1–6 complete. Stage 2d skipped by client ruling.
+**State:** tree clean, alias verified, all guards green. Stages 1–6 complete.
+The client's review page is live at **/review**.
 
-**Deployed:** home 92 · experience 93 · a11y 100 · CLS 0 · TBT 130/50ms
-against the 250 ceiling · SEO 100.
-
-**Everything the client needs is ready:** `MORNING.md` (this file) with ten
-decisions, each with pictures · `COPY-MAP.md` · 30 digest frames · the serif
-A/B · the arc and contrast before/afters.
-
-**Remaining burn-down, in order:**
-1. **Benchmark coverage completion** — the only reference-derived patterns
-   still lacking a side-by-side. Note the "attested, not captured" tag: the
-   Fitzroy hover mechanic is instrumentally observed but has no frame, and a
-   manufactured pairing is worse than an absent one.
+**Remaining autonomous queue:**
+1. **Benchmark coverage completion** — check which reference-derived patterns
+   still lack a side-by-side. Keep the *attested, not captured* tag honest:
+   the Fitzroy hover mechanic is instrumentally observed but no frame shows
+   it, and a manufactured pairing is worse than an absent one.
+   `qa/benchmark/` stays gitignored and never reaches a public page.
 2. **qa hardening backlog** — see `qa/README.md`.
-3. Anything the 390px and reduced-motion passes surfaced but did not fix.
+3. Genuine polish only: consistency sweeps, mobile refinements, documentation
+   accuracy. **No make-work** — if the queue empties, say so and stop.
+
+**Never touch** the client-decision items: photo swaps, serif choice, label
+warmth, enhanced files, `responsePromise`.
 
 **Standing traps — check at every block start:**
 - Never chain a measurement onto the alias-wait.
-- `pkill` does not stop the server here — kill by port.
+- **The local prod server dies at the end of each tool call.** Start it and run
+  the guards in the SAME invocation.
+- `pkill` does not stop it — kill by port.
 - `scrollIntoView` does nothing under Lenis — real wheel events.
 - Sample scroll transforms **inside** the element's own range.
 - A probe fallback must never collide with a legitimate value.
-- Restart the server after every rebuild.
-- **Direct writes first for JSX and multi-line strings** — never a generated
+- **Direct writes first** for JSX and multi-line strings — never a generated
   patch, not even as a first attempt.
-- Guards must be run **un-piped**; `cmd | tail` masks the exit code.
+- Guards must be run **un-piped**, and a commit must never be chained after an
+  ungated check.
 - **Re-run a single failing guard alone before believing it.**
 
 ---
