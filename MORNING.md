@@ -658,6 +658,51 @@ case it recurs.)*
 
 ---
 
+---
+
+## Block 19 — Stage 5: the serif A/B ✅  `64e708c`  ·  Stage 6: digest refreshed
+
+`/serif-preview` renders the same hero and the same positioning statement with
+**Fraunces** on the headlines only. **The live site keeps Manrope.** This is a
+prototype for one decision, not a change.
+
+Fraunces over Instrument Serif and Cormorant: it is variable, so display sizes
+get real optical sizing rather than a text face stretched large; its SOFT axis
+takes the edge off the serifs, which suits sunbleached warmth better than the
+colder high-contrast alternatives; and SIL OFL with `next/font/google`
+self-hosting means no request leaves the origin — the contract Manrope and
+Inter already keep.
+
+**The font loads on that route only.** In the root layout every visitor would
+pay for a typeface that exists solely for this comparison. Verified on the
+deployment: the live homepage references Fraunces **zero** times, and the route
+returns `noindex, nofollow`.
+
+Captured under identical conditions — same viewport, wait, scroll position and
+build, reduced-motion on so no frame catches a headline mid-reveal. **The only
+difference between the two images is the typeface**, and that is verified
+mechanically rather than trusted:
+
+```
+desktop  sans   h1=Manrope   h2=Manrope   body=Inter
+desktop  serif  h1=Fraunces  h2=Fraunces  body=Inter
+```
+
+which is also the proof that *headlines only* is true — the body face is
+unchanged in both.
+
+`qa/screenshots/serif-ab/` — desktop and 390, hero and statement, four frames
+per variant.
+
+### Digest refreshed on `64e708c`
+
+30 frames in `qa/screenshots/digest/` — desktop + 390 + a full reduced-motion
+walkthrough, every frame stamped with its build-commit. Now shows the finished
+Stage 3 motion system and the Stage 4 copy.
+
+
+---
+
 # NEXT SESSION STARTS HERE
 
 **State:** tree clean, alias verified, six guards green on the deployment.
@@ -1033,35 +1078,34 @@ the day it matters.
 
 ## Decisions awaiting you
 
-1. **The Vercel dashboard check** — Project → Settings → Git. Production builds
-   were once coming from something other than the pushed commit. It has behaved
-   since (every push this run advanced the alias unaided), which makes it
-   **intermittent** — the kind that ships a stale site on the day it matters.
-   I can inspect and deploy but must not touch project settings.
-2. **Home performance headroom.** Home measures 89–93 where it was 94, and 89
-   is the floor. Cause is structural, not a defect: the stacked scene moved
-   from mid-page to just after the hero, so three full-bleed images and their
-   client JS compete with the hero's LCP. Accept the thinner margin, or spend a
-   block deferring the scene's non-active images to buy it back?
+Every one of these is a decision **with pictures**, not a question.
+
+1. **Serif or sans.** `qa/screenshots/serif-ab/` — same frames, one typeface
+   apart. Fraunces on headlines vs the current Manrope. Sans stays default
+   until you say otherwise.
+2. **The Vercel dashboard check** — Project → Settings → Git. Production once
+   built from something other than the pushed commit. It has behaved since,
+   which makes it **intermittent** — the kind that ships a stale site on the
+   day it matters. I can inspect and deploy but must not touch settings.
 3. **Label warmth** — the contrast retune (`/50`→`/70`, `/45`→`/65`), measured
-   4.18:1 → 7.15:1. Before/after in `qa/screenshots/contrast/`. It arrived as
-   an accessibility fix and changed how every small label reads.
-4. **`responsePromise`** — still `null`, still omitted from the page. It stays
-   out until you give me a real number.
-5. **The map's place photographs** — five pins now reveal a real photograph.
-   Frames 06 and 07 in the digest. Right call, or too much?
-6. **Gallery curation** — 51 frames → 28. Every removal is listed in
-   `galleryRemoved` with its reason; restoring one is moving a JSON entry.
-   Worth reading the reasons: they are specific enough to disagree with.
-7. **Gallery opening frames changed.** Kourtaliotis opens on the stone arch
-   bridge; Heart of Cretan Tradition opens on the golden-hour ridge. The
-   curator also recommends replacing that item's **card image** (currently the
-   loom room) with the same ridge frame — I did **not** ship that, because a
-   card image is a taste call and the brief says taste calls stay as they are
-   until you rule.
-8. **Eight sourced candidates rejected**, listed with reasons in
-   `qa/ingest-plan.json` — including two licence-clean olive groves rejected
-   for being Greek rather than Cretan. Agree with that line?
+   4.18:1 → 7.15:1. `qa/screenshots/contrast/`.
+4. **`responsePromise`** — still `null`, still omitted. It stays out until you
+   give a real number.
+5. **The map's place photographs** — five pins reveal a real photograph, and
+   the mobile legend carries thumbnails. Digest frames 06–07.
+6. **Gallery curation** — 51 frames → 28, every removal reasoned in
+   `galleryRemoved`. The reasons are specific enough to disagree with.
+7. **The card image for Heart of Cretan Tradition.** The curator recommends
+   the golden-hour ridge over the current loom room. **Not shipped** — a card
+   image is a taste call.
+8. **Eight sourced candidates rejected**, reasons in `qa/ingest-plan.json`,
+   including two licence-clean olive groves rejected for being Greek rather
+   than Cretan.
+9. **The 11px eyebrow / 13px caption type tokens.** Reported on every mobile
+   audit run, never enforced. Raising them is a taste call.
+10. **The deck's step-2 line.** You approved my deviation; if you prefer "We
+    confirm everything" it can go back, but not above the body that reads
+    "Contact us via message or email with…".
 
 ---
 
