@@ -29,7 +29,23 @@ if (!URL) {
   );
   process.exit(1);
 }
-const OUT = path.join(process.cwd(), "qa", "benchmark");
+/* One folder per reference site.
+ *
+ * This wrote every capture to qa/benchmark/bm-desktop-NN.png regardless of
+ * which site it had just visited, so capturing a SECOND reference silently
+ * destroyed the first. That is exactly what happened: a Fitzroy run
+ * overwrote the alethia.earth frames, and alethia was the reference the
+ * stacked scene's near-black ground was judged against. Nineteen files, all
+ * named as though they were the originals, none of them were.
+ *
+ * A capture set that can be overwritten by the next capture is not a record.
+ * The host name decides the folder now, so two references cannot collide. */
+// globalThis.URL, because this file's own `const URL` (the target address)
+// shadows the global constructor.
+const SITE = new globalThis.URL(URL).hostname
+  .replace(/^www\./, "")
+  .replace(/[^a-z0-9]+/gi, "-");
+const OUT = path.join(process.cwd(), "qa", "benchmark", SITE);
 const DESKTOP = { width: 1440, height: 900 };
 const MOBILE = { width: 390, height: 844 };
 

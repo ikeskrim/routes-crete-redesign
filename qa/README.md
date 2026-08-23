@@ -360,3 +360,31 @@ the next real failure gets waved away as "probably contention".
 
 And always re-run a single failing guard on its own **before** believing it.
 Twice now the first reading has been the wrong one.
+
+## A capture set that the next capture can overwrite is not a record
+
+`benchmark-shots.mts` wrote every frame to `qa/benchmark/bm-desktop-NN.png`
+regardless of which site it had just visited. Capturing a **second** reference
+therefore destroyed the first, silently, leaving nineteen files named exactly
+as the originals had been.
+
+That is what happened. A Fitzroy run overwrote the alethia.earth captures —
+and alethia was the reference the stacked scene's near-black ground was judged
+against. The side-by-side that justified a shipped design decision no longer
+existed, and nothing said so.
+
+The host name decides the folder now (`qa/benchmark/<host>/`), so two
+references cannot collide. Existing frames were moved into
+`fitzroy-travel-com/` and alethia was re-captured into `alethia-earth/`.
+
+Both stay gitignored. They are someone else's work, kept for study, and they
+must never reach a published page — the `/review` page asserts zero references
+to them for exactly this reason.
+
+> A record that a later run can overwrite in place is a cache, not a record.
+> If two runs can produce the same filename with different content, namespace
+> them.
+
+One aside, because it cost a run: the script's own `const URL` (the target
+address) shadows the global `URL` constructor, so `new URL(...)` throws
+`URL is not a constructor`. It uses `globalThis.URL` now.
