@@ -3,7 +3,7 @@
   "order": 2,
   "title": "Kourtaliotis – The Temple of Nature",
   "titleVariantOnCard": "Kourtaliotis - The Temple of Nature",
-  "subtitle": "An Epic Journey into the Hidden Heart of Crete",
+  "subtitle": "A day in the gorge, the palm valley and the sea below Preveli",
   "category": "Experiences",
   "categoryOriginal": "Expieriences",
   "sourceModal": "portfolioModal2",
@@ -37,7 +37,8 @@
   "body": [
     {
       "type": "paragraph",
-      "text": "In today’s travel experience, people are no longer just looking for places to visit. They are looking for experiences to live, stories to discover, and journeys that make them feel connected to a place."
+      "text": "You follow a river the whole way down. It starts in a village of plane trees and spring water, and ends where it meets the Libyan Sea under a forest of palms.",
+      "text_original": "In today’s travel experience, people are no longer just looking for places to visit. They are looking for experiences to live, stories to discover, and journeys that make them feel connected to a place."
     },
     {
       "type": "paragraph",
@@ -89,7 +90,8 @@
     },
     {
       "type": "paragraph",
-      "text": "A story where they become explorers themselves — discovering one of the most remarkable natural landscapes in the Mediterranean."
+      "text": "Twelve seats, one day, and a gorge that most people only ever see from the road above.",
+      "text_original": "A story where they become explorers themselves — discovering one of the most remarkable natural landscapes in the Mediterranean."
     }
   ],
   "scenes": [
@@ -282,5 +284,7 @@
       "place": "The palm forest along the river at Preveli"
     }
   ],
-  "placeBreaksNote": "Licensed photographs of the places this journey visits, used as editorial breaks. They are NOT ours and must never be captioned as though they were: each renders with a credit line, and every one is SHA-1 ledgered in content/photo-credits.json and attributed on /credits."
+  "placeBreaksNote": "Licensed photographs of the places this journey visits, used as editorial breaks. They are NOT ours and must never be captioned as though they were: each renders with a credit line, and every one is SHA-1 ledgered in content/photo-credits.json and attributed on /credits.",
+  "subtitle_original": "An Epic Journey into the Hidden Heart of Crete",
+  "copyDeckNote": "Approved copy deck applied to the subtitle, the opening paragraph and the closing paragraph. Originals preserved verbatim alongside each under *_original — parity v2 asserts they are still KEPT, not that they are still visible. The H1 is deliberately unchanged: the deck marks it 'kept: it is genuinely good'. The middle of the body is untouched because the pinned scene reads paragraphs 3, 5, 7, 8 and 9 verbatim, and the deck explicitly keeps the explorer's-journal conceit for it."
 }

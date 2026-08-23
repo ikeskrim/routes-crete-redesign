@@ -52,11 +52,20 @@ export function ItemDetail({ item }: { item: ContentItem }) {
       : []),
   ].filter((f) => f.value);
 
+  /* One journey's first paragraph is character-for-character its own title, so
+     the page printed the title twice — once as the H1 and again as the opening
+     line of the story. The paragraph stays in the content file (nothing is
+     deleted); it simply is not rendered a second time. Cutting a repetition is
+     not the same as cutting content. */
+  const story = item.body.filter(
+    (paragraph) => paragraph.text?.trim() !== item.title.trim(),
+  );
+
   /* The story is split so images can breathe between passages. */
-  const chunkSize = Math.max(2, Math.ceil(item.body.length / (breakImages.length + 1)));
+  const chunkSize = Math.max(2, Math.ceil(story.length / (breakImages.length + 1)));
   const chunks: (typeof item.body)[] = [];
-  for (let i = 0; i < item.body.length; i += chunkSize) {
-    chunks.push(item.body.slice(i, i + chunkSize));
+  for (let i = 0; i < story.length; i += chunkSize) {
+    chunks.push(story.slice(i, i + chunkSize));
   }
 
   return (

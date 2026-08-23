@@ -2,7 +2,7 @@
   "slug": "heart-of-cretan-tradition",
   "order": 1,
   "title": "A Journey Into the Heart of Cretan Tradition",
-  "subtitle": null,
+  "subtitle": "Leave the sea behind for a day",
   "category": "Experiences",
   "categoryOriginal": " Experiences ",
   "sourceModal": "portfolioModal1",
@@ -256,5 +256,7 @@
       "place": "An ancient olive tree in eastern Crete"
     }
   ],
-  "placeBreaksNote": "Licensed photographs of the places this journey visits, used as editorial breaks. They are NOT ours and must never be captioned as though they were: each renders with a credit line, and every one is SHA-1 ledgered in content/photo-credits.json and attributed on /credits."
+  "placeBreaksNote": "Licensed photographs of the places this journey visits, used as editorial breaks. They are NOT ours and must never be captioned as though they were: each renders with a credit line, and every one is SHA-1 ledgered in content/photo-credits.json and attributed on /credits.",
+  "subtitleProvenance": "SURFACED, not written. Verbatim clause from body[1]: \"Leave the sea behind for a day and travel into the mountains of central Crete...\". The deck specifies no subtitle for this journey, and the original copy already contained the best one — cut before you write.",
+  "bodyNote": "body[0] is character-for-character the item title, so the page printed the title twice. The paragraph is KEPT here (nothing is deleted from content) and ItemDetail simply does not render a body paragraph identical to the title. Redundancy removed from the page, original preserved in the file."
 }
