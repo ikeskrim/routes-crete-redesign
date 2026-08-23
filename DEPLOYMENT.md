@@ -127,3 +127,52 @@ Run top to bottom. Do not start until the pre-launch smoke list passes on a stag
 - [ ] Re-run the smoke list against the live domain.
 - [ ] Submit `sitemap.xml` in Search Console; watch coverage for the legacy `/media/*` URLs.
 - [ ] Re-run Lighthouse against production — real CDN numbers will differ from local.
+
+---
+
+## How deploys actually work here (updated)
+
+**Git push is the deploy.** Pushing to `main` builds on Vercel's Linux and
+promotes to production. Do **not** use `vercel deploy --temporary` or
+`--prebuilt`: those build locally and Vercel's builder mishandles Windows path
+separators on `[slug]` routes. That cost a misdiagnosis once — see
+`qa/README.md`.
+
+### Assert the alias after every push
+
+Every response carries the commit it was built from:
+
+```bash
+curl -s https://routes-crete-redesign.vercel.app/ | grep build-commit
+```
+
+A push is not done until that matches `git rev-parse --short HEAD`. This is not
+ceremony: production once served a homepage that did not match `origin/main`
+for over an hour, and `vercel inspect` prints no commit, so there was no way to
+see it. The stamp closed that blind spot.
+
+**Never chain a measurement onto the alias-wait** — measuring the old build
+returns results identical to "nothing changed".
+
+If the alias has not advanced within ~3 minutes, `npx vercel deploy --prod`
+(remote build) and log the fallback in `MORNING.md`.
+
+### Which URL to use
+
+| URL | for |
+|---|---|
+| `<project>-<hash>-<team>.vercel.app` | proving what one deployment contains |
+| `<project>-git-main-<team>.vercel.app` | content verification — bypasses the alias cache |
+| `<project>.vercel.app` | **Lighthouse and sharing** |
+
+The git-main alias carries `X-Robots-Tag: noindex`, so Lighthouse reports
+**SEO 69** there. That is an artifact of the URL, never a regression.
+
+### Before cutover
+
+`src/lib/site-url.ts` sends canonical URLs to `routescrete.gr` while social
+images resolve on whatever origin is actually serving. After DNS cutover the
+two converge and the file becomes a no-op — no change required.
+
+`/serif-preview` is a prototype route carrying `noindex, nofollow`. Delete it
+once the typeface decision is made.

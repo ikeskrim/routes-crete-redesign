@@ -341,3 +341,22 @@ moved the pointer off it.
 The frames from those attempts were deleted rather than kept, precisely so
 nobody later mistakes a closed-dropdown screenshot for evidence of a hover
 mechanic.
+
+## Do not run the deployed suite as a tight batch
+
+The Stage 7 dry run executed all eight guards back-to-back against the
+deployment. Two reported failure — `nav-flash-guard` and `menu-audit`. Both
+passed immediately on individual re-run, with `0 failure(s)` and exit 0.
+
+Eight Playwright-driven guards launched in sequence against a *remote* origin
+contend for the same browser, CPU and network. The failures were timeouts, not
+defects, and a batch that cries wolf twice out of eight is worse than no batch:
+the next real failure gets waved away as "probably contention".
+
+> Run the deployed suite with a pause between guards, or run the slow
+> browser-driven ones (`menu-audit`, `nav-flash-guard`, `mobile-audit`)
+> individually. Locally the batch is fine — the contention is with the network,
+> not the machine.
+
+And always re-run a single failing guard on its own **before** believing it.
+Twice now the first reading has been the wrong one.

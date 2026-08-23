@@ -199,11 +199,65 @@ payments, email address, social links or newsletter. **None of these exist for t
 and inventing them was out of scope by instruction. Each is tracked in
 [`CONTENT_INVENTORY.md`](CONTENT_INVENTORY.md).
 
-## Content parity
+## The homepage arc
+
+Six movements, in this order, and nothing else:
+
+```
+1 Hero
+2 Positioning      — the statement, evidenced by the stacked why-us scene
+3 The Journeys     — experiences + transfers in one grid, with the island map
+4 The signature journey
+5 How it works
+6 The team, handing over to the footer-as-destination
+```
+
+The marquee and the cinematic bridge are **bands between movements**, not
+movements — they carry no heading and make no argument. `qa/arc-guard.mts`
+asserts the list by id, in order, and that the content of every cut section
+survived somewhere. It exists because a restructure was once *reported* as six
+sections and *shipped* as nine.
+
+## Content parity — the contract
 
 [`CONTENT_INVENTORY.md`](CONTENT_INVENTORY.md) is the line-by-line record of every text block
 and image extracted from the original site, the two intentional corrections of live-site errors,
-and the open questions. `node qa/parity.mts` checks it mechanically.
+and the open questions. [`COPY-MAP.md`](COPY-MAP.md) records every line the approved copy deck
+changed, tagged **surfaced · written · kept**.
+
+`node qa/parity.mts` checks both halves of the contract:
+
+| half | assertion |
+|---|---|
+| **RENDERED** | the approved deck copy is actually on the page |
+| **PRESERVED** | every original still exists in the content files, under a `*_original` key |
+
+> **The originals are no longer required to be visible. They are required to be kept.**
+
+That distinction is the whole content contract. v1 of this guard asserted the
+originals appeared *on the page*, which was right for a faithful port and wrong
+the moment the deck replaced them — it would have forced the site to say "Our
+Amazing Team" forever, or been deleted to let the deck through. Deleting a
+guard to pass it is how content quietly goes missing.
+
+## The guards
+
+Every one runs against a live server — `QA_BASE_URL` targets the deployment,
+otherwise `localhost:3009`.
+
+| guard | asserts |
+|---|---|
+| `arc-guard` | six movements by id, in order; cut sections' content survived |
+| `parity` | rendered deck copy **and** preserved originals |
+| `asset-audit` | every image reference resolves; anchors appear exactly once; social images absolute and 200 on the serving origin |
+| `headline-guard` | every split headline reads exactly as written, before and after measurement |
+| `credits-guard` | every sourced photograph is attributed as its licence requires; checksums still match |
+| `nav-flash-guard` | the bar is correct in the server HTML with JS **disabled**, and never flips under a 6× CPU throttle |
+| `menu-audit` | the overlay menu keeps every promise — focus trap, scroll lock, lazy previews, coverage |
+| `mobile-audit` | 390px: no sideways scroll, 44px tap targets, no ad-hoc tiny text |
+
+**Do not run these as a tight batch against the deployment** — eight
+browser-driven guards contend and produce false failures. See `qa/README.md`.
 
 ## What was deferred
 
