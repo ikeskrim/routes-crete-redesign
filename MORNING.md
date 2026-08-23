@@ -703,36 +703,86 @@ Stage 3 motion system and the Stage 4 copy.
 
 ---
 
+---
+
+## Block 20 — reduced-motion refinement, Stage 7 dry run, docs ✅  `1682389` · `73f334d`
+
+### Reduced motion was disabled, not designed
+
+The captured frame showed it plainly: **three statements ranged left on a flat
+olive field, two thirds of the page empty.** A bulleted list, not a scene. The
+branch was dropping `panel.image` entirely — and that is what a real fraction
+of visitors were getting.
+
+**Reduced motion means no motion, not no pictures.** The photographs are the
+whole point of the scene and they cost a reduced-motion visitor nothing: they
+simply do not move. Recomposed as alternating editorial pairs — photograph one
+side, statement the other, sides swapping down the sequence.
+
+Verified in a reduced-motion context: **3 images, 3 figures, and zero
+transformed elements** anywhere in the scene. Composed, not animated.
+
+### Stage 7 dry run — passes, and found something better than a pass
+
+All eight guards green on the deployment; Lighthouse home **92**, experience
+**93**, a11y 100, CLS 0, TBT 130/50ms.
+
+But run as a **tight batch**, two guards reported failure — `nav-flash-guard`
+and `menu-audit` — and both passed immediately on individual re-run with exit
+0. Eight Playwright-driven guards against a *remote* origin contend for the
+same browser, CPU and network.
+
+**A batch that cries wolf twice out of eight is worse than no batch**: the next
+real failure gets waved away as contention. Now documented — pace the deployed
+suite, and always re-run a single failing guard alone before believing it.
+Twice now the first reading has been the wrong one.
+
+### Docs brought to current reality
+
+**README** — the six-movement arc and why the guard exists; the parity contract
+as its two halves with the canonical sentence; a table of all eight guards and
+what each asserts.
+
+**DEPLOYMENT** — git push *is* the deploy; never `--temporary`/`--prebuilt`;
+assert the alias via the `build-commit` stamp after every push; never chain a
+measurement onto the alias-wait; which URL for what (git-main is `noindex`, so
+SEO 69 there is an artifact); and the two cutover chores — `site-url.ts`
+becomes a no-op, `/serif-preview` gets deleted.
+
+
+---
+
 # NEXT SESSION STARTS HERE
 
-**State:** tree clean, alias verified, six guards green on the deployment.
-Stage 1 closed · Stage 2 closed except 2d (blocked on tooling) · **Stage 3
-closed, all seven items** · Stage 4 homepage deck applied.
+**State:** tree clean, alias verified, **all eight guards green on the
+deployment**. Stages 1–6 complete. Stage 2d skipped by client ruling.
 
-**Exact next action — finish Stage 4 on the experience pages.** DIRECTION §4
-carries a before→after for Kourtaliotis: subtitle, opening and closing lines.
-Same rules — originals into `*_original`, apply by meaning not position, H1
-kept ("Kourtaliotis — The Temple of Nature" is explicitly marked *kept: it is
-genuinely good*).
+**Deployed:** home 92 · experience 93 · a11y 100 · CLS 0 · TBT 130/50ms
+against the 250 ceiling · SEO 100.
 
-**Then:** Stage 5 serif A/B (one licensed face, headlines only, captures only,
-no default change) → Stage 6 digest refresh + decision list → burn-down.
+**Everything the client needs is ready:** `MORNING.md` (this file) with ten
+decisions, each with pictures · `COPY-MAP.md` · 30 digest frames · the serif
+A/B · the arc and contrast before/afters.
+
+**Remaining burn-down, in order:**
+1. **Benchmark coverage completion** — the only reference-derived patterns
+   still lacking a side-by-side. Note the "attested, not captured" tag: the
+   Fitzroy hover mechanic is instrumentally observed but has no frame, and a
+   manufactured pairing is worse than an absent one.
+2. **qa hardening backlog** — see `qa/README.md`.
+3. Anything the 390px and reduced-motion passes surfaced but did not fix.
 
 **Standing traps — check at every block start:**
 - Never chain a measurement onto the alias-wait.
 - `pkill` does not stop the server here — kill by port.
 - `scrollIntoView` does nothing under Lenis — real wheel events.
 - Sample scroll transforms **inside** the element's own range.
-- A probe fallback must never collide with a legitimate value (`'none'` is
-  both "missing" and a real transform).
+- A probe fallback must never collide with a legitimate value.
 - Restart the server after every rebuild.
-- **No generated patches for JSX or for strings containing `
-`** — it
-  collapsed a `console.log("
-…")` into a literal newline again this session
-  and broke parity until it was fixed with a direct edit.
-- `cmd | tail` masks the exit code: a guard piped into `tail` never gates a
-  `&&` chain.
+- **Direct writes first for JSX and multi-line strings** — never a generated
+  patch, not even as a first attempt.
+- Guards must be run **un-piped**; `cmd | tail` masks the exit code.
+- **Re-run a single failing guard alone before believing it.**
 
 ---
 
