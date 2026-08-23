@@ -71,3 +71,10 @@ yarn-error.log*
 
 .vercel
 .env*
+
+# ---------------------------------------------------------------------------
+# headless autonomous chain (run-until-credits.ps1)
+# The script itself and RUN-BRIEF.md are committed; its runtime output is not.
+# ---------------------------------------------------------------------------
+run-chain.log
+RUN-COMPLETE.flag
