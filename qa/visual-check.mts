@@ -178,7 +178,14 @@ async function openPage(
   const page = await context.newPage();
 
   page.on("console", (m) => {
-    if (m.type() === "error") allErrors.push(`[${route}] ${m.text()}`);
+    // The 404 page is captured on purpose, and asking a server for a route
+    // that does not exist logs a console error by definition. Counting it
+    // made this script exit 1 on every clean run, which is the fastest way to
+    // teach a reader to ignore its exit code.
+    const expected404 =
+      route.includes("this-route-does-not-exist") && m.text().includes("404");
+    if (m.type() === "error" && !expected404)
+      allErrors.push(`[${route}] ${m.text()}`);
   });
   page.on("pageerror", (e) => allErrors.push(`[${route}] ${String(e)}`));
 

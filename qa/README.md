@@ -378,8 +378,9 @@ references cannot collide. Existing frames were moved into
 `fitzroy-travel-com/` and alethia was re-captured into `alethia-earth/`.
 
 Both stay gitignored. They are someone else's work, kept for study, and they
-must never reach a published page — the `/review` page asserts zero references
-to them for exactly this reason.
+must never reach a published page. The `/review` page — since deleted — was
+built under that rule and verified to carry zero references to them; the rule
+outlives the page, and applies to anything published from this repository.
 
 > A record that a later run can overwrite in place is a cache, not a record.
 > If two runs can produce the same filename with different content, namespace

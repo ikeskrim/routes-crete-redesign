@@ -113,8 +113,12 @@ at it.
   description meta tag is unchanged and SEO scores 100.
 - **All H1s** — every one carries keyword weight (Crete, Rethymno, private
   transfers, Kourtaliotis) and every one was already good.
-- **`responsePromise`** — still `null`, still omitted from the page. It is a
-  claim about how the business operates and stays out until the client gives a
-  real number.
+- **`responsePromise`** — **supplied by the client (D4) and now on the page**:
+  "We reply within a few hours." That exact sentence and nothing more. It was
+  held at `null` and omitted from the page for as long as it was unanswered,
+  because it is a claim about how the business operates rather than a line of
+  copy to write. It is *kept*, not *written* — nothing was added to it, and no
+  "usually sooner" or "24/7" was invented around it. If the business changes
+  how fast it replies, this line changes with it or comes out.
 - **Place captions** — verbatim and place-true. A photograph may only stand for
   a place it actually shows.

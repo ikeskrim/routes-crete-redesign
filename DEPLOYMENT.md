@@ -174,5 +174,8 @@ The git-main alias carries `X-Robots-Tag: noindex`, so Lighthouse reports
 images resolve on whatever origin is actually serving. After DNS cutover the
 two converge and the file becomes a no-op — no change required.
 
-`/serif-preview` is a prototype route carrying `noindex, nofollow`. Delete it
-once the typeface decision is made.
+There are no temporary routes left to remove. `/serif-preview` (the typeface
+A/B) and `/review` (the ten decisions as a page) both existed for one
+conversation each, and both were deleted once that conversation closed —
+along with `public/review-assets/`. Every route that ships is a route a
+visitor is meant to find.

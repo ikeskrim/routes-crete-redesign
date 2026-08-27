@@ -1,32 +1,116 @@
-# CLIENT DECISIONS — RECEIVED, AND THE QUEUE
+# CLOSING RECORD — the ten decisions, executed
 
-The ten decisions came back. This is the verbatim record and the execution
-state. Any chained session reads this first.
+This file was the queue. It is now the record. Everything below the first
+divider is the running log, newest first, kept as written. **For the state of
+the project as a whole, read [`CLOSING.md`](CLOSING.md) — it is short and it
+is the front door.**
 
-| # | decision | state |
+## The ten decisions
+
+| # | decision | outcome |
 |---|---|---|
-| **D1** | **Typography: FRAUNCES approved.** Serif ships on headlines site-wide. | execute |
-| **D2** | **Vercel dashboard check** — still open on the client. Non-blocking: the alias assertion detects any recurrence and the logged `--prod` fallback covers it. | **parked, listed** |
-| **D3** | **Label warmth: accepted.** | closed |
-| **D4** | **Response promise: "We reply within a few hours."** That exact line, nothing more — no "usually sooner", no "24/7", no invented speed. | execute |
-| **D5** | **Map photographs: approved as shipped.** | closed |
-| **D6** | **Gallery curation 51→28: approved.** Per-frame restoration stays documented. | closed |
-| **D7** | **Card image for Heart of Cretan Tradition: SWAP** to the golden-hour ridge. | execute |
-| **D8** | **The eight rejected sourced photographs: line approved.** | closed |
-| **D9** | **Small-label sizes: mobile raise approved.** Eyebrows 11→12px, captions 13→14px, **mobile only**; desktop unchanged. | execute |
+| **D1** | **Typography: FRAUNCES approved**, headlines only | **shipped** `579b31f` · h1/h2 only, self-hosted, `opsz` axis · `/serif-preview` deleted |
+| **D2** | **Vercel dashboard check** | **parked — still the client's** (see *Still open* below) |
+| **D3** | **Label warmth: accepted** | closed, already shipped |
+| **D4** | **Response promise** | **shipped** · "We reply within a few hours." verbatim, in the booking slot |
+| **D5** | **Map photographs: approved as shipped** | closed |
+| **D6** | **Gallery curation 51→28: approved** | closed · per-frame restoration still documented in the content files |
+| **D7** | **Card image: SWAP to the golden-hour ridge** | **shipped** · loom room preserved in `cardImage_original`, still in the gallery |
+| **D8** | **Eight rejected photographs: line approved** | closed |
+| **D9** | **Small labels: mobile raise approved** | **shipped** · eyebrows 12px, captions 14px at ≤767px; desktop measures 11/13 unchanged |
 | **D10** | **Booking step 2 stays "Send us the details."** | closed |
 
-## Then Stage 7 — the real final audit
+### What D1 cost, measured rather than assumed
 
-All guards green on the deployment with the serif live · Lighthouse both
-routes via the production alias, floors and ceilings holding · parity, credits
-and COPY-MAP final · delete `/review` + `public/review-assets/` and
-`/serif-preview` · close the video item stills-only per the standing rule ·
-README, DEPLOYMENT and a new `CLOSING.md` · this file converts from a queue
-into a closing record.
+The serif is one more font file, and that is not free. Measured on the
+deployment, nine cold loads per build:
 
-**Then stop.** The routescrete.gr cutover is a conversation with the client —
-no DNS, no domain, no project-settings action, ever, autonomously.
+| | Manrope `d5cc087` | Fraunces `95cab20` |
+|---|---|---|
+| desktop LCP min / median | 300 / 344 ms | 340 / 380 ms |
+| mobile LCP min / median | 284 / 340 ms | 324 / 344 ms |
+
+About **+40 ms at the fast end**, on both viewports — including mobile, where
+the LCP element is body copy in Inter that the swap never touches. So the cost
+is one more file competing during first paint, not the serif rendering slowly.
+
+It was nearly worse. Shipped first with `axes: ["SOFT", "opsz"]`, Fraunces was
+a **118 KB** face and page font weight went 90 KB → 208 KB. Requesting `opsz`
+alone halves it to 65 KB. `SOFT` only rounds the serif terminals; optical
+sizing is why this face was chosen over a static one, so when one axis had to
+go it was never going to be SOFT.
+
+### Switching the face exposed a real defect
+
+`SplitLines` only ever pushed words *down* when correcting a line that
+overflowed, so it could strand one word alone in the middle of a headline. At
+390 the hero set as **"Explore the" / "unknown" / "side of Crete"**.
+
+It now borrows the first word of the line *below* instead — never the last
+word of the line above, which just relocates the orphan to the opening line —
+giving **"Explore the" / "unknown side" / "of Crete"**. Verified on the
+deployment at 1440 and 390: 10/10 headlines split, 10/10 reading exactly as
+written, **0 orphans**.
+
+## Stage 7 — the final audit
+
+**Eight guards, green on the deployment, un-piped, with the serif live:**
+headline 48/0 · arc · nav-flash · credits · menu 37/0 · asset · parity ·
+mobile. (`headline` and `arc` each needed one retry for the deployment's
+occasional connection reset — the same transient logged earlier in this file,
+not a new fault.)
+
+**Lighthouse, production alias, median of 5 interleaved runs:**
+
+| route | performance | spread | a11y | TBT | CLS |
+|---|---|---|---|---|---|
+| `/` | **94** | 87 88 94 94 99 | 100 | 84 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **93** | 87 89 93 94 95 | 100 | 36 ms | 0 |
+
+Both medians sit in the 92–99 band. Every floor holds: performance ≥ 89,
+a11y 100, CLS 0, TBT ≤ 250 ms.
+
+**Deleted, as instructed:** `src/app/review/` and `public/review-assets/`
+(20 frames, 1.2 MB) — the decisions they existed to serve have landed.
+`src/app/serif-preview/` went with D1. No temporary route ships.
+
+**The video item is closed, stills-only.** No footage ever arrived —
+`content/video-inbox/` still holds nothing but its README. The ambient system
+ships stills, exactly as the standing rule says it should. The inbox and the
+transcode pipeline stay in place, unwired, for whenever footage does arrive.
+
+## Two corrections to things I asserted
+
+**The headline guard has 48 assertions, not 52.** The brief carried 52 forward
+and so did this file. Measured against the deployed baseline before any of my
+changes: 48. It is 24 split headlines × 2 checks each, and my changes removed
+none of them. 52 is a stale figure from an earlier state of the site.
+
+**Fraunces did not breach the performance floor.** I reported that it dropped
+the experience route to 85–90 against a floor of 89, and I put that in a
+commit message as fact. It was an artifact of how I measured. The first route
+Lighthouse visits in a session pays for a cold browser and a cold connection;
+the second does not — so measuring one route alone penalised it every time:
+
+    experience route first, alone      87 · 89 · 90 · 85
+    experience route second, after /   94 · 97 · 97 · 94
+
+Same build, same minute. The budget now runs each route five times,
+interleaved, and gates on the median, which is what `3bcab69` is for.
+
+## Still open — none of it blocking, none of it mine
+
+- **D2 · the Vercel dashboard check.** Production once built from something
+  other than the pushed commit. Every response now carries `build-commit`, so
+  a recurrence is detectable with one `curl`, and the alias is asserted after
+  every push. Confirming Project → Settings → Git needs dashboard access,
+  which is the client's to use and not mine to touch.
+- **Video footage.** Nothing has arrived. Nothing is blocked by that.
+- **The enhancement pipeline.** Enhanced files exist and stay deliberately
+  unwired, per the hard wall that has governed them from the start.
+- **The routescrete.gr cutover.** A conversation with the client. No DNS, no
+  domain, no project-settings action, ever, autonomously. `DEPLOYMENT.md`
+  carries the runbook for when that conversation happens.
 
 ---
 # Morning report

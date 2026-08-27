@@ -4,6 +4,13 @@ A complete redesign and rebuild of [routescrete.gr](https://www.routescrete.gr/)
 one-page site becomes a content-driven multi-page experience, keeping **every word and every
 image** of the original.
 
+> **Built, deployed and verified.** Live at
+> **https://routes-crete-redesign.vercel.app** — the domain has not been cut over.
+>
+> **Start with [`CLOSING.md`](CLOSING.md)**: the state of the project, how to add an
+> experience or a transfer, what is still open, and where the cutover runbook is.
+> This README is the technical detail underneath it.
+
 ## Running it
 
 ```bash
@@ -32,11 +39,28 @@ npm run build
 npx next start -p 3009
 ```
 
+**The eight guards.** Each one exists because something broke that way once;
+`qa/README.md` records which. Run them **un-piped** — `node qa/parity.mts | tail`
+exits 0 no matter what parity found, so a piped guard cannot fail.
+
+| Guard | What it refuses to let through |
+|---|---|
+| `qa/headline-guard.mts` | A split headline that does not read exactly as written — 48 assertions. Written after the hero shipped reading `Exploretheunknown`. |
+| `qa/arc-guard.mts` | The homepage's six movements out of order, or a section lost to a restructure. |
+| `qa/nav-flash-guard.mts` | The nav bar rendering in the wrong state before JavaScript runs, or flipping after it. |
+| `qa/credits-guard.mts` | A sourced photograph that is not attributed as its licence requires. |
+| `qa/menu-audit.mts` | The overlay menu breaking any of its 37 promises (focus trap, scroll lock, escape, previews). |
+| `qa/asset-audit.mts` | A reference that does not resolve, or a photograph that is not graded. |
+| `qa/parity.mts` | A word or an image of the original that stopped reaching the page. |
+| `qa/mobile-audit.mts` | Horizontal overflow, sub-44px tap targets, or body text under 14px at 390. |
+
 | Script | Purpose |
 |---|---|
-| `node qa/visual-check.mts` | ~70 screenshots: every route, desktop + 390px mobile, nav states, lightbox, sticky CTA, a wheel-driven filmstrip through the pinned scene, and a reduced-motion pass. Accepts filters: `node qa/visual-check.mts mobile hero`. |
-| `node qa/lighthouse.mts` | Lighthouse mobile on `/` and an experience page → `qa/lighthouse/`. |
-| `node qa/parity.mts` | Content parity: every image present, every verbatim paragraph reaching the rendered HTML. |
+| `node qa/visual-check.mts` | ~110 screenshots: every route, desktop + 390px mobile, nav states, lightbox, sticky CTA, a wheel-driven filmstrip through the pinned scene, and a reduced-motion pass. Accepts filters: `node qa/visual-check.mts mobile hero`. |
+| `node qa/lighthouse.mts` | Lighthouse mobile → `qa/lighthouse/`. Gates on performance ≥ 89, a11y 100, CLS 0, TBT ≤ 250 ms. Set `QA_LH_RUNS=5` to measure each route five times, interleaved, and gate on the **median** — a single run against a deployment measures the network as much as the build. |
+| `node qa/digest-shots.mts` | The client walkthrough, from the deployed alias, at desktop + 390 + reduced-motion. |
+
+Point any of them at a deployment with `QA_BASE_URL=https://…`.
 
 > Lighthouse is driven through a Playwright-launched Chromium because the bundled binary will
 > not spawn via `chrome-launcher` on this machine.
@@ -44,8 +68,9 @@ npx next start -p 3009
 ## Stack
 
 Next.js 16 (App Router, React Server Components) · TypeScript · Tailwind CSS v4 ·
-Motion (Framer Motion) · GSAP + ScrollTrigger · Lenis · `next/font` (self-hosted, latin subset) ·
-`next/image`.
+Motion (Framer Motion) · GSAP + ScrollTrigger · Lenis · `next/image` ·
+`next/font` (self-hosted, latin subset): **Fraunces** on h1/h2, **Manrope** on
+everything else display, **Inter** for body.
 
 ## Folder structure
 
