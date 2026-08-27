@@ -1,3 +1,34 @@
+# CLIENT DECISIONS — RECEIVED, AND THE QUEUE
+
+The ten decisions came back. This is the verbatim record and the execution
+state. Any chained session reads this first.
+
+| # | decision | state |
+|---|---|---|
+| **D1** | **Typography: FRAUNCES approved.** Serif ships on headlines site-wide. | execute |
+| **D2** | **Vercel dashboard check** — still open on the client. Non-blocking: the alias assertion detects any recurrence and the logged `--prod` fallback covers it. | **parked, listed** |
+| **D3** | **Label warmth: accepted.** | closed |
+| **D4** | **Response promise: "We reply within a few hours."** That exact line, nothing more — no "usually sooner", no "24/7", no invented speed. | execute |
+| **D5** | **Map photographs: approved as shipped.** | closed |
+| **D6** | **Gallery curation 51→28: approved.** Per-frame restoration stays documented. | closed |
+| **D7** | **Card image for Heart of Cretan Tradition: SWAP** to the golden-hour ridge. | execute |
+| **D8** | **The eight rejected sourced photographs: line approved.** | closed |
+| **D9** | **Small-label sizes: mobile raise approved.** Eyebrows 11→12px, captions 13→14px, **mobile only**; desktop unchanged. | execute |
+| **D10** | **Booking step 2 stays "Send us the details."** | closed |
+
+## Then Stage 7 — the real final audit
+
+All guards green on the deployment with the serif live · Lighthouse both
+routes via the production alias, floors and ceilings holding · parity, credits
+and COPY-MAP final · delete `/review` + `public/review-assets/` and
+`/serif-preview` · close the video item stills-only per the standing rule ·
+README, DEPLOYMENT and a new `CLOSING.md` · this file converts from a queue
+into a closing record.
+
+**Then stop.** The routescrete.gr cutover is a conversation with the client —
+no DNS, no domain, no project-settings action, ever, autonomously.
+
+---
 # Morning report
 
 Overnight run against the master elevation brief. Written as I went, so the
