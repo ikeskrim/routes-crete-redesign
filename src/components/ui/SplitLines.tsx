@@ -116,6 +116,44 @@ export function SplitLines({
           queue[i + 1].unshift(moved);
         }
       }
+
+      /* De-orphan.
+       *
+       * The fit pass only ever pushes words DOWN, which can strand a single
+       * word alone on a middle line. Switching the headline face to Fraunces
+       * made that visible at 390: the hero set as
+       *
+       *     "Explore the" / "unknown" / "side of Crete"
+       *
+       * A lone word between two fuller lines reads as a mistake.
+       *
+       * Borrow the FIRST word of the line below rather than the last word of
+       * the line above. Both cure the orphan, but pulling down from above only
+       * moves the problem — it leaves "Explore" alone on the opening line —
+       * whereas pulling up from below shortens nothing:
+       *
+       *     "Explore the" / "unknown side" / "of Crete"
+       *
+       * Only non-final lines are treated: the last line is allowed to be one
+       * word, because that is simply where the sentence ended. Nor may the
+       * donor line be emptied down to an orphan of its own, which is what the
+       * final guard checks. */
+      for (let i = 0; i < queue.length - 1; i++) {
+        const line = queue[i];
+        const next = queue[i + 1];
+        if (line.length !== 1 || next.length < 2) continue;
+
+        const candidate = [...line, next[0]];
+        if (widthOf(candidate.join(" ")) > containerWidth - 1) continue;
+
+        // Refuse a swap that strands the donor: one word left on a line that
+        // is not the last one is the very thing being fixed.
+        if (next.length - 1 === 1 && i + 1 < queue.length - 1) continue;
+
+        next.shift();
+        line.push(candidate[1]);
+      }
+
       probe.remove();
 
       setLines(queue.filter((g) => g.length > 0).map((g) => g.join(" ")));

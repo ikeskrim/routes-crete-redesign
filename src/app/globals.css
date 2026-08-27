@@ -157,8 +157,24 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* D1 — Fraunces on the headlines, and only on the headlines.
+   *
+   * h1 and h2 are exactly the scope the A/B compared, so they are exactly the
+   * scope that ships. h3/h4 stay Manrope: they sit inside sections as labels
+   * and sub-heads rather than as display type, and a serif there would be a
+   * change nobody reviewed. The eyebrows, the wordmark and everything using
+   * the `font-display` utility are likewise untouched.
+   *
+   * The serif is listed before --font-display so a missing variable falls back
+   * to the sans rather than to a system serif. */
   h1,
-  h2,
+  h2 {
+    font-family:
+      var(--font-serif), var(--font-display), ui-serif, Georgia, serif;
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+
   h3,
   h4 {
     font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
@@ -446,5 +462,25 @@
 
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   D9 — the small labels come up one step on phones, and only on phones.
+   
+   The eyebrow (11px) and caption (13px) are the design's voice at desktop
+   sizes and stay exactly as they are there. On a 390px screen held at arm's
+   length they were genuinely small, which the mobile audit had been reporting
+   on every run as an open decision rather than enforcing.
+   
+   The Tailwind utilities resolve `font-size: var(--text-eyebrow)`, so
+   redefining the variable under a width query raises every one of them at
+   once — no component touched, nothing to keep in sync, and desktop provably
+   unchanged because the query cannot reach it.
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  :root {
+    --text-eyebrow: 0.75rem;   /* 11px -> 12px */
+    --text-caption: 0.875rem;  /* 13px -> 14px */
   }
 }

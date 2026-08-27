@@ -222,8 +222,8 @@
       }
     ],
     "stepsNote": "Cut from five to three. Originals 1-2 were not steps, they were the website: browsing and choosing a date happen on the page itself. Originals 4-5 described one moment twice. Every original title and body is preserved verbatim in `stepsOriginal`, and each surviving step lists what it absorbed. The three retained titles are also the three the parity scan requires on the homepage.",
-    "responsePromise": null,
-    "responsePromiseNote": "A stated reply time is a claim about how the business actually operates. It stays null and the line is omitted from the page entirely until the client supplies a real number. Never fill this in from research or assumption.",
+    "responsePromise": "We reply within a few hours.",
+    "responsePromiseNote": "Client-supplied, verbatim, 2026-08-19. This exact sentence and nothing more — no 'usually sooner', no '24/7', no invented speed. If the business changes how fast it replies, this line changes with it or comes out.",
     "deckNote": "Copy deck applied by MEANING, not by position. The deck was written against the original five steps; these are the three that survived the collapse, so a positional mapping put \"We confirm everything\" above a body that reads \"Contact us via message or email with...\" — a title contradicting its own verbatim body. Deck line 1 (\"Tell us the day\") fits step 1 exactly. Step 2 takes \"Send us the details\", which is not a deck line and is FLAGGED in MORNING.md. Step 3 merges deck lines 2 and 3 because its body merged the original steps 4 and 5."
   },
   "team": {

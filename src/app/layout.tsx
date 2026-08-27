@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Manrope } from "next/font/google";
+import { Fraunces, Inter, Manrope } from "next/font/google";
 
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
@@ -15,6 +15,19 @@ const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
   display: "swap",
+});
+
+/* The headline face, client-approved after the A/B (D1).
+   Variable, so display sizes get real optical sizing rather than a text face
+   stretched large; the SOFT axis takes the edge off the serifs, which is what
+   suits the sunbleached palette. Self-hosted by next/font — no request leaves
+   the origin. Applied to h1 and h2 ONLY, which is exactly the scope the A/B
+   compared; h3/h4, the eyebrows and the wordmark stay Manrope. */
+const fraunces = Fraunces({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  display: "swap",
+  axes: ["SOFT", "opsz"],
 });
 
 const inter = Inter({
@@ -108,7 +121,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${manrope.variable} ${inter.variable} h-full`}
+      className={`${manrope.variable} ${fraunces.variable} ${inter.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">
         {/* Scroll-reveal animations start at opacity 0. If JavaScript never

@@ -6,7 +6,7 @@
   "category": "Experiences",
   "categoryOriginal": " Experiences ",
   "sourceModal": "portfolioModal1",
-  "cardImage": "/images/experiences/heart-of-cretan-tradition/sp1-103.jpg",
+  "cardImage": "/images/experiences/heart-of-cretan-tradition/sp1-152.jpg",
   "heroImage": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg",
   "qrImage": "/images/site/qr-code.png",
   "facts": {
@@ -258,5 +258,7 @@
   ],
   "placeBreaksNote": "Licensed photographs of the places this journey visits, used as editorial breaks. They are NOT ours and must never be captioned as though they were: each renders with a credit line, and every one is SHA-1 ledgered in content/photo-credits.json and attributed on /credits.",
   "subtitleProvenance": "SURFACED, not written. Verbatim clause from body[1]: \"Leave the sea behind for a day and travel into the mountains of central Crete...\". The deck specifies no subtitle for this journey, and the original copy already contained the best one — cut before you write.",
-  "bodyNote": "body[0] is character-for-character the item title, so the page printed the title twice. The paragraph is KEPT here (nothing is deleted from content) and ItemDetail simply does not render a body paragraph identical to the title. Redundancy removed from the page, original preserved in the file."
+  "bodyNote": "body[0] is character-for-character the item title, so the page printed the title twice. The paragraph is KEPT here (nothing is deleted from content) and ItemDetail simply does not render a body paragraph identical to the title. Redundancy removed from the page, original preserved in the file.",
+  "cardImage_original": "/images/experiences/heart-of-cretan-tradition/sp1-103.jpg",
+  "cardImageNote": "Swapped to the golden-hour ridge on the client's decision (D7). The curator's reasoning: it is the only frame in the set with real light, and it states the offer — you have left the coast and gone up into the mountains — before a word of copy is read. The previous card (the loom room) is preserved in cardImage_original and is still in the gallery."
 }
