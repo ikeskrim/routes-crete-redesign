@@ -19,15 +19,22 @@ const manrope = Manrope({
 
 /* The headline face, client-approved after the A/B (D1).
    Variable, so display sizes get real optical sizing rather than a text face
-   stretched large; the SOFT axis takes the edge off the serifs, which is what
-   suits the sunbleached palette. Self-hosted by next/font — no request leaves
-   the origin. Applied to h1 and h2 ONLY, which is exactly the scope the A/B
-   compared; h3/h4, the eyebrows and the wordmark stay Manrope. */
+   stretched large. Self-hosted by next/font — no request leaves the origin.
+   Applied to h1 and h2 ONLY, which is exactly the scope the A/B compared;
+   h3/h4, the eyebrows and the wordmark stay Manrope.
+
+   `opsz` only, deliberately. Shipping it with SOFT as well cost 118 KB for
+   this one face — font payload went 90 KB to 208 KB — and dropped the
+   experience route's Lighthouse performance from a 94/89/94/89 spread to
+   87/89/90/85, i.e. under the 89 floor. Requesting `opsz` alone halves the
+   file to 65 KB. SOFT only rounds the serif terminals slightly; optical
+   sizing is the reason this face was chosen over a static one, so when only
+   one axis could stay, it was never going to be SOFT. */
 const fraunces = Fraunces({
   variable: "--font-serif",
   subsets: ["latin"],
   display: "swap",
-  axes: ["SOFT", "opsz"],
+  axes: ["opsz"],
 });
 
 const inter = Inter({
