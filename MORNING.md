@@ -60,15 +60,23 @@ mobile. (`headline` and `arc` each needed one retry for the deployment's
 occasional connection reset — the same transient logged earlier in this file,
 not a new fault.)
 
-**Lighthouse, production alias, median of 5 interleaved runs:**
+**Lighthouse, production alias, closing build `86748e4`, median of 5
+interleaved runs:**
 
 | route | performance | spread | a11y | TBT | CLS |
 |---|---|---|---|---|---|
-| `/` | **94** | 87 88 94 94 99 | 100 | 84 ms | 0 |
-| `/experiences/kourtaliotis-temple-of-nature` | **93** | 87 89 93 94 95 | 100 | 36 ms | 0 |
+| `/` | **94** | 87 89 94 95 98 | 100 | 84 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **95** | 94 94 95 96 97 | 100 | 29 ms | 0 |
 
 Both medians sit in the 92–99 band. Every floor holds: performance ≥ 89,
 a11y 100, CLS 0, TBT ≤ 250 ms.
+
+Read the spread, not just the median. A three-run sample of the same commit
+minutes earlier put `/` at 89 and the experience page at 94; five runs put
+them at 94 and 95. Nothing changed but the sampling. **Anyone re-checking
+these numbers should use five runs and expect ±5 points**, and should not read
+a single low run as a regression — that mistake is documented above, because I
+made it in this session.
 
 **Deleted, as instructed:** `src/app/review/` and `public/review-assets/`
 (20 frames, 1.2 MB) — the decisions they existed to serve have landed.

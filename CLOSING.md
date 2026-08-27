@@ -111,7 +111,7 @@ budget it enforces — performance ≥ 89, a11y 100, CLS 0, TBT ≤ 250 ms — i
 one this project has been held to throughout. **Do not lower a floor to make a
 red run green.**
 
-Current, median of five on the deployment: `/` **94**, experience page **93**,
+Current, median of five on the deployment: `/` **94**, experience page **95**,
 a11y 100, CLS 0 on both.
 
 ---
