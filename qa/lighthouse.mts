@@ -28,6 +28,28 @@ const targets = routes.length
 const slug = (route: string) =>
   route === "/" ? "home" : route.replace(/^\//, "").replace(/\//g, "-");
 
+/* How many times to measure each route. Default 1 for a quick look; the audit
+ * runs 5.
+ *
+ * A single Lighthouse run against a deployment is not a measurement of the
+ * build — it is a measurement of the build plus whatever the network and the
+ * CDN were doing for those few seconds. Measured here, the SAME commit scored
+ * anywhere from 87 to 99 on the same route, and the first route of a session
+ * was consistently penalised against the second because the browser and the
+ * connection were still cold. Comparing single runs across builds on that
+ * basis produced a confident and wrong conclusion: that a font swap had cost
+ * one route two points and breached the floor. It had not.
+ *
+ * Passes interleave the routes (A B A B ...) rather than repeating one route
+ * before moving on, so cold-start lands on a different route each pass instead
+ * of always taxing the same one. The budget then gates on the median. */
+const RUNS = Math.max(1, Number(process.env.QA_LH_RUNS ?? 1));
+
+const median = (xs: number[]) => {
+  const s = [...xs].sort((a, b) => a - b);
+  return s[Math.floor(s.length / 2)];
+};
+
 async function run() {
   await fs.mkdir(OUT, { recursive: true });
 
@@ -42,8 +64,11 @@ async function run() {
     raw: { tbt: number; cls: number };
   }[] = [];
 
-  for (const route of targets) {
-    process.stdout.write(`\nrunning: ${route}\n`);
+  for (let pass = 1; pass <= RUNS; pass++) {
+   for (const route of targets) {
+    process.stdout.write(
+      `\nrunning: ${route}${RUNS > 1 ? `   (pass ${pass}/${RUNS})` : ""}\n`,
+    );
 
     const result = await lighthouse(
       `${BASE}${route}`,
@@ -114,6 +139,7 @@ async function run() {
         console.log(`    - ${o.title} (${Math.round(o.numericValue ?? 0)} ms)`);
       }
     }
+   }
   }
 
   await browser.close();
@@ -139,31 +165,51 @@ async function run() {
   };
 
   const breaches: string[] = [];
-  for (const { route, scores, raw } of summary) {
-    if (scores.performance < BUDGET.performance)
-      breaches.push(
-        `${route}: performance ${scores.performance} < ${BUDGET.performance}`,
-      );
-    if (scores.accessibility < BUDGET.accessibility)
-      breaches.push(
-        `${route}: a11y ${scores.accessibility} < ${BUDGET.accessibility}`,
-      );
+  const routes = [...new Set(summary.map((r) => r.route))];
+
+  console.log("");
+  for (const route of routes) {
+    const rows = summary.filter((r) => r.route === route);
+    const perf = rows.map((r) => r.scores.performance);
+    const a11y = rows.map((r) => r.scores.accessibility);
+    const tbt = rows.map((r) => r.raw.tbt);
+    const cls = rows.map((r) => r.raw.cls);
+
+    const m = {
+      perf: median(perf),
+      a11y: median(a11y),
+      tbt: median(tbt),
+      cls: median(cls),
+    };
+
+    // The spread is printed, not just the median. A route whose runs range
+    // 87-99 and one that sits flat on 93 both have a median of 93, and they
+    // are not the same site.
+    console.log(
+      `${route}\n  performance ${m.perf} [${[...perf].sort((a, b) => a - b).join(" ")}]  ` +
+        `a11y ${m.a11y}  TBT ${m.tbt}ms  CLS ${m.cls}`,
+    );
+
+    if (m.perf < BUDGET.performance)
+      breaches.push(`${route}: median performance ${m.perf} < ${BUDGET.performance}`);
+    if (m.a11y < BUDGET.accessibility)
+      breaches.push(`${route}: median a11y ${m.a11y} < ${BUDGET.accessibility}`);
     // CLS is a hard wall at zero. The epsilon is float dust only: Lighthouse
     // displays anything under 0.0005 as "0", so this catches every shift a
     // reader could actually see without failing on a rounding artefact.
-    if (raw.cls > BUDGET.cls + 0.0005)
-      breaches.push(`${route}: CLS ${raw.cls.toFixed(4)} > ${BUDGET.cls}`);
-    if (raw.tbt > BUDGET.tbtMs)
-      breaches.push(`${route}: TBT ${raw.tbt}ms > ${BUDGET.tbtMs}ms`);
+    if (m.cls > BUDGET.cls + 0.0005)
+      breaches.push(`${route}: median CLS ${m.cls.toFixed(4)} > ${BUDGET.cls}`);
+    if (m.tbt > BUDGET.tbtMs)
+      breaches.push(`${route}: median TBT ${m.tbt}ms > ${BUDGET.tbtMs}ms`);
   }
 
   if (breaches.length) {
     console.error(`\n${breaches.length} budget breach(es):`);
     for (const b of breaches) console.error(`  x  ${b}`);
     console.error(
-      "\nLIGHTHOUSE BUDGET FAILED — scores on a deployment vary by a few\n" +
-        "points between runs, so re-run before concluding, but do not edit\n" +
-        "this floor to make a red run green.",
+      "\nLIGHTHOUSE BUDGET FAILED — this is the median of the runs, not a\n" +
+        "single unlucky one, so re-running is unlikely to clear it. Find the\n" +
+        "cause. Do not edit the floor to make a red run green.",
     );
     process.exit(1);
   }
