@@ -115,9 +115,16 @@ export function MediaFrame({
               // Slow scale plus a grade shift: on hover the frame warms and
               // opens very slightly, as though the same photograph were graded
               // a stop brighter. Transform and filter only.
+              //
+              // Deepened in the beauty pass, but NOT by adding colour. Grade C
+              // already carries the saturation; pushing saturate further on
+              // top of it compounds into the garish HDR look the grade was
+              // tuned to avoid. So the scale and the light go up and the
+              // saturation comes DOWN — on hover the frame opens rather than
+              // shouts.
               "transition-[transform,filter] duration-[1.2s] ease-luxe will-change-transform",
               zoom &&
-                "group-hover:scale-[1.045] group-hover:brightness-[1.06] group-hover:saturate-[1.12] group-hover:contrast-[1.03]",
+                "group-hover:scale-[1.065] group-hover:brightness-[1.09] group-hover:saturate-[1.06] group-hover:contrast-[1.05]",
             )}
           />
         );

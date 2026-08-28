@@ -221,15 +221,26 @@
 }
 
 /* Cinematic scrim for full-bleed imagery — keeps overlay text legible
-   without flattening the photograph. */
+   without flattening the photograph.
+
+   The two lower stops are the text zone and are untouched: the hero headline
+   and its subcopy sit inside the bottom 45%, and their legibility is not a
+   thing to trade for atmosphere.
+
+   The upper stops were doing something else. At 42-58% opacity across the top
+   of the frame — where no text ever goes — they were veiling the photograph in
+   the one place a visitor looks first. That was defensible when every image
+   was graded matte; with Grade C it means the client's "brighter and more
+   vivid" is invisible exactly where it should land hardest. The sky and the
+   canopy come back; the words do not move. */
 @utility scrim {
   background: linear-gradient(
     to top,
     color-mix(in srgb, var(--color-ocean-950) 94%, transparent) 0%,
     color-mix(in srgb, var(--color-ocean-950) 78%, transparent) 30%,
-    color-mix(in srgb, var(--color-ocean-950) 52%, transparent) 58%,
-    color-mix(in srgb, var(--color-ocean-950) 42%, transparent) 80%,
-    color-mix(in srgb, var(--color-ocean-950) 58%, transparent) 100%
+    color-mix(in srgb, var(--color-ocean-950) 40%, transparent) 58%,
+    color-mix(in srgb, var(--color-ocean-950) 22%, transparent) 80%,
+    color-mix(in srgb, var(--color-ocean-950) 34%, transparent) 100%
   );
 }
 

@@ -83,7 +83,7 @@ export function Hero({
       <div aria-hidden className="scrim absolute inset-0" />
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(120%_85%_at_70%_15%,transparent_25%,rgba(4,20,29,0.55)_100%)]"
+        className="absolute inset-0 bg-[radial-gradient(120%_85%_at_70%_15%,transparent_25%,rgba(4,20,29,0.38)_100%)]"
       />
       <div aria-hidden className="grain-overlay" />
 
