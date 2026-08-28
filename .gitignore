@@ -78,3 +78,8 @@ yarn-error.log*
 # ---------------------------------------------------------------------------
 run-chain.log
 RUN-COMPLETE.flag
+
+# Scratch for the beauty-pass sourcing run: API results, candidate previews and
+# the download plan. The masters that ship live in assets-src/sourced/ and the
+# provenance that matters is in content/photo-credits.json.
+.sourcing/

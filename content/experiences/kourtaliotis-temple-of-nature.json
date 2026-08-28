@@ -280,11 +280,25 @@
       "place": "The waterfall in Kourtaliotiko Gorge"
     },
     {
+      "src": "/images/sourced/kourtaliotis-river-flow.jpg",
+      "place": "The river running over rock in the gorge, oleander in flower"
+    },
+    {
+      "src": "/images/sourced/preveli-river-mouth-aerial.jpg",
+      "place": "Where the river reaches the sea at Preveli"
+    }
+  ],
+  "placeBreaksNote": "Three bands, in the order the day runs: the gorge, its river, and the sea it reaches. The beauty pass swapped the second Preveli aerial for the river-mouth frame — same place, far more of it, and people in the water at a scale you can feel. The previous pair is preserved in placeBreaks_original and both remain credited in content/photo-credits.json. Four bands was tried and is a photo wall rather than a rhythm; three is the count that reads as an arc.",
+  "subtitle_original": "An Epic Journey into the Hidden Heart of Crete",
+  "copyDeckNote": "Approved copy deck applied to the subtitle, the opening paragraph and the closing paragraph. Originals preserved verbatim alongside each under *_original — parity v2 asserts they are still KEPT, not that they are still visible. The H1 is deliberately unchanged: the deck marks it 'kept: it is genuinely good'. The middle of the body is untouched because the pinned scene reads paragraphs 3, 5, 7, 8 and 9 verbatim, and the deck explicitly keeps the explorer's-journal conceit for it.",
+  "placeBreaks_original": [
+    {
+      "src": "/images/sourced/kourtaliotiko-waterfall.jpg",
+      "place": "The waterfall in Kourtaliotiko Gorge"
+    },
+    {
       "src": "/images/sourced/preveli-palms-aerial.jpg",
       "place": "The palm forest along the river at Preveli"
     }
-  ],
-  "placeBreaksNote": "Licensed photographs of the places this journey visits, used as editorial breaks. They are NOT ours and must never be captioned as though they were: each renders with a credit line, and every one is SHA-1 ledgered in content/photo-credits.json and attributed on /credits.",
-  "subtitle_original": "An Epic Journey into the Hidden Heart of Crete",
-  "copyDeckNote": "Approved copy deck applied to the subtitle, the opening paragraph and the closing paragraph. Originals preserved verbatim alongside each under *_original — parity v2 asserts they are still KEPT, not that they are still visible. The H1 is deliberately unchanged: the deck marks it 'kept: it is genuinely good'. The middle of the body is untouched because the pinned scene reads paragraphs 3, 5, 7, 8 and 9 verbatim, and the deck explicitly keeps the explorer's-journal conceit for it."
+  ]
 }

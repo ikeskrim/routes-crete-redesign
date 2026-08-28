@@ -1,6 +1,6 @@
 {
-  "note": "Provenance for every photograph on this site that we did not take ourselves. Each entry was verified by SHA-1: the local master is byte-for-byte the file at the source URL, so these are identity matches rather than resemblances. Licences were read off the file page's own wikitext and extmetadata, never inferred from a category, a filename, or a sibling file by the same author. CC BY-SA and NonCommercial files were excluded on purpose: the site applies a colour grade to every image, which creates a derivative, and share-alike would oblige the graded result to carry BY-SA too.",
-  "verifiedOn": "2026-08-18",
+  "note": "Provenance for every photograph on this site that we did not take ourselves. Each entry was verified by SHA-1: the local master is byte-for-byte the file at the source URL, so these are identity matches rather than resemblances. Licences were read off the file page's own wikitext and extmetadata, never inferred from a category, a filename, or a sibling file by the same author. CC BY-SA and NonCommercial files were excluded on purpose: the site applies a colour grade to every image, which creates a derivative, and share-alike would oblige the graded result to carry BY-SA too. The three frames added on 2026-08-28 were sourced in the beauty pass with a deliberate bias to spectacle; each licence was read on its own file page that day, not carried over from the earlier pass.",
+  "verifiedOn": "2026-08-28",
   "photographs": [
     {
       "file": "gorge-saint-nicholas-aerial.jpg",
@@ -226,6 +226,51 @@
       "attributionRequired": true,
       "modified": true,
       "note": "Sourced and licence-verified in a two-pass review: one agent proposed it, a second independently re-read the licence off the file page and confirmed the subject. Downloaded dimensions match the verified record exactly."
+    },
+    {
+      "file": "preveli-river-mouth-aerial.jpg",
+      "subject": "The river running out through the palm forest to the sea at Preveli",
+      "title": "Aerial view of the river Kissano Faraggi flowing to Preveli beach on Crete, Greece",
+      "author": "dronepicr",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_the_river_Kissano_Faraggi_flowing_to_Preveli_beach_on_Crete,_Greece.jpg",
+      "sha1": "d3593f80345e2c80a7f6b7bdf148a7972902921b",
+      "bytes": 16015421,
+      "dimensions": "5464 × 3640",
+      "attributionRequired": true,
+      "modified": true,
+      "note": "Sourced in the beauty pass for spectacle: turquoise water, the palm river, and real people at human scale in one frame. The file page places it at 35°9'5\" N, 24°28'27\" E, which is Preveli. We do not repeat the river name from the file title in our own captions — the watercourse at Preveli is more commonly Megas Potamos, and we caption what we can verify rather than what an uploader typed."
+    },
+    {
+      "file": "preveli-palm-coast-aerial.jpg",
+      "subject": "The palm forest, the lagoon and the coast at Preveli",
+      "title": "Aerial view of palms at Paralia Preveli in Kourtaliotiko Gorge on Crete, Greece",
+      "author": "dronepicr",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_palms_at_Paralia_Preveli_in_Kourtaliotiko_Gorge_on_Crete,_Greece.jpg",
+      "sha1": "05b6ff9f6893d6bf3ef0648316216d3149650252",
+      "bytes": 18569201,
+      "dimensions": "6240 × 4160",
+      "attributionRequired": true,
+      "modified": true,
+      "note": "The file title places Preveli beach \"in Kourtaliotiko Gorge\". It is not: the beach lies at the mouth of the river below the gorge, and the two are different places. Our captions say Preveli. Coordinates on the file page (35°9'10\" N, 24°28'19\" E) confirm the beach."
+    },
+    {
+      "file": "kourtaliotis-river-flow.jpg",
+      "subject": "The river running over rock in Kourtaliotiko Gorge, oleander in flower",
+      "title": "River flow in Kourtaliotiko Gorge on the island of Crete, Greece",
+      "author": "dronepicr",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:River_flow_in_Kourtaliotiko_Gorge_on_the_island_of_Crete,_Greece.jpg",
+      "sha1": "5d8b5632f2a0dc0f6fab05c823967eacefa78b94",
+      "bytes": 22664379,
+      "dimensions": "6240 × 4160",
+      "attributionRequired": true,
+      "modified": true,
+      "note": "Sourced in the beauty pass. The gorge already had a waterfall and a still pool in the ledger; this one has moving water and flowering oleander, which is a different thing to look at rather than a third frame of the same thing."
     }
   ]
 }

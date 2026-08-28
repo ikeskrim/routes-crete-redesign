@@ -31,9 +31,14 @@ const PLACE_PHOTOGRAPHS = [
     "The waterfall in Kourtaliotiko Gorge",
   ],
   [
+    // Upgraded in the beauty pass. `preveli-palms-aerial` showed the palm
+    // canopy and little else; this frame carries the palm forest, the lagoon,
+    // the beach and the turquoise coast running away east — the same place,
+    // with the reason to go to it visible. The previous file stays in the
+    // repository and in the credits ledger.
     "preveli-lagoon",
-    "preveli-palms-aerial",
-    "The palm forest along the river at Preveli",
+    "preveli-palm-coast-aerial",
+    "The palm forest and lagoon behind the beach at Preveli",
   ],
   ["preveli-monastery", "preveli-monastery", "Preveli Monastery"],
   ["mountain-village", "anogeia-village", "The mountain village of Anogeia"],
