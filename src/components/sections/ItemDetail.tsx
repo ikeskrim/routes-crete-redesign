@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { BookingCta } from "@/components/sections/BookingCta";
 import { Gallery } from "@/components/sections/Gallery";
-import { LocationsMap } from "@/components/sections/LocationsMap";
+import { RouteJourney } from "@/components/sections/RouteJourney";
 import { ContentCard } from "@/components/ui/Card";
 import { Bridge, ImageReveal } from "@/components/ui/Cinematic";
 import { Reveal } from "@/components/ui/Reveal";
@@ -16,6 +16,7 @@ import {
   getSite,
   graded,
 } from "@/lib/content";
+import { getPlaceImages } from "@/lib/place-images";
 import type { ContentItem } from "@/lib/types";
 import { pad } from "@/lib/utils";
 
@@ -28,10 +29,15 @@ export function ItemDetail({ item }: { item: ContentItem }) {
   const related = getRelatedItems(item.slug, 2);
 
   /* Only the locations this route actually visits, and only those we can
-     place — unnamed places stay off the map entirely. */
-  const locations = getMappableLocations().filter((l) =>
-    item.locations.includes(l.key),
-  );
+     place — unnamed places stay off the map entirely.
+
+     Ordered by the journey, not by the catalogue. The chart this replaced
+     sorted its stops west to east, which is a direction rather than a day;
+     numbering them 01, 02, 03 only means something if the order is the order
+     they are actually visited, which is the order the content file lists. */
+  const locations = getMappableLocations()
+    .filter((l) => item.locations.includes(l.key))
+    .sort((a, b) => item.locations.indexOf(a.key) - item.locations.indexOf(b.key));
 
   /* Photographs used as breaks between sections of the story. The card and
      hero images are skipped so nothing repeats immediately. */
@@ -253,7 +259,7 @@ export function ItemDetail({ item }: { item: ContentItem }) {
               className="text-display-md mt-6 max-w-[16ch] text-sand-50"
             />
             <div className="mt-12">
-              <LocationsMap locations={locations} links={{}} />
+              <RouteJourney stops={locations} images={getPlaceImages()} />
             </div>
           </div>
         </section>

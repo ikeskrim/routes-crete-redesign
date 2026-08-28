@@ -24,6 +24,7 @@ import { StackedPanels } from "@/components/ui/StackedPanels";
 import { Bridge } from "@/components/ui/Cinematic";
 import { ContentCard } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
+import { getPlaceImages } from "@/lib/place-images";
 import { SceneEdge } from "@/components/ui/SceneEdge";
 import { SplitLines } from "@/components/ui/SplitLines";
 import {
@@ -75,17 +76,7 @@ export default function HomePage() {
      photograph actually depicts. Locations with no honest match — the cave,
      the unnamed "historic village", the airports — simply have no preview
      rather than borrowing a lookalike. */
-  const locationImages: Record<string, { src: string; alt: string; blurDataURL?: string }> = {};
-  for (const [key, file, alt] of [
-    ["rethymno-town", "rethymno-harbour-mountains", "Rethymno harbour, with the snow-covered mountains behind it"],
-    ["kourtaliotis-gorge", "kourtaliotiko-waterfall", "The waterfall in Kourtaliotiko Gorge"],
-    ["preveli-lagoon", "preveli-palms-aerial", "The palm forest along the river at Preveli"],
-    ["preveli-monastery", "preveli-monastery", "Preveli Monastery"],
-    ["mountain-village", "anogeia-village", "The mountain village of Anogeia"],
-  ] as const) {
-    const src = graded(`/images/sourced/${file}.jpg`);
-    locationImages[key] = { src, alt, blurDataURL: getBlur(src) };
-  }
+  const locationImages = getPlaceImages();
 
   const locationLinks: Record<string, string> = {};
   for (const item of [...experiences, ...transfers]) {
