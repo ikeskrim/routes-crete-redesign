@@ -1,0 +1,5 @@
+Captured from https://routes-crete-redesign.vercel.app
+build-commit 00655f2
+2026-08-28T11:58:15.184Z
+
+Own captures only. Nothing from qa/benchmark/ appears here or on /review-2.
