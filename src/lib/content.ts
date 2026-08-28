@@ -23,7 +23,18 @@ const CONTENT_DIR = path.join(process.cwd(), "content");
  * lost.
  * ------------------------------------------------------------------ */
 
-const GRADE = "b";
+/* The live grade.
+ *
+ * B "sunbleached" shipped through the whole build. The client's verdict on the
+ * finished site was that the photographs did not delight him and wanted them
+ * "brighter and more vivid" — and he was right about the cause: B ran at
+ * sat 0.66, actively DESATURATING every frame, over blacks lifted to matte.
+ * The Kourtaliotis river, captioned "crystal clear waters", rendered grey.
+ *
+ * C "vivid" is the answer, and it is still one constant. Flipping this back to
+ * "b" restores the previous look across the entire site in one edit — the
+ * graded trees for both live side by side under public/images/graded/. */
+const GRADE = "c";
 const GRADED_PREFIX = `/images/graded/${GRADE}`;
 
 /**

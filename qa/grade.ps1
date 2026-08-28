@@ -11,11 +11,18 @@
 #                          contrast-forward, vignetted.
 # Grade B "sunbleached" — quiet luxury: lifted matte blacks, warm highlights,
 #                          low contrast, dusty.
+# Grade C "vivid"       — a postcard shot at golden hour: brighter midtones,
+#                          blacks that sit down instead of floating, deeper
+#                          contrast, and saturation that goes UP rather than
+#                          down — with the lift aimed at the turquoise of the
+#                          water and the gold of low light. The client's brief
+#                          was "brighter and more vivid", and B was actively
+#                          desaturating (sat 0.66) and lifting blacks to matte.
 #
 # Output: public/images/graded/<grade>/<relative path>, max 2400px long edge.
 # ---------------------------------------------------------------------------
 param(
-  [ValidateSet('A', 'B')] [string]$Grade = 'A',
+  [ValidateSet('A', 'B', 'C')] [string]$Grade = 'A',
   [string]$Only = '',
   [int]$MaxEdge = 2400,
   [int]$Quality = 82
@@ -39,10 +46,17 @@ namespace RoutesCrete {
     public static void Apply(
       byte[] buf, int stride, int width, int height,
       byte[] lutR, byte[] lutG, byte[] lutB,
-      double sat, double vignette)
+      double sat, double vignette,
+      double vibrance, double cyanBoost, double goldBoost, double greenTemper)
     {
       double cx = width / 2.0, cy = height / 2.0;
       double maxD = System.Math.Sqrt(cx * cx + cy * cy);
+
+      // With vibrance and both boosts at 0 the factor below collapses to
+      // exactly `sat`, so grades A and B reproduce byte-for-byte. Only C asks
+      // for the extra terms.
+      bool shaped = vibrance > 0.0 || cyanBoost > 0.0 || goldBoost > 0.0 ||
+                    greenTemper > 0.0;
 
       for (int y = 0; y < height; y++) {
         int row = y * stride;
@@ -55,9 +69,55 @@ namespace RoutesCrete {
           double r = lutR[buf[i + 2]];
 
           double l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-          r = l + (r - l) * sat;
-          g = l + (g - l) * sat;
-          b = l + (b - l) * sat;
+
+          double factor = sat;
+          if (shaped) {
+            double mx = r > g ? (r > b ? r : b) : (g > b ? g : b);
+            double mn = r < g ? (r < b ? r : b) : (g < b ? g : b);
+            double chroma = mx - mn;
+            double s = mx > 0.25 ? chroma / mx : 0.0;
+
+            // Hue gain. Turquoise water and golden light are the two things
+            // the client asked to see more of, so they get a direct
+            // multiplier rather than riding on vibrance alone — an already
+            // saturated aqua has little headroom left in the vibrance term.
+            double hueGain = 1.0;
+            if (chroma > 0.25 && (cyanBoost > 0.0 || goldBoost > 0.0 || greenTemper > 0.0)) {
+              double h;
+              if (mx == r)      h = 60.0 * ((g - b) / chroma);
+              else if (mx == g) h = 60.0 * (((b - r) / chroma) + 2.0);
+              else              h = 60.0 * (((r - g) / chroma) + 4.0);
+              if (h < 0.0) h += 360.0;
+
+              double dCyan = System.Math.Abs(h - 190.0);
+              if (dCyan > 180.0) dCyan = 360.0 - dCyan;
+              if (dCyan < 45.0) hueGain += cyanBoost * (1.0 - dCyan / 45.0);
+
+              // Centred at 48 rather than the ~25 where skin sits, and
+              // narrow, so faces are not swept up in the golden-hour lift.
+              double dGold = System.Math.Abs(h - 48.0);
+              if (dGold > 180.0) dGold = 360.0 - dGold;
+              if (dGold < 30.0) hueGain += goldBoost * (1.0 - dGold / 30.0);
+
+              // Foliage pulls the other way. Vibrance lifts grass hardest of
+              // anything in frame — it is broad, mid-chroma and fills the
+              // hero — and the first tuning pass came back electric. This
+              // takes the greens back down to natural while the water and the
+              // light keep everything they gained.
+              double dGreen = System.Math.Abs(h - 105.0);
+              if (dGreen > 180.0) dGreen = 360.0 - dGreen;
+              if (dGreen < 48.0) hueGain -= greenTemper * (1.0 - dGreen / 48.0);
+            }
+
+            // Vibrance proper: the less saturated a pixel already is, the more
+            // it gains. Stone, skin and foliage sit low-chroma and stay
+            // natural; this is what keeps "vivid" from becoming "HDR".
+            factor = sat * (1.0 + vibrance * (1.0 - s)) * hueGain;
+          }
+
+          r = l + (r - l) * factor;
+          g = l + (g - l) * factor;
+          b = l + (b - l) * factor;
 
           if (vignette > 0.0) {
             double dx = (x - cx) / maxD;
@@ -94,13 +154,27 @@ $extRoot = Join-Path $proj 'assets-src'
 # --- grade definitions -----------------------------------------------------
 # lift      : black point raised (matte)
 # gain      : per-channel multiplier
-# gamma     : per-channel gamma
-# sat       : 0..1 saturation retained
+# gamma     : per-channel gamma (< 1 brightens the midtones)
+# sat       : saturation multiplier — below 1 desaturates, above 1 enriches
+# vibrance  : extra saturation, weighted toward pixels that have little
+# cyanBoost : extra saturation for hues near 190 (water)
+# goldBoost : extra saturation for hues near 48 (low sun on stone, sky)
+# greenTemper: saturation taken BACK off hues near 105, so foliage stays natural
 # vignette  : 0..1 strength
 $P = if ($Grade -eq 'A') {
-  @{ lift = @(0.010, 0.016, 0.030); gain = @(0.98, 1.00, 1.06); gamma = @(1.06, 1.04, 0.98); sat = 0.72; vignette = 0.34; contrast = 1.14 }
+  @{ lift = @(0.010, 0.016, 0.030); gain = @(0.98, 1.00, 1.06); gamma = @(1.06, 1.04, 0.98); sat = 0.72; vignette = 0.34; contrast = 1.14; vibrance = 0.0; cyanBoost = 0.0; goldBoost = 0.0; greenTemper = 0.0 }
+} elseif ($Grade -eq 'B') {
+  @{ lift = @(0.055, 0.048, 0.038); gain = @(1.06, 1.01, 0.94); gamma = @(0.96, 0.99, 1.05); sat = 0.66; vignette = 0.12; contrast = 0.94; vibrance = 0.0; cyanBoost = 0.0; goldBoost = 0.0; greenTemper = 0.0 }
 } else {
-  @{ lift = @(0.055, 0.048, 0.038); gain = @(1.06, 1.01, 0.94); gamma = @(0.96, 0.99, 1.05); sat = 0.66; vignette = 0.12; contrast = 0.94 }
+  # C "vivid". Read against B, every number moves the way the brief asked:
+  #   lift    0.055 -> 0.014   blacks sit down; the matte veil comes off
+  #   contrast 0.94 -> 1.10    deepened
+  #   gamma   0.96  -> 0.93    midtones brighter, warm channels leading
+  #   gain(B) 0.94  -> 0.995   B was crushing blue for warmth, which is
+  #                            precisely what flattened the turquoise
+  #   sat     0.66  -> 1.02    it was desaturating; now it enriches
+  #   vignette 0.12 -> 0.08    luminous, not shaded at the corners
+  @{ lift = @(0.014, 0.012, 0.016); gain = @(1.03, 1.005, 0.995); gamma = @(0.93, 0.95, 0.97); sat = 1.02; vignette = 0.08; contrast = 1.10; vibrance = 0.30; cyanBoost = 0.22; goldBoost = 0.10; greenTemper = 0.15 }
 }
 
 # Build a 256-entry LUT per channel — the grade is a pure tone mapping, so it
@@ -191,7 +265,7 @@ foreach ($item in $files) {
     $bytes = New-Object 'byte[]' ($stride * $h)
     [System.Runtime.InteropServices.Marshal]::Copy($data.Scan0, $bytes, 0, $bytes.Length)
 
-    [RoutesCrete.Grader]::Apply($bytes, $stride, $w, $h, $lutR, $lutG, $lutB, [double]$P.sat, [double]$P.vignette)
+    [RoutesCrete.Grader]::Apply($bytes, $stride, $w, $h, $lutR, $lutG, $lutB, [double]$P.sat, [double]$P.vignette, [double]$P.vibrance, [double]$P.cyanBoost, [double]$P.goldBoost, [double]$P.greenTemper)
 
     [System.Runtime.InteropServices.Marshal]::Copy($bytes, 0, $data.Scan0, $bytes.Length)
     $bmp.UnlockBits($data)

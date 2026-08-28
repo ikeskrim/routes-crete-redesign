@@ -1,9 +1,41 @@
+# QUEUE — THE BEAUTY PASS
+
+**The project is reopened.** The client reviewed the finished site and ruled:
+the photographs still do not delight him — find more beautiful ones and make
+them all brighter and more vivid; "the route" is just a line — make it
+beautiful and interactive. **Beauty is the primary criterion**, and the
+photographs and animations together should make a visitor want to book.
+
+This file is the queue again. `CLOSING.md` gets re-finalized at the end.
+No approval stops. Conservative defaults logged as they are taken. Every
+standing guard, budget and hard wall applies throughout — the beauty pass does
+not get an exemption from the floor, from CLS 0, from per-file licensing, or
+from geographic truth.
+
+| # | task | state |
+|---|---|---|
+| **B1** | **Grade C (Vivid)** — brighter, more vivid, aquas and golden light lifted, blacks less lifted, contrast deepened. One constant, corpus-wide. Tuned against the five most-seen frames. B-vs-C pairs reported. | queued |
+| **B2** | **Second sourcing pass, biased to SPECTACLE** — turquoise water, golden hour and dawn, dramatic aerials, depth and human-scale wonder. Same licence law, per-file. Hero and both cards re-evaluated side by side. Galleries may grow back where a frame earns it. | queued |
+| **B3** | **The route becomes a journey** — SVG path drawing itself on scroll, a travelling marker, waypoints that reveal the real photograph of that stop, numbered `01, 02` chapters. Reduced motion renders it drawn, not disabled. | queued |
+| **B4** | **The desire pass** — card hover deepened, CTA moments given life, hero and closing scene retuned to the vivid imagery. One question per surface: does this make someone want to be there and press Book? | queued |
+| **B5** | **`/review-2`, then stop** — own captures only, noindex/nofollow, unlinked, deletion commands recorded. Grade pairs, every photo swap, a filmstrip of the route, refreshed hero and cards, desktop + 390. Deployed QA table. Then stop for the client's ruling. | queued |
+
+**The walls, restated because a beauty pass is exactly when they get bent:**
+nothing invented · per-file licensing, BY-SA and NC forbidden · no AI scenery ·
+only real photographs of the real places, captioned honestly · enhanced files
+stay unwired · performance floor 89, CLS 0 hard wall, TBT ≤ 250 ms ceiling,
+a11y 100, measured on the deployment as a median of five · brochure and legacy
+anchors intact · no project settings, no DNS, no domain.
+
+---
+
 # CLOSING RECORD — the ten decisions, executed
 
-This file was the queue. It is now the record. Everything below the first
-divider is the running log, newest first, kept as written. **For the state of
-the project as a whole, read [`CLOSING.md`](CLOSING.md) — it is short and it
-is the front door.**
+*(Superseded as the front matter by the queue above; kept as the record of the
+work that closed before the beauty pass reopened it.)*
+
+This file was the queue. It became the record. Everything below the first
+divider is the running log, newest first, kept as written.
 
 ## The ten decisions
 
