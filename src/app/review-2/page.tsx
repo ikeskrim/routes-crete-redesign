@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const BUILD = "00655f2";
+const BUILD = "de0f19f";
 
 function Frame({
   src,
@@ -86,9 +86,11 @@ export default function ReviewTwoPage() {
           The beauty pass, in pictures
         </h1>
         <p className="text-body-lg mt-6 max-w-[52ch] text-ink/70">
-          You said the photographs did not delight you — brighter and more
-          vivid — and that the route was just a line. Both are done and live.
-          This page is so you can see it rather than read about it.
+          Two rounds of work, in one place. First: the photographs did not
+          delight you — brighter and more vivid — and the route was just a
+          line. Then a second round on the menu, the journeys, the hero and a
+          film grain over the whole site. All of it is live. This page is so
+          you can see it rather than read about it.
         </p>
         <p className="text-caption mt-4 max-w-[52ch] text-ink/50">
           Every frame is our own capture of the live site (build {BUILD}) or our
@@ -235,6 +237,158 @@ export default function ReviewTwoPage() {
             <Frame src="mobile-hero" caption="390px — the hero" tall />
             <Frame src="mobile-route" caption="390px — the route, chapters below the chart" tall />
           </div>
+        </section>
+
+        {/* 05 — the menu */}
+        <section className="mt-24 border-t border-ink/10 pt-10">
+          <div className="flex items-baseline gap-4">
+            <span className="font-display text-eyebrow tabular-nums text-gold-600">
+              05
+            </span>
+            <h2 className="text-heading-lg max-w-[24ch]">
+              The menu opens like a curtain
+            </h2>
+          </div>
+          <p className="text-body mt-5 max-w-[52ch] text-ink/65">
+            Each link now rises out of its own clipped row rather than fading
+            in, one after another, and a real photograph of Crete drifts slowly
+            behind the panel the whole time it is open. The links, the numbers
+            and the photograph that appears when you hover one were already
+            there — what changed is the way it all arrives.
+          </p>
+
+          <div className="mt-2 grid gap-4 sm:grid-cols-2">
+            <Frame src="menu-reveal-0" caption="Opening — the first row clearing its mask" />
+            <Frame src="menu-reveal-1" caption="Transfers half out, Why Us just cresting" />
+            <Frame src="menu-reveal-2" caption="The stagger, further along" />
+            <Frame src="menu-reveal-3" caption="Settled" />
+          </div>
+          <Frame
+            src="menu-hovered"
+            caption="A link hovered — the drifting photograph behind, its preview in front"
+          />
+        </section>
+
+        {/* 06 — horizontal journeys */}
+        <section className="mt-24 border-t border-ink/10 pt-10">
+          <div className="flex items-baseline gap-4">
+            <span className="font-display text-eyebrow tabular-nums text-gold-600">
+              06
+            </span>
+            <h2 className="text-heading-lg max-w-[24ch]">
+              The journeys pan sideways
+            </h2>
+          </div>
+          <p className="text-body mt-5 max-w-[52ch] text-ink/65">
+            On a desktop the page holds still while the cards travel across it,
+            and carries on when they run out. A hairline underneath fills as
+            they go, so it reads as a section with a length rather than a page
+            that has jammed.
+          </p>
+
+          <div className="mt-2 grid gap-4 sm:grid-cols-2">
+            <Frame src="journeys-pan-0" caption="Held — the pan about to begin" />
+            <Frame src="journeys-pan-1" caption="Travelling" />
+            <Frame src="journeys-pan-2" caption="Travelling" />
+            <Frame src="journeys-pan-3" caption="The end of the track; the page releases" />
+          </div>
+
+          <Frame
+            src="journeys-mobile"
+            caption="On a phone it stays an ordinary column — a pinned sideways pan fights your own scrolling thumb"
+            tall
+          />
+
+          <p className="text-caption mt-6 max-w-[52ch] text-ink/50">
+            The pan is as long as the catalogue. With three journeys it is
+            short; every experience you add lengthens it on its own, with no
+            new work.
+          </p>
+        </section>
+
+        {/* 07 — kinetic hero */}
+        <section className="mt-24 border-t border-ink/10 pt-10">
+          <div className="flex items-baseline gap-4">
+            <span className="font-display text-eyebrow tabular-nums text-gold-600">
+              07
+            </span>
+            <h2 className="text-heading-lg max-w-[24ch]">
+              The hero answers the cursor
+            </h2>
+          </div>
+          <p className="text-body mt-5 max-w-[52ch] text-ink/65">
+            Move the mouse across the hero and the words lean very slightly one
+            way while the photograph leans the other. It is meant to be felt
+            rather than watched: measured on the live site, the type moves about{" "}
+            <strong className="font-semibold text-ink">7px</strong> either side
+            of centre. Text that chases the cursor is text you cannot read.
+          </p>
+
+          <Pair
+            a="hero-kinetic-left"
+            b="hero-kinetic-right"
+            aCaption="Pointer top-left — the type drifts right and down"
+            bCaption="Pointer bottom-right — the type drifts left and up"
+          />
+
+          <p className="text-caption mt-6 max-w-[52ch] text-ink/50">
+            Nothing happens on a phone, where there is no cursor to answer, and
+            nothing happens for a visitor whose device asks for reduced motion.
+          </p>
+        </section>
+
+        {/* 08 — grain */}
+        <section className="mt-24 border-t border-ink/10 pt-10">
+          <div className="flex items-baseline gap-4">
+            <span className="font-display text-eyebrow tabular-nums text-gold-600">
+              08
+            </span>
+            <h2 className="text-heading-lg max-w-[24ch]">
+              A film grain over everything
+            </h2>
+          </div>
+          <p className="text-body mt-5 max-w-[52ch] text-ink/65">
+            One very faint layer of photographic grain now sits over the whole
+            site rather than only over the dark sections. It is what stops large
+            flat areas reading as flat colour, and what makes the photography
+            feel like film rather than like a screen.
+          </p>
+
+          <figure className="mt-6">
+            <div className="overflow-hidden rounded-media border border-ink/10 bg-rock-200">
+              <Image
+                src="/review2-assets/grain-detail.png"
+                alt="A magnified crop of the grain layer"
+                width={900}
+                height={570}
+                sizes="(max-width: 900px) 100vw, 860px"
+                className="h-auto w-full"
+              />
+            </div>
+            <figcaption className="text-caption mt-2 text-ink/55">
+              Magnified three times and saved losslessly so it survives the
+              screenshot. At actual size the layer runs under 3% opacity — you
+              are meant to feel it rather than see it, and an ordinary
+              compressed capture would throw it away entirely.
+            </figcaption>
+          </figure>
+        </section>
+
+        {/* Trust */}
+        <section className="mt-24 border-t border-ink/10 pt-10">
+          <h2 className="text-heading-lg">Trust</h2>
+          <p className="text-body mt-5 max-w-[52ch] text-ink">
+            Badge built, empty: awaiting verifiable reviews.
+          </p>
+          <p className="text-caption mt-4 max-w-[52ch] text-ink/50">
+            A spinning “5-star rated on Tripadvisor” badge was asked for. There
+            is no rating, review count or award anywhere in this site or the
+            original one, and nothing findable to check one against — so the
+            badge is built and left switched off rather than filled with a
+            number nobody can verify. Send a real rating and the listing it can
+            be checked against, and it appears on the next deploy with that link
+            on it.
+          </p>
         </section>
 
         {/* the numbers */}

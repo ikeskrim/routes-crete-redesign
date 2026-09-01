@@ -1,3 +1,86 @@
+# THE INTERACTION PASS — shipped `de0f19f`
+
+Five interaction features on top of the beauty pass. Three of them extended
+machinery this site already had; one shipped deliberately empty.
+
+| # | feature | outcome |
+|---|---|---|
+| **I1** | Full-screen overlay menu, staggered reveal, drifting photograph | **shipped** · the overlay, hamburger, focus trap, scroll lock, Escape and per-item previews already existed and are untouched — the reveal is now a mask, and a real photograph of Crete drifts behind on a 44s CSS transform |
+| **I2** | Horizontal journeys | **shipped** · vertical scroll drives horizontal travel, verified panning to exactly −633.6px (−44vw) |
+| **I3** | Kinetic hero + image parallax | **shipped** · pointer drives ±7px on the type, ±16px on the photograph; the scroll parallax already existed |
+| **I4** | Site-wide film grain | **shipped** · one fixed, server-rendered, zero-JavaScript layer |
+| **I5** | Spinning social-proof badge | **built, empty — awaiting verifiable reviews** |
+
+## The standing rule this pass established
+
+> **Social proof renders from verified data or not at all.**
+
+The badge was specified as "★ 5-STAR RATED ON TRIPADVISOR ★". No rating,
+review count or award exists anywhere in this project or on the original site —
+`site.json` says so in its own note and the organisation JSON-LD omits
+`aggregateRating` for the same reason — and nothing findable online changes
+that. Writing the sentence would have been inventing a review claim about a
+real business on its live site, and in the EU a fabricated review claim is a
+legal exposure for the operator rather than a matter of taste.
+
+So the component is built exactly as asked — SVG `textPath` around a circle,
+one CSS rotation, fixed to the corner, desktop only so it never sits on the
+mobile booking bar — and it reads its words from `content/site.json →
+socialProof`, which is `null`. It renders nothing at all until there is
+something true to put in it. **If real data arrives it ships only with the
+link visible**, so any reader can check it.
+
+## Four things that had to be got right
+
+**A pin-spacer would have broken the CLS wall.** ScrollTrigger pinning injects
+height into the document after hydration; the budget here is a hard zero. The
+section's height is derived from the card count and rendered by the server, so
+the document is its final height on the first paint. Measured against the
+previous build: CLS byte-identical, 0.0057 desktop and 0.0064 mobile on both.
+
+**Two elements would have carried `id="transfers"`.** The obvious build renders
+a grid for small screens and a separate track for large ones, which puts every
+card in the DOM twice — and `legacyAnchorMap` points the old `#portfolio1` at
+that id. There is one list; the layout switches in CSS.
+
+**`grain fixed` would have silently become `position: relative`.** The `grain`
+utility is emitted after `.fixed` at equal specificity — the exact trap that
+once shipped a "fullscreen" overlay menu as an in-flow block, and which
+`qa/preflight.mts` now fails the build on. The site-wide layer is its own
+utility with its own `position: fixed`.
+
+**`y` and `translateY` are the same property in motion.** Setting the hero's
+scroll parallax and its kinetic offset on one element silently dropped one of
+them. They are separate layers now, as the image parallax and the Ken Burns
+push already were.
+
+## Measured on the deployment
+
+Nine guards green. Lighthouse median of five: `/` **93** `[79 92 93 96 98]`,
+experience **92** `[81 89 92 97 99]`, a11y 100, TBT 71/48 ms, CLS 0.
+
+Local Lighthouse fails the floor at 88/86 — so the features were stashed and
+the previous build measured on the same machine with the same harness: **85/86**.
+Localhost runs about ten points under the deployment here, and the deployment
+stays the only gate. That method is now the way any local/deployed discrepancy
+gets settled.
+
+## `/review-2` covers all eight items
+
+Re-captured against `de0f19f` — the earlier frames were of `00655f2` and had
+gone stale. Items 01–04 are the beauty pass, 05–08 the interaction pass, plus a
+Trust heading carrying one line: *"Badge built, empty: awaiting verifiable
+reviews."*
+
+Still `noindex, nofollow`, still linked from nowhere, still own captures only
+with zero references to `qa/benchmark/`. Delete it when the ruling lands:
+
+```
+git rm -r src/app/review-2 public/review2-assets
+```
+
+---
+
 # QUEUE — THE BEAUTY PASS
 
 **The project is reopened.** The client reviewed the finished site and ruled:

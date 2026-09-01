@@ -209,6 +209,121 @@ async function shotChart(page: Page, name: string) {
   await context.close();
 }
 
+/* ------------------------------------------------- 05  the overlay menu */
+{
+  const context = await browser.newContext({ viewport: DESKTOP });
+  const page = await context.newPage();
+  await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await settle(page);
+
+  /* The mask reveal, caught mid-flight. Screenshots take time to encode, so
+     these are the reveal at four points rather than four exact milliseconds —
+     the point is that each row is rising out of its own clipped box, which is
+     what the frames show. */
+  await page.click("button[aria-expanded]");
+  for (const [i, wait] of [60, 130, 260, 900].entries()) {
+    await page.waitForTimeout(i === 0 ? wait : wait - [60, 130, 260, 900][i - 1]);
+    await shot(page, `menu-reveal-${i}`);
+  }
+
+  /* The drifting photograph, on its own: the panel with a link hovered so the
+     backdrop and the per-item preview are both visible. */
+  const link = page.locator('nav[aria-label="Menu"] a').first();
+  await link.hover();
+  await page.waitForTimeout(1200);
+  await shot(page, "menu-hovered");
+
+  await context.close();
+}
+
+/* --------------------------------------------- 06  the horizontal journeys */
+{
+  const context = await browser.newContext({ viewport: DESKTOP });
+  const page = await context.newPage();
+  await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await settle(page);
+
+  const track = await page.evaluate(() => {
+    const el = document.querySelector('[style*="--track-h"]');
+    if (!el) return null;
+    const rect = el.getBoundingClientRect();
+    return { top: rect.top + window.scrollY, height: rect.height, vh: window.innerHeight };
+  });
+
+  if (track) {
+    for (const [i, fraction] of [0, 0.35, 0.7, 1].entries()) {
+      await page.evaluate(
+        (y) => window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior }),
+        track.top + (track.height - track.vh) * fraction,
+      );
+      await page.waitForTimeout(900);
+      await shot(page, `journeys-pan-${i}`);
+    }
+  }
+  await context.close();
+}
+
+{
+  /* 390: the same cards as an ordinary column. The pan does not run here —
+     a pinned horizontal section fights the reader's own scroll gesture. */
+  const context = await browser.newContext({ viewport: MOBILE });
+  const page = await context.newPage();
+  await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await settle(page);
+  await page.evaluate(() => {
+    document.querySelector('a[href^="/experiences/"] .card-frame')?.scrollIntoView({ block: "center" });
+  });
+  await page.waitForTimeout(1400);
+  await shot(page, "journeys-mobile");
+  await context.close();
+}
+
+/* --------------------------------------------------- 07  the kinetic hero */
+{
+  const context = await browser.newContext({ viewport: DESKTOP });
+  const page = await context.newPage();
+  await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await settle(page);
+
+  /* Both extremes of the pointer, so the drift can be compared. The movement
+     is deliberately about ten pixels — it is meant to be felt, not watched —
+     so the measured offset is printed here and quoted in the caption rather
+     than left for the eye to guess at. */
+  for (const [name, x, y] of [
+    ["hero-kinetic-left", 140, 240],
+    ["hero-kinetic-right", 1300, 720],
+  ] as const) {
+    await page.mouse.move(x, y);
+    await page.waitForTimeout(1100);
+    const offset = await page.evaluate(() => {
+      const el = document.querySelector("h1")?.parentElement;
+      return el ? getComputedStyle(el).transform : "none";
+    });
+    console.log(`     ${name}: ${offset}`);
+    await shot(page, name);
+  }
+  await context.close();
+}
+
+/* ------------------------------------------------------ 08  the grain layer */
+{
+  const context = await browser.newContext({ viewport: DESKTOP, deviceScaleFactor: 3 });
+  const page = await context.newPage();
+  await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await settle(page);
+
+  /* A tight crop of a flat area, captured at 3x and saved as PNG.
+     The layer runs at 0.028 opacity: JPEG would quantise it away entirely and
+     at actual size it is felt rather than seen, so the honest way to show it
+     is magnified and losslessly. The caption says so. */
+  await page.screenshot({
+    path: path.join(OUT, "grain-detail.png"),
+    clip: { x: 900, y: 120, width: 300, height: 190 },
+  });
+  console.log("  + grain-detail.png (3x, PNG — the layer is 0.028 opacity)");
+  await context.close();
+}
+
 await browser.close();
 
 await fs.writeFile(
