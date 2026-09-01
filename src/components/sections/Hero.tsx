@@ -1,8 +1,14 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "motion/react";
+import {
+  motion,
+  useMotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "motion/react";
 import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
 
 import { Button } from "@/components/ui/Button";
@@ -12,10 +18,22 @@ import { SplitLines } from "@/components/ui/SplitLines";
 /**
  * Fullscreen cinematic hero.
  *
- * Three layers move independently: a very slow Ken Burns push on the
- * photograph (12–15s, transform only), a scroll-driven parallax drift, and the
- * headline lifting away as you leave. Everything degrades to a still frame
- * under prefers-reduced-motion.
+ * Four layers move independently: a very slow Ken Burns push on the
+ * photograph (12–15s, transform only), a scroll-driven parallax drift, the
+ * headline lifting away as you leave, and a kinetic response to the pointer.
+ * Everything degrades to a still frame under prefers-reduced-motion.
+ *
+ * The kinetic layer is deliberately cheap. Pointer position is written into
+ * motion values and consumed by transforms, so a mousemove costs a composited
+ * transform and NOT a React render — the naive version of this effect sets
+ * state on every event and re-renders the largest text on the page at pointer
+ * frequency, which is how an ambient flourish eats a 250 ms TBT budget.
+ *
+ * It is also small on purpose: the headline is the LCP element, and text that
+ * chases the cursor is unreadable. The type moves about 10 px at the extremes,
+ * the photograph about 16 px in the opposite direction — enough to feel like
+ * depth, not enough to feel like a toy. Touch pointers are ignored outright:
+ * there is no hover on a phone, and a tap would snap the type sideways.
  */
 export function Hero({
   eyebrow,
@@ -46,6 +64,45 @@ export function Hero({
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "48%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
 
+  /* Pointer position across the hero, -1..1 on each axis. Springs so the type
+     eases toward the cursor instead of tracking it rigidly. */
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const springX = useSpring(pointerX, { stiffness: 55, damping: 22, mass: 0.7 });
+  const springY = useSpring(pointerY, { stiffness: 55, damping: 22, mass: 0.7 });
+
+  const kineticX = useTransform(springX, [-1, 1], [10, -10]);
+  const kineticY = useTransform(springY, [-1, 1], [7, -7]);
+  // Opposite direction and slightly further, which is what reads as depth.
+  const imageDriftX = useTransform(springX, [-1, 1], [-16, 16]);
+  const imageDriftY = useTransform(springY, [-1, 1], [-10, 10]);
+
+  useEffect(() => {
+    if (reduced) return;
+    const node = ref.current;
+    if (!node) return;
+    // No hover on touch, and a coarse pointer would snap the type sideways.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    const onMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") return;
+      const rect = node.getBoundingClientRect();
+      pointerX.set(((event.clientX - rect.left) / rect.width) * 2 - 1);
+      pointerY.set(((event.clientY - rect.top) / rect.height) * 2 - 1);
+    };
+    const onLeave = () => {
+      pointerX.set(0);
+      pointerY.set(0);
+    };
+
+    node.addEventListener("pointermove", onMove, { passive: true });
+    node.addEventListener("pointerleave", onLeave);
+    return () => {
+      node.removeEventListener("pointermove", onMove);
+      node.removeEventListener("pointerleave", onLeave);
+    };
+  }, [reduced, pointerX, pointerY]);
+
   return (
     <section
       ref={ref}
@@ -57,12 +114,20 @@ export function Hero({
           inner one, so the two never fight for the same transform. */}
       <motion.div
         className="absolute inset-0 will-change-transform"
-        style={reduced ? undefined : { y: imageY }}
+        style={reduced ? undefined : { y: imageY, x: imageDriftX }}
       >
-        {/* CSS animation, not motion: the LCP image must not be gated on
-            hydration. It paints immediately at scale(1) and the push runs
-            from there. */}
-        <div className="ken-burns absolute inset-[-4%] will-change-transform">
+        {/* Pointer drift on its own layer: the outer element already owns `y`
+            for the scroll parallax, and in motion `y` and `translateY` are the
+            same transform property — setting both on one element silently
+            drops one of them. */}
+        <motion.div
+          className="absolute inset-0"
+          style={reduced ? undefined : { y: imageDriftY }}
+        >
+          {/* CSS animation, not motion: the LCP image must not be gated on
+              hydration. It paints immediately at scale(1) and the push runs
+              from there. */}
+          <div className="ken-burns absolute inset-[-4%] will-change-transform">
           <Image
             src={image}
             alt=""
@@ -76,6 +141,7 @@ export function Hero({
             className="object-cover"
           />
         </div>
+        </motion.div>
       </motion.div>
 
       {/* Layered cinematic scrim: a vertical film gradient plus a soft corner
@@ -91,6 +157,10 @@ export function Hero({
         style={reduced ? undefined : { y: contentY, opacity: contentOpacity }}
         className="relative mx-auto w-full max-w-[92rem] px-6 pb-16 sm:px-8 lg:px-12 lg:pb-24"
       >
+        {/* The kinetic offset lives on its own element for the same reason the
+            image drift does: `y` here would collide with the scroll parallax
+            on the parent. */}
+        <motion.div style={reduced ? undefined : { x: kineticX, y: kineticY }}>
         <motion.div
           data-reveal
           initial={reduced ? false : { opacity: 0, y: 14 }}
@@ -138,6 +208,7 @@ export function Hero({
             </Magnetic>
           </motion.div>
         </div>
+        </motion.div>
       </motion.div>
 
       {/* Scroll cue */}

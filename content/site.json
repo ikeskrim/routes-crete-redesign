@@ -401,5 +401,11 @@
       "Booked by conversation"
     ],
     "note": "New copy in the approved voice. Every attribute is literally true and evidenced elsewhere in this file: private tours, family-run, a 12-seat van, by-request booking. No count, rating, award or price appears here."
+  },
+  "socialProof": {
+    "text": null,
+    "href": null,
+    "verifiedOn": null,
+    "note": "The rotating corner badge. Empty on purpose, and the component renders nothing while it is: it was specified as \"5-STAR RATED ON TRIPADVISOR\", and no rating, review count or award exists anywhere in this project or on the original site. Writing one would be inventing a review claim about a real business on its live site, which is the hard wall this build has kept throughout — and in the EU a fabricated review claim is a legal exposure for the operator, not a style choice. Fill `text` with the real claim, `href` with the listing it can be checked against, and `verifiedOn` with the date somebody confirmed it. It ships on the next deploy with no code change."
   }
 }

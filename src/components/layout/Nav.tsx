@@ -33,12 +33,15 @@ export function Nav({
   items,
   brandName,
   previews,
+  menuBackdrop,
   bookHref = "/contact",
 }: {
   items: NavItem[];
   brandName: string;
   /** One photograph per nav item, shown behind the overlay on hover. */
   previews: Record<string, string | undefined>;
+  /** One real photograph of Crete, drifting behind the open menu. */
+  menuBackdrop?: string;
   bookHref?: string;
 }) {
   const pathname = usePathname();
@@ -232,6 +235,7 @@ export function Nav({
         open={open}
         onClose={handleClose}
         previews={previews}
+        backdrop={menuBackdrop}
         bookHref={bookHref}
       />
     </>

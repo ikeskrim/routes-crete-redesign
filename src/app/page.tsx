@@ -22,7 +22,7 @@ import { Team } from "@/components/sections/Team";
 import { Marquee } from "@/components/ui/Marquee";
 import { StackedPanels } from "@/components/ui/StackedPanels";
 import { Bridge } from "@/components/ui/Cinematic";
-import { ContentCard } from "@/components/ui/Card";
+import { HorizontalJourneys } from "@/components/sections/HorizontalJourneys";
 import { Reveal } from "@/components/ui/Reveal";
 import { getPlaceImages } from "@/lib/place-images";
 import { SceneEdge } from "@/components/ui/SceneEdge";
@@ -182,21 +182,7 @@ export default function HomePage() {
             className="text-display-lg mt-6 max-w-[15ch] text-ink"
           />
 
-          <div className="mt-16 grid gap-x-10 gap-y-16 sm:grid-cols-2 lg:mt-24">
-            {journeys.map((item, i) => (
-              <ContentCard
-                key={item.href}
-                item={item}
-                index={i + 1}
-                /* The transfers card owns #transfers now. legacyAnchorMap
-                   points #portfolio1 at it, and cutting the spotlight must
-                   not leave that link pointing at nothing. */
-                id={item.href.startsWith("/transfers") ? "transfers" : undefined}
-                className={i % 2 === 1 ? "sm:mt-28" : undefined}
-                ratio="aspect-[4/5]"
-              />
-            ))}
-          </div>
+          <HorizontalJourneys items={journeys} />
 
           {/* The island map, folded in from what used to be a section of its
               own. Every pin and every link is unchanged — a map of where these

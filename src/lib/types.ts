@@ -145,6 +145,15 @@ export interface Phone {
   dial: string;
 }
 
+export interface SocialProof {
+  /** The claim itself. Null/empty renders no badge at all. */
+  text: string | null;
+  /** Where a reader can check it. */
+  href: string | null;
+  verifiedOn: string | null;
+  note?: string;
+}
+
 export interface MapLocation {
   key: string;
   name: string;
@@ -161,6 +170,9 @@ export interface SectionCopy {
 }
 
 export interface SiteContent {
+  /** The rotating corner badge's claim. Optional, and empty until the client
+   *  supplies something real — see content/site.json for why. */
+  socialProof?: SocialProof;
   brand: {
     name: string;
     domain: string;

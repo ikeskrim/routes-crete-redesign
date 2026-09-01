@@ -3,6 +3,8 @@ import { Fraunces, Inter, Manrope } from "next/font/google";
 
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
+import { FilmGrain } from "@/components/ui/FilmGrain";
+import { SpinningBadge } from "@/components/ui/SpinningBadge";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { getExperiences, getSite, getTransfers } from "@/lib/content";
 import { socialImage } from "@/lib/site-url";
@@ -180,6 +182,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           items={site.nav}
           brandName={site.brand.name}
           previews={menuPreviews}
+          /* Drawn from the content like every other preview, so the menu's
+             backdrop can never drift from a photograph the site actually
+             ships. */
+          menuBackdrop={experiences[1]?.heroImage ?? experiences[0]?.heroImage}
         />
 
         <main id="main" className="flex-1">
@@ -187,6 +193,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
 
         <Footer site={site} />
+
+        {/* Renders nothing until the client supplies a real, checkable claim
+            — see content/site.json → socialProof. */}
+        <SpinningBadge
+          text={site.socialProof?.text}
+          href={site.socialProof?.href}
+        />
+
+        {/* Last in the body, over everything, interactive with nothing. */}
+        <FilmGrain />
       </body>
     </html>
   );

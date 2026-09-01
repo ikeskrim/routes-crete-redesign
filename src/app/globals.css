@@ -495,3 +495,77 @@
     --text-caption: 0.875rem;  /* 13px -> 14px */
   }
 }
+
+/* ------------------------------------------------------------------
+   MENU DRIFT
+
+   A very slow pan on the photograph behind the open overlay menu. Transform
+   only, so it composites; 44s so it reads as drift rather than movement.
+   Paused under reduced motion rather than removed — the photograph still
+   shows, it simply holds still.
+   ------------------------------------------------------------------ */
+@keyframes menu-drift {
+  0% {
+    transform: scale(1.08) translate3d(-1.5%, -1%, 0);
+  }
+  50% {
+    transform: scale(1.14) translate3d(1.5%, 1%, 0);
+  }
+  100% {
+    transform: scale(1.08) translate3d(-1.5%, -1%, 0);
+  }
+}
+
+@utility menu-drift {
+  animation: menu-drift 44s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-drift {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   FILM GRAIN, SITE-WIDE
+
+   Deliberately NOT the `grain` utility. That one is `position: relative` and
+   is emitted after `.fixed` at equal specificity, so `grain fixed` silently
+   resolves to relative — which is how a "fullscreen" overlay menu once
+   shipped as an in-flow block. qa/preflight.mts fails the build on that
+   pairing, and this class exists so the site-wide layer never needs it.
+
+   `position: fixed` with its own stacking context, pointer-events: none, and
+   the same fractal-noise source as the sectional grain so the two belong to
+   one system. Opacity is lower than the sectional grain because this one is
+   over EVERYTHING, including light sections and photographs.
+   ------------------------------------------------------------------ */
+@utility film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.028;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='fg'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23fg)' opacity='0.9'/%3E%3C/svg%3E");
+}
+
+/* Circular badge rotation. Transform only, one composited layer, and it stops
+   entirely rather than spinning slower under reduced motion. */
+@keyframes badge-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@utility badge-spin {
+  animation: badge-spin 18s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge-spin {
+    animation: none;
+  }
+}

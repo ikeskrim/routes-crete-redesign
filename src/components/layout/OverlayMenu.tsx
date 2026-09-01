@@ -26,12 +26,15 @@ export function OverlayMenu({
   open,
   onClose,
   previews,
+  backdrop,
   bookHref,
 }: {
   items: NavItem[];
   open: boolean;
   onClose: () => void;
   previews: Record<string, string | undefined>;
+  /** One real photograph of Crete, drifting behind the menu. */
+  backdrop?: string;
   bookHref: string;
 }) {
   const reduced = useReducedMotionSafe();
@@ -197,6 +200,32 @@ export function OverlayMenu({
           exit={{ opacity: 0 }}
           transition={{ duration: reduced ? 0.2 : 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
+          {/* The panel's own photograph of Crete, drifting.
+              Always present, behind everything, at low opacity — the hovered
+              preview still fades in over it, so the menu is never a flat black
+              rectangle even before the reader reaches for a link.
+
+              The pan is a CSS keyframe on a transform, not a JS loop: it must
+              not compete with the open animation, and a 40s drift driven from
+              rAF would keep a timer alive for as long as the menu is open for
+              no visual gain. `menu-drift` respects prefers-reduced-motion in
+              its own definition. */}
+          {backdrop && (
+            <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+              <div className="menu-drift absolute inset-[-6%]">
+                <Image
+                  src={backdrop}
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  quality={60}
+                  className="object-cover opacity-[0.18]"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-r from-ocean-950 via-ocean-950/80 to-ocean-950/40" />
+            </div>
+          )}
+
           <div aria-hidden className="grain-overlay" />
 
           {/* Preview: desktop only, and only while a link is hovered. */}
@@ -248,19 +277,29 @@ export function OverlayMenu({
                   const className =
                     "group flex min-h-[3.75rem] items-baseline gap-6 py-3 lg:py-4";
 
+                  /* Mask reveal: the row is clipped by an overflow-hidden
+                     box and its contents rise from fully below it, so each
+                     link is uncovered rather than faded in. Same construction
+                     as SplitLines uses for headlines, which is why it is
+                     motion rather than GSAP — a second animation runtime in
+                     this component would buy an identical result and another
+                     library on the critical path. GSAP earns its place where
+                     ScrollTrigger is genuinely needed. */
                   return (
-                    <motion.li
+                    <li
                       key={item.key}
-                      initial={reduced ? false : { opacity: 0, y: 24 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 0.8,
-                        delay: reduced ? 0 : 0.08 + i * 0.055,
-                        ease: [0.16, 1, 0.3, 1],
-                      }}
-                      className="border-b border-sand-100/10"
+                      className="overflow-hidden border-b border-sand-100/10"
                       onMouseEnter={() => handleHover(item.key)}
                       onMouseLeave={() => handleHover(null)}
+                    >
+                    <motion.div
+                      initial={reduced ? false : { y: "110%" }}
+                      animate={{ y: "0%" }}
+                      transition={{
+                        duration: 0.9,
+                        delay: reduced ? 0 : 0.1 + i * 0.07,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
                     >
                       {item.external ? (
                         <a
@@ -282,7 +321,8 @@ export function OverlayMenu({
                           {inner}
                         </Link>
                       )}
-                    </motion.li>
+                    </motion.div>
+                    </li>
                   );
                 })}
               </ul>
