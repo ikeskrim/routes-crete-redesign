@@ -12,13 +12,125 @@ standing guard, budget and hard wall applies throughout — the beauty pass does
 not get an exemption from the floor, from CLS 0, from per-file licensing, or
 from geographic truth.
 
-| # | task | state |
+| # | task | outcome |
 |---|---|---|
-| **B1** | **Grade C (Vivid)** — brighter, more vivid, aquas and golden light lifted, blacks less lifted, contrast deepened. One constant, corpus-wide. Tuned against the five most-seen frames. B-vs-C pairs reported. | queued |
-| **B2** | **Second sourcing pass, biased to SPECTACLE** — turquoise water, golden hour and dawn, dramatic aerials, depth and human-scale wonder. Same licence law, per-file. Hero and both cards re-evaluated side by side. Galleries may grow back where a frame earns it. | queued |
-| **B3** | **The route becomes a journey** — SVG path drawing itself on scroll, a travelling marker, waypoints that reveal the real photograph of that stop, numbered `01, 02` chapters. Reduced motion renders it drawn, not disabled. | queued |
-| **B4** | **The desire pass** — card hover deepened, CTA moments given life, hero and closing scene retuned to the vivid imagery. One question per surface: does this make someone want to be there and press Book? | queued |
-| **B5** | **`/review-2`, then stop** — own captures only, noindex/nofollow, unlinked, deletion commands recorded. Grade pairs, every photo swap, a filmstrip of the route, refreshed hero and cards, desktop + 390. Deployed QA table. Then stop for the client's ruling. | queued |
+| **B1** | **Grade C (Vivid)** — corpus-wide, one constant | **shipped** `419bdf5` · all 72 frames · A and B still reproduce byte-for-byte |
+| **B2** | **Second sourcing pass, biased to spectacle** | **shipped** `212221a` · 3 new photographs from 59 licence-clean candidates · ledger at 18 |
+| **B3** | **The route becomes a journey** | **shipped** `3781729` · draws on scroll, marker travels, stops light in the order of the day |
+| **B4** | **The desire pass** | **shipped** `00655f2` · the hero scrim was hiding the grade; that is the finding |
+| **B5** | **`/review-2`, then stop** | **shipped** `0f0925e` · live, noindex, unlinked · **awaiting the client's ruling** |
+
+## What each one actually did
+
+**B1 — the client was right about the cause.** Grade B ran at saturation 0.66,
+*desaturating* every photograph, over blacks lifted to 0.055 matte with
+contrast at 0.94. The Kourtaliotis river, whose own credit line calls it
+"crystal clear waters", was rendering grey. C brightens the midtones, sits the
+blacks down to 0.014, deepens contrast to 1.10, and takes saturation to 1.02 —
+with three shaped terms a flat multiplier cannot express: vibrance weighted
+toward pixels that have little colour already, a cyan boost on hue 190 for the
+water, and a gold boost on 48 (deliberately *not* the ~25 where skin sits).
+
+A fourth term came from looking at the first result rather than shipping it.
+Vibrance lifts grass hardest of anything in frame — broad, mid-chroma, and it
+fills the hero — and the olive grove came back electric. `greenTemper` takes
+hues near 105 back down, so foliage reads natural while the water keeps
+everything it gained.
+
+Proofs: grade-diff against the approved reference, mean delta **0.000/255,
+max 0** — A and B reproduce byte-for-byte, so the new terms cost the old
+grades nothing. `grade-diff -From b -To c`: **all 72 files differ**, smallest
+delta 6.99, mean 16.29 — nothing was silently skipped. QR code and wordmark
+still excluded at the pipeline level.
+
+**B2 — spectacle, with the geography kept honest.** Fourteen searches over the
+places this site *names* gave 59 licence-clean candidates at 2000px or better.
+Balos, Elafonisi, Kedrodasos, Chania, Ammoudi, Damnoni and Klisidi are all
+real, all licence-clean and all gorgeous — every one dropped, because this site
+names the places it shows and goes to none of them. One result was not even
+Crete. Three of the seventeen survivors ship: the river reaching the sea at
+Preveli, the palm forest and lagoon behind the beach, and the gorge river over
+rock with oleander in flower.
+
+Each licence read on its own file page that day rather than trusted from the
+API's cache; each original checksum-matched to Commons *before* it entered the
+ledger. Two captions had to be written **against** their own file titles: one
+names the watercourse "Kissano Faraggi" (the river at Preveli is more commonly
+Megas Potamos), and two place Preveli beach "in Kourtaliotiko Gorge", which it
+is not. We caption what we can verify.
+
+**B3 — the route.** It was a dashed `<polyline>`, sorted west to east, that did
+nothing. Two things had to be got right and both were wrong first. The
+projection normalised each axis independently, which pins the two extremes to
+opposite corners regardless of geography — every route rendered as the same
+diagonal, and Preveli's lagoon and monastery, a kilometre apart, landed on top
+of each other at 88%,88% and 86%,82%. And the draw-on-scroll rendered as
+repeating dashes until the viewBox stopped being stretched, because
+`non-scaling-stroke` computes the dash pattern in post-transform space and
+defeats `pathLength` normalisation. The mobile audit then failed the 28px
+waypoint discs against the 44px floor, and was right to.
+
+**B4 — the hero scrim was hiding the grade.** Running at 42–58% opacity across
+the *top* of the frame, where no text ever goes. Defensible while every image
+was matte; with Grade C it meant "brighter and more vivid" was invisible
+exactly where a visitor looks first. Upper stops to 22–34%, corner vignette
+0.55 → 0.38, text zone untouched. Measured against the real rendered backdrop
+rather than eyeballed — see the QA table.
+
+Cards deepen to scale 1.065 / brightness 1.09 while saturation comes *down*
+1.12 → 1.06: Grade C already carries the colour, and stacking more on top
+compounds into the HDR look the grade was tuned to avoid. CTAs gained a sheen
+— one skewed gradient, transform and opacity only, hidden under reduced
+motion, rendered out of flow so the flex gap on icon+label buttons survives.
+
+---
+
+## The QA table — deployed, Grade C and the new route live (`0f0925e`)
+
+**Nine guards, un-piped, on the deployment.** The ninth is new: `text-contrast`
+measures text sitting on a photograph against what is actually rendered behind
+it. No automated check this project runs — Lighthouse included — reads that,
+because there is no CSS colour pair to read. It was the obvious gap the moment
+a lighter scrim went under light text.
+
+| guard | result |
+|---|---|
+| headline · arc · nav-flash · credits · menu · asset · parity · mobile | all green |
+| **text-contrast** | home headline worst pixel **4.89:1** · subcopy **7.58:1** (alpha 0.75, composited) · experience **7.22:1** · transfer **12.24:1** |
+
+Large text needs 3:1 for AA and 4.5:1 for AAA. Every headline over a
+photograph clears **AAA at its single worst pixel**.
+
+**Lighthouse, production alias, median of 5 interleaved runs:**
+
+| route | performance | spread | a11y | TBT | CLS |
+|---|---|---|---|---|---|
+| `/` | **97** | 75 94 97 98 99 | 100 | 134 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **94** | 93 94 94 97 98 | 100 | 21 ms | 0 |
+
+Every floor and ceiling holds under the vivid grade: performance ≥ 89,
+a11y 100, CLS 0, TBT ≤ 250 ms. Both medians sit inside the 92–99 band, and
+neither is worse than before the beauty pass — the grade cost nothing. The
+lone 75 is a cold-start run; read the spread, not one sample.
+
+## `/review-2` — delete it when the ruling lands
+
+Live, `noindex, nofollow`, linked from nowhere, absent from the sitemap,
+27 own captures of build `00655f2` and our own graded renditions. **Zero**
+references to `qa/benchmark/` in the rendered HTML — that material is someone
+else's work and never reaches a published page.
+
+```
+git rm -r src/app/review-2 public/review2-assets
+```
+
+Then drop this section. `CLOSING.md` is re-finalised after the ruling, not
+before — the project is open until the client has looked.
+
+**Still open, and none of it mine to close:** the Vercel dashboard check ·
+video footage that never arrived · the deliberately unwired enhancement
+pipeline · the routescrete.gr cutover, which is a conversation and a DNS
+change, never an autonomous action.
 
 **The walls, restated because a beauty pass is exactly when they get bent:**
 nothing invented · per-file licensing, BY-SA and NC forbidden · no AI scenery ·
