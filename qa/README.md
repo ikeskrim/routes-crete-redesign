@@ -389,3 +389,38 @@ outlives the page, and applies to anything published from this repository.
 One aside, because it cost a run: the script's own `const URL` (the target
 address) shadows the global `URL` constructor, so `new URL(...)` throws
 `URL is not a constructor`. It uses `globalThis.URL` now.
+
+---
+
+## When every guard suddenly returns 403
+
+If the guards, Lighthouse and the capture scripts all start failing against the
+deployment at once, check the response headers before debugging anything:
+
+```bash
+curl -s -I https://routes-crete-redesign.vercel.app/ | grep -i mitigated
+```
+
+`X-Vercel-Mitigated: challenge` means Vercel's bot mitigation is challenging
+automated requests from this IP. It is not a deployment failure and not a bug
+in the guards — the deployment can be `● Ready` and a real browser unaffected
+while every headless request gets a 403 with an `X-Vercel-Challenge-Token`.
+
+It is self-inflicted. A full verification round is a lot of automated traffic:
+nine guards, a five-run Lighthouse pass over two routes, a capture run, and an
+alias-assertion poll every 15 seconds. Run several rounds back to back and the
+edge starts challenging.
+
+What to do:
+
+* **Do not try to get around it.** Working around bot protection is not a thing
+  this repository does, and the token is there to be solved by a browser.
+* Check build state through the authenticated API instead, which is not behind
+  the challenge:
+  `npx vercel inspect <deployment-url> --scope domisi | grep -i status`
+* Wait it out, then re-run the guards once rather than in a loop.
+* Prefer one `QA_LH_RUNS=5` pass over repeated three-run passes, and poll the
+  alias at 30s rather than 15s.
+
+The guards themselves are unchanged by this: a 403 is the edge refusing the
+request, so a red run here says nothing about the build.
