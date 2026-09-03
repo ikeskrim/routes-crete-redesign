@@ -86,11 +86,12 @@ export default function ReviewTwoPage() {
           The beauty pass, in pictures
         </h1>
         <p className="text-body-lg mt-6 max-w-[52ch] text-ink/70">
-          Two rounds of work, in one place. First: the photographs did not
+          Three rounds of work, in one place. First: the photographs did not
           delight you — brighter and more vivid — and the route was just a
           line. Then a second round on the menu, the journeys, the hero and a
-          film grain over the whole site. All of it is live. This page is so
-          you can see it rather than read about it.
+          film grain over the whole site. Then a third hunt for photographs,
+          against a shot list. All of it is live. This page is so you can see
+          it rather than read about it.
         </p>
         <p className="text-caption mt-4 max-w-[52ch] text-ink/50">
           Every frame is our own capture of the live site (build {BUILD}) or our
@@ -372,6 +373,98 @@ export default function ReviewTwoPage() {
               compressed capture would throw it away entirely.
             </figcaption>
           </figure>
+        </section>
+
+        {/* 09 — the photo hunt */}
+        <section className="mt-24 border-t border-ink/10 pt-10">
+          <div className="flex items-baseline gap-4">
+            <span className="font-display text-eyebrow tabular-nums text-gold-600">
+              09
+            </span>
+            <h2 className="text-heading-lg max-w-[24ch]">
+              The photo hunt — third pass
+            </h2>
+          </div>
+          <p className="text-body mt-5 max-w-[52ch] text-ink/65">
+            You asked for more beautiful photographs, so this pass hunted
+            against a shot list rather than a wish: warm low light, the
+            Tradition day, Rethymno itself, more water, a dusk frame. Twenty-three
+            searches, 562 results, 123 licence-clean at 2000px or better, 243
+            refused on licence alone. Of what survived, one photograph earned its
+            place, two frames we already owned found theirs, and on every other
+            surface the honest answer is that what ships already wins.
+          </p>
+
+          <h3 className="text-heading-md mt-12">Shipped — the transfers page</h3>
+          <p className="text-body mt-4 max-w-[52ch] text-ink/65">
+            This page carried a single photograph of the van as its hero, its
+            card and its entire gallery, and nothing else. Every transfer starts
+            or ends in Rethymno, so it now has three full-width Rethymno bands
+            in the order a day ends: the Fortezza in daylight, a lane in the old
+            town, the harbour after dark. Two of them were already licensed,
+            graded and credited but placed nowhere. The harbour is the hunt’s
+            one find.
+          </p>
+          <Pair
+            a="hunt-transfers-story-before"
+            b="hunt-transfers-band-0"
+            aCaption="Before — the story with nothing between the paragraphs"
+            bCaption="Now — the Venetian Fortezza above Rethymno"
+          />
+          <Frame src="hunt-transfers-band-1" caption="A lane in the old town of Rethymno" />
+          <Frame src="hunt-transfers-band-2" caption="The old Venetian harbour of Rethymno, at night — the only warm-light frame the whole hunt produced of a place this site names" />
+          <Frame src="hunt-transfers-mobile" caption="390px" tall />
+
+          <h3 className="text-heading-md mt-12">A taste call — the transfers hero</h3>
+          <p className="text-body mt-4 max-w-[52ch] text-ink/65">
+            The strongest place for the harbour frame is arguably the top of
+            the transfers page. Against it: the van is the product, and a
+            transfers page that opens on the vehicle is telling the truth about
+            what is being bought. Both are shown; the van stays shipped until
+            you rule.
+          </p>
+          <Pair
+            a="hunt-transfers-hero-current"
+            b="hunt-transfers-hero-proposed"
+            aCaption="Shipped — the van"
+            bCaption="Proposed — the harbour at night (the image swapped in on the live page to show the composition; not a separate build)"
+          />
+
+          <h3 className="text-heading-md mt-12">Current frame wins</h3>
+          <ul className="mt-4 flex flex-col gap-3">
+            {[
+              [
+                "The Tradition day",
+                "This is the surface that needed the hunt most — its photographs are all 1024px or under — and it is also the one where a licensed stock frame would cost the most, because those are your own photographs and their authenticity is the point. The only new candidates of a place it truly visits were of Anogeia’s streets: honest, and unbeautiful — parked cars, bollards, a skip. Your frames stay.",
+              ],
+              [
+                "Warm light and dusk",
+                "The two targets at the top of the list. Six licence-clean golden-hour frames came back and not one was of a place this site names; the dusk searches returned nothing usable at all. The harbour at night is the single warm-light frame that cleared every rule, and it is placed above. Nothing was substituted to fill the gap.",
+              ],
+              [
+                "Water",
+                "Thirteen licence-clean candidates, every one a variant of the frames chosen in the last pass. The river reaching the sea, the palm coast and the gorge river already ship; a fourth band on that page was tried last time and reads as a wall.",
+              ],
+              [
+                "Three frames we own that fit nowhere honestly",
+                "Two of Spili and one of the Messara plain are licensed, graded and credited — and stay unplaced. Spili is almost certainly the unnamed “historic village” of the Kourtaliotis day, but you have never named it and this site does not put a name in your mouth. The Messara is the plain below the mountains the Tradition day describes, and on the Heraklion side. All three are held.",
+              ],
+            ].map(([k, v]) => (
+              <li key={k} className="border-t border-ink/10 pt-3">
+                <span className="text-body block text-ink">{k}</span>
+                <span className="text-caption mt-1 block text-ink/55">{v}</span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="text-caption mt-8 max-w-[52ch] text-ink/50">
+            Every new file: licence read on its own page, download checksummed
+            against the source before it entered the ledger, credited on
+            /credits, graded with everything else. Openverse, one of the three
+            veins asked for, was returning gateway errors for the whole session
+            and was not mined; Flickr was mined through the Commons mirror of
+            the same photographers.
+          </p>
         </section>
 
         {/* Trust */}

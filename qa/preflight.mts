@@ -97,6 +97,38 @@ export async function preflight(base: string, outDir: string): Promise<BuildStam
         `Start the production server first:  npx next start -p 3009`,
     );
   }
+  /* Bot mitigation is its own outcome, not a deployment failure.
+   *
+   * Vercel challenges automated traffic when it sees enough of it, and a full
+   * verification round is a lot: nine guards, a five-run Lighthouse pass over
+   * two routes, a capture run, and an alias poll every fifteen seconds. Run a
+   * few rounds back to back and every request starts coming back 403 with
+   * `X-Vercel-Mitigated: challenge`.
+   *
+   * That looked exactly like a dead deployment once, and cost a session's
+   * verification: the build was `● Ready` and a real browser was unaffected
+   * while every headless request was refused. So the two states are told
+   * apart here, by name, and the message says which one this is. A challenge
+   * is the edge declining to answer a robot — it says nothing whatsoever
+   * about whether the build is good, and it must never be reported as
+   * "not deployed". */
+  const mitigated = res.headers.get("x-vercel-mitigated");
+  const challengeToken = res.headers.get("x-vercel-challenge-token");
+  if (res.status === 403 && (mitigated === "challenge" || challengeToken)) {
+    throw new Error(
+      `VERIFICATION BLOCKED BY BOT MITIGATION — not a deployment failure.\n` +
+        `  ${base} answered 403 with x-vercel-mitigated: ${mitigated ?? "(token present)"}.\n` +
+        `  The edge is challenging automated requests from this IP. The build may be\n` +
+        `  perfectly healthy and a real browser unaffected — this says nothing about it.\n` +
+        `\n` +
+        `  Check build state through the authenticated API, which is not challenged:\n` +
+        `    npx vercel inspect <deployment-url> --scope domisi | grep -i status\n` +
+        `\n` +
+        `  Then wait it out and re-run ONCE rather than in a loop. Do not try to work\n` +
+        `  around the challenge: it exists to be solved by a browser.`,
+    );
+  }
+
   if (res.status >= 500) {
     throw new Error(`PREFLIGHT FAILED: ${base} returned ${res.status}`);
   }

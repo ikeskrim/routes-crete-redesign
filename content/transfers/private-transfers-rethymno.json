@@ -18,7 +18,11 @@
     "groupSize": null,
     "availability": "Available upon request"
   },
-  "locations": ["chania-airport", "heraklion-airport", "rethymno-town"],
+  "locations": [
+    "chania-airport",
+    "heraklion-airport",
+    "rethymno-town"
+  ],
   "body": [
     {
       "type": "paragraph",
@@ -53,6 +57,26 @@
     "ogImage": "/images/transfers/private-transfers-rethymno/mercedes-v300.jpg"
   },
   "gallery": [
-    { "src": "/images/transfers/private-transfers-rethymno/mercedes-v300.jpg", "width": 930, "height": 620, "oldUrl": "/media/MERCEDES-V300-930x620-1.jpg" }
-  ]
+    {
+      "src": "/images/transfers/private-transfers-rethymno/mercedes-v300.jpg",
+      "width": 930,
+      "height": 620,
+      "oldUrl": "/media/MERCEDES-V300-930x620-1.jpg"
+    }
+  ],
+  "placeBreaks": [
+    {
+      "src": "/images/sourced/rethymno-fortezza.jpg",
+      "place": "The Venetian Fortezza above Rethymno"
+    },
+    {
+      "src": "/images/sourced/rethymno-old-town-lane.jpg",
+      "place": "A lane in the old town of Rethymno"
+    },
+    {
+      "src": "/images/sourced/rethymno-harbour-dusk.jpg",
+      "place": "The old Venetian harbour of Rethymno, at night"
+    }
+  ],
+  "placeBreaksNote": "Photo hunt III. This page carried a single 930x620 photograph of the van as hero, card and entire gallery, and no place bands at all. Rethymno is where every transfer starts or ends (rethymno-town is one of its three locations), so the three bands are geographically honest: the Fortezza and the old-town lane were already licensed, graded and credited but placed nowhere, and the harbour at night is the pass's one warm-light find. In the order a day ends — fortress in daylight, a lane in the old town, the harbour after dark."
 }

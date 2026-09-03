@@ -49,7 +49,24 @@ for (const route of ROUTES) {
 
 console.log(`\nunique image paths referenced: ${seen.size}`);
 
+import fs from "node:fs/promises";
+import path from "node:path";
+
+/* Every graded photograph the site renders must have a blur placeholder.
+ *
+ * `content/blur-map.json` is keyed by the GRADED path. It was built with keys
+ * under /images/graded/b/, and when the grade flipped to C every lookup
+ * missed: `getBlur()` returned undefined, next/image quietly rendered no
+ * placeholder, and the whole site — hero included — shipped without blur from
+ * that commit on. Nothing failed and no guard noticed; it was found by
+ * reading the live HTML. A silently-optional placeholder is exactly the kind
+ * of regression this audit exists to make loud. */
+const blurMap = JSON.parse(
+  await fs.readFile(path.join(process.cwd(), "content", "blur-map.json"), "utf8"),
+) as Record<string, string>;
+
 const ungraded: string[] = [];
+const missingBlur: string[] = [];
 for (const src of [...seen.keys()].sort()) {
   const head = await fetch(`${BASE}${src}`, { method: "HEAD" });
   checked++;
@@ -65,9 +82,18 @@ for (const src of [...seen.keys()].sort()) {
   ) {
     ungraded.push(src);
   }
+  if (src.startsWith("/images/graded/") && !blurMap[src]) {
+    missingBlur.push(src);
+  }
 }
 
 console.log(`\nchecked ${checked} paths, ${failures} dangling`);
+if (missingBlur.length) {
+  console.log(`\n${missingBlur.length} graded image(s) with NO blur placeholder in content/blur-map.json:`);
+  missingBlur.forEach((s) => console.log(`  ${s}`));
+  console.log(`  regenerate:  powershell -File qa/blur-map.ps1`);
+  failures += missingBlur.length;
+}
 
 /* Social images are the one class of image URL that must be ABSOLUTE and must
  * resolve on the origin actually serving this build. They shipped pointing at
@@ -141,7 +167,9 @@ if (ungraded.length) {
 }
 
 if (failures === 0 && ungraded.length === 0) {
-  console.log("\nASSET AUDIT OK - every reference resolves, everything photographic is graded");
+  console.log(
+    "\nASSET AUDIT OK - every reference resolves, everything photographic is graded and has a blur placeholder",
+  );
 } else {
   console.log("\nASSET AUDIT FAILED");
   process.exitCode = 1;

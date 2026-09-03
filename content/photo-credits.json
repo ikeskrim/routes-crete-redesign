@@ -1,6 +1,6 @@
 {
   "note": "Provenance for every photograph on this site that we did not take ourselves. Each entry was verified by SHA-1: the local master is byte-for-byte the file at the source URL, so these are identity matches rather than resemblances. Licences were read off the file page's own wikitext and extmetadata, never inferred from a category, a filename, or a sibling file by the same author. CC BY-SA and NonCommercial files were excluded on purpose: the site applies a colour grade to every image, which creates a derivative, and share-alike would oblige the graded result to carry BY-SA too. The three frames added on 2026-08-28 were sourced in the beauty pass with a deliberate bias to spectacle; each licence was read on its own file page that day, not carried over from the earlier pass.",
-  "verifiedOn": "2026-08-28",
+  "verifiedOn": "2026-09-01",
   "photographs": [
     {
       "file": "gorge-saint-nicholas-aerial.jpg",
@@ -271,6 +271,21 @@
       "attributionRequired": true,
       "modified": true,
       "note": "Sourced in the beauty pass. The gorge already had a waterfall and a still pool in the ledger; this one has moving water and flowering oleander, which is a different thing to look at rather than a third frame of the same thing."
+    },
+    {
+      "file": "rethymno-harbour-dusk.jpg",
+      "subject": "The old Venetian harbour of Rethymno at night",
+      "title": "Rethymno-harbour(js).jpg",
+      "author": "Jerzy Strzelecki",
+      "licence": "CC BY 3.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:Rethymno-harbour(js).jpg",
+      "sha1": "c58067a8e95b714addc26a69513cda4f5cca5f3d",
+      "bytes": 4530705,
+      "dimensions": "3888 × 2504",
+      "attributionRequired": true,
+      "modified": true,
+      "note": "Photo hunt III. The only warm-light frame the pass produced that is of a place this site names — and it is the operator's home base. Own work by the photographer, Old Venetian harbour of Rethymno, May 2009. The file page dual-licenses it CC BY 3.0 Unported and GFDL 1.2; under a dual licence the licensee may choose either, and this site takes the CC BY 3.0 grant. No ShareAlike, NonCommercial or NoDerivatives term appears anywhere on the page. Licence read on the file page itself on 2026-09-01, not trusted from the API cache."
     }
   ]
 }

@@ -324,6 +324,84 @@ async function shotChart(page: Page, name: string) {
   await context.close();
 }
 
+/* ------------------------------------------------ 09  the photo hunt */
+{
+  /* The transfers page after the hunt: still the van at the top — that is
+     the product — and three Rethymno bands below where there were none.
+     The "before" frames (hunt-transfers-*-before.jpg) were captured from the
+     previous deployment BEFORE this build was pushed, so the pair is two
+     real deployments, not a reconstruction. */
+  const context = await browser.newContext({ viewport: DESKTOP });
+  const page = await context.newPage();
+  await page.goto(`${BASE}/transfers/private-transfers-rethymno`, {
+    waitUntil: "domcontentloaded",
+    timeout: 60_000,
+  });
+  await settle(page);
+  await shot(page, "hunt-transfers-hero-after");
+
+  const captions = [
+    "The Venetian Fortezza above Rethymno",
+    "A lane in the old town of Rethymno",
+    "The old Venetian harbour of Rethymno, at night",
+  ];
+  for (const [i, caption] of captions.entries()) {
+    const found = await page.evaluate((text) => {
+      const node = [...document.querySelectorAll("figcaption, p, span")].find(
+        (e) => e.textContent?.trim() === text,
+      );
+      if (!node) return false;
+      node.scrollIntoView({ block: "center" });
+      return true;
+    }, caption);
+    if (found) {
+      await page.waitForTimeout(1500);
+      await shot(page, `hunt-transfers-band-${i}`);
+    } else {
+      console.log(`  ! band caption not found: ${caption}`);
+    }
+  }
+
+  /* The taste call, both ways from the SAME deployed build: the hero as it
+     ships (the van) and the hero with the harbour frame put in its place by
+     swapping the image source in the DOM. A substitution, and labelled as one
+     on the page — it shows the composition, not a build. */
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(700);
+  await shot(page, "hunt-transfers-hero-current");
+  await page.evaluate(() => {
+    const img = [...document.querySelectorAll("img")].find((i) =>
+      /mercedes-v300/.test(decodeURIComponent(i.src)),
+    );
+    if (img) {
+      img.srcset = "";
+      img.src = "/images/graded/c/sourced/rethymno-harbour-dusk.jpg";
+    }
+  });
+  await page.waitForTimeout(2600);
+  await shot(page, "hunt-transfers-hero-proposed");
+  await context.close();
+}
+
+{
+  const context = await browser.newContext({ viewport: MOBILE });
+  const page = await context.newPage();
+  await page.goto(`${BASE}/transfers/private-transfers-rethymno`, {
+    waitUntil: "domcontentloaded",
+    timeout: 60_000,
+  });
+  await settle(page);
+  await page.evaluate(() => {
+    const node = [...document.querySelectorAll("figcaption, p, span")].find(
+      (e) => e.textContent?.trim() === "The old Venetian harbour of Rethymno, at night",
+    );
+    node?.scrollIntoView({ block: "center" });
+  });
+  await page.waitForTimeout(1500);
+  await shot(page, "hunt-transfers-mobile");
+  await context.close();
+}
+
 await browser.close();
 
 await fs.writeFile(

@@ -83,3 +83,7 @@ RUN-COMPLETE.flag
 # the download plan. The masters that ship live in assets-src/sourced/ and the
 # provenance that matters is in content/photo-credits.json.
 .sourcing/
+
+# Scratch for photo hunt III: API results, candidate previews, the winner record.
+# Provenance lives in content/photo-credits.json; masters in assets-src/sourced/.
+.hunt/
