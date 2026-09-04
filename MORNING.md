@@ -1,3 +1,105 @@
+# PHOTO HUNT III — shipped `aa45e96` · `cd7cc19`
+
+The client's instruction was direct: search again, find more beautiful
+photographs. Third pass, so it opened new veins and hunted against a shot list
+rather than re-walking the same searches.
+
+| target | result |
+|---|---|
+| **1 · warm low light** | six licence-clean golden-hour frames came back; **none of a place this site names**. Nothing substituted. |
+| **2 · the Tradition day** | **current frames win.** The surface that needed it most (all 1024px or under) and the one where stock would cost the most — those are the client's own photographs. The only new candidates of a place it truly visits were Anogeia's streets: parked cars, bollards, a skip. |
+| **3 · Rethymno** | **shipped.** The transfers page had one 930×620 van as hero, card and entire gallery and no bands; it now has three Rethymno bands in the order a day ends — Fortezza in daylight, a lane in the old town, the harbour after dark. |
+| **4 · water** | **current frames win.** Thirteen candidates, all variants of last pass's picks. |
+| **5 · dusk** | **one find** — Rethymno's old Venetian harbour at night, Jerzy Strzelecki, own work, May 2009. The only warm-light frame the whole hunt produced that cleared every rule, and the operator's home base. |
+
+**The search log.** Twenty-three Commons queries over the places this site
+names: 562 results, 123 licence-clean at 2000px or better, 243 refused on
+licence, 41 dropped for being gorgeous and somewhere we do not go, 12 already in
+the ledger, 43 real candidates. **Openverse returned 504 for the entire session
+and was not mined** — recorded rather than pretended; Flickr's proven
+photographers were mined through the Commons mirror.
+
+**The frames we already owned.** Five were licensed, graded and credited but
+placed nowhere. Two found their place (the Fortezza and the old-town lane, on
+transfers). Three are held, and item 09 says so: Spili ×2 is almost certainly
+the unnamed "historic village" of the Kourtaliotis day, and this site does not
+put a name in the client's mouth; the Messara is the Heraklion-side plain, not
+the mountains the Tradition day describes.
+
+**The taste call.** The harbour frame's strongest placement is arguably the top
+of the transfers page. Against it: the van is the product. Both are on
+`/review-2`, the van stays shipped, the client rules.
+
+**Licence, checksum, ledger.** CC BY 3.0 + GFDL 1.2 dual-licensed on the file
+page; this site takes the CC BY 3.0 grant and the ledger says so. No SA, NC or
+ND term anywhere on the page. Original checksum-matched to Commons before it
+entered the ledger. Ledger at 19.
+
+## Found on the way — two regressions, both mine, both now loud
+
+**Every image on the site had shipped without a blur placeholder since Grade C.**
+`content/blur-map.json` was keyed under `/images/graded/b/`. When the grade
+flipped, every `getBlur()` lookup missed, the placeholder became `undefined`,
+and the whole site — the LCP hero included — went out with none from `419bdf5`
+on. Nothing failed and no guard noticed. Found by reading the live HTML with a
+correct grep after a first grep read only what followed `src=`.
+`qa/blur-map.ps1` now generates the map for whichever grade is live (76 for C,
+the B keys kept), and asset-audit fails on any rendered graded image without
+one.
+
+**The transfers page was at a11y 96 through three rounds that all said 100.**
+One line in the route journey — *"No photograph we can honestly caption as
+this place"* — at `text-sand-200/45`, rendering only when a stop has no
+photograph. Every stop on both experience pages has one; the transfers page's
+two airports do not, by design. So it rendered there, failed contrast, and was
+never seen because that route was never in Lighthouse's default set. Fixed the
+way the eyebrows were in D3 (/45 → /70), the unreached waypoint numbers raised
+/40 → /55 alongside, and **Lighthouse now gates three routes by default.** A
+budget only covers the routes it is pointed at.
+
+## The handled state
+
+`x-vercel-mitigated: challenge` is now its own outcome, by name, in two
+places: `qa/preflight.mts` (every guard) and `qa/alias-assert.mts` (exit 0
+LIVE / 1 PENDING / 2 BLOCKED). It is never reported as "not deployed". The
+probe polls at 30s rather than 15s and sets `process.exitCode` instead of
+calling `process.exit()` — a hard exit over a keep-alive socket tripped a libuv
+assertion on Windows and died with 127, which would have made the gate
+unusable in the chains it exists to gate.
+
+## Measured on the deployment
+
+Nine guards green on `aa45e96`. Lighthouse, production alias, median of five
+interleaved runs:
+
+| route | performance | spread | a11y | TBT | CLS |
+|---|---|---|---|---|---|
+| `/` | **94** | 75 94 94 94 95 | 100 | 54 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **94** | 91 92 94 94 94 | 100 | 28 ms | 0 |
+| `/transfers/private-transfers-rethymno` (after the fix, `cd7cc19`, 3 runs) | **96** | 84 96 96 | **100** | 18 ms | 0 |
+
+Every floor and ceiling holds with the new bands live.
+
+## `/review-2` — nine items plus the trust line
+
+Item 09 appended: the transfers page before and after (the "before" captured
+from the previous deployment *before* the push, so the pair is two real
+deployments), the three bands, 390, the hero taste call both ways from the same
+build with the substitution labelled as one, and the "current frame wins"
+verdicts with the search log. Every earlier frame re-captured against
+`aa45e96`; the page's byline says so. Verified live: 47 images, 0 broken, 0
+references to `qa/benchmark/`, `noindex, nofollow`, 0 inbound links, 0 sitemap
+entries, no overflow at 1440 or 390. Deletion unchanged:
+
+```
+git rm -r src/app/review-2 public/review2-assets
+```
+
+Stopped for the client's single combined ruling on all nine items plus the
+trust-badge question.
+
+---
+
 # THE INTERACTION PASS — shipped `de0f19f`
 
 Five interaction features on top of the beauty pass. Three of them extended

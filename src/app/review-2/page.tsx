@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const BUILD = "de0f19f";
+const BUILD = "aa45e96";
 
 function Frame({
   src,

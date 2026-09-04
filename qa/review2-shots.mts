@@ -328,9 +328,10 @@ async function shotChart(page: Page, name: string) {
 {
   /* The transfers page after the hunt: still the van at the top — that is
      the product — and three Rethymno bands below where there were none.
-     The "before" frames (hunt-transfers-*-before.jpg) were captured from the
-     previous deployment BEFORE this build was pushed, so the pair is two
-     real deployments, not a reconstruction. */
+     hunt-transfers-story-before.jpg was captured from the previous deployment
+     BEFORE this build was pushed, so the before/after pair is two real
+     deployments, not a reconstruction. (A before/after pair of the hero was
+     captured too and dropped: the van is in both, so it showed nothing.) */
   const context = await browser.newContext({ viewport: DESKTOP });
   const page = await context.newPage();
   await page.goto(`${BASE}/transfers/private-transfers-rethymno`, {
@@ -338,7 +339,6 @@ async function shotChart(page: Page, name: string) {
     timeout: 60_000,
   });
   await settle(page);
-  await shot(page, "hunt-transfers-hero-after");
 
   const captions = [
     "The Venetian Fortezza above Rethymno",
