@@ -307,7 +307,7 @@ export function RouteJourney({
               than asking to be taken on trust. */}
           <div
             aria-hidden
-            className="pointer-events-none absolute top-5 right-5 flex flex-col items-center gap-1 text-sand-200/45"
+            className="pointer-events-none absolute top-5 right-5 flex flex-col items-center gap-1 text-sand-200/70"
           >
             <svg viewBox="0 0 12 16" className="h-4 w-3" fill="none">
               <path d="M6 0 L10 12 L6 9.5 L2 12 Z" fill="currentColor" />
@@ -318,7 +318,7 @@ export function RouteJourney({
           {scale && (
             <div
               aria-hidden
-              className="pointer-events-none absolute bottom-5 left-5 flex flex-col gap-1.5 text-sand-200/45"
+              className="pointer-events-none absolute bottom-5 left-5 flex flex-col gap-1.5 text-sand-200/70"
             >
               <span
                 className="block h-px bg-sand-200/40"
@@ -361,7 +361,7 @@ export function RouteJourney({
                     "flex size-7 items-center justify-center rounded-pill border font-display text-[0.625rem] tabular-nums transition-all duration-700 ease-luxe",
                     lit
                       ? "border-gold-400/70 bg-ocean-950/80 text-gold-300"
-                      : "border-sand-100/20 bg-ocean-950/60 text-sand-200/40",
+                      : "border-sand-100/20 bg-ocean-950/60 text-sand-200/55",
                     isActive && "scale-115 border-gold-300 bg-gold-400 text-ocean-950",
                   )}
                 >
@@ -401,7 +401,7 @@ export function RouteJourney({
               </motion.div>
             ) : (
               <div className="absolute inset-0 flex items-center justify-center px-8 text-center">
-                <p className="text-caption max-w-[28ch] text-sand-200/45">
+                <p className="text-caption max-w-[28ch] text-sand-200/70">
                   No photograph we can honestly caption as this place — so it
                   gets none.
                 </p>
@@ -432,7 +432,7 @@ export function RouteJourney({
                   <span
                     className={cn(
                       "font-display text-eyebrow tabular-nums transition-colors duration-500",
-                      lit ? "text-gold-400" : "text-sand-200/40",
+                      lit ? "text-gold-400" : "text-sand-200/55",
                     )}
                   >
                     {String(i + 1).padStart(2, "0")}

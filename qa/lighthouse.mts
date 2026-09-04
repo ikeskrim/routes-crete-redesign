@@ -21,9 +21,19 @@ const OUT = path.join(process.cwd(), "qa", "lighthouse");
 const PORT = 9222;
 
 const routes = process.argv.slice(2);
+/* Three routes by default, not two. The transfers page was never in the
+ * default set, so a color-contrast failure on it — a fallback line in the
+ * route journey at 45% alpha that only ever renders when a stop has no
+ * photograph, which on that page two stops do not — sat at a11y 96 through
+ * three verification rounds that all reported 100. A budget only covers the
+ * routes it is pointed at. */
 const targets = routes.length
   ? routes
-  : ["/", "/experiences/kourtaliotis-temple-of-nature"];
+  : [
+      "/",
+      "/experiences/kourtaliotis-temple-of-nature",
+      "/transfers/private-transfers-rethymno",
+    ];
 
 const slug = (route: string) =>
   route === "/" ? "home" : route.replace(/^\//, "").replace(/\//g, "-");
