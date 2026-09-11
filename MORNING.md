@@ -1,4 +1,12 @@
-# CLIENT RULINGS ON /review-2 — recorded verbatim, 2026-09-11
+# CLOSING RECORD — Routes Crete, closed 2026-09-11
+
+The project is closed. The client delegated the ten rulings on `/review-2` and
+they are final; the one content change they asked for has shipped, the review
+page is gone, and the final audit on the deployment is below. **The queue is
+empty by design.** For the project as it stands, read [`CLOSING.md`](CLOSING.md).
+Everything under this record is the build log, newest first, kept as written.
+
+## The rulings — verbatim, 2026-09-11
 
 The client delegated the ten rulings. They are final.
 
@@ -13,9 +21,131 @@ The client delegated the ten rulings. They are final.
 * **R9** — Photo hunt III: the harbour at night takes the top of the transfers page; the van stays in its card and gallery below. The three Rethymno bands: approved. Spili and Messara remain held out, unnamed places stay unnamed. "Current frame wins" verdicts everywhere else: accepted with the search log.
 * **R10** — Trust badge: stays empty, closed as "not yet." No verified reviews exist; the mechanism remains, and it renders only from verified data with the link visible.
 
-**The queue:** R9's one content change, then close — delete `/review-2`, final
-audit on the deployment, this file becomes the closing record, `CLOSING.md`
-re-finalised. Nothing cutover-related. No make-work after the close.
+## Outcomes
+
+| # | ruling | outcome |
+|---|---|---|
+| **R1** | Grade C, approved as shipped | kept · no tuning |
+| **R2** | Second-pass photographs | kept |
+| **R3** | The route as a journey | kept |
+| **R4** | Hero scrim lightened | kept |
+| **R5** | Full-screen overlay menu | kept |
+| **R6** | Horizontal journeys, short pan accepted | kept · it lengthens with the catalogue |
+| **R7** | Kinetic hero | kept |
+| **R8** | Film grain | kept |
+| **R9** | Harbour at night to the top of the transfers page | **shipped `9fc5b17`** · van kept in card, menu preview and gallery · bands, holds and verdicts as ruled |
+| **R10** | Trust badge, closed as "not yet" | **mechanism kept, and now enforces the ruling in code** — it renders only with `text`, `href` and `verifiedOn` all present, and only as a link |
+
+### R9, and one reading of it worth stating
+
+The ruling puts the harbour at the top of the page and also approves "the three
+Rethymno bands" — of which the harbour was the third. Keeping it in both places
+would show one photograph twice on one page, three screens apart. So it
+**moved**: the hero is the harbour, the Fortezza and old-town lane bands stand,
+and the three-band set as reviewed is preserved in `placeBreaks_original`. One
+constant each; `heroImage_original` holds the van.
+
+Verified on the new frame: the transfer headline clears **12.22:1 at its worst
+pixel** — the most legible hero on the site — the blur placeholder is in the
+server HTML, and the hero renders with `alt=""` so no caption can go false.
+
+**A defect the swap exposed, fixed.** The 390 capture was soft and blocky. A
+landscape photograph `object-cover`ed into the tall item hero is scaled to the
+hero's *height*: on a 390×844 phone the picture is about 1,174 CSS px wide
+inside a 427px box, and `sizes="100vw"` had been asking for a viewport-width
+file — 420w at 1x, 1280w at 3x, upscaled ~2.7×. (My first reading compared the
+served file with the `<img>` box and called it fine; the box is not what
+`object-cover` fills.) The hero now reads each photograph's real dimensions from
+its JPEG header at build and asks portrait screens for 89vh × aspect — only for
+landscape heroes, so the experience pages pay nothing. Served/needed on phones
+went from 0.36 to 1.07–1.28; desktop unchanged. The van hero had carried the
+same flaw, hidden by a smaller frame.
+
+LCP on the transfers route, five cold loads per viewport, unthrottled:
+
+| | before — van, `ca46ecd` | after — harbour, `9fc5b17` |
+|---|---|---|
+| desktop min / median | 376 / 424 ms | 400 / 432 ms |
+| mobile min / median | 356 / 372 ms | 344 / 400 ms |
+
+Movement inside the noise, with a heavier photograph and a full-width file now
+served to phones. The throttled picture is in the Lighthouse table below.
+
+## The close
+
+**`/review-2` deleted** with the recorded command — `src/app/review-2`,
+`public/review2-assets` and the capture script `qa/review2-shots.mts`. Confirmed
+**404** on the deployment for the page, its assets and any sub-path.
+
+**Nine guards, green individually, on the deployment:** headline · arc ·
+nav-flash · credits · menu · asset (now including blur placeholders) · parity ·
+mobile · text-contrast.
+
+The first sequential run of the guards and Lighthouse on `2345b01` was cut off
+twice on this machine: menu-audit and Lighthouse each stopped mid-run with no
+failure line anywhere in their logs — the process-death quirk logged before, not
+a verdict. Eight guards had already completed green. menu-audit was re-run once
+and completed: 37 assertions, 0 failures. (Its verdict line never reached the
+re-run's verdicts file: in a batch file, `EXIT=0>>` makes cmd read the `0` as a
+handle number and redirect stdin, so the echo went nowhere. The guard's own log
+is the record.)
+
+Lighthouse was cut off again in that re-run, during its third run. An orphaned
+browser holding its fixed debugging port 9222 was the obvious suspect and was
+ruled out — nothing was listening. What failed was running it backgrounded or
+detached on this machine, so the method changed rather than the same run being
+looped: it was run in the foreground, **one route per invocation, five runs
+each**, and completed. The medians below are per route; they are not
+interleaved across routes the way the script's default run is, so each route's
+first run is a cold one, which is what taking the median absorbs.
+
+**Lighthouse, production alias, median of five runs per route, all three gated
+routes, measured one route at a time:**
+
+| route | performance | spread | a11y | TBT | CLS |
+|---|---|---|---|---|---|
+| `/` | **90** | 88 89 90 91 94 | 100 | 248 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **93** | 88 91 93 93 95 | 100 | 88 ms | 0 |
+| `/transfers/private-transfers-rethymno` | **94** | 87 93 94 94 94 | 100 | 57 ms | 0 |
+
+Measured on commit `2345b01`, the last commit that changed what the site
+renders; the closing commit after it changes only documentation. Every floor
+and ceiling holds: performance ≥ 89, a11y 100, CLS 0, TBT ≤ 250 ms.
+
+**The alias probe read LIVE** at every sign-off check — never PENDING or BLOCKED.
+Twice the probe's own process died mid-poll — once as a 127, once as an exit 1
+with no verdict printed. The probe always prints its verdict; a bare exit code
+with no message is the process dying, not an answer. Both times it was re-run
+once and read LIVE.
+
+## The photo hunt, in one paragraph
+
+Three sourcing passes. The third hunted against a shot list: 23 Commons queries
+over the places this site names, 562 results, 123 licence-clean at 2000px or
+better, 243 refused on licence, 41 dropped as beautiful and somewhere we do not
+go, 12 already in the ledger, 43 real candidates. Openverse returned 504 for the
+whole session and was not mined. One photograph shipped — Rethymno's harbour at
+night — and two frames already owned found their place. Spili and the Messara
+stay held: unnamed places stay unnamed. Everywhere else the current frame won,
+and the client accepted that with the log.
+
+## Parked
+
+- **Verified reviews for the trust badge.** None exist for this business.
+- **The client's own golden-hour photography, or camera originals** — the
+  largest improvement still available, especially for the Tradition day.
+- **Video footage.** Inbox and transcode pipeline intact and unwired.
+- **The enhancement pipeline.** Unwired, by the hard wall that has always
+  governed it.
+- **The Vercel dashboard check (D2).** Still the client's; detectable, not
+  preventable, from here.
+
+**Not parked, and not mine:** the `routescrete.gr` cutover happens with the
+client, step by step, in its own conversation. No DNS, no domain, no
+project-settings action was taken, at any point.
+
+---
+
 
 ---
 

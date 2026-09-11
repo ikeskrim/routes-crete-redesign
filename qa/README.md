@@ -12,11 +12,14 @@ npx next start -p 3009
 |---|---|
 | `node qa/visual-check.mts [filter ...]` | Screenshots of every route and motion pattern → `qa/screenshots/` |
 | `node qa/benchmark-shots.mts [url]` | Reference captures → `qa/benchmark/`. Study material; nothing here ships |
-| `node qa/lighthouse.mts [route ...]` | Lighthouse mobile → `qa/lighthouse/` |
+| `node qa/lighthouse.mts [route ...]` | Lighthouse mobile → `qa/lighthouse/`. Three routes by default; `QA_LH_RUNS=5` gates on the median |
 | `node qa/parity.mts` | Content parity: originals preserved, rendered copy present |
-| `node qa/asset-audit.mts` | No dangling image paths; everything photographic is graded |
-| `powershell -File qa/grade.ps1 -Grade B` | Regrade the corpus |
-| `powershell -File qa/grade-diff.ps1` | Gate any grade change against the approved reference |
+| `node qa/asset-audit.mts` | No dangling image paths; everything photographic is graded and has a blur placeholder |
+| `node qa/text-contrast.mts` | Text on a photograph clears 3:1 at its worst pixel, against the rendered backdrop |
+| `node qa/alias-assert.mts <sha7>` | Is the alias serving this commit? LIVE (0), PENDING (1), BLOCKED by bot mitigation (2) |
+| `powershell -File qa/grade.ps1 -Grade C` | Regrade the corpus. **Name the grade** — the script defaults to A, and the live grade is C |
+| `powershell -File qa/blur-map.ps1` | Regenerate blur placeholders for the live grade. Run after every grade |
+| `powershell -File qa/grade-diff.ps1 [-From b -To c]` | Gate a grade change against the approved reference, or prove a regrade touched every file |
 
 ## Environment constraints (learned the hard way)
 
@@ -424,3 +427,8 @@ What to do:
 
 The guards themselves are unchanged by this: a 403 is the edge refusing the
 request, so a red run here says nothing about the build.
+
+This is now a handled state rather than a thing to recognise. `qa/preflight.mts`
+names it in every guard's failure message, and `node qa/alias-assert.mts <sha7>`
+reports it as **BLOCKED** (exit 2) — distinct from PENDING (exit 1, the alias
+answers with an older commit) and never folded into "not deployed".
