@@ -31,13 +31,24 @@ import Link from "next/link";
 export function SpinningBadge({
   text,
   href,
+  verifiedOn,
 }: {
-  /** The claim itself. Absent or empty renders nothing at all. */
+  /** The claim itself. */
   text?: string | null;
+  /** The listing a reader can check it against. Required. */
   href?: string | null;
+  /** The date somebody last confirmed the claim. Required. */
+  verifiedOn?: string | null;
 }) {
+  /* R10, the client's ruling (2026-09-11): the badge renders only from verified
+     data, with the link visible. All three fields or nothing — a claim with no
+     link a reader can follow, or with no date anyone confirmed it, is exactly
+     the unverifiable social proof this component exists to refuse. There is
+     deliberately no unlinked fallback. */
   const label = text?.trim();
-  if (!label) return null;
+  const link = href?.trim();
+  const verified = verifiedOn?.trim();
+  if (!label || !link || !verified) return null;
 
   // The string is repeated twice around the circle so the ring reads as
   // continuous from any angle rather than having one obvious seam.
@@ -74,23 +85,15 @@ export function SpinningBadge({
     "bg-ocean-950/85 backdrop-blur-sm shadow-[0_18px_50px_-24px_rgba(0,0,0,0.9)] " +
     "lg:grid";
 
-  if (href) {
-    return (
-      <Link
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={label}
-        className={`${shell} transition-transform duration-700 ease-luxe hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-400`}
-      >
-        {disc}
-      </Link>
-    );
-  }
-
   return (
-    <span role="img" aria-label={label} className={shell}>
+    <Link
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${label} — verified ${verified}, opens the listing`}
+      className={`${shell} transition-transform duration-700 ease-luxe hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-400`}
+    >
       {disc}
-    </span>
+    </Link>
   );
 }

@@ -199,6 +199,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SpinningBadge
           text={site.socialProof?.text}
           href={site.socialProof?.href}
+          verifiedOn={site.socialProof?.verifiedOn}
         />
 
         {/* Last in the body, over everything, interactive with nothing. */}
