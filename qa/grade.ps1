@@ -218,7 +218,10 @@ $all = @()
 foreach ($root in @($srcRoot, $extRoot)) {
   if (-not (Test-Path $root)) { continue }
   Get-ChildItem $root -Recurse -File |
-    Where-Object { $_.Extension -match '^\.(jpg|jpeg|png)$' -and $_.FullName -notlike "*\graded\*" } |
+    # assets-src\retired\ holds photographs deliberately taken off the site
+    # (the team portraits, 2026-09-11). Grading them would put a servable copy
+    # straight back into public\images\graded\.
+    Where-Object { $_.Extension -match '^\.(jpg|jpeg|png)$' -and $_.FullName -notlike "*\graded\*" -and $_.FullName -notlike "*\retired\*" } |
     ForEach-Object {
       $all += [pscustomobject]@{
         File = $_

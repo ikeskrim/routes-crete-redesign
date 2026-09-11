@@ -97,8 +97,11 @@ Run top to bottom. Do not start until the pre-launch smoke list passes on a stag
 - [ ] Old one-pager anchors resolve to the new sections. These are handled **client-side**
       (a server never receives the fragment) by `SmoothScroll` via `legacyAnchorMap`:
       `#portfolio` → Experiences, `#portfolio1` → Transfers, `#services` → Why Us,
-      `#about` → How to Book, `#team` → Team, `#contact` → Contact.
-      Check each of the six by hand.
+      `#about` → How to Book, `#team` → the positioning statement ("A family runs
+      this" — the team section was removed on 2026-09-11), `#contact` → Contact.
+      Check each of the six by hand. The three legacy team-photo URLs
+      (`/media/team2.jpg`, `/media/team3.jpg`, `/media/stavros.jpg`) no longer
+      redirect: the photographs are retired and are deliberately not served.
 - [ ] `/sitemap.xml` lists all 7 URLs; `/robots.txt` points at it.
 - [ ] `brand.url` in `content/site.json` matches the production origin — canonicals, OG URLs,
       sitemap and JSON-LD all derive from it.

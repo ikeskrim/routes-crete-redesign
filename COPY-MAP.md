@@ -31,7 +31,7 @@ be *kept*.
 | step 1 | written | Explore Our Excursions → **Tell us the day** |
 | step 2 | **written, deviates from deck** | Send Us Your Details → **Send us the details** |
 | step 3 | written | Enjoy the Journey → **We confirm, then you travel** |
-| team heading | written | Our Amazing Team → **The three people you'll actually meet** |
+| team heading | written | Our Amazing Team → **The three people you'll actually meet** · not rendered since 2026-09-11, when the client removed the team section; kept in `site.json` |
 | transfers subheading | written | Our collection of transfers → **Airport to villa, and anywhere after** |
 | positioning statement | written | *(new section)* A family runs this. That is the whole difference. |
 | why-us panel titles | **kept** | Pick up & Travelling · Local Knowledge & Personal Approach · Comfort, Safety & Genuine Hospitality |

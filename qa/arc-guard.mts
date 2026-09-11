@@ -6,7 +6,12 @@
  * none of them count sections, so the claim survived on the strength of the
  * diff in my head rather than the page. This is that claim made mechanical:
  *
- *   the homepage is SIX movements, in this order, and nothing else
+ *   the homepage is FIVE movements, in this order, and nothing else
+ *
+ * It was six until 2026-09-11, when the client took the team movement out.
+ * The last movement is now How to Book, which hands over to the footer. The
+ * team copy is still required to exist — parity checks it is PRESERVED in
+ * content — and this guard checks it is no longer RENDERED as a section.
  *
  * Bands are whitelisted by name: the marquee and the cinematic bridge sit
  * BETWEEN movements. They carry no heading and make no argument, so they are
@@ -31,7 +36,6 @@ const ARC = [
   // site.json under `heading_original` and parity v2 asserts it is still
   // there — this guard tracks what the page SAYS, parity tracks what was KEPT.
   { id: "how-to-book", must: "Booking is a conversation" },
-  { id: "team", must: "" },
 ];
 
 /** Structural elements that are deliberately NOT movements. */
@@ -65,11 +69,11 @@ const found = await page.evaluate(() => {
   }));
 });
 
-console.log("\n[arc] the homepage is six movements, in order");
+console.log("\n[arc] the homepage is five movements, in order");
 console.log(`  rendered: ${found.map((f) => f.id).join(" · ")}`);
 
 check(
-  "exactly six movements",
+  "exactly five movements",
   found.length === ARC.length,
   `${found.length} top-level sections in <main>, expected ${ARC.length}`,
 );
@@ -89,6 +93,11 @@ ARC.forEach((expected, i) => {
     );
   }
 });
+
+/* The team movement is out, and out means out: no #team section anywhere on
+   the page, not merely not a direct child of <main>. */
+const teamLeft = await page.evaluate(() => !!document.getElementById("team"));
+check("the team movement is gone", !teamLeft, teamLeft ? "an element still has id=\"team\"" : "no #team on the page");
 
 /* The bands must still exist. Cutting a section is a decision; losing a band
    silently while renumbering is an accident, and this is what tells them
@@ -141,7 +150,7 @@ await browser.close();
 
 console.log(`\n${failed} failure(s)`);
 if (failed === 0) {
-  console.log("ARC GUARD OK - six movements, in order, nothing lost to the cuts");
+  console.log("ARC GUARD OK - five movements, in order, nothing lost to the cuts");
 } else {
   console.log("ARC GUARD FAILED");
   process.exitCode = 1;

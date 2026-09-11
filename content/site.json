@@ -44,12 +44,6 @@
       "legacyAnchor": "#about"
     },
     {
-      "key": "team",
-      "label": "Team",
-      "href": "/#team",
-      "legacyAnchor": "#team"
-    },
-    {
       "key": "contact",
       "label": "Contact",
       "href": "/contact",
@@ -68,9 +62,20 @@
     "#portfolio1": "#transfers",
     "#services": "#why-us",
     "#about": "#how-to-book",
-    "#team": "#team",
+    "#team": "#positioning",
     "#contact": "#contact"
   },
+  "legacyAnchorMapNote": "#team pointed at the team movement until 2026-09-11, when the client took that section out. It now lands on #positioning — the statement of who runs this (\"A family runs this.\") — so old printed links and bookmarks still arrive somewhere true rather than nowhere.",
+  "navRetired": [
+    {
+      "key": "team",
+      "label": "Team",
+      "href": "/#team",
+      "legacyAnchor": "#team",
+      "retiredOn": "2026-09-11",
+      "note": "Removed from the navigation with the team movement, on the client's instruction. Kept here so the original navigation is recoverable."
+    }
+  ],
   "hero": {
     "eyebrow": "Rethymno · Crete",
     "heading": "Routes Crete",
@@ -227,13 +232,14 @@
     "deckNote": "Copy deck applied by MEANING, not by position. The deck was written against the original five steps; these are the three that survived the collapse, so a positional mapping put \"We confirm everything\" above a body that reads \"Contact us via message or email with...\" — a title contradicting its own verbatim body. Deck line 1 (\"Tell us the day\") fits step 1 exactly. Step 2 takes \"Send us the details\", which is not a deck line and is FLAGGED in MORNING.md. Step 3 merges deck lines 2 and 3 because its body merged the original steps 4 and 5."
   },
   "team": {
+    "status": "Not rendered. The client took the team movement off the homepage on 2026-09-11. The names, roles and intro stay here, verbatim, so nothing is lost and the section can return with one component. The three portraits were moved out of public/ to assets-src/retired/team/ — no URL serves them — and the graded copies were deleted. The #team anchor now maps to #positioning.",
     "intro": "Our team consists of **highly trained, professional chauffeurs** dedicated to providing a seamless and secure travel experience for every passenger.",
     "members": [
       {
         "key": "antonios",
         "name": "Antonios Tzagkarakis",
         "role": "Manager",
-        "photo": "/images/team/antonios-tzagkarakis.jpg",
+        "photoRetired": "assets-src/retired/team/antonios-tzagkarakis.jpg",
         "width": 500,
         "height": 500,
         "oldUrl": "/media/team3.jpg"
@@ -242,7 +248,7 @@
         "key": "stavros",
         "name": "Stavros Kapetanakis",
         "role": "CEO",
-        "photo": "/images/team/stavros-kapetanakis.jpg",
+        "photoRetired": "assets-src/retired/team/stavros-kapetanakis.jpg",
         "width": 200,
         "height": 199,
         "oldUrl": "/media/stavros.jpg",
@@ -252,7 +258,7 @@
         "key": "daria",
         "name": "Daria",
         "role": "Assistance",
-        "photo": "/images/team/daria.jpg",
+        "photoRetired": "assets-src/retired/team/daria.jpg",
         "width": 500,
         "height": 500,
         "oldUrl": "/media/team2.jpg"

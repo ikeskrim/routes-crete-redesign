@@ -158,11 +158,6 @@ const mustRender = [
   "Tell us the day",
   "Send us the details",
   "We confirm, then you travel",
-  "The three people you'll actually meet",
-  "Antonios Tzagkarakis",
-  "Stavros Kapetanakis",
-  "Daria",
-  "highly trained, professional chauffeurs",
   "191661450000",
   "Pick up & Travelling",
   "Local Knowledge & Personal Approach",
@@ -173,6 +168,21 @@ for (const needle of mustRender) {
 }
 console.log(`  ${mustRender.length} rendered strings checked`);
 
+/* The team movement came out on the client's instruction (2026-09-11). Out
+ * means not rendered — its heading and its people no longer appear on the
+ * homepage — while the next block requires every one of those strings to be
+ * KEPT in the content files. Removal and preservation, asserted together. */
+const mustNotRender = [
+  "The three people you'll actually meet",
+  "Antonios Tzagkarakis",
+  "Stavros Kapetanakis",
+  "highly trained, professional chauffeurs",
+];
+for (const needle of mustNotRender) {
+  if (home.includes(needle)) fail(`homepage still renders removed team copy "${needle}"`);
+}
+console.log(`  ${mustNotRender.length} removed team strings confirmed absent`);
+
 console.log("\n5. originals preserved (not necessarily visible)");
 const raw = JSON.stringify(
   JSON.parse(fs.readFileSync(path.join(process.cwd(), "content", "site.json"), "utf8")),
@@ -181,6 +191,16 @@ const mustPreserve = [
   "Your Cretan adventure starts here",
   "How to Book Your Cretan Experience",
   "Our Amazing Team",
+  // The team, preserved after its section was removed.
+  "The three people you'll actually meet",
+  "Where professional excellence meets world-class hospitality.",
+  "Antonios Tzagkarakis",
+  "Stavros Kapetanakis",
+  "Daria",
+  "Manager",
+  "CEO",
+  "Assistance",
+  "highly trained, professional chauffeurs",
   "Our collection of transfers",
   "Explore Our Excursions",
   "Choose Your Preferred Date",

@@ -46,7 +46,7 @@ exits 0 no matter what parity found, so a piped guard cannot fail.
 | Guard | What it refuses to let through |
 |---|---|
 | `qa/headline-guard.mts` | A split headline that does not read exactly as written — 48 assertions. Written after the hero shipped reading `Exploretheunknown`. |
-| `qa/arc-guard.mts` | The homepage's six movements out of order, or a section lost to a restructure. |
+| `qa/arc-guard.mts` | The homepage's five movements out of order, a section lost to a restructure, or the retired team movement coming back. |
 | `qa/nav-flash-guard.mts` | The nav bar rendering in the wrong state before JavaScript runs, or flipping after it. |
 | `qa/credits-guard.mts` | A sourced photograph that is not attributed as its licence requires. |
 | `qa/menu-audit.mts` | The overlay menu breaking any of its 37 promises (focus trap, scroll lock, escape, previews). |
@@ -88,7 +88,12 @@ public/
   images/
     experiences/<slug>/        photos per experience
     transfers/<slug>/          photos per transfer
-    team/  site/  brand/
+    site/  brand/
+    graded/<grade>/            what the site actually serves — see the grade pipeline
+
+assets-src/
+  sourced/                     licensed masters, outside public/ (ledger: content/photo-credits.json)
+  retired/team/                the team portraits, off the site since 2026-09-11 — never graded, never served
 
 qa/                          ← verification harnesses (dev-only, not shipped)
 
@@ -231,16 +236,20 @@ and inventing them was out of scope by instruction. Each is tracked in
 
 ## The homepage arc
 
-Six movements, in this order, and nothing else:
+Five movements, in this order, and nothing else:
 
 ```
 1 Hero
 2 Positioning      — the statement, evidenced by the stacked why-us scene
 3 The Journeys     — experiences + transfers in one grid, with the island map
 4 The signature journey
-5 How it works
-6 The team, handing over to the footer-as-destination
+5 How it works, handing over to the footer-as-destination
 ```
+
+There were six until 2026-09-11, when the client took the team movement out.
+Its names, roles and intro stay in `content/site.json → team`; its portraits
+moved to `assets-src/retired/team/`, out of `public/`, so nothing serves them;
+and the legacy `#team` anchor now lands on `#positioning`.
 
 The marquee and the cinematic bridge are **bands between movements**, not
 movements — they carry no heading and make no argument. `qa/arc-guard.mts`
@@ -277,7 +286,7 @@ otherwise `localhost:3009`.
 
 | guard | asserts |
 |---|---|
-| `arc-guard` | six movements by id, in order; cut sections' content survived |
+| `arc-guard` | five movements by id, in order; no `#team` on the page; cut sections' content survived |
 | `parity` | rendered deck copy **and** preserved originals |
 | `asset-audit` | every image reference resolves and has a blur placeholder; anchors appear exactly once; social images absolute and 200 on the serving origin |
 | `headline-guard` | every split headline reads exactly as written, before and after measurement |

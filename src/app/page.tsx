@@ -18,7 +18,6 @@ import type { Scene } from "@/components/sections/SignatureScene";
 const SignatureScene = dynamic(() =>
   import("@/components/sections/SignatureScene").then((m) => m.SignatureScene),
 );
-import { Team } from "@/components/sections/Team";
 import { Marquee } from "@/components/ui/Marquee";
 import { StackedPanels } from "@/components/ui/StackedPanels";
 import { Bridge } from "@/components/ui/Cinematic";
@@ -38,14 +37,19 @@ import {
 } from "@/lib/content";
 
 /**
- * The homepage, in six movements:
+ * The homepage, in five movements:
  *
  *   1 Hero
  *   2 Positioning        — the statement, evidenced by the stacked why-us scene
  *   3 The Journeys       — experiences + transfers in one grid, with the map
  *   4 The signature journey
- *   5 How it works
- *   6 The team, handing over to the footer-as-destination
+ *   5 How it works, handing over to the footer-as-destination
+ *
+ * The team movement came out on the client's instruction (2026-09-11). Its
+ * names, roles and intro are kept in content/site.json → team, its
+ * photographs are retired to assets-src/retired/team/ and no longer served,
+ * and the legacy #team anchor now lands on the positioning statement — the
+ * section that says who runs this.
  *
  * The marquee and the cinematic bridge are bands BETWEEN movements, not
  * movements themselves — they carry no heading and make no argument.
@@ -224,23 +228,13 @@ export default function HomePage() {
         />
       )}
 
-      {/* 05 — How to book. */}
+      {/* 05 — How to book. Dark into the dark footer, whose closing scene opens
+          on its own photograph, so no seam is needed between them. */}
       <HowToBook
         heading={site.sections.howToBook.heading}
         subheading={site.sections.howToBook.subheading}
         steps={site.howToBook.steps}
         responsePromise={site.howToBook.responsePromise}
-      />
-
-      {/* Dark how-it-works dissolves into the light team movement. */}
-      <SceneEdge to="bg-shell" />
-
-      {/* 06 — The team, which hands over to the footer-as-destination. */}
-      <Team
-        heading={site.sections.team.heading}
-        subheading={site.sections.team.subheading}
-        intro={site.team.intro}
-        members={site.team.members}
       />
     </>
   );

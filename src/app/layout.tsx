@@ -121,7 +121,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     transfers: transfers[0]?.cardImage,
     whyUs: experiences[1]?.gallery[3]?.src,
     bookGuide: experiences[0]?.gallery[5]?.src,
-    team: site.team.members[0]?.photo,
     contact: experiences[1]?.gallery[1]?.src,
     brochure: experiences[0]?.gallery[2]?.src,
   };

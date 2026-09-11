@@ -109,12 +109,33 @@ if (missingBlur.length) {
 console.log("\nlegacy anchor ids");
 {
   const html = await (await fetch(`${BASE}/`)).text();
-  for (const id of ["experiences", "transfers", "why-us", "how-to-book", "team"]) {
+  // #team was retired with its section on 2026-09-11; the legacy anchor now
+  // maps to #positioning, which therefore has to exist exactly once.
+  for (const id of ["experiences", "transfers", "why-us", "how-to-book", "positioning"]) {
     const n = html.split(`id="${id}"`).length - 1;
     const ok = n === 1;
     console.log(`  ${ok ? "ok   " : "FAIL "} #${id} appears ${n} time(s)`);
     if (!ok) failures++;
   }
+}
+
+/* Retired photographs stay retired. The team photographs were moved out of
+ * public/ when the section came out, so no URL — original or graded — may
+ * serve them. A 200 here means a copy crept back into the deploy. */
+console.log("\nretired assets");
+for (const src of [
+  "/images/team/antonios-tzagkarakis.jpg",
+  "/images/team/stavros-kapetanakis.jpg",
+  "/images/team/daria.jpg",
+  "/images/graded/c/team/antonios-tzagkarakis.jpg",
+  "/images/graded/c/team/stavros-kapetanakis.jpg",
+  "/images/graded/c/team/daria.jpg",
+  "/images/graded/b/team/antonios-tzagkarakis.jpg",
+]) {
+  const res = await fetch(`${BASE}${src}`, { method: "HEAD" });
+  const ok = res.status === 404;
+  console.log(`  ${ok ? "ok   " : "FAIL "} ${src} — ${res.status}`);
+  if (!ok) failures++;
 }
 
 console.log("\nsocial images");

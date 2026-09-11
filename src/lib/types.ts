@@ -125,11 +125,15 @@ export interface BookingStep {
   bodyItems?: string[];
 }
 
+/* The team movement is out (2026-09-11); the members stay in content so the
+   names and roles are never lost. Their photographs are retired: kept under
+   assets-src/retired/team/, no longer in public/, so nothing can serve them. */
 export interface TeamMember {
   key: string;
   name: string;
   role: string;
-  photo: string;
+  /** Repo path of the retired photograph. Not served. */
+  photoRetired?: string;
   width: number;
   height: number;
   oldUrl?: string;
