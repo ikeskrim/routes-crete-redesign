@@ -1,7 +1,9 @@
 # Deployment
 
-**Nothing here has been deployed.** No accounts, DNS or uploads have been touched. This
-documents both viable paths so the choice can be made deliberately.
+**Deployed on Vercel (Path A) from `main`; the domain has not been cut over.** Every push to
+`main` builds on Vercel and promotes to https://routes-crete-redesign.vercel.app.
+`routescrete.gr` still serves the original site, and nothing about DNS, the domain or the
+project settings has been touched. Path B is documented below for completeness.
 
 Every route is prerendered static (`next build` reports `○ Static` / `● SSG` for all seven),
 which is what makes Path B possible at all.
@@ -82,7 +84,7 @@ Run top to bottom. Do not start until the pre-launch smoke list passes on a stag
 - [ ] `npm ci && npm run build` — clean, zero TypeScript errors.
 - [ ] `npx next start -p 3009`, then:
   - [ ] `node qa/parity.mts` — must report **PARITY OK — no deltas**.
-  - [ ] `node qa/lighthouse.mts` — both routes; record the numbers.
+  - [ ] `QA_LH_RUNS=5 node qa/lighthouse.mts` — all three gated routes, median of five; record the numbers.
   - [ ] `node qa/visual-check.mts` — review `qa/screenshots/`.
 - [ ] Deploy to a staging URL on the chosen path and repeat the smoke list there.
 
@@ -140,13 +142,19 @@ separators on `[slug]` routes. That cost a misdiagnosis once — see
 
 ### Assert the alias after every push
 
-Every response carries the commit it was built from:
+Every response carries the commit it was built from, and one script checks it:
 
 ```bash
-curl -s https://routes-crete-redesign.vercel.app/ | grep build-commit
+node qa/alias-assert.mts $(git rev-parse --short=7 HEAD)
 ```
 
-A push is not done until that matches `git rev-parse --short HEAD`. This is not
+It answers in one of three ways, and the difference matters: **LIVE** (exit 0), **PENDING**
+(exit 1 — the alias answers but with an older commit), or **BLOCKED** (exit 2 — Vercel's bot
+mitigation is challenging automated requests from this machine; the build may be fine and a
+real browser unaffected, so this is never reported as "not deployed"). On BLOCKED, read
+build state from `npx vercel inspect <deployment-url> --scope domisi`, wait, and re-run once.
+
+A push is not done until the probe reads LIVE. This is not
 ceremony: production once served a homepage that did not match `origin/main`
 for over an hour, and `vercel inspect` prints no commit, so there was no way to
 see it. The stamp closed that blind spot.
@@ -174,8 +182,9 @@ The git-main alias carries `X-Robots-Tag: noindex`, so Lighthouse reports
 images resolve on whatever origin is actually serving. After DNS cutover the
 two converge and the file becomes a no-op — no change required.
 
-There are no temporary routes left to remove. `/serif-preview` (the typeface
-A/B) and `/review` (the ten decisions as a page) both existed for one
-conversation each, and both were deleted once that conversation closed —
-along with `public/review-assets/`. Every route that ships is a route a
-visitor is meant to find.
+There are no temporary routes left to remove. Three existed, each for one
+conversation, and each was deleted once that conversation closed: `/serif-preview`
+(the typeface A/B), `/review` (the first ten decisions as a page) and `/review-2`
+(the beauty, interaction and photo-hunt passes, nine items plus the trust line),
+with `public/review-assets/`, `public/review2-assets/` and the capture script that
+fed them. Every route that ships is a route a visitor is meant to find.

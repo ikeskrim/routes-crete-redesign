@@ -15,12 +15,15 @@ export function ItemHero({
   subtitle,
   image,
   blurDataURL,
+  aspect,
 }: {
   eyebrow: string;
   title: string;
   subtitle?: string;
   image: string;
   blurDataURL?: string;
+  /** width / height of the hero photograph, read from the file. */
+  aspect?: number;
 }) {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotionSafe();
@@ -32,6 +35,19 @@ export function ItemHero({
   const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "38%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
+  /* What to ask the image optimiser for.
+   *
+   * A landscape photograph `object-cover`ed into this tall hero on a portrait
+   * screen is scaled to the hero's HEIGHT, so the picture is far wider than the
+   * viewport. The hero is 82svh plus an 8% Ken Burns bleed, so the covered
+   * width is about 89vh times the image's aspect ratio. Portrait photographs
+   * never exceed the viewport's own width by much, so they keep "100vw" and
+   * pay nothing extra. */
+  const heroSizes =
+    aspect && aspect > 1
+      ? `(orientation: portrait) ${Math.ceil(89 * aspect)}vh, 100vw`
+      : "100vw";
 
   return (
     <section
@@ -57,7 +73,7 @@ export function ItemHero({
             priority
             fetchPriority="high"
             quality={75}
-            sizes="100vw"
+            sizes={heroSizes}
             placeholder={blurDataURL ? "blur" : undefined}
             blurDataURL={blurDataURL}
             className="object-cover"

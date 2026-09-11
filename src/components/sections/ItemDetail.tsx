@@ -11,6 +11,7 @@ import { SplitLines } from "@/components/ui/SplitLines";
 import { ItemHero } from "@/components/sections/ItemHero";
 import {
   getBlur,
+  getImageSize,
   getMappableLocations,
   getRelatedItems,
   getSite,
@@ -27,6 +28,7 @@ import { pad } from "@/lib/utils";
 export function ItemDetail({ item }: { item: ContentItem }) {
   const site = getSite();
   const related = getRelatedItems(item.slug, 2);
+  const heroSize = getImageSize(item.heroImage);
 
   /* Only the locations this route actually visits, and only those we can
      place — unnamed places stay off the map entirely.
@@ -82,6 +84,7 @@ export function ItemDetail({ item }: { item: ContentItem }) {
         subtitle={item.subtitle ?? undefined}
         image={item.heroImage}
         blurDataURL={getBlur(item.heroImage)}
+        aspect={heroSize ? heroSize.width / heroSize.height : undefined}
       />
 
       {/* Quick facts strip */}

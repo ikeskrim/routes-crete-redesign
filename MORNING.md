@@ -1,3 +1,24 @@
+# CLIENT RULINGS ON /review-2 — recorded verbatim, 2026-09-11
+
+The client delegated the ten rulings. They are final.
+
+* **R1** — Grade C: approved as shipped. No further tuning.
+* **R2** — Second-pass photographs (Preveli river mouth, river flow, Preveli waypoint swap): approved.
+* **R3** — The route as a journey: approved.
+* **R4** — Hero scrim lightened: approved.
+* **R5** — Full-screen overlay menu: approved.
+* **R6** — Horizontal journeys: approved. The short pan is accepted; it grows with the catalogue.
+* **R7** — Kinetic hero: approved.
+* **R8** — Film grain layer: approved.
+* **R9** — Photo hunt III: the harbour at night takes the top of the transfers page; the van stays in its card and gallery below. The three Rethymno bands: approved. Spili and Messara remain held out, unnamed places stay unnamed. "Current frame wins" verdicts everywhere else: accepted with the search log.
+* **R10** — Trust badge: stays empty, closed as "not yet." No verified reviews exist; the mechanism remains, and it renders only from verified data with the link visible.
+
+**The queue:** R9's one content change, then close — delete `/review-2`, final
+audit on the deployment, this file becomes the closing record, `CLOSING.md`
+re-finalised. Nothing cutover-related. No make-work after the close.
+
+---
+
 # PHOTO HUNT III — shipped `aa45e96` · `cd7cc19`
 
 The client's instruction was direct: search again, find more beautiful

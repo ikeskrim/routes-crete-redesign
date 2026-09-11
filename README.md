@@ -39,7 +39,7 @@ npm run build
 npx next start -p 3009
 ```
 
-**The eight guards.** Each one exists because something broke that way once;
+**The nine guards.** Each one exists because something broke that way once;
 `qa/README.md` records which. Run them **un-piped** — `node qa/parity.mts | tail`
 exits 0 no matter what parity found, so a piped guard cannot fail.
 
@@ -50,15 +50,17 @@ exits 0 no matter what parity found, so a piped guard cannot fail.
 | `qa/nav-flash-guard.mts` | The nav bar rendering in the wrong state before JavaScript runs, or flipping after it. |
 | `qa/credits-guard.mts` | A sourced photograph that is not attributed as its licence requires. |
 | `qa/menu-audit.mts` | The overlay menu breaking any of its 37 promises (focus trap, scroll lock, escape, previews). |
-| `qa/asset-audit.mts` | A reference that does not resolve, or a photograph that is not graded. |
+| `qa/asset-audit.mts` | A reference that does not resolve, a photograph that is not graded, or a graded photograph with no blur placeholder. |
 | `qa/parity.mts` | A word or an image of the original that stopped reaching the page. |
 | `qa/mobile-audit.mts` | Horizontal overflow, sub-44px tap targets, or body text under 14px at 390. |
+| `qa/text-contrast.mts` | Text on a photograph under 3:1 at its worst pixel, measured against the rendered backdrop. No CSS-pair check can see this. |
 
 | Script | Purpose |
 |---|---|
 | `node qa/visual-check.mts` | ~110 screenshots: every route, desktop + 390px mobile, nav states, lightbox, sticky CTA, a wheel-driven filmstrip through the pinned scene, and a reduced-motion pass. Accepts filters: `node qa/visual-check.mts mobile hero`. |
-| `node qa/lighthouse.mts` | Lighthouse mobile → `qa/lighthouse/`. Gates on performance ≥ 89, a11y 100, CLS 0, TBT ≤ 250 ms. Set `QA_LH_RUNS=5` to measure each route five times, interleaved, and gate on the **median** — a single run against a deployment measures the network as much as the build. |
+| `node qa/lighthouse.mts` | Lighthouse mobile → `qa/lighthouse/`, on three routes by default (home, an experience, the transfer). Gates on performance ≥ 89, a11y 100, CLS 0, TBT ≤ 250 ms. Set `QA_LH_RUNS=5` to measure each route five times, interleaved, and gate on the **median** — a single run against a deployment measures the network as much as the build. |
 | `node qa/digest-shots.mts` | The client walkthrough, from the deployed alias, at desktop + 390 + reduced-motion. |
+| `node qa/alias-assert.mts <sha7>` | Is the production alias serving this commit? Three distinct answers: **LIVE** (exit 0), **PENDING** (1), **BLOCKED** by Vercel bot mitigation (2) — which is never "not deployed". |
 
 Point any of them at a deployment with `QA_BASE_URL=https://…`.
 
@@ -162,8 +164,11 @@ Optional: `subtitle`, `highlights`, `pullQuote`, `included` (brochure facts), `s
 
 ### Regenerating blur placeholders
 
-`content/blur-map.json` holds a ~600-byte base64 preview per image and is generated, not
-hand-written. Any image without an entry simply renders without a blur-up — nothing breaks.
+`content/blur-map.json` holds a ~900-byte base64 preview per graded image, keyed by the graded
+path. Regenerate it with `powershell -File qa/blur-map.ps1` after grading anything new — it
+writes keys for the live grade and keeps the others. An image without an entry renders with no
+blur-up and nothing visibly breaks, which is exactly how the whole site once shipped without
+placeholders after a grade change; asset-audit now fails on it.
 
 ---
 
@@ -274,15 +279,17 @@ otherwise `localhost:3009`.
 |---|---|
 | `arc-guard` | six movements by id, in order; cut sections' content survived |
 | `parity` | rendered deck copy **and** preserved originals |
-| `asset-audit` | every image reference resolves; anchors appear exactly once; social images absolute and 200 on the serving origin |
+| `asset-audit` | every image reference resolves and has a blur placeholder; anchors appear exactly once; social images absolute and 200 on the serving origin |
 | `headline-guard` | every split headline reads exactly as written, before and after measurement |
 | `credits-guard` | every sourced photograph is attributed as its licence requires; checksums still match |
 | `nav-flash-guard` | the bar is correct in the server HTML with JS **disabled**, and never flips under a 6× CPU throttle |
 | `menu-audit` | the overlay menu keeps every promise — focus trap, scroll lock, lazy previews, coverage |
 | `mobile-audit` | 390px: no sideways scroll, 44px tap targets, no ad-hoc tiny text |
+| `text-contrast` | every headline on a photograph clears 3:1 at its worst pixel against the rendered backdrop, translucent text composited |
 
-**Do not run these as a tight batch against the deployment** — eight
-browser-driven guards contend and produce false failures. See `qa/README.md`.
+**Do not run these as a tight batch against the deployment** — nine
+browser-driven guards contend and produce false failures, and enough automated traffic
+trips Vercel's bot challenge (every request then 403s with `x-vercel-mitigated`). See `qa/README.md`.
 
 ## What was deferred
 

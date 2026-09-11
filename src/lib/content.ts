@@ -1,3 +1,5 @@
+import * as nodeFs from "node:fs";
+import * as nodePath from "node:path";
 import "server-only";
 
 import fs from "node:fs";
@@ -121,6 +123,50 @@ export const getBlurMap = cache((): Record<string, string> => {
 /** Blur placeholder for a public image path, or undefined if we have none. */
 export function getBlur(src: string): string | undefined {
   return getBlurMap()[src];
+}
+
+/* Pixel dimensions of a graded image, read from its own JPEG header at build.
+ *
+ * Needed by the item hero. A LANDSCAPE photograph `object-cover`ed into a tall
+ * phone hero is scaled to the hero's height, so the picture a reader sees is
+ * far wider than the viewport — about 1,157 CSS px across for the Rethymno
+ * harbour at 390x844. `sizes="100vw"` asked for a viewport-width file, so
+ * phones were served 420w (1x) or 1280w (3x) and upscaled it ~2.7x. Measured,
+ * and visible: the frame was soft and blocky on every phone.
+ *
+ * Reading the header rather than storing dimensions in content means the
+ * number can never drift from the file, and any future landscape hero gets the
+ * right request with no content change. Only the SOF marker is read. */
+const imageSizeCache = new Map<string, { width: number; height: number } | null>();
+
+export function getImageSize(src: string): { width: number; height: number } | null {
+  const key = graded(src);
+  if (imageSizeCache.has(key)) return imageSizeCache.get(key) ?? null;
+
+  let size: { width: number; height: number } | null = null;
+  try {
+    const buf = nodeFs.readFileSync(nodePath.join(process.cwd(), "public", key));
+    let i = 2; // past SOI
+    while (i + 9 < buf.length) {
+      if (buf[i] !== 0xff) {
+        i++;
+        continue;
+      }
+      const marker = buf[i + 1];
+      const isStartOfFrame =
+        marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc;
+      if (isStartOfFrame) {
+        size = { height: buf.readUInt16BE(i + 5), width: buf.readUInt16BE(i + 7) };
+        break;
+      }
+      i += 2 + buf.readUInt16BE(i + 2);
+    }
+  } catch {
+    size = null;
+  }
+
+  imageSizeCache.set(key, size);
+  return size;
 }
 
 export const getExperiences = cache((): ContentItem[] => loadCollection("experiences"));
