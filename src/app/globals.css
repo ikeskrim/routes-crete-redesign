@@ -569,3 +569,15 @@
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------------
+   /design-3 DRAFTS — TEMPORARY, deleted with the drafts.
+
+   A draft renders its own nav in its own direction. The site's bar and
+   footer, drawn in the current design, would sit on top of it and make the
+   comparison meaningless — so on a page carrying the draft marker, and only
+   there, the site's chrome steps aside. No other page renders the marker.
+   ------------------------------------------------------------------ */
+body:has([data-draft-page]) [data-site-chrome] {
+  display: none !important;
+}

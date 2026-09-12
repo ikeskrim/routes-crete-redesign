@@ -87,3 +87,10 @@ RUN-COMPLETE.flag
 # Scratch for photo hunt III: API results, candidate previews, the winner record.
 # Provenance lives in content/photo-credits.json; masters in assets-src/sourced/.
 .hunt/
+
+# Free-stock masters (Unsplash / Pexels / Pixabay) and photographs used by
+# written permission. Their terms cover use on the site, not redistributing the
+# unaltered file from a public repository (Pixabay: no distribution "on a
+# standalone basis"), so only the graded derivative is committed. The SHA-1 of
+# each master is in content/photo-credits.json; the client keeps the files.
+/assets-src/stock-local/

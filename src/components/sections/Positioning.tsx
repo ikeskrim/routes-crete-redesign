@@ -2,7 +2,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SplitLines } from "@/components/ui/SplitLines";
 
 /**
- * The positioning statement — section 2 of the six.
+ * The positioning statement — section 2 of the five.
  *
  * The old homepage said who we are three separate times: a cinematic bridge, a
  * standalone "Why Us" trio, and again in the team block. This is that argument

@@ -1,6 +1,6 @@
 {
   "note": "Provenance for every photograph on this site that we did not take ourselves. Each entry was verified by SHA-1: the local master is byte-for-byte the file at the source URL, so these are identity matches rather than resemblances. Licences were read off the file page's own wikitext and extmetadata, never inferred from a category, a filename, or a sibling file by the same author. CC BY-SA and NonCommercial files were excluded on purpose: the site applies a colour grade to every image, which creates a derivative, and share-alike would oblige the graded result to carry BY-SA too. The three frames added on 2026-08-28 were sourced in the beauty pass with a deliberate bias to spectacle; each licence was read on its own file page that day, not carried over from the earlier pass.",
-  "verifiedOn": "2026-09-01",
+  "verifiedOn": "2026-09-12",
   "photographs": [
     {
       "file": "gorge-saint-nicholas-aerial.jpg",
@@ -286,6 +286,87 @@
       "attributionRequired": true,
       "modified": true,
       "note": "Photo hunt III. The only warm-light frame the pass produced that is of a place this site names — and it is the operator's home base. Own work by the photographer, Old Venetian harbour of Rethymno, May 2009. The file page dual-licenses it CC BY 3.0 Unported and GFDL 1.2; under a dual licence the licensee may choose either, and this site takes the CC BY 3.0 grant. No ShareAlike, NonCommercial or NoDerivatives term appears anywhere on the page. Licence read on the file page itself on 2026-09-01, not trusted from the API cache."
+    },
+    {
+      "file": "pexels-16993748.jpg",
+      "subject": "The coast of Crete",
+      "title": "Tropical Sea Shore",
+      "author": "Francesco Ungaro",
+      "licence": "Pexels License",
+      "licenceUrl": "https://www.pexels.com/license/",
+      "source": "https://www.pexels.com/photo/tropical-sea-shore-16993748/",
+      "sha1": "c9f0498a33275fb9086605f2245cadf7df7de724",
+      "bytes": 919659,
+      "dimensions": "4000 × 3000",
+      "attributionRequired": false,
+      "surface": "mood",
+      "modified": true,
+      "note": "Design reset, photo hunt IV. Balos lagoon on the Gramvousa peninsula, western Crete: the page's own description names Balos and tags Crete. MOOD surface only, and the caption never names Balos, because the tours do not go there. Licence read on the photo page itself (\"Free to use\", no Pexels+ marker) on 2026-09-11 and re-read in a browser on 2026-09-12."
+    },
+    {
+      "file": "pexels-24304887.jpg",
+      "subject": "The coast of Crete",
+      "title": "Scenic Clear Sea By Mountains",
+      "author": "Francesco Ungaro",
+      "licence": "Pexels License",
+      "licenceUrl": "https://www.pexels.com/license/",
+      "source": "https://www.pexels.com/photo/scenic-clear-sea-by-mountains-24304887/",
+      "sha1": "ca028a8ad3f5b7589842c2477f641a8e51b4b396",
+      "bytes": 1827402,
+      "dimensions": "4000 × 3000",
+      "attributionRequired": false,
+      "surface": "mood",
+      "modified": true,
+      "note": "Design reset, photo hunt IV. The same Gramvousa/Balos headland from along the reef. MOOD surface only; the caption names no place the tours do not visit. Licence read on the photo page itself on 2026-09-11."
+    },
+    {
+      "file": "pexels-27488591.jpg",
+      "subject": "The coast of Crete",
+      "title": "The Blue Waters Of The Sea And The Rocky Cliffs",
+      "author": "Francesco Ungaro",
+      "licence": "Pexels License",
+      "licenceUrl": "https://www.pexels.com/license/",
+      "source": "https://www.pexels.com/photo/the-blue-waters-of-the-sea-and-the-rocky-cliffs-27488591/",
+      "sha1": "46ba4b35b80bc6b605744649e06184eb20032b68",
+      "bytes": 1424244,
+      "dimensions": "4000 × 3000",
+      "attributionRequired": false,
+      "surface": "mood",
+      "modified": true,
+      "note": "Design reset, photo hunt IV. Gramvousa/Balos from higher up, with a big clean sky. MOOD surface only. Licence read on the photo page itself on 2026-09-11."
+    },
+    {
+      "file": "pexels-27015910.jpg",
+      "subject": "A mountain road in Crete",
+      "title": "A Car Driving Down A Road In The Mountains",
+      "author": "Laura Meinhardt",
+      "licence": "Pexels License",
+      "licenceUrl": "https://www.pexels.com/license/",
+      "source": "https://www.pexels.com/photo/a-car-driving-down-a-road-in-the-mountains-27015910/",
+      "sha1": "0e902d9ac8c608be2aa78c05efecb5f231ecf1a9",
+      "bytes": 3160387,
+      "dimensions": "3980 × 5970",
+      "attributionRequired": false,
+      "surface": "mood",
+      "modified": true,
+      "note": "Design reset, photo hunt IV. The page's own title says Crete; the exact road is not named, so the caption does not name one. A native portrait (3980x5970), which is what a phone hero needs. MOOD surface only. Licence read on the photo page itself on 2026-09-11."
+    },
+    {
+      "file": "pexels-4160256.jpg",
+      "subject": "The palm forest along the river at Preveli",
+      "title": "A Body Of Water Between Green Trees",
+      "author": "Bert Christiaens",
+      "licence": "Pexels License",
+      "licenceUrl": "https://www.pexels.com/license/",
+      "source": "https://www.pexels.com/photo/a-body-of-water-between-green-trees-4160256/",
+      "sha1": "7ef80cc52fbe6d42912d095f2f972b73bdad7fee",
+      "bytes": 1918557,
+      "dimensions": "3163 × 2530",
+      "attributionRequired": false,
+      "surface": "itinerary",
+      "modified": true,
+      "note": "Design reset, photo hunt IV. The photo page's location line reads Preveli, Greece, and the frame matches the palm-lined river the site already shows from oblique aerials. Preveli is named in the Kourtaliotis story, so this may carry an itinerary caption. Licence read on the photo page itself on 2026-09-11."
     }
-  ]
+  ],
+  "storageNote": "WHERE THE MASTERS LIVE. CC0 / CC BY / public-domain masters are committed in assets-src/sourced/: those licences permit redistribution, and this repository is public. Free-stock masters (Pexels here; Unsplash if any ship) and any photograph used by written permission are NOT committed. They are held in assets-src/stock-local/, which is gitignored, and only the graded derivative the site serves is published. Pexels forbids redistributing its files on other platforms, and a permission granted for a website does not reach a public repository handing out the original. The SHA-1 above is what ties each held master to its licence; qa/credits-guard.mts fails if such a master is found inside the repo. Pixabay-licensed frames are held entirely, not shipped: that licence forbids distributing content on a standalone basis, and a colour grade leaves a photograph substantially the same. CC BY-SA is still excluded from the site and is a separate decision for the client (see the local contact sheet in .hunt/design-reset/by-sa/)."
 }

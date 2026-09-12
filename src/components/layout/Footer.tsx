@@ -62,7 +62,7 @@ export function Footer({ site }: { site: SiteContent }) {
   const pageLinks = nav.filter((item) => !item.external);
 
   return (
-    <footer className="grain relative bg-ocean-950 text-sand-100">
+    <footer data-site-chrome className="grain relative bg-ocean-950 text-sand-100">
       {/* ---------------------------------------------- closing CTA scene */}
       <section
         data-footer-scene
