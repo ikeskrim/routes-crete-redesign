@@ -1,0 +1,79 @@
+{
+  "base": "https://routes-crete-redesign.vercel.app",
+  "commit": "d6d4dbc",
+  "capturedAt": "2026-09-13T21:37:06.350Z",
+  "frames": [
+    {
+      "draft": "a",
+      "viewport": "desktop",
+      "kind": "fold",
+      "file": "a-desktop-fold.jpg"
+    },
+    {
+      "draft": "a",
+      "viewport": "desktop",
+      "kind": "full",
+      "file": "a-desktop-full.jpg"
+    },
+    {
+      "draft": "a",
+      "viewport": "mobile",
+      "kind": "fold",
+      "file": "a-mobile-fold.jpg"
+    },
+    {
+      "draft": "a",
+      "viewport": "mobile",
+      "kind": "full",
+      "file": "a-mobile-full.jpg"
+    },
+    {
+      "draft": "b",
+      "viewport": "desktop",
+      "kind": "fold",
+      "file": "b-desktop-fold.jpg"
+    },
+    {
+      "draft": "b",
+      "viewport": "desktop",
+      "kind": "full",
+      "file": "b-desktop-full.jpg"
+    },
+    {
+      "draft": "b",
+      "viewport": "mobile",
+      "kind": "fold",
+      "file": "b-mobile-fold.jpg"
+    },
+    {
+      "draft": "b",
+      "viewport": "mobile",
+      "kind": "full",
+      "file": "b-mobile-full.jpg"
+    },
+    {
+      "draft": "c",
+      "viewport": "desktop",
+      "kind": "fold",
+      "file": "c-desktop-fold.jpg"
+    },
+    {
+      "draft": "c",
+      "viewport": "desktop",
+      "kind": "full",
+      "file": "c-desktop-full.jpg"
+    },
+    {
+      "draft": "c",
+      "viewport": "mobile",
+      "kind": "fold",
+      "file": "c-mobile-fold.jpg"
+    },
+    {
+      "draft": "c",
+      "viewport": "mobile",
+      "kind": "full",
+      "file": "c-mobile-full.jpg"
+    }
+  ]
+}
