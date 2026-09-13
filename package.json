@@ -30,6 +30,6 @@
     "lighthouse": "^13.4.1",
     "playwright": "^1.62.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^7"
   }
 }
