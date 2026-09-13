@@ -27,6 +27,7 @@ const useIsomorphicLayoutEffect =
 export function SplitLines({
   text,
   className,
+  id,
   as: Tag = "h2",
   delay = 0,
   stagger = 0.09,
@@ -38,7 +39,9 @@ export function SplitLines({
 }: {
   text: string;
   className?: string;
-  as?: "h1" | "h2" | "h3" | "p" | "div";
+  /** Lands on the tag itself, so a section's aria-labelledby resolves. */
+  id?: string;
+  as?:"h1" | "h2" | "h3" | "p" | "div";
   delay?: number;
   stagger?: number;
   duration?: number;
@@ -187,7 +190,7 @@ export function SplitLines({
 
   if (reduced) {
     return (
-      <Tag className={className} data-split-source={text}>
+      <Tag id={id} className={className} data-split-source={text}>
         {text}
       </Tag>
     );
@@ -198,7 +201,7 @@ export function SplitLines({
   return (
     // data-split-source carries the exact source string so the harness can
     // assert that what renders equals what was written.
-    <Tag className={className} data-split-source={text}>
+    <Tag id={id} className={className} data-split-source={text}>
       <span ref={rootRef} className="relative block">
       {/* Measuring copy. Visible (and the only copy) until lines are known. */}
       <span

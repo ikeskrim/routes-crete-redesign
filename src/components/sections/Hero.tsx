@@ -225,10 +225,13 @@ export function Hero({
             className="block h-1/2 w-full bg-gold-400/90"
             initial={{ y: "-100%" }}
             animate={reduced ? { y: 0 } : { y: ["-100%", "200%"] }}
+            /* Two passes (5.2s), then it rests. A cue that loops forever beside
+               the headline is motion nobody can stop (WCAG 2.2.2); by the
+               second pass it has said what it has to say. */
             transition={
               reduced
                 ? undefined
-                : { duration: 2.6, repeat: Infinity, ease: "easeInOut" }
+                : { duration: 2.6, repeat: 1, ease: "easeInOut" }
             }
           />
         </span>

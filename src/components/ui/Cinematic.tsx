@@ -42,7 +42,12 @@ export function ImageReveal({
   const reduced = useReducedMotionSafe();
   const ref = useRef<HTMLDivElement>(null);
   const seen = useRevealTrigger(ref);
-  const show = seen || reduced;
+  /* A preloaded image is the one the page is measured on, so it must never
+     wait behind a reveal — the same rule MediaFrame applies. Without this the
+     server ships it fully clipped (reduced motion is unknown there) and it
+     stays invisible until hydration and the observer fire. */
+  const skip = reduced || !!priority;
+  const show = seen || skip;
   const hidden =
     from === "bottom" ? "inset(100% 0% 0% 0%)" : "inset(0% 100% 0% 0%)";
 
@@ -50,9 +55,9 @@ export function ImageReveal({
     <motion.div
       ref={ref}
       data-reveal
-      
+
       className={cn("relative overflow-hidden bg-ocean-900", ratio, className)}
-      initial={reduced ? false : { clipPath: hidden }}
+      initial={skip ? false : { clipPath: hidden }}
       animate={{ clipPath: show ? "inset(0% 0% 0% 0%)" : hidden }}
       transition={{
         duration: 1.3,
@@ -62,7 +67,7 @@ export function ImageReveal({
     >
       <motion.div
         className="absolute inset-0 will-change-transform"
-        initial={reduced ? false : { scale: 1.15 }}
+        initial={skip ? false : { scale: 1.15 }}
         animate={{ scale: show ? 1 : 1.15 }}
         transition={{
           duration: 1.8,

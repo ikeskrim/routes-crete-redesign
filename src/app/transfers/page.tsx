@@ -53,7 +53,7 @@ export default function TransfersPage() {
             <EmptyState
               eyebrow="Transfers"
               title="Our transfer routes are being prepared"
-              body="Nothing is listed here just yet. Tell us where you're arriving and where you're staying, and we'll arrange it directly."
+              body="Nothing is listed here just yet. Tell us where you’re arriving and where you’re staying, and we’ll arrange it directly."
               action={{ label: "Contact us", href: "/contact" }}
             />
           </div>
@@ -119,12 +119,18 @@ export default function TransfersPage() {
                     href={primary.href}
                     className="group mt-10 inline-flex min-h-11 items-center gap-3"
                   >
+                    {/* The rule scales and the label slides by exactly the
+                        24px the old width change pushed it, so the hover lands
+                        where it always did without re-laying out the row. The
+                        label's tracking keeps its own easing on the inner span. */}
                     <span
                       aria-hidden
-                      className="h-px w-10 bg-ink/30 transition-all duration-500 ease-luxe group-hover:w-16 group-hover:bg-gold-500"
+                      className="h-px w-10 origin-left bg-ink/30 transition-[scale,background-color] duration-500 ease-luxe group-hover:scale-x-[1.6] group-hover:bg-gold-500"
                     />
-                    <span className="text-eyebrow uppercase text-ink transition-[letter-spacing] duration-500 group-hover:tracking-[0.26em]">
-                      Full details
+                    <span className="transition-transform duration-500 ease-luxe group-hover:translate-x-6">
+                      <span className="text-eyebrow uppercase text-ink transition-[letter-spacing] duration-500 group-hover:tracking-[0.26em]">
+                        Full details
+                      </span>
                     </span>
                   </Link>
                 </Reveal>

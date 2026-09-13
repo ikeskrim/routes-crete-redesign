@@ -15,7 +15,7 @@ export default function Loading() {
       <div aria-hidden className="grain-overlay" />
 
       <div className="relative mx-auto w-full max-w-[92rem] px-6 pb-20 sm:px-8 lg:px-12 lg:pb-28">
-        <p className="text-eyebrow uppercase text-sand-200/70">
+        <p translate="no" className="text-eyebrow uppercase text-sand-200/70">
           Routes Crete
         </p>
 
@@ -23,7 +23,7 @@ export default function Loading() {
           <span className="loading-sweep block h-full w-1/3 bg-gold-400" />
         </div>
 
-        <span className="sr-only">Loading</span>
+        <span className="sr-only">Loading…</span>
       </div>
     </div>
   );

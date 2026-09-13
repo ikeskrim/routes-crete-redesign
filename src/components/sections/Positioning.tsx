@@ -51,6 +51,7 @@ export function Positioning({
 
             <SplitLines
               as="h2"
+              id="positioning-heading"
               text={statement}
               className="text-display-lg mt-6 max-w-[22ch] text-ink"
             />

@@ -46,14 +46,18 @@ export function FeaturedFrame({
         frame
       )}
 
-      <Reveal delay={0.1}>
-        <figcaption className="mt-6 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
-          <p className="text-body-sm max-w-[52ch] text-rock-600">{caption}</p>
-          {credit && (
-            <p className="text-eyebrow uppercase text-rock-400">{credit}</p>
-          )}
-        </figcaption>
-      </Reveal>
+      {/* figcaption must be the figure's direct child, and Reveal always
+          renders a wrapper div — so the reveal goes inside the caption. */}
+      <figcaption className="mt-6">
+        <Reveal delay={0.1}>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+            <p className="text-body-sm max-w-[52ch] text-rock-600">{caption}</p>
+            {credit && (
+              <p className="text-eyebrow uppercase text-rock-400">{credit}</p>
+            )}
+          </div>
+        </Reveal>
+      </figcaption>
     </figure>
   );
 }

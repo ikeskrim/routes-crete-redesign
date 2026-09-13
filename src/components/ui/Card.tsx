@@ -56,7 +56,9 @@ export function ContentCard({
     >
       <MediaFrame
         src={item.cardImage}
-        alt={item.title}
+        // Decorative inside this link: the h3 below already names it, and a
+        // repeated alt would read the title twice.
+        alt=""
         sizes={sizes}
         ratio={ratio}
         priority={priority}
@@ -88,9 +90,11 @@ export function ContentCard({
           <div className="mt-6 flex items-center gap-3 overflow-hidden">
             <span
               aria-hidden
-              className="h-px w-8 shrink-0 bg-sand-100/40 transition-all duration-700 ease-luxe group-hover:w-14 group-hover:bg-gold-400"
+              // Scaled, not widened: 32px x 1.75 is the old 56px, and the
+              // label slides the matching 24px, so nothing re-lays out.
+              className="h-px w-8 shrink-0 origin-left bg-sand-100/40 transition-[scale,background-color] duration-700 ease-luxe group-hover:scale-x-[1.75] group-hover:bg-gold-400"
             />
-            <span className="text-eyebrow uppercase text-sand-100/85">
+            <span className="text-eyebrow uppercase text-sand-100/85 transition-transform duration-700 ease-luxe group-hover:translate-x-6">
               Discover
             </span>
           </div>

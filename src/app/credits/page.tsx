@@ -21,6 +21,11 @@ export function generateMetadata(): Metadata {
 
 export default function CreditsPage() {
   const { photographs, verifiedOn } = getPhotoCredits();
+  // The ledger stores an ISO date; read it as UTC so the day cannot shift.
+  const verifiedLabel = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "long",
+    timeZone: "UTC",
+  }).format(new Date(verifiedOn));
 
   return (
     <>
@@ -81,6 +86,7 @@ export default function CreditsPage() {
                         className="inline-flex min-h-11 items-center text-ink underline decoration-ink/25 underline-offset-4 transition-colors duration-300 hover:text-gold-600"
                       >
                         {photo.licence}
+                        <span className="sr-only"> for {photo.subject}</span>
                       </a>
                       <a
                         href={photo.source}
@@ -89,6 +95,7 @@ export default function CreditsPage() {
                         className="inline-flex min-h-11 items-center text-ink/55 underline decoration-ink/20 underline-offset-4 transition-colors duration-300 hover:text-gold-600"
                       >
                         Source
+                        <span className="sr-only"> for {photo.subject}</span>
                       </a>
                     </div>
                   </div>
@@ -103,7 +110,7 @@ export default function CreditsPage() {
               image we publish is verifiably the one that carries that licence.
               Licences were read from each source page directly rather than
               inferred from a category or a neighbouring file. Last verified{" "}
-              {verifiedOn}.
+              <time dateTime={verifiedOn}>{verifiedLabel}</time>.
             </p>
           </Reveal>
         </div>

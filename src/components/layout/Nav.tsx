@@ -146,10 +146,15 @@ export function Nav({
       <header
         data-site-chrome
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-all duration-500 ease-luxe",
+          /* Explicit properties, never `all`. The bar's padding no longer
+             changes: it used to go py-5 -> py-3, which re-ran layout on every
+             frame of the 500ms transition. The header is always py-3 and the
+             inner nav rides 0.5rem lower on a composited translate instead —
+             the same 20px/12px positions, with no layout. */
+          "fixed inset-x-0 top-0 z-50 py-3 transition-[background-color,box-shadow,-webkit-backdrop-filter,backdrop-filter] duration-500 ease-luxe",
           transparent || onDarkPanel
-            ? "bg-transparent py-5"
-            : "bg-shell/85 py-3 shadow-[0_1px_0_0_rgba(20,23,26,0.08)] backdrop-blur-xl",
+            ? "bg-transparent"
+            : "bg-shell/85 shadow-[0_1px_0_0_rgba(20,23,26,0.08)] backdrop-blur-xl",
         )}
       >
         {/* Over a LIGHT hero, ink alone was not enough: the links sat against
@@ -165,15 +170,22 @@ export function Nav({
         )}
         <nav
           aria-label="Primary"
-          className="mx-auto flex w-full max-w-[92rem] items-center justify-between px-6 sm:px-8 lg:px-12"
+          className={cn(
+            "mx-auto flex w-full max-w-[92rem] items-center justify-between px-6 transition-[translate] duration-500 ease-luxe sm:px-8 lg:px-12",
+            (transparent || onDarkPanel) && "translate-y-2",
+          )}
         >
           <Link
             href="/"
+            // The brand is a name, not words: keep browser auto-translate off it.
+            translate="no"
             className={cn(
               // -my-3 keeps the bar's visual height while giving the home link a
               // real 44px target: it was 23px tall on every page.
               "inline-flex min-h-11 -my-3 items-center font-display text-[0.9375rem] font-bold uppercase tracking-[0.16em] transition-colors duration-500",
-              (transparent && !onLight) || onDarkPanel ? "text-sand-50" : "text-ink",
+              (transparent && !onLight) || onDarkPanel
+                ? "text-sand-50 hover:text-gold-300"
+                : "text-ink hover:text-ocean-800",
             )}
           >
             {brandName}
@@ -184,7 +196,7 @@ export function Nav({
             <Link
               href={bookHref}
               className={cn(
-                "hidden h-11 items-center rounded-pill px-6 font-display text-[0.6875rem] font-medium uppercase tracking-[0.16em] transition-all duration-500 ease-luxe hover:-translate-y-0.5 sm:inline-flex",
+                "hidden h-11 items-center rounded-pill px-6 font-display text-[0.6875rem] font-medium uppercase tracking-[0.16em] transition-[translate,background-color,color] duration-500 ease-luxe hover:-translate-y-0.5 sm:inline-flex",
                 (transparent && !onLight) || onDarkPanel
                   ? "bg-sand-50 text-ocean-950 hover:bg-white"
                   : "bg-ocean-950 text-sand-50 hover:bg-ocean-800",
@@ -200,7 +212,9 @@ export function Nav({
               aria-controls="overlay-menu"
               className={cn(
                 "relative z-50 -mr-2 flex h-11 items-center justify-center gap-3 rounded-pill px-2 transition-colors duration-500",
-                onDarkPanel || (transparent && !onLight) ? "text-sand-50" : "text-ink",
+                onDarkPanel || (transparent && !onLight)
+                  ? "text-sand-50 hover:text-gold-300"
+                  : "text-ink hover:text-ocean-800",
               )}
             >
               <span className="sr-only">

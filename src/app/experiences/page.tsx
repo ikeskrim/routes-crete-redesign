@@ -64,21 +64,28 @@ export default function ExperiencesPage() {
             <EmptyState
               eyebrow="Experiences"
               title="New routes are being prepared"
-              body="Nothing is listed here just yet. Tell us what you'd like to see on the island and we'll put a route together."
+              body="Nothing is listed here just yet. Tell us what you’d like to see on the island and we’ll put a route together."
               action={{ label: "Contact us", href: "/contact" }}
             />
           ) : (
-            <div className="grid gap-x-10 gap-y-16 sm:grid-cols-2">
-              {experiences.map((experience, i) => (
-                <ContentCard
-                  key={experience.slug}
-                  item={experience}
-                  index={i + 1}
-                  priority={i === 0}
-                  className={i % 2 === 1 ? "sm:mt-28" : undefined}
-                />
-              ))}
-            </div>
+            <>
+              {/* The cards title themselves in h3, which would follow the h1
+                  directly. Hidden rather than visible, and not an h2 on the
+                  card: h2 is set in the serif, so promoting the card title
+                  would change how every card reads. */}
+              <h2 className="sr-only">All experiences</h2>
+              <div className="grid gap-x-10 gap-y-16 sm:grid-cols-2">
+                {experiences.map((experience, i) => (
+                  <ContentCard
+                    key={experience.slug}
+                    item={experience}
+                    index={i + 1}
+                    priority={i === 0}
+                    className={i % 2 === 1 ? "sm:mt-28" : undefined}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </div>
       </section>

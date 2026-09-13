@@ -39,6 +39,7 @@ export function HowToBook({
 
         <SplitLines
           as="h2"
+          id="how-to-book-heading"
           text={heading}
           className="text-display-lg mt-6 max-w-[16ch] text-sand-50"
         />

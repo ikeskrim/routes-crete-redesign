@@ -204,16 +204,20 @@ export function StackedPanels({
 
           {panels.map((_, i) => (
             <span key={i} className="relative flex items-center gap-3 pl-3">
+              {/* The tick doubles by scale rather than width, and the number
+                  travels the same 1rem by translate, so the change composites
+                  instead of laying the ledger out again. Tailwind v4 writes
+                  `scale` and `translate`, not `transform` — hence the lists. */}
               <span
                 className={cn(
-                  "h-px transition-all duration-700 ease-luxe",
-                  i === active ? "w-8 bg-gold-400" : "w-4 bg-sand-100/30",
+                  "h-px w-4 origin-left transition-[scale,background-color] duration-700 ease-luxe",
+                  i === active ? "scale-x-200 bg-gold-400" : "scale-x-100 bg-sand-100/30",
                 )}
               />
               <span
                 className={cn(
-                  "font-display text-eyebrow tabular-nums transition-colors duration-700",
-                  i === active ? "text-gold-300" : "text-sand-100/35",
+                  "font-display text-eyebrow tabular-nums transition-[translate,color] duration-700",
+                  i === active ? "translate-x-4 text-gold-300" : "translate-x-0 text-sand-100/35",
                 )}
               >
                 {pad(i + 1)}
@@ -228,9 +232,12 @@ export function StackedPanels({
           className="relative mx-auto w-full max-w-[92rem] px-6 text-center will-change-transform sm:px-8 lg:px-12"
         >
           {panels.map((panel, i) => (
+            // No aria-hidden on the inactive panels: which one shows is set by
+            // scroll alone, and a screen reader's cursor never scrolls the
+            // hold, so panels 2 and 3 were unreachable. They are already
+            // opacity-0 and pointer-events-none, and hold nothing focusable.
             <div
               key={i}
-              aria-hidden={i !== active}
               className={cn(
                 "ease-luxe",
                 i === active

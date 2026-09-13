@@ -163,7 +163,7 @@ export function SignatureScene({
 
           <Link
             href={href}
-            className="mt-16 inline-flex items-center gap-3 text-eyebrow uppercase text-sand-50"
+            className="mt-16 inline-flex min-h-11 items-center gap-3 text-eyebrow uppercase text-sand-50 transition-colors duration-300 hover:text-gold-300"
           >
             <span aria-hidden className="h-px w-10 bg-gold-400" />
             {ctaLabel}
@@ -244,7 +244,11 @@ export function SignatureScene({
                       ? "opacity-100 transition-opacity delay-300 duration-500"
                       : "pointer-events-none opacity-0 transition-opacity delay-0 duration-200",
                   )}
-                  aria-hidden={i !== active}
+                  // No aria-hidden on the inactive chapters. Which one shows is
+                  // set by scroll alone, and a screen reader's cursor never
+                  // scrolls the hold, so hiding them left one chapter of the
+                  // story reachable. They are opacity-0 and hold nothing
+                  // focusable; SplitLines exposes each text once.
                 >
                   <p className="text-eyebrow uppercase text-sand-200/60">
                     {pad(i + 1)} / {pad(scenes.length)} — {scene.label}
@@ -268,7 +272,7 @@ export function SignatureScene({
                   key={i}
                   aria-hidden
                   className={cn(
-                    "h-px transition-all duration-700 ease-luxe",
+                    "h-px transition-[width,background-color] duration-700 ease-luxe",
                     i === active ? "w-12 bg-gold-400" : "w-6 bg-sand-100/25",
                   )}
                 />

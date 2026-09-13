@@ -253,13 +253,43 @@ export function OverlayMenu({
             </AnimatePresence>
           </div>
 
-          <div className="relative flex flex-1 items-center overflow-y-auto">
+          {/* A Close INSIDE the dialog. With focus in an aria-modal dialog,
+              WebKit and Chromium drop everything outside it from the
+              accessibility tree — including the header's Close toggle, which
+              stays live for sighted and keyboard users. iOS VoiceOver has no
+              Escape key, so without this a screen-reader user had no way out.
+              Hidden until focused, like the skip link, so the panel looks
+              exactly as approved. aria-modal itself stays: qa/menu-audit.mts
+              finds the panel by it. */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="sr-only focus:not-sr-only focus:absolute focus:bottom-6 focus:left-6 focus:z-10 focus:inline-flex focus:h-11 focus:items-center focus:rounded-pill focus:bg-sand-50 focus:px-6 focus:font-display focus:text-[0.6875rem] focus:font-medium focus:uppercase focus:tracking-[0.16em] focus:text-ocean-950"
+          >
+            Close menu
+          </button>
+
+          {/* The menu's own scroller, for when the list is taller than the
+              viewport (a landscape phone, a short laptop window).
+              - data-lenis-prevent: Lenis is stopped while the menu is open and
+                a stopped Lenis cancels every wheel and touchmove on the page,
+                this one included, unless the path carries this attribute.
+              - overscroll-contain: reaching the end must not chain to the page
+                behind, which under reduced motion only body overflow holds.
+              - my-auto on the nav, not items-center here: auto margins centre
+                when there is room and collapse to zero when there is not, so
+                an overflowing list starts at the top instead of spilling
+                above the scroll origin where it can never be reached. */}
+          <div
+            data-lenis-prevent
+            className="relative flex flex-1 overflow-y-auto overscroll-contain"
+          >
             {/* "Menu", not "Primary": the header's own nav already claims
                 "Primary" and stays live while the overlay is open, so two
                 identically-named navigation landmarks were exposed at once. */}
             <nav
               aria-label="Menu"
-              className="mx-auto w-full max-w-[92rem] px-6 py-24 sm:px-8 lg:px-12"
+              className="mx-auto my-auto w-full max-w-[92rem] px-6 py-24 sm:px-8 lg:px-12"
             >
               <ul className="flex flex-col">
                 {items.map((item, i) => {

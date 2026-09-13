@@ -53,7 +53,10 @@ export function ContactChannels({ site }: { site: SiteContent }) {
                   <span className="block text-eyebrow uppercase text-sand-200/55">
                     {channel.label}
                   </span>
-                  <span className="mt-2 block text-heading-md text-sand-50">
+                  {/* The hover colour lives here, on the value: every text node
+                      in the row sets its own colour, so a colour on the anchor
+                      was inherited by nothing and hovering showed no change. */}
+                  <span className="mt-2 block text-heading-md text-sand-50 transition-colors duration-500 group-hover:text-gold-300">
                     {channel.value}
                   </span>
                 </span>
@@ -69,7 +72,7 @@ export function ContactChannels({ site }: { site: SiteContent }) {
                       {...(channel.external
                         ? { target: "_blank", rel: "noopener noreferrer" }
                         : {})}
-                      className="group block transition-colors duration-500 hover:text-gold-300"
+                      className="group block"
                     >
                       {inner}
                     </a>

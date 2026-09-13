@@ -73,8 +73,13 @@ export type DraftContent = ReturnType<typeof getDraftContent>;
  * file's own JPEG header, so `sizes` can be computed for a landscape frame
  * that `object-cover`s a portrait phone screen.
  */
-export function draftHero(sourcedFile: string, grade: "a" | "b" | "c") {
-  const src = `/images/graded/${grade}/sourced/${sourcedFile}`;
+export function draftHero(
+  sourcedFile: string,
+  grade: "a" | "b" | "c",
+  /** "sourced" for CC-licensed masters (committed), "stock-local" for held masters. */
+  folder: "sourced" | "stock-local" = "stock-local",
+) {
+  const src = `/images/graded/${grade}/${folder}/${sourcedFile}`;
   let width = 0;
   let height = 0;
   try {

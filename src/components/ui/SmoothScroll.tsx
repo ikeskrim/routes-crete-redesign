@@ -48,6 +48,19 @@ export function SmoothScroll({
 
     // Let in-page anchor links run through Lenis.
     const onAnchorClick = (event: MouseEvent) => {
+      // Modified and non-primary clicks stay the browser's, so Cmd/Ctrl+click
+      // and Shift+click still open the anchor in a new tab or window.
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
       const anchor = (event.target as HTMLElement | null)?.closest?.(
         'a[href^="#"]',
       ) as HTMLAnchorElement | null;
@@ -62,6 +75,27 @@ export function SmoothScroll({
       event.preventDefault();
       lenis.scrollTo(target as HTMLElement, { offset: -96 });
       history.pushState(null, "", hash);
+
+      /* Cancelling the click also cancels the browser's own fragment
+         navigation, and that is what moves keyboard focus to the target. The
+         skip link scrolled to <main> and the next Tab went straight back into
+         the nav. So focus is moved by hand: preventScroll leaves the glide to
+         Lenis, and a tabindex borrowed for the purpose is handed back on blur
+         so a later click inside the section cannot pull focus onto it. */
+      const el = target as HTMLElement;
+      if (!el.matches("a[href], button, input, select, textarea, [tabindex]")) {
+        el.setAttribute("tabindex", "-1");
+        el.setAttribute("data-anchor-focus", "");
+        el.addEventListener(
+          "blur",
+          () => {
+            el.removeAttribute("tabindex");
+            el.removeAttribute("data-anchor-focus");
+          },
+          { once: true },
+        );
+      }
+      el.focus({ preventScroll: true });
     };
 
     document.addEventListener("click", onAnchorClick);
@@ -85,9 +119,13 @@ export function SmoothScroll({
     const target = document.querySelector(mapped);
     if (!target) return;
 
+    /* An explicit "smooth" overrides the reduced-motion CSS, which only governs
+       "auto" — so the preference has to be read here. */
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     // Wait a frame so layout has settled before jumping.
     const id = requestAnimationFrame(() => {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
       history.replaceState(null, "", mapped);
     });
     return () => cancelAnimationFrame(id);

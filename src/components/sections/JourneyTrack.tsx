@@ -57,7 +57,6 @@ export function JourneyTrack({
     offset: ["start start", "end end"],
   });
   const pan = useTransform(scrollYProgress, [0, 1], ["0vw", `-${travelVw}vw`]);
-  const progress = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   /* Below lg, under reduced motion, and whenever the track would fit the
      viewport anyway: the ordinary editorial grid, staggered. */
@@ -119,9 +118,11 @@ export function JourneyTrack({
           aria-hidden
           className="mx-auto mt-12 hidden h-px w-[42vw] overflow-hidden bg-ink/12 lg:block"
         >
+          {/* scaleX, not width: a width rewritten every scroll frame lays the
+              page out again; a scale on a full-width bar only composites. */}
           <motion.span
-            style={{ width: progress }}
-            className="block h-full bg-gold-600"
+            style={{ scaleX: scrollYProgress }}
+            className="block h-full w-full origin-left bg-gold-600"
           />
         </div>
       </div>

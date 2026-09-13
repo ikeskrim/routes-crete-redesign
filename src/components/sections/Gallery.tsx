@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DragStrip } from "@/components/ui/DragStrip";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
@@ -66,21 +66,75 @@ export function Gallery({
     [images.length],
   );
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const isOpen = open !== null;
+
+  /* Keys, focus trap and scroll lock — the same shape as OverlayMenu's effect.
+     Keyed on open/closed, NOT on the index: re-running on every step would
+     hand focus back to the tile behind the viewer and pull it in again on each
+     arrow press or Next click. */
   useEffect(() => {
-    if (open === null) return;
+    if (!isOpen) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    /* `overflow: hidden` alone does not hold the page: Lenis scrolls
+       programmatically, which overflow permits (measured behind the menu, see
+       OverlayMenu). Stopping Lenis is the lock; the overflow lock covers
+       reduced motion, where Lenis is never constructed. */
+    const lenis = (window as Window & { __lenis?: { stop: () => void; start: () => void } })
+      .__lenis;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    lenis?.stop();
+
+    // Reopened during its exit fade, AnimatePresence reuses the same node.
+    if (dialogRef.current) dialogRef.current.inert = false;
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
       if (e.key === "ArrowRight") step(1);
       if (e.key === "ArrowLeft") step(-1);
+      if (e.key !== "Tab") return;
+
+      const focusables = dialogRef.current
+        ? [...dialogRef.current.querySelectorAll<HTMLElement>("button:not([disabled])")]
+        : [];
+      if (!focusables.length) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      // Anything outside the viewer (a click on the backdrop drops focus to
+      // the body) is pulled back in rather than walking the page behind.
+      if (!active || !focusables.includes(active)) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+      } else if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKey);
+
+    // The tile that opened the viewer is now underneath it.
+    closeRef.current?.focus({ preventScroll: true });
+
     return () => {
-      document.body.style.overflow = previous;
       document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+      lenis?.start();
+      /* The viewer stays mounted for its exit fade. `inert` goes on BEFORE
+         focus is restored, so the fading dialog is out of the tab order. */
+      if (dialogRef.current) dialogRef.current.inert = true;
+      previouslyFocused?.focus?.({ preventScroll: true });
     };
-  }, [open, close, step]);
+  }, [isOpen, close, step]);
 
   const current = open === null ? null : images[open];
 
@@ -131,6 +185,7 @@ export function Gallery({
       <AnimatePresence>
         {current && (
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label="Image viewer"
@@ -147,6 +202,7 @@ export function Gallery({
                 {String(images.length).padStart(2, "0")}
               </span>
               <button
+                ref={closeRef}
                 type="button"
                 onClick={close}
                 className="text-eyebrow uppercase text-sand-100 hover:text-gold-300"

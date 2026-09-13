@@ -1,6 +1,6 @@
 {
   "note": "Provenance for every photograph on this site that we did not take ourselves. Each entry was verified by SHA-1: the local master is byte-for-byte the file at the source URL, so these are identity matches rather than resemblances. Licences were read off the file page's own wikitext and extmetadata, never inferred from a category, a filename, or a sibling file by the same author. CC BY-SA and NonCommercial files were excluded on purpose: the site applies a colour grade to every image, which creates a derivative, and share-alike would oblige the graded result to carry BY-SA too. The three frames added on 2026-08-28 were sourced in the beauty pass with a deliberate bias to spectacle; each licence was read on its own file page that day, not carried over from the earlier pass.",
-  "verifiedOn": "2026-09-12",
+  "verifiedOn": "2026-09-13",
   "photographs": [
     {
       "file": "gorge-saint-nicholas-aerial.jpg",
@@ -366,6 +366,54 @@
       "surface": "itinerary",
       "modified": true,
       "note": "Design reset, photo hunt IV. The photo page's location line reads Preveli, Greece, and the frame matches the palm-lined river the site already shows from oblique aerials. Preveli is named in the Kourtaliotis story, so this may carry an itinerary caption. Licence read on the photo page itself on 2026-09-11."
+    },
+    {
+      "file": "south-coast-storm-cloud.jpg",
+      "subject": "Storm clouds over the south coast of Crete",
+      "title": "Rain on Agia Galini",
+      "author": "Rob de Vries",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "source": "https://www.flickr.com/photos/72283508@N00/8226115959/",
+      "sha1": "2354c29358779e3cff994b5e1fca0890ad9d45cd",
+      "bytes": 4163851,
+      "dimensions": "3494 × 3042",
+      "attributionRequired": true,
+      "surface": "mood",
+      "modified": true,
+      "note": "Design reset, photo hunt IV. Licence read on the Flickr photo page itself on 2026-09-13 ('Some rights reserved', CC BY 2.0) and confirmed in the page data; EXIF is a consistent camera original (Panasonic DMC-FZ45, 2012-10-08). Crete rests on the photographer's own title and tags; the title names Agia Galini, which the tours do not visit, so it appears only here as the work's title, and every on-page caption stays generic."
+    },
+    {
+      "file": "libyan-sea-coast-dusk.jpg",
+      "subject": "The Libyan Sea coast of Crete at dusk",
+      "title": "Nuper idoneus",
+      "author": "Miltos Gikas (Aries Tottle)",
+      "licence": "CC BY 2.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "source": "https://www.flickr.com/photos/26053600@N03/21406603205/",
+      "sha1": "a78c27c5cc2f4cac4ed10d6083e104b6a96302f6",
+      "bytes": 3721820,
+      "dimensions": "4000 × 2672",
+      "attributionRequired": true,
+      "surface": "mood",
+      "modified": true,
+      "note": "Design reset, photo hunt IV. Licence read on the Flickr photo page itself on 2026-09-13 (CC BY 2.0). The photographer's own description places it on the road to Koudouma on the Libyan Sea coast of south Crete; Koudouma is not a tour place, so it is never named in a caption. The file is a Panasonic MPO container; the grade pipeline reads its primary frame, checked visually after grading."
+    },
+    {
+      "file": "unsplash-RIWb08kc57I.jpg",
+      "subject": "The coast of Crete",
+      "title": "Untitled photograph",
+      "author": "Stefan Kunze",
+      "licence": "Unsplash License",
+      "licenceUrl": "https://unsplash.com/license",
+      "source": "https://unsplash.com/photos/RIWb08kc57I",
+      "sha1": "1cba00b886271b742b29ff36987da00090ccfea1",
+      "bytes": 3764466,
+      "dimensions": "6016 × 4016",
+      "attributionRequired": false,
+      "surface": "mood",
+      "modified": true,
+      "note": "Design reset, photo hunt IV. Found as a Flickr re-upload marked CC0, which this ledger does NOT rely on: the Flickr copy is a third party's upload with different bytes and no EXIF. The master is the original from the photographer's own Unsplash page, read on 2026-09-13 as free to use under the Unsplash License and not Unsplash+ (premium false, plus false). The photographer labels it Crete, Greece; the geotag is a place-name centroid, not a position, so the caption says only Crete. Held outside the repository like every free-stock master."
     }
   ],
   "storageNote": "WHERE THE MASTERS LIVE. CC0 / CC BY / public-domain masters are committed in assets-src/sourced/: those licences permit redistribution, and this repository is public. Free-stock masters (Pexels here; Unsplash if any ship) and any photograph used by written permission are NOT committed. They are held in assets-src/stock-local/, which is gitignored, and only the graded derivative the site serves is published. Pexels forbids redistributing its files on other platforms, and a permission granted for a website does not reach a public repository handing out the original. The SHA-1 above is what ties each held master to its licence; qa/credits-guard.mts fails if such a master is found inside the repo. Pixabay-licensed frames are held entirely, not shipped: that licence forbids distributing content on a standalone basis, and a colour grade leaves a photograph substantially the same. CC BY-SA is still excluded from the site and is a separate decision for the client (see the local contact sheet in .hunt/design-reset/by-sa/)."

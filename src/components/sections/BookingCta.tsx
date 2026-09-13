@@ -56,6 +56,14 @@ export function BookingCta({
     return (
       <div
         ref={sentinel}
+        /* Off-screen is not hidden: translated away, both links stayed
+           focusable and listed, and focus could be left inside as it slid
+           off. inert takes the whole bar out while it is away.
+           data-booking-bar / data-visible let the stylesheet reserve
+           scroll-padding-bottom while the bar covers the viewport's foot. */
+        inert={!visible}
+        data-booking-bar
+        data-visible={visible || undefined}
         className={cn(
           "fixed inset-x-0 bottom-0 z-40 border-t border-sand-100/15 bg-ocean-950/95 backdrop-blur-md transition-transform duration-500 ease-luxe lg:hidden",
           "pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3",

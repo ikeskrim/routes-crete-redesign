@@ -183,7 +183,9 @@ export function LocationsMap({
             >
               <span
                 className={cn(
-                  "block rounded-pill transition-all duration-500 ease-luxe",
+                  // Only the scale changes on hover; transition-transform
+                  // covers the `scale` property Tailwind v4 writes.
+                  "block rounded-pill transition-transform duration-500 ease-luxe",
                   point.type === "airport"
                     ? "size-1.5 bg-sand-100/60"
                     : "size-2 bg-gold-400",

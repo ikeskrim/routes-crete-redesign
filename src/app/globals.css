@@ -145,6 +145,18 @@
     /* Offset for the fixed nav when jumping to an #anchor */
     scroll-padding-top: 6rem;
     -webkit-text-size-adjust: 100%;
+    /* The grey tap flash is redundant: every control has its own hover and
+       :focus-visible styling below. */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* No double-tap-to-zoom delay on controls. Pinch zoom is untouched. */
+  a,
+  button,
+  [role="button"],
+  label,
+  summary {
+    touch-action: manipulation;
   }
 
   body {
@@ -190,6 +202,13 @@
     outline: 2px solid var(--color-gold-500);
     outline-offset: 3px;
     border-radius: 2px;
+  }
+
+  /* A section that received focus from an in-page link (the skip link, see
+     SmoothScroll) is a landing point, not a control — no ring round all of
+     <main>. */
+  [data-anchor-focus]:focus-visible {
+    outline: none;
   }
 
   ::selection {
@@ -567,6 +586,16 @@
 @media (prefers-reduced-motion: reduce) {
   .badge-spin {
     animation: none;
+  }
+}
+
+/* The item pages' booking bar covers the bottom ~4.5rem of a phone screen
+   while it is shown. A link focused by keyboard in that band would count as
+   in view and sit hidden under the bar, so the scroll padding grows to clear
+   it - only below lg, and only while the bar is actually visible. */
+@media (max-width: 1023px) {
+  html:has([data-booking-bar][data-visible]) {
+    scroll-padding-bottom: 5.5rem;
   }
 }
 

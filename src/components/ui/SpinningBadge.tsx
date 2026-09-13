@@ -80,6 +80,7 @@ export function SpinningBadge({
     </span>
   );
 
+  // Before this ships: pause the spin on hover/focus (it loops forever), and give the footer's bottom bar lg clearance so the disc cannot cover "Photography credits".
   const shell =
     "fixed bottom-8 right-8 z-50 hidden place-items-center rounded-pill " +
     "bg-ocean-950/85 backdrop-blur-sm shadow-[0_18px_50px_-24px_rgba(0,0,0,0.9)] " +

@@ -358,7 +358,7 @@ export function RouteJourney({
               >
                 <span
                   className={cn(
-                    "flex size-7 items-center justify-center rounded-pill border font-display text-[0.625rem] tabular-nums transition-all duration-700 ease-luxe",
+                    "flex size-7 items-center justify-center rounded-pill border font-display text-[0.625rem] tabular-nums transition-[scale,color,background-color,border-color] duration-700 ease-luxe",
                     lit
                       ? "border-gold-400/70 bg-ocean-950/80 text-gold-300"
                       : "border-sand-100/20 bg-ocean-950/60 text-sand-200/55",
@@ -454,9 +454,12 @@ export function RouteJourney({
                   </span>
                   <span
                     aria-hidden
+                    // Fixed width, scaled from the right edge: the old w-5/w-10
+                    // swap squeezed the name beside it and could re-wrap the
+                    // row on every hover. Half of 40px is the old 20px.
                     className={cn(
-                      "h-px shrink-0 self-center transition-all duration-700 ease-luxe",
-                      isActive ? "w-10 bg-gold-400" : "w-5 bg-sand-100/25",
+                      "h-px w-10 shrink-0 origin-right self-center transition-[scale,background-color] duration-700 ease-luxe",
+                      isActive ? "scale-x-100 bg-gold-400" : "scale-x-50 bg-sand-100/25",
                     )}
                   />
                 </button>

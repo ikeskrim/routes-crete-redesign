@@ -182,6 +182,7 @@ export default function HomePage() {
 
           <SplitLines
             as="h2"
+            id="journeys-heading"
             text="Journeys into the unknown side of the island"
             className="text-display-lg mt-6 max-w-[15ch] text-ink"
           />

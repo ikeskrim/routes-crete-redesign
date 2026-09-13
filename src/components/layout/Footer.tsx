@@ -121,6 +121,8 @@ export function Footer({ site }: { site: SiteContent }) {
       <div className="relative border-t border-sand-100/10">
         <h2
           aria-label={brand.name}
+          // The brand is a name, not words: keep browser auto-translate off it.
+          translate="no"
           className="select-none px-4 pt-10 pb-2 text-center font-display font-bold uppercase leading-[0.78] tracking-[-0.045em] text-sand-50/95"
           style={{ fontSize: "clamp(3rem, 15.5vw, 13rem)" }}
         >

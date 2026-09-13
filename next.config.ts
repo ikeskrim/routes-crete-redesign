@@ -82,7 +82,10 @@ function legacyImageRedirects() {
  * Development is left without CSP: the dev server's hot reload needs eval and
  * websockets, and a dev-only exception would only teach the policy to lie.
  */
-const CSP_ENFORCE = false;
+/* Earned on 2026-09-13: shipped report-only in 36854c0, and security-headers
+   loaded all nine routes of that live deployment in Chromium with zero
+   violations. Flip back to false first if a new embed or origin is added. */
+const CSP_ENFORCE = true;
 
 const CSP = [
   "default-src 'self'",

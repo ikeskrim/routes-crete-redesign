@@ -327,9 +327,11 @@ export function ItemDetail({ item }: { item: ContentItem }) {
             >
               <span
                 aria-hidden
-                className="h-px w-10 bg-ink/30 transition-all duration-500 ease-luxe group-hover:w-16 group-hover:bg-gold-500"
+                // Scaled, not widened (40px x 1.6 = 64px); the label slides
+                // the matching 24px, so the hover lands where it always did.
+                className="h-px w-10 origin-left bg-ink/30 transition-[scale,background-color] duration-500 ease-luxe group-hover:scale-x-[1.6] group-hover:bg-gold-500"
               />
-              <span className="text-eyebrow uppercase text-ink">
+              <span className="text-eyebrow uppercase text-ink transition-transform duration-500 ease-luxe group-hover:translate-x-6">
                 All experiences
               </span>
             </Link>
