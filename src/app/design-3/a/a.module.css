@@ -1,0 +1,946 @@
+/* TEMPORARY — /design-3/a "Deep Aegean". Every token lives in the --dae-*
+   namespace; the site's theme tokens are never touched. */
+
+.root {
+  --dae-ground: #060f17;
+  --dae-surface: #0b1b28;
+  --dae-sea: #0f2c42;
+  --dae-midnight: #15405f;
+  --dae-ivory: #f1ebdf;
+  --dae-muted: #a7b3bd;
+  --dae-gold: #c8a15a;
+  --dae-gold-text: #e6cf95;
+  --dae-rule: rgb(200 161 90 / 0.8);
+  --dae-rule-soft: rgb(200 161 90 / 0.3);
+  --dae-gutter: clamp(1.25rem, 5vw, 4rem);
+  --dae-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+
+  --dae-display: var(--font-dae-display), "Cormorant Garamond", Garamond, "Times New Roman", serif;
+  --dae-body: var(--font-dae-body), Jost, "Helvetica Neue", Arial, sans-serif;
+
+  min-height: 100svh;
+  background: var(--dae-ground);
+  color: var(--dae-ivory);
+  font-family: var(--dae-body);
+  font-weight: 400;
+  overflow-x: clip;
+}
+
+.root ::selection {
+  background: var(--dae-gold-text);
+  color: var(--dae-ground);
+}
+
+.root :focus-visible {
+  outline: 2px solid var(--dae-gold-text);
+  outline-offset: 4px;
+  border-radius: 0;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 96rem;
+  margin-inline: auto;
+  padding-inline: var(--dae-gutter);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ BAR */
+
+/* Fixed, so brand and Menu stay in reach all the way down. Transparent over
+   the hero; the ground colour fades in behind it once the page has moved. */
+.bar {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 30;
+}
+
+.bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(6 15 23 / 0.94);
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+
+.bar[data-solid="true"]::before {
+  opacity: 1;
+}
+
+.barRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: 4rem;
+}
+
+@media (min-width: 1024px) {
+  .barRow {
+    height: 5rem;
+  }
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--dae-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--dae-ivory);
+  text-decoration: none;
+}
+
+.hairline,
+.panelHairline {
+  position: relative;
+  display: block;
+  height: 1px;
+  background: linear-gradient(to right, var(--dae-rule) 0%, var(--dae-rule) 70%, rgb(200 161 90 / 0.2) 100%);
+  transform-origin: left center;
+}
+
+.navRow {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .navRow {
+    display: block;
+  }
+}
+
+.navRow ul {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 2.2vw, 2.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 44px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dae-ivory);
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+
+.navLink:hover {
+  color: var(--dae-gold-text);
+}
+
+.extIcon {
+  width: 0.625rem;
+  height: 0.625rem;
+  flex: none;
+}
+
+/* ----------------------------------------------------------------- MENU */
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 44px;
+  min-width: 44px;
+  margin-right: -0.5rem;
+  padding: 0 0.5rem;
+  border: 0;
+  background: transparent;
+  color: var(--dae-ivory);
+  font: 500 0.75rem/1 var(--dae-body);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (min-width: 1024px) {
+  .menuButton {
+    display: none;
+  }
+}
+
+.glyph {
+  position: relative;
+  display: block;
+  width: 1.5rem;
+  height: 0.5rem;
+}
+
+.glyph::before,
+.glyph::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+}
+
+.glyph::before {
+  top: 0;
+}
+
+.glyph::after {
+  top: calc(100% - 1px);
+}
+
+.glyph[data-open="true"]::before {
+  top: calc(50% - 0.5px);
+  transform: rotate(45deg);
+}
+
+.glyph[data-open="true"]::after {
+  top: calc(50% - 0.5px);
+  transform: rotate(-45deg);
+}
+
+/* A native modal dialog: the browser keeps it in the top layer and makes the
+   page behind it inert. The UA box is reset to a full-screen sheet. */
+.panel {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--dae-ivory);
+  background:
+    radial-gradient(120% 60% at 100% 0%, rgb(21 64 95 / 0.5), transparent 60%),
+    var(--dae-ground);
+}
+
+.panel::backdrop {
+  background: #060f17;
+}
+
+.panelInner {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  min-height: calc(100% - 4rem - 1px);
+  padding-top: 2.25rem;
+  padding-bottom: 2.5rem;
+}
+
+.panelLabel,
+.label {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dae-gold-text);
+}
+
+.panelLabel {
+  margin-bottom: 1rem;
+}
+
+.panelJourneys {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--dae-rule);
+}
+
+.panelJourneys li {
+  border-bottom: 1px solid var(--dae-rule-soft);
+}
+
+.panelJourney {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-block: 1.1rem;
+  color: var(--dae-ivory);
+  text-decoration: none;
+}
+
+.panelJourneyCat {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dae-muted);
+}
+
+.panelJourneyTitle {
+  font-family: var(--dae-display);
+  font-weight: 400;
+  font-size: 1.625rem;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.panelNav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.panelNav .navLink {
+  min-height: 48px;
+}
+
+.panelAddress {
+  margin: auto 0 0;
+  font-size: 0.875rem;
+  color: var(--dae-muted);
+}
+
+/* ----------------------------------------------------------------- HERO */
+
+/* Phone and tablet: the photograph is a tall band. The cave frame is a
+   portrait, so the band shows the cave mouth, the sky in it and the misty sea
+   below. The eyebrow and headline sit inside the band on the dark rock; the
+   paragraph and the two actions follow on the ground below; the caption
+   closes the section. */
+.hero {
+  --dae-band: clamp(26rem, 100svh - 13.5rem, 46rem);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: var(--dae-band) auto auto;
+  background: var(--dae-ground);
+}
+
+.heroMedia {
+  grid-area: 1 / 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* One crop for both geometries: in a tall box the frame is height-limited
+   and 50% across keeps the cave mouth centred; in a wide box it is
+   width-limited and 46% down keeps the Milky Way and the horizon in the
+   mouth, trimming rock above and sea below. */
+.heroImg {
+  object-fit: cover;
+  object-position: 50% 46%;
+}
+
+/* Measured, not guessed — see .hunt/design-reset/drafts/a/shots.mjs. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgb(6 15 23 / 0.72) 0, rgb(6 15 23 / 0.34) 5rem, rgb(6 15 23 / 0) 9rem),
+    radial-gradient(ellipse 95% 40% at 6% 66%, rgb(6 15 23 / 0.62) 0%, rgb(6 15 23 / 0.32) 55%, rgb(6 15 23 / 0) 100%),
+    linear-gradient(to top, var(--dae-ground) 0%, rgb(6 15 23 / 0.55) 4%, rgb(6 15 23 / 0) 10%);
+}
+
+/* The load moment's darkness: a plain overlay whose opacity falls away, so
+   nothing repaints the photograph itself. */
+.heroMedia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--dae-ground);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.heroCopy {
+  display: contents;
+}
+
+.heroHead {
+  grid-area: 1 / 1;
+  align-self: end;
+  position: relative;
+  padding-bottom: calc(var(--dae-band) * 0.2);
+}
+
+.heroRest {
+  grid-area: 2 / 1;
+  padding-top: 1.25rem;
+}
+
+.caption {
+  grid-area: 3 / 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 3.5rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--dae-muted);
+}
+
+/* Wide screens: full bleed, cropped to the cave mouth. The darkness sits under
+   the text column only, so the sky in the mouth keeps its light; a short band
+   at the foot carries the frame into the ground. */
+@media (min-width: 1024px) {
+  .hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: max(40rem, 100svh);
+  }
+
+  .heroMedia {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  /* The second layer is the headline's own: on a wide screen the frame is
+     width-limited, so the crop cannot move the Milky Way out from behind
+     "unknown" and "Crete". Measured with the director's contrast map, letters
+     sat under 3:1 there (worst 1.27:1) before this band was added. It is flat
+     and low, so the sky in the cave mouth above the headline keeps its light. */
+  .scrim {
+    background:
+      linear-gradient(to bottom, rgb(6 15 23 / 0.7) 0, rgb(6 15 23 / 0.32) 5.5rem, rgb(6 15 23 / 0) 11rem),
+      radial-gradient(
+        ellipse 58% 26% at 36% 54%,
+        rgb(6 15 23 / 0.66) 0%,
+        rgb(6 15 23 / 0.58) 50%,
+        rgb(6 15 23 / 0.32) 78%,
+        rgb(6 15 23 / 0) 100%
+      ),
+      radial-gradient(
+        ellipse 62% 80% at 0% 82%,
+        rgb(6 15 23 / 0.86) 0%,
+        rgb(6 15 23 / 0.74) 42%,
+        rgb(6 15 23 / 0.4) 72%,
+        rgb(6 15 23 / 0) 100%
+      ),
+      linear-gradient(to top, var(--dae-ground) 0%, rgb(6 15 23 / 0.72) 7%, rgb(6 15 23 / 0.3) 13%, rgb(6 15 23 / 0) 20%);
+  }
+
+  .heroCopy {
+    display: block;
+    position: relative;
+    padding-top: 8rem;
+    padding-bottom: 6.5rem;
+  }
+
+  .heroHead {
+    padding-bottom: 0;
+  }
+
+  .heroRest {
+    padding-top: 0;
+  }
+
+  .caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 2rem;
+    margin-top: 0;
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+.eyebrow {
+  margin: 0 0 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dae-gold-text);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--dae-display);
+  font-weight: 400;
+  font-size: clamp(3.25rem, 1.5rem + 6.4vw, 7.5rem);
+  line-height: 0.94;
+  letter-spacing: -0.015em;
+  color: var(--dae-ivory);
+  text-wrap: balance;
+}
+
+@media (min-width: 640px) {
+  .heading {
+    font-weight: 300;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heading {
+    max-width: 20ch;
+  }
+}
+
+.sub {
+  margin: 0;
+  max-width: 40ch;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--dae-ivory);
+}
+
+@media (min-width: 1024px) {
+  .sub {
+    margin-top: 1.75rem;
+    font-size: 1.125rem;
+  }
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 2rem;
+  margin-top: 1.75rem;
+}
+
+@media (min-width: 1024px) {
+  .ctas {
+    margin-top: 2.25rem;
+  }
+}
+
+.ctaPrimary,
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.ctaPrimary {
+  padding-inline: 1.75rem;
+  border: 1px solid var(--dae-gold);
+  color: var(--dae-ivory);
+  transition: background-color 240ms ease, color 240ms ease;
+}
+
+.ctaPrimary:hover {
+  background: var(--dae-gold-text);
+  color: var(--dae-ground);
+}
+
+.ctaSecondary {
+  color: var(--dae-gold-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.7em;
+  text-decoration-color: rgb(230 207 149 / 0.5);
+}
+
+.ctaSecondary:hover {
+  text-decoration-color: currentColor;
+}
+
+/* The one orchestrated moment: the camera settles on the night sky as the dark
+   lifts, the gold horizon draws under the bar, the words surface. Reduced
+   motion never runs it, so every element simply is its end state. */
+@media (prefers-reduced-motion: no-preference) {
+  .heroImg {
+    animation: dae-settle 2800ms var(--dae-ease) both;
+  }
+
+  .heroMedia::after {
+    animation: dae-lift-dark 2400ms ease-out both;
+  }
+
+  .hairline {
+    animation: dae-draw 1600ms cubic-bezier(0.65, 0, 0.25, 1) 250ms both;
+  }
+
+  .rise {
+    animation: dae-rise 1100ms var(--dae-ease) both;
+    animation-delay: var(--dae-delay, 0ms);
+  }
+
+  .panel[open] {
+    animation: dae-fade 320ms var(--dae-ease) both;
+  }
+
+  .panel[open] .panelInner {
+    animation: dae-rise-short 460ms var(--dae-ease) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar::before,
+  .ctaPrimary,
+  .navLink {
+    transition: none;
+  }
+}
+
+@keyframes dae-settle {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes dae-lift-dark {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dae-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes dae-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes dae-rise-short {
+  from {
+    transform: translateY(0.75rem);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes dae-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* -------------------------------------------------------------- CHAPTER */
+
+/* A dark chapter lit from within: a midnight glow sits behind the statement,
+   so the section reads as a room, not as the page's flat ground. */
+.chapter {
+  padding-block: clamp(5.5rem, 12vw, 10rem) clamp(5rem, 9vw, 8rem);
+  background:
+    radial-gradient(ellipse 70% 62% at 76% 34%, rgb(21 64 95 / 0.44) 0%, rgb(15 44 66 / 0.18) 52%, rgb(15 44 66 / 0) 80%),
+    var(--dae-ground);
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: 2rem;
+  }
+
+  .label {
+    padding-top: 1.5rem;
+  }
+}
+
+.statement {
+  margin: 0;
+  font-family: var(--dae-display);
+  font-weight: 300;
+  font-size: clamp(2.75rem, 1.4rem + 4.6vw, 5.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  color: var(--dae-ivory);
+}
+
+/* Each sentence starts its own line, so the break falls where the voice
+   pauses rather than wherever the measure runs out. */
+.sentence {
+  display: block;
+  text-wrap: balance;
+}
+
+.chapterDetail {
+  display: grid;
+  gap: 2.75rem;
+  margin-top: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .chapterDetail {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 3rem;
+    margin-top: 3.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chapterDetail {
+    gap: 4.5rem;
+    margin-top: 4.5rem;
+  }
+}
+
+.chapterBody {
+  margin: 0;
+  max-width: 38ch;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--dae-muted);
+}
+
+.attributes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.attributes li {
+  padding-block: 0.95rem 1.05rem;
+  border-top: 1px solid var(--dae-rule);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: var(--dae-ivory);
+}
+
+.attributes li:nth-last-child(-n + 2) {
+  border-bottom: 1px solid var(--dae-rule);
+}
+
+/* ------------------------------------------------------------- JOURNEYS */
+
+/* A deeper band: the ground sinks into the surface tone under a faint
+   midnight light, so the journeys sit in their own place. */
+.journeys {
+  padding-block: clamp(3rem, 6vw, 5rem) clamp(5rem, 10vw, 9rem);
+  background:
+    radial-gradient(ellipse 60% 20rem at 22% 22rem, rgb(21 64 95 / 0.3) 0%, rgb(21 64 95 / 0) 100%),
+    linear-gradient(to bottom, var(--dae-ground) 0, var(--dae-surface) 24rem, var(--dae-surface) 100%);
+}
+
+.journeysHeading {
+  margin: 0;
+  max-width: 24ch;
+  font-family: var(--dae-display);
+  font-weight: 300;
+  font-size: clamp(2.125rem, 1.4rem + 2.4vw, 3.5rem);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  color: var(--dae-ivory);
+  text-wrap: balance;
+}
+
+.cards {
+  display: grid;
+  gap: 3.5rem;
+  margin: 3rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: block;
+  color: var(--dae-ivory);
+  text-decoration: none;
+}
+
+/* A 4:3 window, which a 3:2 landscape source fills without enlargement. The
+   night grade is an SVG filter (see page.tsx); behind the photograph a
+   midnight light shows wherever the grade keys white out, and the lower edge
+   dissolves into whatever tone the section has there. */
+.cardMedia {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: radial-gradient(
+    ellipse 72% 70% at 50% 46%,
+    rgb(21 64 95 / 0.7) 0%,
+    rgb(15 44 66 / 0.3) 58%,
+    rgb(15 44 66 / 0) 100%
+  );
+  /* The lower edge dissolves into the section; a wide oval takes the two top
+     corners down into the night, so no frame reads as a hard-cut rectangle. */
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000 64%, transparent 100%),
+    radial-gradient(ellipse 75% 130% at 50% 96%, #000 70%, transparent 92%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, #000 64%, transparent 100%),
+    radial-gradient(ellipse 75% 130% at 50% 96%, #000 70%, transparent 92%);
+  mask-composite: intersect;
+}
+
+.cardImg {
+  object-fit: cover;
+  filter: url(#dae-night);
+}
+
+.cardHead {
+  padding-top: 1rem;
+}
+
+.category {
+  margin: 0 0 0.8rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dae-muted);
+}
+
+.cardTitle {
+  margin: 0;
+  font-family: var(--dae-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1.45rem + 0.6vw, 2.125rem);
+  line-height: 1.08;
+  letter-spacing: 0;
+  color: var(--dae-ivory);
+  text-wrap: balance;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: var(--dae-gold);
+}
+
+.card:hover .cardTitle {
+  text-decoration-line: underline;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  font-family: var(--dae-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.35;
+  color: var(--dae-muted);
+}
+
+.cardRule {
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  margin-block: 1.25rem 1rem;
+  background: var(--dae-gold);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--dae-muted);
+}
+
+/* Tablet: one journey per row, photograph beside its words, so titles keep
+   a real measure instead of wrapping in a narrow third. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .cards {
+    gap: 3rem;
+    margin-top: 3.5rem;
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    column-gap: 2rem;
+  }
+
+  .cardMedia {
+    grid-row: 1 / span 2;
+  }
+
+  .cardHead {
+    align-self: end;
+    padding-top: 0;
+  }
+
+  .cardFoot {
+    align-self: start;
+  }
+}
+
+/* Wide: three across on a shared subgrid, so the titles, and the rule and
+   facts beneath them, line up across all three cards. */
+@media (min-width: 1024px) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: clamp(2rem, 3.2vw, 3rem);
+    row-gap: 0;
+    margin-top: 4.5rem;
+  }
+
+  .cards > li {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+
+  .card {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+}

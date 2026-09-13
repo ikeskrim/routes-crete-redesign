@@ -93,6 +93,32 @@ slot waits for the real thing or the slot goes away.
 
 ---
 
+## Found 2026-09-13, not yet scheduled
+
+### A tap on Menu before hydration does nothing
+
+**What.** The overlay menu's trigger is a server-rendered `<button>` whose
+click handler arrives with hydration. A visitor who taps Menu in the first
+moments of a page load, before React has hydrated the header, gets no response
+and has to tap again. On the deployment, headless Chromium measured the menu
+usable a median of about 300 ms after `domcontentloaded`, with occasional runs
+past 1.5 s under load.
+
+**How it surfaced.** menu-audit's single early click lost this race twice on
+the `2b2d00d` deployment, while the machine was heavily loaded. An interleaved
+A/B on the immutable `36854c0` and `2b2d00d` deployments showed matching
+medians, no CSP violation and no error, so it was not a regression. The same
+edge exists on `36854c0`. The audit now waits for the trigger to hydrate before
+its one click; the product behaviour is unchanged.
+
+**Why it is deferred, not fixed.** The overlay menu is an approved component,
+and the fix changes how it opens rather than how it looks. Candidates: a
+native `<dialog>` or `popover` that opens without waiting for React, or a
+no-JS fallback that makes an early tap still work. Either needs its own menu
+audit and a check of the 250 ms TBT budget, not a late patch.
+
+---
+
 ## Standing constraints
 
 These are not tasks; they are things that must remain true and are easy to
@@ -104,8 +130,17 @@ erode.
   reviews, ratings, or prices. No public email address exists — it stays null.
   The "Cretan Routes" Facebook page is a different, unrelated business and must
   never be linked.
-- **No AI-generated scenery, people, or experience imagery.** Sourced
-  photography must be of the actual places and must carry a licence ledger
-  entry.
+- **No AI-generated scenery, people, or experience imagery.** Every sourced
+  photograph carries a licence ledger entry, read on its own page. Two rules
+  decide where a frame may go, set by the design-reset brief (2026-09-11):
+  - **Itinerary surfaces** (cards, galleries, waypoints, route stops, item
+    heroes) show only the actual places the tours visit.
+  - **Mood surfaces** (the homepage hero, section bands, the closing scene,
+    the menu backdrop) may show any verifiable Crete. They are captioned
+    honestly and generically, and never name a place the tours do not go.
+- **Where masters live.** CC masters are committed. Free-stock and
+  written-permission masters stay in the gitignored `assets-src/stock-local/`,
+  and Pixabay frames are held entirely — this repository is public.
+  `qa/credits-guard.mts` enforces it.
 - **Secrets live in Vercel environment variables**, never in the repo. If the
   enquiry form gains a mail provider, its key goes there.

@@ -73,6 +73,12 @@ export default function DesignThreeIndex() {
           each with its own colours, its own typefaces and a new photograph. Open each one on this
           phone, then pick one. The one you choose is rolled out across the whole site.
         </p>
+        <p className="mt-3 max-w-[56ch] text-[0.9375rem] leading-relaxed text-[#3d4044]">
+          The three photographs are licensed pictures of Crete, each chosen for the light its
+          direction needs, and each is captioned only as what it shows. B&rsquo;s is Preveli, one of
+          the places the tours go. A&rsquo;s night sky is a processed astrophotograph — beautiful,
+          but brighter than the eye sees it.
+        </p>
         {manifest ? (
           <p className="mt-3 text-[0.8125rem] text-[#5a5d61]">
             Frames captured from the live site, build <code>{manifest.commit}</code>.

@@ -15,7 +15,7 @@ npx next start -p 3009
 | `node qa/lighthouse.mts [route ...]` | Lighthouse mobile → `qa/lighthouse/`. Three routes by default; `QA_LH_RUNS=5` gates on the median |
 | `node qa/parity.mts` | Content parity: originals preserved, rendered copy present |
 | `node qa/asset-audit.mts` | No dangling image paths; everything photographic is graded and has a blur placeholder |
-| `node qa/text-contrast.mts` | Text on a photograph clears 3:1 at its worst pixel, against the rendered backdrop |
+| `node qa/text-contrast.mts` | Text on a photograph clears 3:1 at its worst pixel, against the rendered backdrop. The box measured is the whole element's, so other text that falls inside it counts as backdrop: map where a failure sits before darkening a scrim for it |
 | `node qa/security-headers.mts` | Every route serves CSP, HSTS (without includeSubDomains or preload), X-Frame-Options, nosniff, Referrer-Policy and Permissions-Policy, and no X-Powered-By; Chromium sees zero CSP violations on any route; the booking-form iframe is sandboxed. Production server only |
 | `node qa/alias-assert.mts <sha7>` | Is the alias serving this commit? LIVE (0), PENDING (1), BLOCKED by bot mitigation (2) |
 | `powershell -File qa/grade.ps1 -Grade C` | Regrade the corpus. **Name the grade** — the script defaults to A, and the live grade is C |
@@ -364,6 +364,45 @@ the next real failure gets waved away as "probably contention".
 
 And always re-run a single failing guard on its own **before** believing it.
 Twice now the first reading has been the wrong one.
+
+## A click before hydration is a lost click
+
+On 2026-09-13 the rule above was followed and was not enough.
+
+`menu-audit` failed on the live `2b2d00d` deployment. It failed again when re-run
+on its own. The two failures were in **different sections** — `coverage`, then
+`background hidden` — but had the same message: the audit's single click on
+Menu, about 1.2 s after the HTML arrived, opened nothing, and the 5 s wait timed
+out. The same commit passed all 37 assertions locally.
+
+A failure that moves between sections is a race, not a broken check. The
+question is who lost it: the product or the harness. Re-running until green
+cannot answer that, so it was measured instead:
+
+- **An interleaved A/B on the two immutable deployments.** The last commit that
+  passed, and the one that failed, alternated run by run under identical load.
+  Each run timed how long after `domcontentloaded` the menu actually opened.
+- **8 runs a side:** medians of 275 ms and 298 ms.
+- **20 runs a side:** 380 ms and 277 ms. No run past 1.2 s.
+- **Across all 56 opens:** no CSP violation and no error. The newly enforcing
+  CSP was ruled out on a path `security-headers` never exercises.
+
+It was the harness. A click that lands before React hydrates the header is
+silently dropped: the server-rendered button has no handler yet. With three
+draft builders loading the machine, hydration sometimes landed after the one
+click.
+
+> **Wait for the thing the click needs, not for a fixed delay.** `openMenu()` now
+> waits until React has attached its props to the trigger (`__reactProps$`),
+> then makes its single click. A menu that does not open after that click still
+> fails, so nothing was relaxed.
+>
+> If that internal key ever disappears, the wait times out at 15 s and the audit
+> fails loudly. Result: three runs out of three green on the same deployment.
+
+The race is also a real edge for visitors: a tap on Menu before hydration does
+nothing. It predates `2b2d00d`, and it is recorded in `BACKLOG.md` rather than
+patched in a hurry.
 
 ## A capture set that the next capture can overwrite is not a record
 

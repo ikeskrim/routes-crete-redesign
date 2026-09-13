@@ -36,10 +36,30 @@ On Vercel the framework preset is detected and no configuration is required.
 - **`/assets/files/entypo.pdf`** is a static file in `public/`, served byte-exact.
 - **`sitemap.xml` / `robots.txt`** are generated routes.
 
-### Recommended headers
+### Headers (shipped, and guarded)
 
-`/images/*` already ships `Cache-Control: public, max-age=31536000, immutable` via
-`next.config.ts`. Nothing else is required.
+Everything is set in `next.config.ts`, on every route, and checked by
+`qa/security-headers.mts` against a production server:
+
+- **`Cache-Control: public, max-age=31536000, immutable`** on `/images/*`.
+- **`Content-Security-Policy`, enforcing.** It shipped report-only first, and was
+  switched to enforcing only after the guard loaded all nine routes of the live
+  deployment in Chromium and saw zero violations.
+  - `frame-src` allows exactly one origin, the Monday.com form.
+  - `script-src 'unsafe-inline'` is a stated trade-off: nonces would force every
+    page to render per request and give up static generation.
+- **`Strict-Transport-Security: max-age=63072000`**, deliberately **without**
+  `includeSubDomains` or `preload`. See the cutover checklist.
+- **`X-Frame-Options: DENY`**, **`X-Content-Type-Options: nosniff`**,
+  **`Referrer-Policy: strict-origin-when-cross-origin`**, and a locked
+  **`Permissions-Policy`**.
+- **No `X-Powered-By`** (`poweredByHeader: false`).
+
+**Before adding any new embed or third-party origin**, set `CSP_ENFORCE` to
+`false` in `next.config.ts`. Then add the origin to the policy, deploy, and run
+`qa/security-headers.mts` against the deployment. Enforce again only when it
+reports zero violations. An enforcing policy that blocks something fails
+silently for visitors.
 
 ---
 
@@ -83,6 +103,9 @@ Run top to bottom. Do not start until the pre-launch smoke list passes on a stag
 
 - [ ] `npm ci && npm run build` — clean, zero TypeScript errors.
 - [ ] `npx next start -p 3009`, then:
+  - [ ] **All ten guards, un-piped, one after another** (the command is in
+        `CLOSING.md`). Each must report OK. That includes `qa/security-headers.mts`:
+        every header present, zero CSP violations.
   - [ ] `node qa/parity.mts` — must report **PARITY OK — no deltas**.
   - [ ] `QA_LH_RUNS=5 node qa/lighthouse.mts` — all three gated routes, median of five; record the numbers.
   - [ ] `node qa/visual-check.mts` — review `qa/screenshots/`.
@@ -124,6 +147,16 @@ Run top to bottom. Do not start until the pre-launch smoke list passes on a stag
 - [ ] Point `routescrete.gr` and `www.routescrete.gr` at the new host; keep one canonical host
       and 301 the other.
 - [ ] Issue/verify TLS before cutover; confirm HTTPS and the HTTP → HTTPS redirect.
+- [ ] **Decide the HSTS scope with the client — do not just add it.** The site sends
+      `max-age=63072000` only.
+  - `includeSubDomains` would commit **every** subdomain of `routescrete.gr` to
+    HTTPS, including mail or any other service. Add it only once each one
+    serves HTTPS.
+  - `preload` puts the domain into browsers' built-in lists, and removal takes
+    months. Treat it as a separate, later decision.
+- [ ] **Vercel protection is the owner's setting, not this repository's.** Bot
+      Protection (start in log mode) and Deployment Protection for previews are
+      project settings. Decide them with the client; nothing here changes them.
 - [ ] **Keep the old hosting live and unchanged until the new site is verified in production**,
       so rollback is a DNS revert rather than a restore.
 
@@ -132,6 +165,8 @@ Run top to bottom. Do not start until the pre-launch smoke list passes on a stag
 - [ ] Re-run the smoke list against the live domain.
 - [ ] Submit `sitemap.xml` in Search Console; watch coverage for the legacy `/media/*` URLs.
 - [ ] Re-run Lighthouse against production — real CDN numbers will differ from local.
+- [ ] Re-run `qa/security-headers.mts` against the live domain: the headers must
+      survive the move, and the CSP must still see zero violations.
 
 ---
 
@@ -185,9 +220,25 @@ The git-main alias carries `X-Robots-Tag: noindex`, so Lighthouse reports
 images resolve on whatever origin is actually serving. After DNS cutover the
 two converge and the file becomes a no-op — no change required.
 
-There are no temporary routes left to remove. Three existed, each for one
-conversation, and each was deleted once that conversation closed: `/serif-preview`
-(the typeface A/B), `/review` (the first ten decisions as a page) and `/review-2`
-(the beauty, interaction and photo-hunt passes, nine items plus the trust line),
-with `public/review-assets/`, `public/review2-assets/` and the capture script that
-fed them. Every route that ships is a route a visitor is meant to find.
+**One temporary route is live: `/design-3`.** It holds three drafts of the
+homepage top (`/design-3/a`, `/b`, `/c`) and an index page, built so the client
+can choose the new direction from his phone. It is `noindex, nofollow`, linked
+from nowhere, and absent from the sitemap. **Delete it once the client has
+picked, and before cutover**:
+
+```bash
+git rm -r src/app/design-3 public/design3-assets qa/design3-shots.mts
+```
+
+Then remove the matching leftovers by hand:
+- the `/design-3 DRAFTS` block at the end of `src/app/globals.css`
+- the `data-site-chrome` attributes in `Nav.tsx` and `Footer.tsx`
+
+Three earlier temporary routes existed, each for one conversation, and each was
+deleted once that conversation closed:
+- `/serif-preview` (the typeface A/B)
+- `/review` (the first ten decisions as a page)
+- `/review-2` (the beauty, interaction and photo-hunt passes, nine items plus the trust line)
+
+Their assets and capture scripts went with them. After `/design-3` is gone,
+every route that ships is a route a visitor is meant to find.

@@ -414,6 +414,38 @@
       "surface": "mood",
       "modified": true,
       "note": "Design reset, photo hunt IV. Found as a Flickr re-upload marked CC0, which this ledger does NOT rely on: the Flickr copy is a third party's upload with different bytes and no EXIF. The master is the original from the photographer's own Unsplash page, read on 2026-09-13 as free to use under the Unsplash License and not Unsplash+ (premium false, plus false). The photographer labels it Crete, Greece; the geotag is a place-name centroid, not a position, so the caption says only Crete. Held outside the repository like every free-stock master."
+    },
+    {
+      "file": "unsplash-3atB9u9SG_o.jpg",
+      "subject": "The Cretan coast at night",
+      "title": "Untitled photograph",
+      "author": "Evgeni Tcherkasski",
+      "licence": "Unsplash License",
+      "licenceUrl": "https://unsplash.com/license",
+      "source": "https://unsplash.com/photos/a-view-of-the-night-sky-from-inside-a-cave-3atB9u9SG_o",
+      "sha1": "5f40f90a3dbc4e2631d7b73ea86935563d72676c",
+      "bytes": 4348974,
+      "dimensions": "4016 × 5536",
+      "attributionRequired": false,
+      "surface": "mood",
+      "modified": true,
+      "note": "Design reset, photo hunt IV. A processed astrophotograph: the photographer's own composite of a stacked night sky over a long-exposure sea, seen from inside a sea cave. It is presented as exactly that, not as a straight photograph of what a visitor will see. The photographer labels it Crete; which coast is not proven, so the caption says only 'the Cretan coast'. Never captioned or placed as the cave on the Tradition tour, which is a different, inland cave. Licence read on the live photo page on 2026-09-13 ('Free to use under the Unsplash License'); the proposer's page-data snapshot showed it is not premium and not Unsplash+. A browser visit the same day confirmed only the page's own title, 'Free Photo on Unsplash': the page body did not render for text extraction, so the licence line itself was not re-read there. Held outside the repository like every free-stock master."
+    },
+    {
+      "file": "unsplash-G9KqlQdOlwA.jpg",
+      "subject": "Preveli's palm forest running down to the Libyan Sea",
+      "title": "Untitled photograph",
+      "author": "Dimitris Kiriakakis",
+      "licence": "Unsplash License",
+      "licenceUrl": "https://unsplash.com/license",
+      "source": "https://unsplash.com/photos/green-grass-on-rocky-shore-during-daytime-G9KqlQdOlwA",
+      "sha1": "85d0b2c50bcff1f85e3b562f0815976a9c6f0d77",
+      "bytes": 2949186,
+      "dimensions": "4000 × 3000",
+      "attributionRequired": false,
+      "surface": "itinerary",
+      "modified": true,
+      "note": "Design reset, photo hunt IV. Exact place verified: the photographer's own description names the Preveli palm forest in southern Crete, with a location of Preveli beach (35.1526, 24.4739), and the frame is the palm-lined river running to the beach. Preveli is on the Kourtaliotis route, so this may carry an itinerary caption. The swimmers in the river are too small to identify. Licence read on the live photo page on 2026-09-13 ('Free to use under the Unsplash License'); the proposer's page-data snapshot showed it is not premium and not Unsplash+. A browser visit the same day confirmed only the page's own title, 'Free Photo on Unsplash': the page body did not render for text extraction, so the licence line itself was not re-read there. Held outside the repository."
     }
   ],
   "storageNote": "WHERE THE MASTERS LIVE. CC0 / CC BY / public-domain masters are committed in assets-src/sourced/: those licences permit redistribution, and this repository is public. Free-stock masters (Pexels here; Unsplash if any ship) and any photograph used by written permission are NOT committed. They are held in assets-src/stock-local/, which is gitignored, and only the graded derivative the site serves is published. Pexels forbids redistributing its files on other platforms, and a permission granted for a website does not reach a public repository handing out the original. The SHA-1 above is what ties each held master to its licence; qa/credits-guard.mts fails if such a master is found inside the repo. Pixabay-licensed frames are held entirely, not shipped: that licence forbids distributing content on a standalone basis, and a colour grade leaves a photograph substantially the same. CC BY-SA is still excluded from the site and is a separate decision for the client (see the local contact sheet in .hunt/design-reset/by-sa/)."

@@ -49,7 +49,33 @@ function check(name: string, ok: boolean, detail: string) {
 const TRIGGER = 'header button[aria-controls="overlay-menu"]';
 const PANEL = '[role="dialog"][aria-modal="true"]';
 
+/* A click that lands before React has hydrated the header is simply lost: the
+ * server-rendered button has no handler yet, so the dialog never opens and the
+ * 5 s wait below times out. On the deployment, under machine load, hydration
+ * occasionally landed later than the ~1.2 s this audit used to wait. Measured
+ * 2026-09-13 with interleaved A/B runs on two immutable deployments:
+ *   - 8 runs a side: medians of 275 ms (36854c0) and 298 ms (2b2d00d), with
+ *     one run at 1,589 ms;
+ *   - 20 runs a side: medians of 380 ms and 277 ms, slowest runs 822 ms and
+ *     1,006 ms.
+ * No CSP violation and no error in any of the 56 opens. It was not a
+ * regression: two audit runs lost the race, which says nothing about the menu
+ * itself.
+ *
+ * So the audit waits until React has attached its props to the trigger node
+ * before making its ONE click. A menu that does not open after that single
+ * click is still a failure — nothing about the check is relaxed. The
+ * `__reactProps$` key is a React internal; if it ever disappears, this wait
+ * times out at 15 s and the audit fails loudly rather than passing quietly. */
 async function openMenu(page: Page) {
+  await page.waitForFunction(
+    (selector) => {
+      const node = document.querySelector(selector);
+      return !!node && Object.keys(node).some((key) => key.startsWith("__reactProps$"));
+    },
+    TRIGGER,
+    { timeout: 15_000 },
+  );
   await page.click(TRIGGER);
   await page.waitForSelector(PANEL, { state: "visible", timeout: 5000 });
   await page.waitForTimeout(700); // let the stagger settle

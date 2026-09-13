@@ -1,12 +1,51 @@
 # Closing record
 
-The redesign is built, deployed, verified, and **closed**. The client has ruled
-on everything that was put to them, and the queue is empty by design. This page
-is the front door: what the project is, where it lives, how to change the
-things most likely to need changing, and what is deliberately parked.
+The redesign was built, deployed, verified and closed on 2026-09-11. **It is
+open again for one decision.** After the close, the client asked for a design
+reset — new colours, a new look, new hero photographs — and three directions
+now wait for his pick. This page is the front door: what the project is, where
+it lives, how to change the things most likely to need changing, and what is
+deliberately parked.
 
-Closed 2026-09-11. The full history — every decision and every thing that went
-wrong before it went right — is in [`MORNING.md`](MORNING.md).
+The full history — every decision and every thing that went wrong before it
+went right — is in [`MORNING.md`](MORNING.md), newest first.
+
+---
+
+## Open: the design reset
+
+**Waiting on the client: pick A, B or C.** Everything else the reset asked
+for is done.
+
+| | state |
+|---|---|
+| **Team section** | Out of the homepage, live since `392602f`. The names, roles and intro stay in `content/site.json → team`; the portraits are retired and no URL serves them; `#team` lands on `#positioning`. |
+| **Three directions** | Live drafts: `/design-3` (the index), `/design-3/a` Deep Aegean, `/design-3/b` Cycladic Light, `/design-3/c` Warm Editorial. The same real homepage content, each with its own palette, type and hero photograph. Noindex, linked from nowhere, and deleted after the pick — the command is in `src/app/design-3/layout.tsx` and in [`DEPLOYMENT.md`](DEPLOYMENT.md). |
+| **The photo pool** | Ten new frames in `content/photo-credits.json` (29 photographs in all). The rest of the verified pool, with each verdict, is in the gitignored `.hunt/design-reset/`. |
+| **The client lists** | [`PHOTOGRAPHERS.md`](PHOTOGRAPHERS.md), [`TOURISM-LIBRARIES.md`](TOURISM-LIBRARIES.md), [`SHORTLIST.md`](SHORTLIST.md). |
+| **CC BY-SA contact sheet** | Local only: `.hunt/design-reset/by-sa/contact-sheet.html`. |
+
+The direction he picks is then rolled out across the whole site.
+
+**The client's decisions.** This repository takes none of them for him:
+
+1. **The direction** — A, B or C.
+2. **CC BY-SA.** Several of the most beautiful frames found are BY-SA. Using
+   any of them obliges publishing our graded version under BY-SA on
+   `/credits`.
+3. **Photographer permissions.** `PHOTOGRAPHERS.md` names the frames and gives
+   the message in Greek and English, and he sends it. A written yes is stored
+   under `assets-src/stock-local/permissions/` before its frame ships; the
+   credits guard fails without it.
+4. **Paid stock.** `SHORTLIST.md` prices it, and buying is his. It needs a
+   private repository or a private asset store first: iStock's licence
+   forbids letting others download the file, and this repository is public.
+5. **Camera originals.** Still the largest improvement available. Two of the
+   draft critics rated the journeys cards the weakest part of the page, and
+   those cards use the client's own tour photographs, several only 683×1024.
+6. **HSTS `includeSubDomains` and `preload`, and Vercel Bot and Deployment
+   Protection.** These are domain and project-settings decisions for the
+   cutover, not for this repository's automation.
 
 ---
 
@@ -96,12 +135,22 @@ the van in its card and gallery.
    an ungraded-looking photograph among the vivid ones is the result of
    forgetting. Asset-audit fails on any rendered photograph with no blur
    placeholder — that is how the whole site once shipped without them.
-4. **If a photograph is sourced rather than the client's**, put the original in
-   `assets-src/sourced/` and add it to `content/photo-credits.json` with its
-   licence, source and SHA-1. Read the licence on the file's own page. PD, CC0
-   and CC BY only — BY-SA, NC and ND are refused, and the credits guard fails
-   the build on them or on a checksum that no longer matches the file.
-   Photograph only places this site names, and caption only what the frame
+4. **If a photograph is sourced rather than the client's**, add it to
+   `content/photo-credits.json` with its licence, source and SHA-1, having read
+   the licence on the photograph's own page. Where the original goes depends on
+   the licence, because this repository is public:
+   - **PD, CC0, CC BY:** the original is committed in `assets-src/sourced/`.
+   - **Unsplash, Pexels, or a written permission:** the original is held in the
+     gitignored `assets-src/stock-local/`, and only the graded image ships. A
+     written permission is stored under `assets-src/stock-local/permissions/`.
+   - **Pixabay:** held entirely; nothing graded ships.
+   - **BY-SA, NC, ND:** refused.
+
+   The credits guard fails on any of these, and on a checksum that no longer
+   matches the file. On **itinerary** surfaces — cards, waypoints, galleries,
+   route stops — photograph only places this site names. On **mood** surfaces —
+   the hero, section bands, the closing scene, dark backgrounds — a photograph
+   of Crete broadly is allowed. Either way, caption only what the frame
    verifiably shows.
 5. **Run the guards** (below). They will tell you if you missed something.
 
@@ -190,8 +239,12 @@ None of it blocks anything, and none of it is work waiting to be done here.
   detectable; confirming Project → Settings → Git is dashboard work for the
   client, not something this repository's automation touches.
 
-And one thing that is not parked but next: **the `routescrete.gr` cutover**, with
-the client, in its own conversation. See [`DEPLOYMENT.md`](DEPLOYMENT.md).
+And two things that are not parked but next, in this order:
+
+1. **The client's pick on `/design-3`**, then that direction rolled out across
+   the site and the drafts deleted.
+2. **The `routescrete.gr` cutover**, with the client, in its own conversation.
+   See [`DEPLOYMENT.md`](DEPLOYMENT.md).
 
 ---
 
@@ -205,3 +258,6 @@ the client, in its own conversation. See [`DEPLOYMENT.md`](DEPLOYMENT.md).
 | [`MORNING.md`](MORNING.md) | the full build log, every client decision, and the closing record |
 | [`BACKLOG.md`](BACKLOG.md) | what was considered and not done, with reasons |
 | [`qa/README.md`](qa/README.md) | what each guard checks, and the failure that made it necessary |
+| [`PHOTOGRAPHERS.md`](PHOTOGRAPHERS.md) | photographers to ask, the frames per surface, and the permission message in Greek and English |
+| [`TOURISM-LIBRARIES.md`](TOURISM-LIBRARIES.md) | the official Cretan and Greek image libraries: their terms, and what a request must cover |
+| [`SHORTLIST.md`](SHORTLIST.md) | paid stock per direction and surface, with cost, and the private-repository precondition |
