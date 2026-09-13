@@ -1,3 +1,452 @@
+# DESIGN RESET, AND THE RESEARCH BRIEF — 2026-09-11 to 2026-09-14
+
+Two briefs, worked together. The **design reset** gets new colours, a new look and
+new hero photography, legally. The client decides the direction from three live
+drafts before anything is rolled out. The **research brief** (13 September)
+arrived mid-reset and was folded in, not started over: its security and
+performance foundation shipped, its design patterns went into the drafts, and
+its 3D item stayed optional.
+
+## The wall that did not move
+
+No photograph entered without a verifiable right to use it.
+
+Every licence was read on the photo's own page, never taken from a search
+result. Every master is tied to its licence by SHA-1.
+
+One consequence of the **public repository** was not obvious, and it shaped
+the storage:
+
+- **CC0, CC BY and public-domain masters** stay committed in
+  `assets-src/sourced/`, because those licences permit redistribution.
+- **Free-stock masters (Pexels, Unsplash)** and anything used by written
+  permission are **not committed**. They are held in the gitignored
+  `assets-src/stock-local/`, and only the graded image the site serves is
+  published. Pexels forbids redistributing its files elsewhere, and a
+  website permission does not reach a public repository handing out
+  originals.
+- **Pixabay frames are held entirely.** Its licence forbids distributing
+  content on a standalone basis, and a colour grade leaves a photograph
+  substantially the same.
+- **Paid stock (iStock)** cannot enter while the repository is public. Its
+  licence forbids any use that lets others download the file on its own, and
+  even the graded copy sits in the repository. That is the client's
+  precondition to settle first: a private repository, or a private asset
+  store.
+
+`qa/credits-guard.mts` enforces all of it:
+
+- an explicit licence allowlist
+- no free-stock or permission master inside the repository
+- the Pixabay hold
+- a stored confirmation behind any written permission
+
+## Team — out
+
+On the client's instruction the homepage is **five movements**.
+
+- The names, roles and intro stay verbatim in `content/site.json → team`.
+- The portraits moved to `assets-src/retired/team/`; no URL serves them.
+- `grade.ps1` skips `retired/`, so a regrade cannot bring them back.
+- `#team` now lands on `#positioning` ("A family runs this.").
+- The guards were updated:
+  - arc-guard asserts five movements and no `#team`;
+  - parity asserts the team copy is no longer rendered **and** still preserved;
+  - asset-audit asserts the retired photographs 404.
+
+Shipped `392602f`; nine guards green on the deployment.
+
+## The photo pool
+
+Five hunters, one per source; an **independent verifier** per batch that
+re-read every licence and place; then a curator. Two runs were needed: the
+first stopped mid-way on a session limit, and was finished by a targeted
+run rather than repeated.
+
+| Source | Proposed | Passed, with master | Notes |
+|---|---|---|---|
+| Pexels | 11 | 5 | Cloudflare challenged automated page reads after the third request; licences were read via WebFetch, one re-checked in a browser |
+| Pixabay | 19 | 0 | All failed verification — and Pixabay is held by policy anyway |
+| Flickr | 19 | 13 | One beautiful frame refused: its owner demands permission on the page despite a CC BY setting |
+| Unsplash | 15 | 12 | A bot challenge (Anubis) stopped curl; not bypassed, and licence lines were read via WebFetch |
+| Commons | 12 | 6 | The API rate-limited (HTTP 429) all session; handled with backoff |
+
+Nothing was bypassed at any point: no CAPTCHA, no bot challenge, no login.
+
+**What shipped into the ledger** (now 29 photographs):
+
+- five Pexels frames — Balos and the Gramvousa coast, a golden-hour mountain
+  road, Preveli's palms from above;
+- three hero-candidate frames from the first pass — a storm over the south
+  coast and the Libyan Sea coast at dusk (both CC BY 2.0), and a cobalt south
+  coast (Unsplash);
+- two frames from the final pass — the sea-cave window at night and Preveli's
+  palm forest running down to the sea (both Unsplash).
+
+Every free-stock master is held outside the repository; the CC BY masters are
+committed. Everything else verified stays in the local pool
+(`.hunt/design-reset/`) with its verdict, ready for the rollout.
+
+**Disclosed, not hidden:** six of the best night frames are one
+astrophotographer's stacked-sky composites. The one that shipped says so in
+its ledger note and on the `/design-3` index.
+
+**The heroes, and where I differed from the curator:**
+
+- **A — the sea-cave window at night.** The curator agreed: "the darkest frame
+  in the pool", mean luminance 43/255.
+- **B — Preveli's palm forest to the sea.** The curator preferred the
+  anonymous cobalt coast, which is more purely Cycladic in palette. Preveli
+  won on relevance: it is a place the tours go, and B's critic had asked why
+  a nameless coast fronted a business selling gorges and villages.
+- **C — the Libyan Sea coast at dusk.** The curator preferred the golden-hour
+  mountain road, and C's critic also found the dusk coast cooler than "warm,
+  golden imagery". C's revision had tuned its headline-over-plate overlap and
+  contrast to this frame, and a portrait road forced into that plate loses
+  either the road or the sky. **If the client picks C, the mountain road is
+  the first frame to try in the rollout.**
+
+## The three client lists
+
+- **`TOURISM-LIBRARIES.md`** — no official library is usable today:
+  - The Region of Crete needs a written application to the Regional Governor.
+  - Rethymno publishes no terms, so all rights are reserved.
+  - GNTO's image bank forbids commercial use.
+  - Marketing Greece is the one worth asking, and the file says exactly what
+    the written yes must cover.
+- **`PHOTOGRAPHERS.md`** — 13 real, verified photographers:
+  - Two of them are based in Rethymno.
+  - It names specific frames for specific surfaces.
+  - The permission message is in Greek and English. It is worded to cover the
+    public repository, so a yes is given knowingly.
+- **`SHORTLIST.md`** — iStock only; Adobe Stock and Shutterstock sent bot
+  challenges, which were not bypassed:
+  - 9 images per direction, from €85 on a one-month subscription.
+  - The private-repository precondition is stated at the top.
+
+**The CC BY-SA option** is a local-only contact sheet of the ten best frames, in
+`.hunt/design-reset/by-sa/`. **Several of them are the most beautiful frames
+anyone found:**
+
+- Rethymno and the lit Fortezza at dusk from the air
+- the lighthouse at blue hour with snow on Psiloritis
+- the Libyan Sea at sunset
+- the sea through a cave arch, a native portrait
+
+Using any of them obliges publishing our graded version under CC BY-SA on
+`/credits`. That is the client's decision, and it is the one most worth making.
+
+## The research brief — what shipped, what was not mine to do
+
+**Shipped:**
+
+- **Next.js 16.3.0 → 16.3.5.**
+  - 16.3.0 sat inside two advisories, including an unauthenticated RCE in the
+    Image Optimization API when AVIF is served — which this site serves.
+  - `sharp` went to 0.35.4, and `npm audit fix` cleared the rest.
+  - **npm audit: 0 vulnerabilities.**
+- **Secrets.** gitleaks 8.30.1, with its release checksum verified, scanned all
+  107 commits of full history. **No leaks. Nothing to rotate.**
+- **Security headers on every route:**
+  - CSP, shipped report-only and then enforced;
+  - HSTS for two years;
+  - `X-Frame-Options: DENY`, nosniff, `strict-origin-when-cross-origin`;
+  - a locked Permissions-Policy;
+  - no `X-Powered-By`.
+
+  `script-src 'unsafe-inline'` is a stated trade-off: nonces would force
+  per-request rendering and give up static generation.
+
+  The switch to enforcing was **earned**. `qa/security-headers.mts` — the
+  **tenth guard** — loaded all nine routes of the live report-only deployment
+  in Chromium and saw zero violations.
+- **The Monday.com form is sandboxed.** A headless check confirmed it still
+  renders the same 12 fields and 6 buttons as the unsandboxed page, with
+  nothing blocked. Nothing was submitted.
+- **Dependabot** version updates: weekly, with minor and patch grouped.
+- **`next/image`**: `priority` becomes `preload` on the six `<Image>` elements.
+  Next 16 deprecated it, and its source shows the two take the identical code
+  path. AVIF/WebP, `deviceSizes`, blur placeholders and self-hosted
+  `next/font` were already in place.
+- **Vercel Web Interface Guidelines audit.**
+  - Three reviewers, with an adversarial verifier per area.
+  - **69 reported, 56 confirmed.**
+  - **Fixed, high severity:**
+    - the skip link now moves focus into `<main>`;
+    - the overlay menu scrolls under a stopped Lenis, and a long menu overflows reachably;
+    - the gallery lightbox traps focus, and restores it on close;
+    - the stacked why-us panels and the signature chapters now reach screen readers.
+  - **Fixed, medium severity:**
+    - `aria-labelledby` ids now resolve;
+    - the preloaded `/transfers` image no longer ships clipped until hydration;
+    - `/experiences` has an `h2`;
+    - the marquee has a 44 px pause control and wraps under reduced motion;
+    - the nav bar no longer animates padding.
+  - **Skipped on purpose:**
+    - the clip-path reveal rewrites and a letter-spacing hover (approved motion);
+    - `theme-color` (a design decision);
+    - the empty trust badge (the two items are noted in place).
+  - **`aria-modal` stays**, because menu-audit selects on it. A focus-revealed
+    Close button inside the dialog fixes the same problem.
+  - **Verified.** Shipped as `2b2d00d`:
+    - all ten guards green on a clean build of that exact commit;
+    - on the deployment, nine green at once;
+    - menu-audit green three runs of three, after the race below.
+- **Skills.** Anthropic's `frontend-design` and Vercel's
+  `web-design-guidelines` were read in full before use. Both are instructions
+  only, apart from a documented fetch of Vercel's rules. Their guidance went
+  into the draft builders and the audit. Nothing was installed as persistent
+  configuration.
+
+**Not done here, on purpose — the owner's or the cutover's:**
+
+- **Vercel Bot Protection, Deployment Protection, Trusted IPs.** These are
+  project settings, and no project-settings action is taken from this
+  repository.
+- **HSTS `includeSubDomains` and `preload`.** They commit the whole
+  `routescrete.gr` domain in browsers' built-in lists. That is a domain
+  decision for the cutover.
+- **Dependabot alerts and security updates.** These are repository settings;
+  the committed file covers version updates only.
+- **The 3D Crete map.** The brief makes it optional and budget-gated. The
+  budget it must hold is already tight on the homepage, so it was not started.
+
+## menu-audit, and a race that was not a regression
+
+**What happened.** On the live `2b2d00d` deployment, menu-audit failed twice, in
+different sections: first `coverage`, then `background hidden`. Both failed the
+same way. The audit's single click on Menu, about 1.2 s after the HTML arrived,
+opened nothing, and the 5 s wait timed out. The same commit passed all 37
+assertions on a local production build, and menu-audit had passed on the
+deployment at `36854c0` and `392602f`.
+
+**What it was not.**
+
+- **Not the CSP.** An interleaved A/B on the two immutable deployments opened
+  the menu 16 times with violation and console listeners attached: zero CSP
+  violations, zero errors. (qa/security-headers.mts never opens the menu, so
+  this path had not been checked before.)
+- **Not a regression.** Time from `domcontentloaded` until the menu actually
+  opened:
+
+  | Deployment | Median | Slower than the guard's ~1.2 s click | Never opened |
+  |---|---|---|---|
+  | `36854c0` | 275 ms | 0 of 8 | 0 |
+  | `2b2d00d` | 298 ms | 1 of 8 (1,589 ms) | 0 |
+
+  Eight a side is thin, so it ran again at 20 a side (standard medians):
+
+  | Deployment | Median | Mean | 90th percentile | Slowest | Slower than 1.2 s |
+  |---|---|---|---|---|---|
+  | `36854c0` | 380 ms | 422 ms | 739 ms | 822 ms | 0 of 20 |
+  | `2b2d00d` | 277 ms | 324 ms | 503 ms | 1,006 ms | 0 of 20 |
+
+  If anything, the newer build opens the menu faster. The one 1,589 ms run in
+  the first sample was load noise. Across all 56 opens there were no CSP
+  violations, no console errors and no page errors.
+- **Not more client JavaScript.** No component changed its `"use client"`
+  status in `2b2d00d`; the Marquee was already a client component.
+
+**What it was.** A click that lands before React has hydrated the header is
+lost: the server-rendered button has no handler yet. The machine was under
+heavy load at the time — three draft builders running Playwright and dev-server
+compiles — so hydration occasionally landed after the audit's one click.
+
+**The fix is to the audit, and it relaxes nothing.** `openMenu()` now waits
+until React has attached its props to the trigger, then makes its single click.
+A menu that does not open after that click still fails. Three consecutive runs
+against the deployment: **37 of 37 assertions, three times out of three**, on the live `2b2d00d` deployment — the same deployment where the unfixed audit had failed twice.
+
+**A real edge, recorded rather than explained away.** A visitor who taps Menu
+in the first moments of a load, before hydration, gets no response and has to
+tap again. This is on `36854c0` too, so it is not new. A future mitigation would
+make the trigger work before hydration: a native `<dialog>` or `popover` opened
+without React, or a no-JS fallback. It is noted in BACKLOG.md rather than
+patched into an approved component tonight.
+
+## /design-3 — three directions
+
+Three live drafts of the homepage top, each with its own palette, its own type
+and a new hero photograph, all rendering the same real content. Each went
+through one builder, one independent critic and one revision. After that came
+a director's pass, judged on my own look at the screenshots.
+
+Two lessons from the process:
+
+- **The critics agreed on the weak point:** the journeys cards. Those use
+  the client's own tour photographs, several only 683×1024 and soft when
+  enlarged. That is a content limit, not a design one, and it is why camera
+  originals stay the largest improvement available.
+- **The brief to the builders missed one tell.** Anthropic's frontend-design
+  guidance names a single word accented in italic colour as the commonest
+  sign of a generated page. It was not in the builder brief; C's critic
+  caught it anyway.
+
+**Under the real CSP.** The security-headers guard does not load the
+temporary routes, so they were checked separately on a local production
+build. The index and all three drafts, at 1440 and 390, served the enforcing
+CSP with no violations, no console or page errors, and no failed requests.
+Each draft's phone menu opened and closed on Escape.
+
+### B — Cycladic Light
+
+- **The look:** white ground, navy Outfit headlines, blue pill buttons,
+  turquoise hairlines, and the hero photograph held in a tall Cycladic arch.
+- **Critique, 6/10.** It was right about:
+  - the phone's first screen had no button (the first one sat at y=984 on an 844px screen);
+  - a nested `<main>`;
+  - a menu that let the page scroll 1,616 px behind it and let Tab escape;
+  - the hero image over-requested;
+  - headings breaking badly;
+  - Inter loaded twice.
+- **Revision** fixed all of them. The primary button now ends at y=484 on
+  390×844 and inside the first screen at every tested size, and the menu
+  holds the page at 0 px.
+- **Director's pass:** the hero moved from an anonymous coast to **Preveli's
+  palm forest running down to the Libyan Sea** (Dimitris Kiriakakis,
+  Unsplash). Preveli is an actual tour stop, which answers the critic's
+  question of why a nameless coast fronted a business selling gorges and
+  villages. Re-shot: no overflow and no console errors.
+
+### A — Deep Aegean
+
+- **The look:** a near-black ground, deep sea blue, gold hairlines and labels;
+  Cormorant Garamond at a light weight for the headline, Jost for labels and
+  body; a full-bleed night photograph under a fixed bar.
+- **Critique, 6/10.** It was right about:
+  - the phone crop, which landed on the flat middle of a cloud mass — in the
+    critic's words, "a dark template with a cloud texture";
+  - one crop for every screen, which on desktop also cut off the surf and the
+    beach and darkened the headland almost to black;
+  - the menu's Tab handling, and the smooth scroller running behind it.
+- **Revision:** the menu became a native `<dialog>`, the crop was set per
+  geometry, and the journey cards and the bar were reworked.
+- **Director's pass — the hero.** The storm gave way to **the sea-cave window
+  at night** (Evgeni Tcherkasski, Unsplash):
+  - the darkest frame in the pool, and a native portrait, so the phone hero
+    is a straight fit;
+  - a processed astrophotograph, which its ledger note and the `/design-3`
+    index both say;
+  - captioned "The Cretan coast at night", never as the cave on the Tradition
+    tour, which is inland;
+  - the storm stays in the pool as the alternate.
+- **Headline contrast — measured, failed, fixed.** On a wide screen the frame
+  is width-limited, so no crop could move the Milky Way out from behind
+  "unknown" and "Crete". A contrast map found 1.75% of the letters' pixels
+  under 3:1, the worst at 1.27:1.
+
+  The fix is a flat, low darkening band under the headline only; the sky in
+  the cave mouth above it keeps its light. The worst pixel under a letter,
+  after:
+
+  | Width | 390 | 1024 | 1280 | 1440 | 1920 |
+  |---|---|---|---|---|---|
+  | Worst letter pixel | 7.11:1 | 5.42:1 | 4.47:1 | 4.52:1 | 6.15:1 |
+
+  390 and 1440 were measured on the production build, the other three
+  widths on the dev server; at 1440 the two agreed within 0.05.
+
+  **Recorded, not hidden:** a few star pixels in the gaps between letters
+  still fall under 3:1 — 17 at 390, 6 at 1280 and 3 at 1920. None of them
+  sits under a letter.
+- **Re-shot:** no overflow and no console errors. The primary button ends at
+  y=796 of 900 on desktop, and y=803 of 844 on a phone.
+
+### C — Warm Editorial
+
+- **The look:** cream paper, ink, terracotta and olive; Instrument Serif for
+  the cover line and plate titles, Instrument Sans for everything else. The
+  photograph is set like a magazine plate, and the headline's last line is
+  printed on it.
+- **Critique, 6/10.** It was right about:
+  - the single word "Crete" in terracotta italic — in the critic's words, the
+    most recognisable generated-landing-page trope;
+  - the phone's first screen had no button (the first one sat at y=892 on an
+    844px screen);
+  - the menu let Tab escape;
+  - the plate requested an image sized for a full-bleed hero;
+  - the plate's top edge cut through letters at every width, and a 0.86
+    line-height made glyphs collide.
+- **Revision** fixed all of them:
+  - the headline is set in one voice;
+  - the primary button ends at y=730 on 390×844;
+  - Tab is trapped inside the menu;
+  - the plate passes its own `sizes`;
+  - the last line carries its own band of sky, so the plate's edge falls
+    between lines, and the line-height is 0.92;
+  - the plate's credit is read from the photo ledger, not typed in.
+- **Director's pass:**
+  - The menu now stops the smooth scroller while it is open. The critique had
+    missed it, and B's critic had measured the same pattern letting the page
+    scroll 1,616 px behind a menu.
+  - The type-check caught the address being passed where it can be empty. The
+    menu now renders no address rather than an empty one.
+- **Headline contrast, measured.** On the production build, Instrument Serif's
+  letters clear 7.48:1 at their worst pixel on desktop, and 7.65:1 on a phone. The text-contrast
+  method reports a worst pixel of 1.00:1 on desktop. Mapping the failing
+  pixels showed why: the headline's box spans the side column, and every one
+  of them is that column's own dark body text and button, on cream paper.
+  None is on the photograph.
+- **Re-shot:** no overflow and no console errors. The primary button ends at
+  y=468 of 900 on desktop, and y=730 of 844 on a phone.
+
+## Final audit on the deployment
+
+Shipped as `d6d4dbc`: the three drafts and their index, the two new ledger
+entries, A's headline band, the menu-audit fix and the paperwork. The
+captures of the drafts followed in a commit of their own.
+
+**Before the push**, on a local production build of the same tree: all ten
+guards green, and the `/design-3` routes clean under the enforcing CSP.
+
+**On the deployment**, alias LIVE on `d6d4dbc`, run one after another:
+
+| Guard | Result on the deployment |
+|---|---|
+| headline-guard | 46 assertions, 0 mismatches |
+| arc-guard | five movements in order, no `#team`, the cut sections' content intact |
+| nav-flash-guard | the bar is right before JavaScript and never flips |
+| credits-guard | every master recorded (21 in the repository, 8 held locally); every one attributed and linked on `/credits` |
+| menu-audit | 37 assertions, 0 failures — first run |
+| asset-audit | 42 paths, 0 dangling; the retired team photographs all 404 |
+| parity | no deltas: body text 25 of 25 paragraphs, 4 removed team strings absent, 18 originals preserved |
+| mobile-audit | 390 px holds on every route |
+| text-contrast | worst pixel: home headline 4.84:1, home subcopy 7.50:1, experience 7.11:1, transfer 12.22:1 |
+| security-headers | every route served all six headers; CSP enforcing, zero violations; the booking form sandboxed |
+
+**The captures** (`qa/design3-shots.mts`, from the alias): all three drafts
+answered 200 on `d6d4dbc`, noindex and marked; 12 frames, no horizontal
+overflow. I looked at every first-screen frame before committing them.
+
+**Lighthouse**, on the deployment once the alias was LIVE on the captures
+commit `7ae6276`: mobile, five interleaved runs per route, gated on the
+median. Both builder workflows had finished and my servers were stopped, so
+the machine was quiet.
+
+| Route | Median | Spread | a11y | TBT | CLS |
+|---|---|---|---|---|---|
+| `/` | **92** | 79 90 92 92 93 | 100 | 187 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **92** | 88 89 92 93 93 | 100 | 95 ms | 0 |
+| `/transfers/private-transfers-rethymno` | **94** | 86 94 94 94 95 | 100 | 61 ms | 0 |
+
+**Budget OK:** performance ≥ 89, a11y 100, CLS 0, TBT ≤ 250 ms, every floor
+unchanged. The home route's spread includes one run at 79. A single run
+against a deployment measures the network as much as the build, which is
+exactly why the gate is the median.
+
+## Where this stops
+
+The design reset's stop condition is met:
+
+- Team is out, and live.
+- The photo pool and the three client lists exist.
+- The BY-SA contact sheet is ready, locally.
+- The three drafts are live on `/design-3`, with their captures, for the
+  client's pick.
+
+Nothing cutover-related was touched. **Next is the client's:** pick A, B or C,
+and the decisions listed at the top of [`CLOSING.md`](CLOSING.md).
+
 # CLOSING RECORD — Routes Crete, closed 2026-09-11
 
 The project is closed. The client delegated the ten rulings on `/review-2` and

@@ -199,17 +199,18 @@ has been held to throughout: performance ≥ 89, a11y 100, CLS 0, TBT ≤ 250 ms
 **Do not lower a floor to make a red run green.** Localhost on this machine runs
 about ten points under the deployment; the deployment is the only gate.
 
-Measured at close, on the deployment, median of five runs per route. At close
-the routes were measured one at a time: the interleaved run kept being cut off
-on this machine, and [`MORNING.md`](MORNING.md) records why.
+Measured on the deployment on 2026-09-14, five interleaved runs per route, on
+commit `7ae6276`: Team out, security headers enforcing, the `/design-3` drafts
+live.
 
 | route | performance | spread | a11y | TBT | CLS |
 |---|---|---|---|---|---|
-| `/` | **90** | 88 89 90 91 94 | 100 | 248 ms | 0 |
-| `/experiences/kourtaliotis-temple-of-nature` | **93** | 88 91 93 93 95 | 100 | 88 ms | 0 |
-| `/transfers/private-transfers-rethymno` | **94** | 87 93 94 94 94 | 100 | 57 ms | 0 |
+| `/` | **92** | 79 90 92 92 93 | 100 | 187 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **92** | 88 89 92 93 93 | 100 | 95 ms | 0 |
+| `/transfers/private-transfers-rethymno` | **94** | 86 94 94 94 95 | 100 | 61 ms | 0 |
 
-Measured on commit `2345b01` — the last commit that changed what the site renders.
+The home route's one run at 79 is the reason the gate is the median. The
+previous close, on `2345b01`, measured 90 / 93 / 94.
 
 ---
 
