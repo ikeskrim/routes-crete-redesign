@@ -124,10 +124,10 @@ npm run build
 npx next start -p 3009
 ```
 
-Then, from another shell, **the nine guards**:
+Then, from another shell, **the ten guards**:
 
 ```bash
-node qa/headline-guard.mts && node qa/arc-guard.mts && node qa/nav-flash-guard.mts && node qa/credits-guard.mts && node qa/menu-audit.mts && node qa/asset-audit.mts && node qa/parity.mts && node qa/mobile-audit.mts && node qa/text-contrast.mts
+node qa/headline-guard.mts && node qa/arc-guard.mts && node qa/nav-flash-guard.mts && node qa/credits-guard.mts && node qa/menu-audit.mts && node qa/asset-audit.mts && node qa/parity.mts && node qa/mobile-audit.mts && node qa/text-contrast.mts && node qa/security-headers.mts
 ```
 
 Point any of them at the deployment with `QA_BASE_URL=https://routes-crete-redesign.vercel.app`.

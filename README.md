@@ -39,7 +39,7 @@ npm run build
 npx next start -p 3009
 ```
 
-**The nine guards.** Each one exists because something broke that way once;
+**The ten guards.** Each one exists because something broke that way once;
 `qa/README.md` records which. Run them **un-piped** — `node qa/parity.mts | tail`
 exits 0 no matter what parity found, so a piped guard cannot fail.
 
@@ -54,6 +54,7 @@ exits 0 no matter what parity found, so a piped guard cannot fail.
 | `qa/parity.mts` | A word or an image of the original that stopped reaching the page. |
 | `qa/mobile-audit.mts` | Horizontal overflow, sub-44px tap targets, or body text under 14px at 390. |
 | `qa/text-contrast.mts` | Text on a photograph under 3:1 at its worst pixel, measured against the rendered backdrop. No CSS-pair check can see this. |
+| `qa/security-headers.mts` | A route served without its security headers, an `X-Powered-By` header, an HSTS header that commits the whole domain, any CSP violation in a real browser (report-only included), or an unsandboxed third-party form. Needs a production server: dev serves no CSP. |
 
 | Script | Purpose |
 |---|---|
@@ -94,6 +95,8 @@ public/
 assets-src/
   sourced/                     licensed masters, outside public/ (ledger: content/photo-credits.json)
   retired/team/                the team portraits, off the site since 2026-09-11 — never graded, never served
+  stock-local/                 GITIGNORED: free-stock and written-permission masters. Their terms cover the site,
+                               not a public repo handing out originals — only the graded copy is committed
 
 qa/                          ← verification harnesses (dev-only, not shipped)
 

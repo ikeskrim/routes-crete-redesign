@@ -56,7 +56,70 @@ function legacyImageRedirects() {
     }));
 }
 
+/**
+ * Security headers, on every response.
+ *
+ * CONTENT-SECURITY-POLICY — shipped REPORT-ONLY first, deliberately. A policy
+ * that blocks something the site needs fails silently for visitors; report-only
+ * logs every violation to the console instead, `qa/security-headers.mts` loads
+ * every route and fails on any violation, and only a clean run earns the switch
+ * to enforcing (set CSP_ENFORCE below).
+ *
+ * Two allowances are conscious trade-offs, not oversights:
+ *  - script-src 'unsafe-inline': Next's App Router streams small inline
+ *    bootstrap scripts, and the organisation JSON-LD is inline. The nonce-based
+ *    alternative needs every page rendered per request, which gives up static
+ *    generation — the reason the hero paints in under half a second. Everything
+ *    else is locked to 'self': no third-party script origin is allowed at all.
+ *  - style-src 'unsafe-inline': motion writes transforms into style attributes.
+ * frame-src allows exactly one origin — the Monday.com booking form on /contact.
+ *
+ * STRICT-TRANSPORT-SECURITY — two years, but WITHOUT includeSubDomains or
+ * preload. Those two commit the whole routescrete.gr domain, every subdomain
+ * included, to HTTPS in browsers' built-in lists, which is hard to undo; that
+ * is a domain decision and belongs to the cutover, taken with the client.
+ *
+ * Development is left without CSP: the dev server's hot reload needs eval and
+ * websockets, and a dev-only exception would only teach the policy to lie.
+ */
+const CSP_ENFORCE = false;
+
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "media-src 'self'",
+  "frame-src https://forms.monday.com",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  /* Meaningless in a report-only policy — browsers say so in the console — so
+     it is only sent once the policy enforces. */
+  ...(CSP_ENFORCE ? ["upgrade-insecure-requests"] : []),
+].join("; ");
+
+const SECURITY_HEADERS = [
+  ...(process.env.NODE_ENV === "production"
+    ? [{ key: CSP_ENFORCE ? "Content-Security-Policy" : "Content-Security-Policy-Report-Only", value: CSP }]
+    : []),
+  { key: "Strict-Transport-Security", value: "max-age=63072000" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()",
+  },
+];
+
 const nextConfig: NextConfig = {
+  /* No "X-Powered-By: Next.js" — it tells an attacker which advisories to try. */
+  poweredByHeader: false,
+
   images: {
     /* The source photography is heavy but modest in resolution (most assets cap
        at 1024px). AVIF first, WebP as the fallback. */
@@ -78,6 +141,10 @@ const nextConfig: NextConfig = {
 
   async headers() {
     return [
+      /* Declaring the headers is not serving them: the first version of this
+         file defined SECURITY_HEADERS and never listed it here, and
+         qa/security-headers.mts caught every route going out without them. */
+      { source: "/:path*", headers: SECURITY_HEADERS },
       {
         source: "/images/:path*",
         headers: [

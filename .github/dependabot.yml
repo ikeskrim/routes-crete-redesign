@@ -1,0 +1,21 @@
+# Dependency updates as reviewable pull requests.
+#
+# Version updates only: this file cannot switch on Dependabot *alerts* or
+# *security updates* — those are repository settings, left to the owner.
+# Minor and patch bumps are grouped into one weekly PR so the queue stays
+# small; majors arrive one at a time because they are the ones that break.
+# Nothing here merges anything: every PR still has to pass review, a build,
+# the guards and Lighthouse on its preview before it reaches main.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch

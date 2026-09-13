@@ -16,6 +16,7 @@ npx next start -p 3009
 | `node qa/parity.mts` | Content parity: originals preserved, rendered copy present |
 | `node qa/asset-audit.mts` | No dangling image paths; everything photographic is graded and has a blur placeholder |
 | `node qa/text-contrast.mts` | Text on a photograph clears 3:1 at its worst pixel, against the rendered backdrop |
+| `node qa/security-headers.mts` | Every route serves CSP, HSTS (without includeSubDomains or preload), X-Frame-Options, nosniff, Referrer-Policy and Permissions-Policy, and no X-Powered-By; Chromium sees zero CSP violations on any route; the booking-form iframe is sandboxed. Production server only |
 | `node qa/alias-assert.mts <sha7>` | Is the alias serving this commit? LIVE (0), PENDING (1), BLOCKED by bot mitigation (2) |
 | `powershell -File qa/grade.ps1 -Grade C` | Regrade the corpus. **Name the grade** — the script defaults to A, and the live grade is C |
 | `powershell -File qa/blur-map.ps1` | Regenerate blur placeholders for the live grade. Run after every grade |

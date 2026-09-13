@@ -70,7 +70,7 @@ export function ItemHero({
             src={image}
             alt=""
             fill
-            priority
+            preload
             fetchPriority="high"
             quality={75}
             sizes={heroSizes}

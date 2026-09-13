@@ -62,11 +62,17 @@ export default function ContactPage() {
 
           <Reveal>
             <div className="mt-10 overflow-hidden rounded-media border border-ink/10 bg-white">
+              {/* Sandboxed: the form is a third party's page, so it gets only
+                  what a form needs — scripts, submitting, its own origin's
+                  storage, and opening its own links — and nothing that could
+                  navigate or script this page. Lazy, so it never competes with
+                  the page above it. */}
               <iframe
                 src={site.contact.formUrl}
                 title="Routes Crete booking request form"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
+                sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                 className="h-[1600px] w-full border-0"
               />
             </div>

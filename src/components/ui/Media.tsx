@@ -42,7 +42,7 @@ export function Media({
         alt={alt}
         fill
         sizes={sizes}
-        priority={priority}
+        preload={priority}
         quality={quality}
         placeholder={placeholder}
         blurDataURL={blurDataURL}
@@ -58,7 +58,7 @@ export function Media({
       width={width}
       height={height}
       sizes={sizes}
-      priority={priority}
+      preload={priority}
       quality={quality}
       placeholder={placeholder}
       blurDataURL={blurDataURL}

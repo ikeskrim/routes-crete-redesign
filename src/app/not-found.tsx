@@ -24,7 +24,7 @@ export default function NotFound() {
           src={IMAGE}
           alt=""
           fill
-          priority
+          preload
           quality={70}
           sizes="100vw"
           placeholder={blurDataURL ? "blur" : undefined}

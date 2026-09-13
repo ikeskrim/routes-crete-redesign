@@ -40,11 +40,14 @@ export default function CreditsPage() {
 
           <Reveal delay={0.1}>
             <p className="text-body-lg mt-8 max-w-[52ch] text-sand-100/80">
-              Every photograph of a tour — the mill, the cave, the shepherd&rsquo;s
-              house, the people we travel with — is our own. A handful of
-              landscapes are not, and those are listed here with their author and
-              licence. All of them have been colour-graded, which the licences
-              require us to say.
+              Every photograph of a tour &mdash; the mill, the cave, the shepherd&rsquo;s
+              house, the people we travel with &mdash; is our own. The landscapes are
+              not always. Some are licensed photographs of the places these
+              journeys visit; others are of Crete more widely, used to set the
+              scene and captioned as exactly that, never as somewhere we go.
+              Every one of them is listed here with its author and licence, and
+              every one has been colour-graded, which the licences require us to
+              say.
             </p>
           </Reveal>
         </div>

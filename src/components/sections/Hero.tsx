@@ -132,7 +132,7 @@ export function Hero({
             src={image}
             alt=""
             fill
-            priority
+            preload
             fetchPriority="high"
             quality={70}
             sizes="100vw"

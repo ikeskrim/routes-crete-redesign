@@ -75,7 +75,7 @@ export function ImageReveal({
           alt={alt}
           fill
           sizes={sizes}
-          priority={priority}
+          preload={priority}
           placeholder={blurDataURL ? "blur" : undefined}
           blurDataURL={blurDataURL}
           className="object-cover"
