@@ -22,7 +22,7 @@
 # enough for a colour wash, nothing that could be mistaken for the image.
 # ---------------------------------------------------------------------------
 param(
-  [ValidateSet('A', 'B', 'C')] [string]$Grade = 'C',
+  [ValidateSet('A', 'B', 'C', 'D')] [string]$Grade = 'C',
   [int]$Width = 10,
   [int]$Quality = 45
 )

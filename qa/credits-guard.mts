@@ -129,7 +129,13 @@ for (const photo of ledger.photographs) {
      the repository is private. */
   if (photo.licence === "Pixabay Content License") {
     const base = photo.file.replace(/\.(png|jpeg|JPG|PNG)$/i, ".jpg");
-    const shipped = ["a", "b", "c"].filter((g) =>
+    /* Every grade directory that exists, not a fixed list: a list of a/b/c
+       went silently blind the day grade d was generated. */
+    const grades = fs
+      .readdirSync(path.join("public", "images", "graded"), { withFileTypes: true })
+      .filter((d) => d.isDirectory() && /^[a-z]$/.test(d.name))
+      .map((d) => d.name);
+    const shipped = grades.filter((g) =>
       fs.existsSync(path.join("public", "images", "graded", g, "sourced", base)),
     );
     check(

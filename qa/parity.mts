@@ -75,9 +75,15 @@ const existsSomewhere = (src: string): boolean => {
   if (src.startsWith("/images/sourced/")) {
     const bare = rel.replace(/^images\/sourced\//, "");
     if (fs.existsSync(path.join(process.cwd(), "assets-src", "sourced", bare))) return true;
-    const graded = path.join(PUBLIC, "images", "graded", "b", "sourced",
-      bare.replace(/\.(png|jpeg|JPG|PNG)$/i, ".jpg"));
-    if (fs.existsSync(graded)) return true;
+    /* The grade the site actually serves, read from the one constant. This was
+     * hard-coded to b, two grades ago; "any letter" would have been looser
+     * still, passing a photograph whose only copy sits in a retired grade.
+     * An unreadable constant finds nothing, so the check fails loudly. */
+    const jpg = bare.replace(/\.(png|jpeg|JPG|PNG)$/i, ".jpg");
+    const live = fs
+      .readFileSync(path.join(process.cwd(), "src", "lib", "content.ts"), "utf8")
+      .match(/const GRADE = "([a-z])"/)?.[1];
+    if (live && fs.existsSync(path.join(PUBLIC, "images", "graded", live, "sourced", jpg))) return true;
   }
   return false;
 };

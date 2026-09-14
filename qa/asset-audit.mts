@@ -123,14 +123,15 @@ console.log("\nlegacy anchor ids");
  * public/ when the section came out, so no URL — original or graded — may
  * serve them. A 200 here means a copy crept back into the deploy. */
 console.log("\nretired assets");
+/* Under every grade letter that exists, not a fixed c/b pair: a regrade to a
+ * new letter is exactly the moment a retired photograph could slip back in. */
+const RETIRED = ["antonios-tzagkarakis.jpg", "stavros-kapetanakis.jpg", "daria.jpg"];
+const gradeLetters = (await fs.readdir(path.join(process.cwd(), "public", "images", "graded"), { withFileTypes: true }))
+  .filter((d) => d.isDirectory() && /^[a-z]$/.test(d.name))
+  .map((d) => d.name);
 for (const src of [
-  "/images/team/antonios-tzagkarakis.jpg",
-  "/images/team/stavros-kapetanakis.jpg",
-  "/images/team/daria.jpg",
-  "/images/graded/c/team/antonios-tzagkarakis.jpg",
-  "/images/graded/c/team/stavros-kapetanakis.jpg",
-  "/images/graded/c/team/daria.jpg",
-  "/images/graded/b/team/antonios-tzagkarakis.jpg",
+  ...RETIRED.map((f) => `/images/team/${f}`),
+  ...gradeLetters.flatMap((g) => RETIRED.map((f) => `/images/graded/${g}/team/${f}`)),
 ]) {
   const res = await fetch(`${BASE}${src}`, { method: "HEAD" });
   const ok = res.status === 404;
