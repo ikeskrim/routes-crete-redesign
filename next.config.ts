@@ -186,8 +186,14 @@ const nextConfig: NextConfig = {
       /* /contact frames the booking form. A later entry that sets the same key
          overrides the earlier one ("Header Overriding Behavior" in the
          next.config headers docs), and a CSP value is replaced, not merged, so
-         this is a complete policy that differs only in frame-src. */
-      { source: "/contact", headers: cspHeaders(MONDAY_FORMS) },
+         this is a complete policy that differs only in frame-src.
+         Only emitted when it has headers: in development cspHeaders() is empty,
+         and Next rejects an entry with `headers: []` at startup ("Invalid
+         header found"). That crashed `next dev` for 634f538 while every
+         production build and live check passed. */
+      ...(cspHeaders(MONDAY_FORMS).length > 0
+        ? [{ source: "/contact", headers: cspHeaders(MONDAY_FORMS) }]
+        : []),
       {
         source: "/images/:path*",
         headers: [
