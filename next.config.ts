@@ -96,8 +96,13 @@ const CSP_ENFORCE = true;
    alongside it as Content-Security-Policy-Report-Only, where
    qa/security-headers.mts counts its violations. A clean run on the deployment
    earns "enforced": the scoped policy becomes the enforcing one and the
-   report-only header goes away. */
-const FRAME_SCOPE: "trial" | "enforced" = "trial";
+   report-only header goes away.
+   Earned on 2026-09-14: the trial shipped in aad17be, and on that live
+   deployment security-headers saw zero violations on all nine routes, report-only
+   included. The form check also passed there: 12 fields and 6 buttons, and no
+   request before scrolling. Set back to "trial" before changing frame-src
+   again. */
+const FRAME_SCOPE: "trial" | "enforced" = "enforced";
 
 const MONDAY_FORMS = "https://forms.monday.com";
 
