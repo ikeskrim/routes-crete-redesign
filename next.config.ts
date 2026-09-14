@@ -72,7 +72,9 @@ function legacyImageRedirects() {
  *    generation — the reason the hero paints in under half a second. Everything
  *    else is locked to 'self': no third-party script origin is allowed at all.
  *  - style-src 'unsafe-inline': motion writes transforms into style attributes.
- * frame-src allows exactly one origin — the Monday.com booking form on /contact.
+ * frame-src is scoped to the one page that frames anything: /contact allows
+ * exactly one origin, the Monday.com booking form; every other route frames
+ * nothing.
  *
  * STRICT-TRANSPORT-SECURITY — two years, but WITHOUT includeSubDomains or
  * preload. Those two commit the whole routescrete.gr domain, every subdomain
@@ -87,28 +89,56 @@ function legacyImageRedirects() {
    violations. Flip back to false first if a new embed or origin is added. */
 const CSP_ENFORCE = true;
 
-const CSP = [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
-  "font-src 'self' data:",
-  "connect-src 'self'",
-  "media-src 'self'",
-  "frame-src https://forms.monday.com",
-  "frame-ancestors 'none'",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  /* Meaningless in a report-only policy — browsers say so in the console — so
-     it is only sent once the policy enforces. */
-  ...(CSP_ENFORCE ? ["upgrade-insecure-requests"] : []),
-].join("; ");
+/* Scoping frame-src to /contact is a tightening, and a tightening can break
+   something too, so it earns enforcement the same way the policy did — but
+   without ever dropping the live site to report-only. While "trial", the
+   existing policy keeps enforcing everywhere and the scoped policy rides
+   alongside it as Content-Security-Policy-Report-Only, where
+   qa/security-headers.mts counts its violations. A clean run on the deployment
+   earns "enforced": the scoped policy becomes the enforcing one and the
+   report-only header goes away. */
+const FRAME_SCOPE: "trial" | "enforced" = "trial";
+
+const MONDAY_FORMS = "https://forms.monday.com";
+
+function contentSecurityPolicy(frameSrc: string, enforcing: boolean) {
+  return [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob:",
+    "font-src 'self' data:",
+    "connect-src 'self'",
+    "media-src 'self'",
+    `frame-src ${frameSrc}`,
+    "frame-ancestors 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    /* Meaningless in a report-only policy — browsers say so in the console — so
+       it is only sent in a policy that enforces. */
+    ...(enforcing ? ["upgrade-insecure-requests"] : []),
+  ].join("; ");
+}
+
+/* The CSP header(s) for a route whose own frame-src is `scopedFrameSrc`.
+   Production only (see above). */
+function cspHeaders(scopedFrameSrc: string) {
+  if (process.env.NODE_ENV !== "production") return [];
+  const key = CSP_ENFORCE ? "Content-Security-Policy" : "Content-Security-Policy-Report-Only";
+  if (FRAME_SCOPE === "enforced") {
+    return [{ key, value: contentSecurityPolicy(scopedFrameSrc, CSP_ENFORCE) }];
+  }
+  return [
+    { key, value: contentSecurityPolicy(MONDAY_FORMS, CSP_ENFORCE) },
+    ...(CSP_ENFORCE
+      ? [{ key: "Content-Security-Policy-Report-Only", value: contentSecurityPolicy(scopedFrameSrc, false) }]
+      : []),
+  ];
+}
 
 const SECURITY_HEADERS = [
-  ...(process.env.NODE_ENV === "production"
-    ? [{ key: CSP_ENFORCE ? "Content-Security-Policy" : "Content-Security-Policy-Report-Only", value: CSP }]
-    : []),
+  ...cspHeaders("'none'"),
   { key: "Strict-Transport-Security", value: "max-age=63072000" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -148,6 +178,11 @@ const nextConfig: NextConfig = {
          file defined SECURITY_HEADERS and never listed it here, and
          qa/security-headers.mts caught every route going out without them. */
       { source: "/:path*", headers: SECURITY_HEADERS },
+      /* /contact frames the booking form. A later entry that sets the same key
+         overrides the earlier one ("Header Overriding Behavior" in the
+         next.config headers docs), and a CSP value is replaced, not merged, so
+         this is a complete policy that differs only in frame-src. */
+      { source: "/contact", headers: cspHeaders(MONDAY_FORMS) },
       {
         source: "/images/:path*",
         headers: [

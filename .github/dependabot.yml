@@ -2,10 +2,18 @@
 #
 # Version updates only: this file cannot switch on Dependabot *alerts* or
 # *security updates* — those are repository settings, left to the owner.
-# Minor and patch bumps are grouped into one weekly PR so the queue stays
-# small; majors arrive one at a time because they are the ones that break.
-# Nothing here merges anything: every PR still has to pass review, a build,
-# the guards and Lighthouse on its preview before it reaches main.
+#
+# Framework pairs travel together: next with eslint-config-next, and react with
+# react-dom and their types. Both are pinned exactly, so a major that arrived as
+# two separate PRs would leave each failing on a peer mismatch. Groups match in
+# order, so these two claim their packages for every update type before the
+# catch-all below. Other minor and patch bumps share one weekly PR; other
+# majors arrive one at a time, because they are the ones that break.
+#
+# Nothing here merges anything. No CI workflow runs on these PRs: Vercel builds
+# a preview automatically, and review, a build, the guards and Lighthouse on
+# that preview are a manual checklist (CLOSING.md, "Verifying a change") before
+# anything reaches main.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -14,7 +22,26 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    # Supply-chain cooldown: a freshly published release is not proposed until
+    # it has been public for a while, which is when a compromised or broken
+    # release is usually caught and pulled. Version updates only — GitHub's
+    # options reference states cooldown never delays security updates.
+    cooldown:
+      default-days: 5
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
     groups:
+      nextjs:
+        patterns:
+          - next
+          - eslint-config-next
+      react:
+        patterns:
+          - react
+          - react-dom
+          - "@types/react"
+          - "@types/react-dom"
       minor-and-patch:
         update-types:
           - minor
