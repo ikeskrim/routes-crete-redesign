@@ -1,7 +1,7 @@
 {
   "base": "https://routes-crete-redesign.vercel.app",
-  "commit": "d6d4dbc",
-  "capturedAt": "2026-09-13T21:37:06.350Z",
+  "commit": "5967a0f",
+  "capturedAt": "2026-09-14T21:07:06.937Z",
   "frames": [
     {
       "draft": "a",
@@ -74,6 +74,30 @@
       "viewport": "mobile",
       "kind": "full",
       "file": "c-mobile-full.jpg"
+    },
+    {
+      "draft": "c-plus",
+      "viewport": "desktop",
+      "kind": "fold",
+      "file": "c-plus-desktop-fold.jpg"
+    },
+    {
+      "draft": "c-plus",
+      "viewport": "desktop",
+      "kind": "full",
+      "file": "c-plus-desktop-full.jpg"
+    },
+    {
+      "draft": "c-plus",
+      "viewport": "mobile",
+      "kind": "fold",
+      "file": "c-plus-mobile-fold.jpg"
+    },
+    {
+      "draft": "c-plus",
+      "viewport": "mobile",
+      "kind": "full",
+      "file": "c-plus-mobile-full.jpg"
     }
   ]
 }
