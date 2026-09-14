@@ -14,12 +14,20 @@
  *      whole routescrete.gr domain and belong to the cutover, not to a deploy
  *   4. loading the page in Chromium raises ZERO CSP violations, report-only
  *      included — this is what earns the switch from report-only to enforcing
- *   5. /contact's third-party form iframe is sandboxed
+ *   X6. the page is scrolled to its end with REAL WHEEL EVENTS, and the guard
+ *      asserts the end was reached. Lenis owns the scroll position, and a
+ *      `window.scrollTo` loop is not how a reader scrolls: the lazily mounted
+ *      booking form (LazyFormEmbed) is inserted by an IntersectionObserver, so
+ *      a scroll that never reaches it makes the checks below vacuous.
+ *   X7. EVERY iframe on every route carries a sandbox attribute, and on
+ *      /contact the frame selected by `iframe[src*="forms.monday.com"]` (not
+ *      merely the first iframe in the document) exists after the wheel scroll
+ *      and is sandboxed
  *
  *   node qa/security-headers.mts        (expects a PRODUCTION server:
  *                                        dev deliberately serves no CSP)
  */
-import { chromium } from "playwright";
+import { chromium, type Page } from "playwright";
 import { preflight } from "./preflight.mts";
 
 const BASE = process.env.QA_BASE_URL ?? "http://localhost:3009";
@@ -36,11 +44,59 @@ const ROUTES = [
   "/this-route-does-not-exist",
 ];
 
+const VIEWPORT = { width: 1440, height: 900 };
+const MONDAY_FRAME = 'iframe[src*="forms.monday.com"]';
+
 let failed = 0;
 const check = (name: string, ok: boolean, detail: string) => {
   console.log(`  ${ok ? "ok   " : "FAIL "} ${name}${detail ? ` — ${detail}` : ""}`);
   if (!ok) failed++;
 };
+
+const readScroll = () => ({
+  y: Math.round(window.scrollY),
+  maxY: Math.max(0, Math.round(document.documentElement.scrollHeight - window.innerHeight)),
+});
+
+/** Wait until two consecutive samples of scrollY agree (Lenis eases). */
+async function settleScroll(page: Page) {
+  let settled = -1;
+  for (let i = 0; i < 25; i++) {
+    await page.waitForTimeout(200);
+    const y = await page.evaluate(() => Math.round(window.scrollY));
+    if (y === settled) break;
+    settled = y;
+  }
+}
+
+/**
+ * X6: scroll the whole page with real wheel events, the way a reader does.
+ * The pointer rests 8 px from the left edge, outside every content column, so
+ * the wheel never lands on the (cross-origin) form frame once it mounts.
+ * Returns the final position and whether the end of the page was reached.
+ */
+async function wheelToEnd(page: Page) {
+  await page.mouse.move(8, Math.round(VIEWPORT.height / 2));
+  let stalls = 0;
+  let wheels = 0;
+  for (; wheels < 400; wheels++) {
+    const before = await page.evaluate(readScroll);
+    if (before.y >= before.maxY - 2) {
+      // At the end as far as the page knows: let the glide and late layout settle, then re-read.
+      await settleScroll(page);
+      const again = await page.evaluate(readScroll);
+      if (again.y >= again.maxY - 2) break;
+    }
+    await page.mouse.wheel(0, 700);
+    await page.waitForTimeout(120);
+    const after = await page.evaluate(readScroll);
+    stalls = after.y > before.y ? 0 : stalls + 1;
+    if (stalls >= 25) break;
+  }
+  await settleScroll(page);
+  const end = await page.evaluate(readScroll);
+  return { ...end, wheels, reached: end.y >= end.maxY - 2 };
+}
 
 await preflight(BASE, process.cwd() + "/qa");
 
@@ -74,10 +130,10 @@ for (const route of ROUTES) {
 }
 console.log(`  note  CSP mode: ${enforcing ? "ENFORCING" : "report-only"}`);
 
-console.log("\n[browser] zero CSP violations, report-only included");
+console.log("\n[browser] zero CSP violations (report-only included), wheel scroll to the end, every iframe sandboxed");
 const browser = await chromium.launch();
 for (const route of ROUTES) {
-  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const context = await browser.newContext({ viewport: VIEWPORT });
   const page = await context.newPage();
   await page.addInitScript(() => {
     (window as unknown as { __csp: string[] }).__csp = [];
@@ -92,21 +148,57 @@ for (const route of ROUTES) {
     if (/Content Security Policy|Content-Security-Policy/i.test(msg.text())) consoleCsp.push(msg.text().slice(0, 160));
   });
   await page.goto(`${BASE}${route}`, { waitUntil: "load", timeout: 60_000 });
-  // Scroll through once so lazy images, the iframe and deferred chunks all load.
-  await page.evaluate(async () => {
-    for (let y = 0; y < document.documentElement.scrollHeight; y += 700) {
-      window.scrollTo(0, y);
-      await new Promise((r) => setTimeout(r, 120));
-    }
-  });
+
+  // X6: scroll through once with the wheel so lazy images, the form frame and deferred chunks all load.
+  const scroll = await wheelToEnd(page);
+  check(
+    `X6 ${route}: wheel scroll reached the page end`,
+    scroll.reached,
+    `scrollY ${scroll.y} of ${scroll.maxY} after ${scroll.wheels} wheel event(s)`,
+  );
+
+  // X7 (/contact): the booking form frame must have mounted; wait for it before counting violations,
+  // so a violation its load raises is not read too early.
+  let mondaySandbox: string | null | undefined;
+  if (route === "/contact") {
+    const frame = await page
+      .waitForSelector(MONDAY_FRAME, { state: "attached", timeout: 10_000 })
+      .catch(() => null);
+    mondaySandbox = frame ? await frame.getAttribute("sandbox") : undefined;
+  }
+
   await page.waitForTimeout(1500);
   const violations = await page.evaluate(() => (window as unknown as { __csp: string[] }).__csp);
   const all = [...new Set([...violations, ...consoleCsp])];
   check(`${route}`, all.length === 0, all.length ? all.slice(0, 4).join(" | ") : "no violations");
 
+  // X7: every iframe, not the first one. A value is required, as it always was (an empty
+  // attribute failed the original `!!getAttribute("sandbox")` test and still fails).
+  const frames = await page.evaluate(() =>
+    [...document.querySelectorAll("iframe")].map((f) => ({
+      src: f.getAttribute("src") || "(no src)",
+      sandbox: f.getAttribute("sandbox"),
+    })),
+  );
+  const bare = frames.filter((f) => !f.sandbox);
+  check(
+    `X7 ${route}: every iframe sandboxed`,
+    bare.length === 0,
+    bare.length
+      ? `${bare.length} of ${frames.length} iframe without sandbox: ${bare.map((f) => f.src.slice(0, 80)).join(", ")}`
+      : `${frames.length} iframe(s), all sandboxed`,
+  );
+
   if (route === "/contact") {
-    const sandbox = await page.evaluate(() => document.querySelector("iframe")?.getAttribute("sandbox") ?? null);
-    check("/contact: the form iframe is sandboxed", !!sandbox, sandbox ?? "no sandbox attribute");
+    check(
+      "X7 /contact: the forms.monday.com iframe is sandboxed",
+      !!mondaySandbox,
+      mondaySandbox === undefined
+        ? "X7: no forms.monday.com iframe after wheel scroll"
+        : mondaySandbox
+          ? `sandbox="${mondaySandbox}"`
+          : "forms.monday.com iframe without sandbox",
+    );
   }
   await context.close();
 }
@@ -114,7 +206,9 @@ await browser.close();
 
 console.log(`\n${failed} failure(s)`);
 if (failed === 0) {
-  console.log(`SECURITY HEADERS OK - every route served its headers, CSP (${enforcing ? "enforcing" : "report-only"}) saw no violations`);
+  console.log(
+    `SECURITY HEADERS OK - every route served its headers, CSP (${enforcing ? "enforcing" : "report-only"}) saw no violations, every iframe sandboxed (forms.monday.com mounted by wheel scroll)`,
+  );
 } else {
   console.log("SECURITY HEADERS FAILED");
   process.exitCode = 1;

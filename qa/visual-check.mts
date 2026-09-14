@@ -478,16 +478,39 @@ async function run() {
   await browser.close();
 
   console.log(`\n${captured} screenshot(s) -> qa/screenshots/`);
+  let failed = false;
   if (allErrors.length) {
     console.log(`\n! ${allErrors.length} console error(s):`);
     [...new Set(allErrors)].slice(0, 20).forEach((e) => console.log(`   ${e.slice(0, 240)}`));
-    process.exitCode = 1;
+    failed = true;
   } else {
     console.log("no console errors");
   }
+  /* A group that failed used to be pushed here and never read: a missing
+     [data-stacked] scene or menu trigger, or a group that threw, still ended
+     in exit 0 (SPEC §I.1, visual-check row). Every entry is printed, and any
+     entry fails the run. */
+  if (reportFailedGroups()) failed = true;
+  else console.log("no failed groups");
+  if (failed) {
+    console.log("\nVISUAL CHECK FAILED");
+    process.exitCode = 1;
+  } else {
+    console.log("\nVISUAL CHECK OK");
+  }
+}
+
+function reportFailedGroups(): boolean {
+  if (!failedGroups.length) return false;
+  console.log(`\n! ${failedGroups.length} failed group(s):`);
+  for (const g of failedGroups) console.log(`   failedGroups: ${g}`);
+  return true;
 }
 
 run().catch((err) => {
   console.error(err);
+  // Groups that failed before the crash are still reported.
+  reportFailedGroups();
+  console.log("\nVISUAL CHECK FAILED");
   process.exit(1);
 });

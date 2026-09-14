@@ -76,6 +76,18 @@ const locate = (file: string) =>
       ? path.join(LOCAL_MASTERS, file)
       : null;
 
+/* The published graded tree, walked recursively once, on first use. Every
+   non-directory entry is a candidate (symlinks included). A missing root
+   throws, as the per-letter readdir it replaces did. */
+const GRADED_ROOT = path.join("public", "images", "graded");
+let gradedCache: string[] | undefined;
+const walk = (dir: string): string[] =>
+  fs.readdirSync(dir, { withFileTypes: true }).flatMap((d) => {
+    const full = path.join(dir, d.name);
+    return d.isDirectory() ? walk(full) : [full];
+  });
+const gradedFiles = () => (gradedCache ??= walk(GRADED_ROOT));
+
 console.log("\n[ledger] every sourced master is accounted for");
 
 const recorded = new Set(ledger.photographs.map((p) => p.file));
@@ -129,19 +141,25 @@ for (const photo of ledger.photographs) {
      the repository is private. */
   if (photo.licence === "Pixabay Content License") {
     const base = photo.file.replace(/\.(png|jpeg|JPG|PNG)$/i, ".jpg");
-    /* Every grade directory that exists, not a fixed list: a list of a/b/c
-       went silently blind the day grade d was generated. */
-    const grades = fs
-      .readdirSync(path.join("public", "images", "graded"), { withFileTypes: true })
-      .filter((d) => d.isDirectory() && /^[a-z]$/.test(d.name))
-      .map((d) => d.name);
-    const shipped = grades.filter((g) =>
-      fs.existsSync(path.join("public", "images", "graded", g, "sourced", base)),
-    );
+    /* Every file under public/images/graded/, at ANY depth, not a fixed
+       graded/<letter>/sourced/<base> probe. That probe went blind twice over:
+       a fixed a/b/c list missed grade d the day it was generated, and the
+       per-letter `sourced/` path cannot see a derivative of a derivative, such
+       as the terracotta duotone at graded/d/duotone/sourced/<base> (SPEC E.3).
+       A copy is a copy wherever it sits and whatever it is called at the
+       extension, so the frame's name is compared case-insensitively on its
+       stem across every raster extension the pipelines could write. */
+    const stem = base.replace(/\.jpg$/i, "").toLowerCase();
+    const shipped = gradedFiles().filter((f) => {
+      const m = path.basename(f).match(/^(.*)\.(jpe?g|png|webp|avif)$/i);
+      return !!m && m[1].toLowerCase() === stem;
+    });
     check(
       `${photo.file}: held, not shipped (Pixabay forbids standalone distribution)`,
       shipped.length === 0,
-      shipped.length ? `graded copies in public/ for grade(s) ${shipped.join(", ")}` : "no graded copy in public/",
+      shipped.length
+        ? `graded copy of a held frame: ${shipped.map((f) => f.split(path.sep).join("/")).join(", ")}`
+        : `no copy anywhere under ${GRADED_ROOT.split(path.sep).join("/")}/**`,
     );
   }
 
@@ -220,15 +238,87 @@ check(
   "CC BY requires changes to be marked",
 );
 
-console.log("\n[reachable] the footer links to it");
-for (const route of ["/", "/experiences", "/contact"]) {
-  await page.goto(`${BASE}${route}`, { waitUntil: "domcontentloaded", timeout: 45_000 });
-  const linked = await page.evaluate(() =>
-    [...document.querySelectorAll("footer a")].some(
-      (a) => a.getAttribute("href") === "/credits",
-    ),
+/* C14. The attribution must be reachable from every page a visitor can land
+   on, so the credits link is looked for on all nine routes (the three it once
+   sampled missed a page that dropped its footer link), including the 404 page,
+   which renders the same root layout.
+
+   "In the footer" is read as the accessibility tree reads it: inside a
+   `contentinfo` landmark, resolved by Playwright's own role engine. That is a
+   <footer> with no sectioning ancestor (a <footer> inside <main>, <section>,
+   <article>, <aside> or <nav> is not a landmark) or any element carrying
+   role="contentinfo" (so a back cover built from a <div> still counts), and
+   never a landmark hidden from assistive technology. The old `footer a`
+   selector accepted a <footer> nested anywhere and rejected the role.
+
+   The link is probed twice, as the old check did at domcontentloaded and again
+   at load, and must be inside a landmark both times. Each route must also
+   answer with its expected status, so a renamed slug cannot pass on the 404
+   page's footer. */
+const NOT_FOUND_ROUTE = "/this-route-does-not-exist";
+const C14_ROUTES = [
+  "/",
+  "/experiences",
+  "/experiences/kourtaliotis-temple-of-nature",
+  "/experiences/heart-of-cretan-tradition",
+  "/transfers",
+  "/transfers/private-transfers-rethymno",
+  "/contact",
+  "/credits",
+  NOT_FOUND_ROUTE,
+];
+const CREDITS_LINK = 'a[href="/credits"]';
+
+const probeCreditsLink = async () => {
+  const links = page.locator(CREDITS_LINK);
+  const total = await links.count();
+  const inLandmark = await page.getByRole("contentinfo").locator(CREDITS_LINK).count();
+  const where = await links.evaluateAll((els) =>
+    els.slice(0, 3).map((el) => {
+      const chain: string[] = [];
+      for (let n: Element | null = el; n && n !== document.body; n = n.parentElement) {
+        const role = n.getAttribute("role");
+        chain.unshift(`${n.tagName.toLowerCase()}${role ? `[role="${role}"]` : ""}`);
+      }
+      return chain.join(" > ");
+    }),
   );
-  check(`${route}: footer links to /credits`, linked, linked ? "present" : "no link");
+  return { total, inLandmark, where };
+};
+
+console.log("\n[reachable] a contentinfo landmark links to it on every route");
+for (const route of C14_ROUTES) {
+  const expected = route === NOT_FOUND_ROUTE ? 404 : 200;
+  const response = await page.goto(`${BASE}${route}`, { waitUntil: "domcontentloaded", timeout: 45_000 });
+  const atDom = await probeCreditsLink();
+  await page.waitForLoadState("load", { timeout: 45_000 });
+  const atLoad = await probeCreditsLink();
+  const status = response?.status();
+
+  const phases = [
+    ["domcontentloaded", atDom],
+    ["load", atLoad],
+  ] as const;
+  const missing = phases.filter(([, p]) => p.total === 0).map(([name]) => name);
+  const outside = phases.filter(([, p]) => p.total > 0 && p.inLandmark === 0).map(([name]) => name);
+  const summary = phases
+    .map(([name, p]) => `${name}: ${p.inLandmark} of ${p.total} ${CREDITS_LINK} inside contentinfo`)
+    .join("; ");
+
+  const verdict =
+    status !== expected
+      ? `status ${status}, expected ${expected}`
+      : missing.length
+        ? "no credits link"
+        : outside.length
+          ? "credits link not inside contentinfo"
+          : "credits link inside contentinfo";
+  const found = [...new Set([...atDom.where, ...atLoad.where])];
+  check(
+    `${route}: ${verdict}`,
+    status === expected && missing.length === 0 && outside.length === 0,
+    `${summary}${outside.length && found.length ? `; found at ${found.join(" | ")}` : ""}`,
+  );
 }
 
 await browser.close();

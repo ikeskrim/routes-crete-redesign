@@ -33,6 +33,28 @@ function readManifest(): Manifest | null {
   }
 }
 
+/** Pixel size of a committed capture, from its own JPEG header; null when unreadable. */
+function captureSize(file: string): { width: number; height: number } | null {
+  try {
+    const buf = fs.readFileSync(path.join(process.cwd(), "public", "design3-assets", file));
+    let i = 2;
+    while (i + 9 < buf.length) {
+      if (buf[i] !== 0xff) {
+        i++;
+        continue;
+      }
+      const marker = buf[i + 1];
+      if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+        return { height: buf.readUInt16BE(i + 5), width: buf.readUInt16BE(i + 7) };
+      }
+      i += 2 + buf.readUInt16BE(i + 2);
+    }
+  } catch {
+    /* a missing frame renders as pending */
+  }
+  return null;
+}
+
 const DIRECTIONS = [
   {
     key: "a",
@@ -54,10 +76,49 @@ const DIRECTIONS = [
   },
 ] as const;
 
+/* C beside C+, from one capture run. */
+const COMPARED = [
+  { key: "c", name: "C" },
+  { key: "c-plus", name: "C+" },
+] as const;
+
+/**
+ * What changed from C to C+ and why: C+ spec §J.3, verbatim and in order.
+ * Line 14 has two spec wordings; the one shown follows the back-cover frame
+ * the draft actually renders (the duotone once it exists, else the colour
+ * storm-cloud frame), checked at build exactly as the draft checks it.
+ */
+function changeLines(): string[] {
+  const duotone = fs.existsSync(
+    path.join(process.cwd(), "public", "images", "graded", "d", "duotone", "sourced", "south-coast-storm-cloud.jpg"),
+  );
+  return [
+    "The display face is now Fraunces at its display optical size: lighter and sharper at cover size than C's condensed serif, with Inter for reading text and the Greek of the registration line.",
+    `One word per headline is set in italic ("unknown" on the cover), in the same colour, so the stress comes from the letterform; the italic appears on four pages only, never in the header or footer.`,
+    "Labels are letter-spaced capitals sized to the body text; the fonts carry no true small caps, so none are faked.",
+    "The 2 px rules are now 1 px hairlines, and Roman numerals I–IV number the four sections after the cover.",
+    "The cover photograph runs off the right edge on desktop, with its caption and credit hung in the margin like a photo credit.",
+    "The paper moves toward bone, the ink from brown toward charcoal and the terracotta text toward burnt sienna; every pairing was measured for contrast.",
+    "Gold appears only on buttons: the terracotta button is now a gold pill with a charcoal label, the only rounded button, and the header’s “Book Now” is an underlined link so two gold buttons never share the first screen.",
+    "The CSS sepia filter and colour overlay on photographs are removed; the warmth now comes from the new photo grade alone.",
+    "A warm paper grain is printed into the paper sections, never over a photograph, and tuned so every text stays legible on its darkest speck.",
+    "The journeys are an index of titles: pointing at one shows its photograph; phones show every photograph in the list.",
+    "Added: the three “why us” statements, set large as pull quotes that hold still beside photographs bleeding alternately left and right.",
+    "Added: the signature journey, as a photo essay whose chapter text holds still while its photographs scroll.",
+    "Added: a golden band after the signature journey, “A mountain road in Crete”, cropped so no vehicle is in frame.",
+    duotone
+      ? "The header is a serif wordmark over a hairline; the footer becomes a back cover with a terracotta duotone photograph and the wordmark set large."
+      : "The header is a serif wordmark over a hairline; the footer becomes a back cover with a photograph of storm clouds and the wordmark set large.",
+    "The plate is no longer uncovered by a wipe on load; it pushes in slowly, and with reduced motion the page is a finished still.",
+  ];
+}
+
 export default function DesignThreeIndex() {
   const manifest = readManifest();
   const frame = (draft: string, viewport: string, kind: string) =>
     manifest?.frames.find((f) => f.draft === draft && f.viewport === viewport && f.kind === kind);
+
+  const pending = <p className="mt-2 text-[0.875rem] text-[#5a5d61]">Captures pending.</p>;
 
   return (
     <div className="min-h-screen bg-[#fbfaf7] text-[#16181b]">
@@ -86,6 +147,127 @@ export default function DesignThreeIndex() {
         ) : (
           <p className="mt-3 text-[0.8125rem] text-[#5a5d61]">Captures pending.</p>
         )}
+
+        {/* ------------------------------------------------ C beside C+ */}
+        <section aria-labelledby="c-plus-compare" className="mt-14 border-t border-[#16181b]/15 pt-10">
+          <h2
+            id="c-plus-compare"
+            className="text-[clamp(1.5rem,4vw,2.25rem)] font-semibold tracking-[-0.015em]"
+          >
+            <span className="mr-3 tabular-nums text-[#5a5d61]">C · C+</span>
+            Warm Editorial
+          </h2>
+
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6">
+            {COMPARED.map((d) => (
+              <div key={d.key} className="flex min-w-0 flex-wrap items-center justify-between gap-2">
+                <h3 className="text-[1.25rem] font-semibold tabular-nums">{d.name}</h3>
+                <Link
+                  href={`/design-3/${d.key}`}
+                  className="inline-flex min-h-11 items-center rounded-full bg-[#16181b] px-4 text-[0.875rem] font-medium text-white sm:px-6"
+                >
+                  Open the live draft
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {(
+            [
+              { viewport: "desktop", label: "Desktop ·", width: 1440, height: 900 },
+              { viewport: "mobile", label: "Phone ·", width: 780, height: 1688 },
+            ] as const
+          ).map((vp) => (
+            <div
+              key={vp.viewport}
+              className={`mt-6 grid grid-cols-2 items-start gap-3 sm:gap-6 ${vp.viewport === "mobile" ? "sm:max-w-[34rem]" : ""}`}
+            >
+              {COMPARED.map((d) => {
+                const fold = frame(d.key, vp.viewport, "fold");
+                const full = frame(d.key, vp.viewport, "full");
+                return (
+                  <figure key={d.key} className="min-w-0">
+                    {fold ? (
+                      <Image
+                        src={`/design3-assets/${fold.file}`}
+                        alt={`${d.name} · ${vp.label} first screen`}
+                        width={vp.width}
+                        height={vp.height}
+                        sizes={vp.viewport === "mobile" ? "(max-width: 640px) 45vw, 260px" : "(max-width: 1216px) 48vw, 580px"}
+                        className={`h-auto w-full border border-[#16181b]/10 ${vp.viewport === "mobile" ? "rounded-[14px]" : "rounded-[6px]"}`}
+                      />
+                    ) : (
+                      pending
+                    )}
+                    <figcaption className="mt-2 text-[0.875rem] text-[#5a5d61]">
+                      {d.name} · {vp.label}{" "}
+                      {full && (
+                        <a
+                          className="inline-flex min-h-11 items-center underline underline-offset-4"
+                          href={`/design3-assets/${full.file}`}
+                        >
+                          whole draft
+                        </a>
+                      )}
+                    </figcaption>
+                  </figure>
+                );
+              })}
+            </div>
+          ))}
+
+          {/* The whole drafts, top to bottom, from the same run and commit, so
+              the change lines about content below the fold can be seen. */}
+          {(["desktop", "mobile"] as const).map((viewport) => (
+            <div key={`${viewport}-full`} className="mt-8 grid grid-cols-2 items-start gap-3 sm:gap-6">
+              {COMPARED.map((d) => {
+                const full = frame(d.key, viewport, "full");
+                const size = full ? captureSize(full.file) : null;
+                return (
+                  <figure key={d.key} className="min-w-0">
+                    {full && size ? (
+                      <div
+                        tabIndex={0}
+                        role="region"
+                        aria-label={`${d.name} · ${viewport === "desktop" ? "Desktop ·" : "Phone ·"} whole draft`}
+                        className="max-h-[42rem] overflow-y-auto rounded-[6px] border border-[#16181b]/10"
+                      >
+                        <Image
+                          src={`/design3-assets/${full.file}`}
+                          alt={`${d.name} · ${viewport === "desktop" ? "Desktop ·" : "Phone ·"} whole draft`}
+                          width={size.width}
+                          height={size.height}
+                          loading="lazy"
+                          sizes="(max-width: 1216px) 48vw, 580px"
+                          className="h-auto w-full"
+                        />
+                      </div>
+                    ) : (
+                      pending
+                    )}
+                    <figcaption className="mt-2 text-[0.875rem] text-[#5a5d61]">
+                      {d.name} · {viewport === "desktop" ? "Desktop ·" : "Phone ·"}{" "}
+                      {full && (
+                        <a
+                          className="inline-flex min-h-11 items-center underline underline-offset-4"
+                          href={`/design3-assets/${full.file}`}
+                        >
+                          whole draft
+                        </a>
+                      )}
+                    </figcaption>
+                  </figure>
+                );
+              })}
+            </div>
+          ))}
+
+          <ol className="mt-10 max-w-[68ch] list-decimal space-y-3 pl-6 text-[0.9375rem] leading-relaxed text-[#3d4044] marker:text-[#5a5d61]">
+            {changeLines().map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ol>
+        </section>
 
         <ol className="mt-14 flex flex-col gap-20">
           {DIRECTIONS.map((d, i) => {

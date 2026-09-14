@@ -3,7 +3,13 @@
  *
  * Verifies that every image and every body paragraph recorded in the content
  * files is (a) present on disk and (b) actually reaches the rendered HTML.
- * Run against the production server.
+ *
+ * Section 1 (images on disk) reads files only: content/, public/images,
+ * assets-src/sourced and the live GRADE letter. GRADE is resolved from
+ * src/lib/edition.ts when that file exists (SPEC C10), else from
+ * src/lib/content.ts (trees before edition.ts exists). A file that yields no
+ * GRADE letter, or declares it more than once, throws before any check runs.
+ * Sections 3 and 4 fetch QA_BASE_URL: run against the production server.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -40,8 +46,41 @@ const fail = (m: string) => {
   failures++;
 };
 
+/* The grade the site actually serves, read from the one constant (SPEC C10:
+ * it lives in src/lib/edition.ts; before that file exists, in
+ * src/lib/content.ts). It was hard-coded to b, two grades ago; "any letter"
+ * would be looser still, passing a photograph whose only copy sits in a
+ * retired grade.
+ *
+ * Resolved once, before any check, and never silently. The previous inline
+ * regex was read only when a master was missing, and a declaration that
+ * changed shape left the letter `undefined`, so the graded-copy branch quietly
+ * stopped checking while the audit still printed OK. Now a file that yields no
+ * letter throws, and so does a file declaring GRADE more than once. Only a
+ * declaration at the start of a line counts, so a commented-out
+ * `// const GRADE = "b"` can never stand in for the real constant. */
+const EDITION_TS = path.join(ROOT, "src", "lib", "edition.ts");
+const CONTENT_TS = path.join(ROOT, "src", "lib", "content.ts");
+const GRADE_FILE = fs.existsSync(EDITION_TS) ? EDITION_TS : CONTENT_TS;
+const GRADE_FILE_REL = path.relative(ROOT, GRADE_FILE).split(path.sep).join("/");
+const gradeLetters = fs.existsSync(GRADE_FILE)
+  ? [
+      ...fs
+        .readFileSync(GRADE_FILE, "utf8")
+        .matchAll(/^[ \t]*(?:export[ \t]+)?const[ \t]+GRADE\b[^=\n]*=[ \t]*["']([a-z])["']/gm),
+    ].map((m) => m[1])
+  : [];
+if (gradeLetters.length === 0) {
+  throw new Error(`GRADE constant not found in ${GRADE_FILE_REL}`);
+}
+if (gradeLetters.length > 1) {
+  throw new Error(`GRADE constant declared ${gradeLetters.length} times in ${GRADE_FILE_REL}`);
+}
+const GRADE = gradeLetters[0];
+
 /* ---------------------------------------------------------- images */
 console.log("\n1. images on disk");
+console.log(`  GRADE "${GRADE}" read from ${GRADE_FILE_REL}`);
 const referenced = new Set<string>();
 const collect = (v: unknown) => {
   if (Array.isArray(v)) return v.forEach(collect);
@@ -75,15 +114,9 @@ const existsSomewhere = (src: string): boolean => {
   if (src.startsWith("/images/sourced/")) {
     const bare = rel.replace(/^images\/sourced\//, "");
     if (fs.existsSync(path.join(process.cwd(), "assets-src", "sourced", bare))) return true;
-    /* The grade the site actually serves, read from the one constant. This was
-     * hard-coded to b, two grades ago; "any letter" would have been looser
-     * still, passing a photograph whose only copy sits in a retired grade.
-     * An unreadable constant finds nothing, so the check fails loudly. */
+    /* Only the live grade's copy counts (GRADE, resolved above). */
     const jpg = bare.replace(/\.(png|jpeg|JPG|PNG)$/i, ".jpg");
-    const live = fs
-      .readFileSync(path.join(process.cwd(), "src", "lib", "content.ts"), "utf8")
-      .match(/const GRADE = "([a-z])"/)?.[1];
-    if (live && fs.existsSync(path.join(PUBLIC, "images", "graded", live, "sourced", jpg))) return true;
+    if (fs.existsSync(path.join(PUBLIC, "images", "graded", GRADE, "sourced", jpg))) return true;
   }
   return false;
 };

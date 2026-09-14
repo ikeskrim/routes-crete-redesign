@@ -1,0 +1,2662 @@
+/* TEMPORARY — /design-3/c-plus, direction C+ "Warm Editorial, printed".
+ * Deleted with the other drafts.
+ *
+ * Built to .hunt/cplus/spec/SPEC.md. In order:
+ *   1. Layer E (§B.2–§B.4, the C+ column), VERBATIM under the spec's --ed-*
+ *      names; the rollout copies this block into src/app/edition.css.
+ *   2. The one draft-only token deviation (§0.1): the R2 italic tokens.
+ *   3. Draft-local equivalents of the G1 utilities (§D.1, §F.1, §G.1, §G.3,
+ *      §C.1, §C.2, §C.10), named in camelCase, declarations copied.
+ *   4. Type steps (§C.3), editorial parts (§C.5–§C.9, §C.12).
+ *   5. The draft blocks, in page order (§D.4, §H).
+ *
+ * Every col-N placement sits inside @media (min-width: 1024px) unless the
+ * 640–1023 table of §D.1 names it (8 columns) — no implicit tracks.
+ */
+
+/* ======================================================================
+ * 1. LAYER E — C+ edition tokens (spec §B.2–§B.4), verbatim
+ * ====================================================================== */
+.root {
+  /* §B.2 colour */
+  --ed-paper: #f6f0e4;
+  --ed-bone: #ece3d2;
+  --ed-ink: #28231f;
+  --ed-ink-soft: #5c524a;
+  --ed-accent-text: #8f3c1e;
+  --ed-accent: #b4532e;
+  --ed-label: #58623a;
+  --ed-band: #58623a;
+  --ed-on-band: #f6f0e4;
+  --ed-band-dot: #afb098;
+  --ed-stone: #b3a792;
+  --ed-hairline: #d1cbc1;
+  --ed-hairline-bone: #c9c0b2;
+  --ed-rule: #7a746a;
+  --ed-hairline-night: #403b35;
+  --ed-rule-night: #8c877f;
+  --ed-plate-keyline: #ddd7cc;
+  --ed-cta-bg: #d1a043;
+  --ed-cta-fg: var(--ed-ink);
+  --ed-cta-bg-hover: #c28f33;
+  --ed-cta-fg-hover: var(--ed-ink);
+  --ed-cta-edge: #8f6722;
+  --ed-focus: var(--ed-accent-text);
+  --ed-focus-night: var(--ed-paper);
+  --ed-selection-bg: var(--ed-accent-text);
+  --ed-selection-fg: var(--ed-paper);
+  --ed-night: #221d19;
+  --ed-night-raised: #2e2823;
+  --ed-on-night: var(--ed-paper);
+  --ed-on-night-soft: #bbb5ab;
+  --ed-scrim: var(--ed-night);
+  --ed-chart-grid: #dcd4c4;
+  --ed-chart-route: var(--ed-accent);
+  --ed-chart-pin: var(--ed-ink);
+  --ed-chart-grid-night: #403b35;
+  --ed-chart-route-night: var(--ed-accent);
+  --ed-chart-pin-night: var(--ed-paper);
+  --ed-chart-stop-bg-night: var(--ed-night);
+  --ed-chart-stop-edge-night: var(--ed-stone);
+  --ed-chart-stop-fg-night: var(--ed-on-night-soft);
+  --ed-chart-stop-lit-edge-night: var(--ed-accent);
+  --ed-chart-stop-lit-fg-night: var(--ed-paper);
+  --ed-chart-stop-active-bg-night: var(--ed-paper);
+  --ed-chart-stop-active-fg-night: var(--ed-night);
+
+  /* §B.3 type (family tokens read the pre-S5 variable as fallback) */
+  --ed-display-family: var(--font-fraunces, var(--font-serif)), Georgia, serif;
+  --ed-em-family: var(--ed-display-family);
+  --ed-em-style: normal;
+  --ed-text-family: var(--font-inter), system-ui, sans-serif;
+  --ed-display-weight: 340;
+  --ed-display-weight-small: 420;
+  --ed-display-opsz: "opsz" 144;
+  --ed-cover-fit: 1;
+  --ed-label-case: uppercase;
+  --ed-label-tracking: 0.1em;
+  --ed-label-weight: 540;
+  --ed-label-size: 0.8rem;
+  --ed-label-stretch: 100%;
+  --ed-t-cover: calc(clamp(4.25rem, 18vw, 8.5rem) * var(--ed-cover-fit));
+  --ed-t-statement: clamp(2.625rem, 5.4vw, 5.25rem);
+  --ed-t-section: clamp(2.0625rem, 3.9vw, 3.75rem);
+  --ed-t-pullquote: clamp(1.75rem, 2.97vw, 3rem);
+  --ed-t-title: clamp(1.5rem, 2.22vw, 2.25rem);
+  --ed-t-deck: clamp(1.1875rem, 1.6vw, 1.5rem);
+  --ed-t-caption-place: clamp(0.9375rem, 1.11vw, 1rem);
+  --ed-caption-place-style: normal;
+  --ed-dropcap-color: var(--ed-accent);
+  --ed-dropcap-lines: 3;
+
+  /* §B.4 texture, grade-in-CSS, motion, grid, CTA shape */
+  --ed-paper-grain-opacity: 0.07;
+  /* Amended (C+ review): the §F.3 token fallback. At 0.045 / 0.03 the
+     low-frequency mottle quantised into visible 8-bit contour rings on flat
+     paper and bone. Lighter only, so every §F.2 worst-speckle ratio improves. */
+  --ed-paper-mottle-opacity: 0.02;
+  --ed-bone-grain-opacity: 0.06;
+  --ed-bone-mottle-opacity: 0.015;
+  --ed-paper-vignette: radial-gradient(130% 110% at 50% 45%, transparent 58%, rgb(94 72 44 / 0.06) 100%);
+  --ed-night-grain-opacity: 0.045;
+  --ed-night-density: radial-gradient(120% 90% at 50% 40%, transparent 55%, color-mix(in srgb, #000 18%, transparent) 100%);
+  --ed-film-grain-display: none;
+  --ed-plate-grade: none;
+  --ed-plate-print: none;
+  --ed-plate-print-blend: normal;
+  --ed-ease-reveal: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ed-ease-lay: cubic-bezier(0.65, 0, 0.35, 1);
+  --ed-kenburns-duration: 22s;
+  --ed-kenburns-scale: 1.045;
+  --ed-margin: clamp(1.25rem, 5vw, 5rem);
+  --ed-gutter: clamp(1rem, 1.667vw, 1.5rem);
+  --ed-col-max: 6rem;
+  --ed-masthead-h: 3.5rem;
+  --ed-cta-radius: 999px;
+  --ed-cta-weight: 560;
+  --ed-cta-tracking: 0.01em;
+  --ed-cta-min-h: 3rem;
+  --ed-cta-pad: 1.625rem;
+  --ed-radius-media: 0;
+  --ed-hair-w: 1px;
+}
+
+@media (min-width: 1024px) {
+  .root {
+    --ed-t-cover: calc(clamp(6.5rem, 10.5vw, 10.5rem) * var(--ed-cover-fit));
+    --ed-masthead-h: 4rem;
+  }
+}
+
+@media (min-resolution: 2dppx) {
+  .root {
+    --ed-hair-w: 0.5px;
+  }
+}
+
+/* ======================================================================
+ * 2. Draft-only deviation (§0.1): the R2 italic tokens
+ * ====================================================================== */
+.root {
+  --ed-em-style: italic;
+  --ed-em-family: var(--font-fraunces-italic), var(--font-fraunces, var(--font-serif)), Georgia, serif;
+}
+
+/* ======================================================================
+ * 3. Grid counts, rhythm (§D.1) and the draft ground
+ * ====================================================================== */
+.root {
+  --ed-cols: 4;
+  --ed-space-section: clamp(5rem, 10vw, 9rem);
+  --ed-space-block: clamp(3rem, 5vw, 4.5rem);
+  --ed-space-pair: clamp(1.5rem, 2.2vw, 2rem);
+
+  min-height: 100vh;
+  overflow-x: clip;
+  background-color: var(--ed-paper);
+  color: var(--ed-ink);
+  font-family: var(--ed-text-family);
+  font-size: 1rem;
+  line-height: 1.7;
+  font-synthesis: none; /* no faux bold, italic or small caps */
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (min-width: 640px) {
+  .root {
+    --ed-cols: 8;
+  }
+}
+
+@media (min-width: 1024px) {
+  .root {
+    --ed-cols: 12;
+  }
+}
+
+.root :where(h1, h2, h3) {
+  font-family: var(--ed-display-family);
+  font-weight: var(--ed-display-weight-small);
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  text-wrap: balance;
+  hyphens: manual;
+  letter-spacing: normal;
+}
+
+.root :where(h4) {
+  font-family: var(--ed-text-family);
+}
+
+.root :where(h1, h2, h3, h4, p, ul, ol, li, figure, figcaption) {
+  margin: 0;
+  padding: 0;
+}
+
+.root :where(ul, ol) {
+  list-style: none;
+}
+
+.root ::selection {
+  background-color: var(--ed-selection-bg);
+  color: var(--ed-selection-fg);
+}
+
+.root :focus-visible {
+  outline: 2px solid var(--ed-focus);
+  outline-offset: 3px;
+}
+
+.night :focus-visible,
+.marquee :focus-visible {
+  outline-color: var(--ed-focus-night);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- ed-grid (§D.1) ---- */
+.edGrid {
+  display: grid;
+  column-gap: var(--ed-gutter);
+  grid-template-columns:
+    [full-start] minmax(calc(var(--ed-margin) - var(--ed-gutter)), 1fr)
+    [content-start] repeat(var(--ed-cols), [col] minmax(0, var(--ed-col-max)))
+    [content-end] minmax(calc(var(--ed-margin) - var(--ed-gutter)), 1fr) [full-end];
+}
+
+/* ---- paper-stock / bone-stock (§F.1) ---- */
+.paperStock,
+.boneStock {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Section content sits above the texture layer, so every plate is an opaque
+   box over it. Zero specificity: any block class may set its own position. */
+:where(.paperStock, .boneStock) > :where(:not(.paperStockLayer, .boneStockLayer)) {
+  position: relative;
+  z-index: 1;
+}
+
+.paperStockLayer,
+.boneStockLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.paperStockLayer {
+  background-image: var(--ed-paper-vignette);
+}
+
+.paperStockLayer::before,
+.paperStockLayer::after,
+.boneStockLayer::before,
+.boneStockLayer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+}
+
+/* grain: fractal noise 0.8 × 3 octaves, umber #5e482c, peak alpha 0.8, 180px tile */
+.paperStockLayer::before,
+.boneStockLayer::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.369 0 0 0 0 0.282 0 0 0 0 0.173 0.8 0 0 0 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* mottle: fractal noise 0.02 × 4 octaves (amended from 0.012 × 2: the extra
+   octaves dither the plateaus into grain instead of contour rings), same
+   matrix, 640px tile */
+.paperStockLayer::after,
+.boneStockLayer::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='640'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.369 0 0 0 0 0.282 0 0 0 0 0.173 0.8 0 0 0 0'/%3E%3C/filter%3E%3Crect width='640' height='640' filter='url(%23m)'/%3E%3C/svg%3E");
+  background-size: 640px 640px;
+}
+
+.paperStockLayer::before {
+  opacity: var(--ed-paper-grain-opacity);
+}
+
+.paperStockLayer::after {
+  opacity: var(--ed-paper-mottle-opacity);
+}
+
+.boneStockLayer::before {
+  opacity: var(--ed-bone-grain-opacity);
+}
+
+.boneStockLayer::after {
+  opacity: var(--ed-bone-mottle-opacity);
+}
+
+.noVignette {
+  background-image: none;
+}
+
+/* ---- night: density + the global grain-overlay at the night token ---- */
+.night {
+  background-color: var(--ed-night);
+  color: var(--ed-on-night);
+}
+
+.nightDensity {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--ed-night-density);
+}
+
+.nightGrain {
+  opacity: var(--ed-night-grain-opacity);
+}
+
+@media (forced-colors: active), (prefers-contrast: more) {
+  .paperStockLayer,
+  .boneStockLayer,
+  .nightGrain {
+    display: none;
+  }
+}
+
+/* ---- ken-burns-cover (§G.3) ---- */
+@keyframes edPush {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(var(--ed-kenburns-scale));
+  }
+}
+
+.kenBurnsCover {
+  animation: edPush var(--ed-kenburns-duration) cubic-bezier(0.33, 0, 0.67, 1) both;
+  transform-origin: var(--ed-kb-origin, 38% 20%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kenBurnsCover {
+    animation: none;
+  }
+
+  /* motion-fade-reduced (§G.1): a class outranks the global * clamp */
+  .motionFadeReduced {
+    transition-property: opacity !important;
+    transition-duration: 150ms !important;
+    transition-timing-function: linear !important;
+  }
+}
+
+/* ---- ed-line (§C.2 item 4): masks never clip ---- */
+.edLine {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.1em 0.2em;
+  margin-block: -0.1em -0.2em;
+  padding-inline-end: 0.1em;
+  margin-inline-end: -0.1em;
+}
+
+/* A pre-split headline stacks its .edLine blocks in a flex column. In block
+   flow the adjacent negative margins of two lines collapse (-0.2em and -0.1em
+   become -0.2em, not -0.3em), which would push every following line 0.1em
+   down and loosen the set leading; flex items' margins never collapse. The
+   literal space between the spans is not rendered by a flex container, but
+   stays in textContent and the accessible name. */
+.edLines {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- em.ed-em (§C.1) ---- */
+em.edEm {
+  font-family: var(--ed-em-family);
+  font-style: var(--ed-em-style);
+  font-weight: inherit;
+  font-variation-settings: inherit;
+  color: inherit;
+  line-height: 0;
+  margin-inline-end: 0.04em;
+}
+
+/* ---- ed-dropcap (§C.10) ---- */
+.edDropcap::first-letter {
+  float: left;
+  margin: 0.06em 0.1em 0 0;
+  font-family: var(--ed-display-family);
+  font-weight: 340;
+  font-variation-settings: "opsz" 144;
+  font-size: 3.9em;
+  line-height: 0.78;
+  color: var(--ed-dropcap-color);
+}
+
+@supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
+  .edDropcap::first-letter {
+    float: none;
+    /* Amended: the T's crossbar already supplies the side bearing; 0.12em
+       opened a gap wider than a word space ("T wo"). */
+    margin: 0 0.02em 0 0;
+    font-size: inherit;
+    line-height: inherit;
+    -webkit-initial-letter: 3;
+    initial-letter: 3;
+  }
+}
+
+/* ---- reveals (§G.1 #5 plate unclip, #6 slow block rise) ----
+   Amended: the plate is uncovered from its bleed edge across (0.9 s), not
+   from the top down over 1.4 s — a top-down wipe on a 750 px plate read as a
+   slow-loading image. Left-bleeding and inset plates open from the left,
+   right-bleeding plates from the right. */
+.unclip {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.9s var(--ed-ease-lay);
+}
+
+.unclip[data-from="right"] {
+  clip-path: inset(0 0 0 100%);
+}
+
+.unclip[data-in] {
+  clip-path: inset(0 0 0 0);
+}
+
+.unclipInner {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.06);
+  transition: transform 1.8s var(--ed-ease-reveal);
+}
+
+.unclip[data-in] > .unclipInner {
+  transform: none;
+}
+
+.rise {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 1.1s var(--ed-ease-reveal),
+    transform 1.1s var(--ed-ease-reveal);
+}
+
+.rise[data-in] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unclip {
+    clip-path: none !important;
+  }
+
+  .unclipInner {
+    transform: none !important;
+  }
+
+  .rise {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ======================================================================
+ * 4. Type steps (§C.3)
+ * ====================================================================== */
+.tCover {
+  font-family: var(--ed-display-family);
+  font-size: var(--ed-t-cover);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  font-weight: var(--ed-display-weight);
+  font-variation-settings: var(--ed-display-opsz);
+}
+
+@media (min-width: 1024px) {
+  .tCover {
+    line-height: 0.98;
+  }
+}
+
+.tStatement {
+  font-family: var(--ed-display-family);
+  font-size: var(--ed-t-statement);
+  line-height: 1.04;
+  letter-spacing: -0.016em;
+  font-weight: var(--ed-display-weight);
+  font-variation-settings: var(--ed-display-opsz);
+}
+
+/* Amended §C.3 (C+ review): the section step joins the display cut. At opsz
+   auto / 360 the 56 px h2s rendered a sturdier, lower-contrast cut than the
+   smaller 43 px pull quotes (opsz 144), inverting the optical hierarchy.
+   Every step of 42 px and more now shares "opsz" 144; title, deck and
+   smaller keep opsz auto. */
+.tSection {
+  font-family: var(--ed-display-family);
+  font-size: var(--ed-t-section);
+  line-height: 1.06;
+  letter-spacing: -0.014em;
+  font-weight: 340;
+  font-variation-settings: var(--ed-display-opsz);
+}
+
+.tPullquote {
+  font-family: var(--ed-display-family);
+  font-size: var(--ed-t-pullquote);
+  line-height: 1.14;
+  letter-spacing: -0.008em;
+  font-weight: 360;
+  font-variation-settings: var(--ed-display-opsz);
+}
+
+.tTitle {
+  font-family: var(--ed-display-family);
+  font-size: var(--ed-t-title);
+  line-height: 1.12;
+  letter-spacing: -0.005em;
+  font-weight: var(--ed-display-weight-small);
+  font-variation-settings: normal;
+}
+
+.tMenu {
+  font-family: var(--ed-display-family);
+  font-size: clamp(2.125rem, 4.2vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.012em;
+  font-weight: 360;
+  font-variation-settings: normal;
+}
+
+.tWordmarkBack {
+  font-family: var(--ed-display-family);
+  font-size: clamp(4rem, 14.5vw, 13.5rem);
+  line-height: 0.86;
+  letter-spacing: -0.03em;
+  font-weight: 300;
+  font-variation-settings: var(--ed-display-opsz);
+}
+
+.tWordmark {
+  font-family: var(--ed-display-family);
+  font-size: clamp(1.375rem, 1.8vw, 1.625rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-weight: 440;
+  font-variation-settings: "opsz" 36;
+}
+
+.tNumeralStep {
+  font-family: var(--ed-display-family);
+  font-size: clamp(3.5rem, 6vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  font-weight: 300;
+  font-variation-settings: var(--ed-display-opsz);
+}
+
+.tFolio {
+  font-family: var(--ed-display-family);
+  font-size: clamp(1.375rem, 2.08vw, 2rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  font-weight: 320;
+  font-variation-settings: "opsz" 72;
+}
+
+.tDeck {
+  font-family: var(--ed-display-family);
+  font-size: var(--ed-t-deck);
+  line-height: 1.4;
+  letter-spacing: 0;
+  font-weight: 420;
+  font-variation-settings: normal;
+}
+
+.tCaptionPlace {
+  font-family: var(--ed-display-family);
+  font-size: var(--ed-t-caption-place);
+  line-height: 1.35;
+  letter-spacing: 0.005em;
+  font-weight: 440;
+  font-variation-settings: normal;
+}
+
+.tBodyLg {
+  font-family: var(--ed-text-family);
+  font-size: clamp(1.0625rem, 1.25vw, 1.125rem);
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.tBody {
+  font-family: var(--ed-text-family);
+  font-size: 1rem;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+@media (min-width: 1024px) {
+  .tBody {
+    font-size: 1.0625rem;
+  }
+}
+
+.tUi {
+  font-family: var(--ed-text-family);
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  letter-spacing: 0.005em;
+  font-weight: 500;
+}
+
+.tCaption {
+  font-family: var(--ed-text-family);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  font-weight: 400;
+}
+
+@media (min-width: 768px) {
+  .tCaption {
+    font-size: 0.8125rem;
+  }
+}
+
+/* ---- eyebrow: letter-spaced capitals (§C.5) ---- */
+.eyebrow {
+  display: block;
+  font-family: var(--ed-text-family);
+  font-size: var(--ed-label-size);
+  line-height: 1.2;
+  letter-spacing: var(--ed-label-tracking);
+  font-weight: var(--ed-label-weight);
+  font-stretch: var(--ed-label-stretch);
+  font-variation-settings: normal;
+  text-transform: var(--ed-label-case);
+  color: var(--ed-label);
+}
+
+.eyebrowNight {
+  color: var(--ed-stone);
+}
+
+/* ---- folio row (§C.6) ---- */
+.folioRow {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: clamp(2.5rem, 4vw, 3.5rem);
+}
+
+.folioNumeral {
+  margin-inline-start: -0.04em;
+  color: var(--ed-accent-text);
+}
+
+.folioRule {
+  flex: none;
+  width: 3.5rem;
+  height: var(--ed-hair-w);
+  background-color: var(--ed-hairline);
+}
+
+.folioRowNight .folioNumeral {
+  color: var(--ed-stone);
+}
+
+.folioRowNight .folioRule {
+  background-color: var(--ed-hairline-night);
+}
+
+/* ---- captions set as photo credits (§C.9) ---- */
+.caption {
+  display: flex;
+  flex-direction: column;
+}
+
+.caption::before {
+  content: "";
+  display: block;
+  width: 1.5rem;
+  height: var(--ed-hair-w);
+  margin-bottom: 0.625rem;
+  background-color: var(--ed-hairline);
+}
+
+.captionPlace {
+  display: block;
+  /* The §C.3 measure of 28ch, written in em. `ch` resolves against the zero
+     of whichever face is rendering, and the fallback's zero is 12 % narrower
+     than Fraunces' (8.73 vs 9.89 px at 15 px, measured): with fonts held 28ch
+     was 242 px and the cover caption broke onto two lines, then rejoined when
+     Fraunces arrived, moving the phone deck and CTA row 20 px. 18.5em is 28ch
+     in the served Fraunces (277 px at 15 px, 296 px at 16 px) in both states. */
+  max-width: 18.5em;
+  font-style: var(--ed-caption-place-style);
+  color: var(--ed-ink);
+  text-wrap: balance;
+}
+
+.captionCredit {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--ed-ink-soft);
+  text-wrap: pretty;
+}
+
+.captionNight::before {
+  background-color: var(--ed-hairline-night);
+}
+
+/* On night, reversed type gains weight: tier 1 drops to 380 so the place
+   stays quieter than the plate, and sets on one line under a 416 px plate. */
+.captionNight .captionPlace {
+  max-width: none;
+  font-weight: 380;
+  color: var(--ed-on-night);
+}
+
+.captionNight .captionCredit {
+  color: var(--ed-on-night-soft);
+}
+
+/* ---- plates (§E, §F.1 keyline) ---- */
+.plateFrame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--cp-ratio);
+  border-radius: var(--ed-radius-media);
+  background-color: var(--ed-bone);
+}
+
+.plateImg {
+  object-fit: cover;
+}
+
+.keyline::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px var(--ed-plate-keyline);
+}
+
+/* The keyline marks only an edge that meets paper: a plate bleeding off both
+   viewport edges draws it top and bottom, one bleeding off one edge draws the
+   three others. */
+.keylineBleed::after {
+  box-shadow:
+    inset 0 1px 0 0 var(--ed-plate-keyline),
+    inset 0 -1px 0 0 var(--ed-plate-keyline);
+}
+
+.keylineBleedLeft::after {
+  box-shadow:
+    inset 0 1px 0 0 var(--ed-plate-keyline),
+    inset 0 -1px 0 0 var(--ed-plate-keyline),
+    inset -1px 0 0 0 var(--ed-plate-keyline);
+}
+
+.keylineBleedRight::after {
+  box-shadow:
+    inset 0 1px 0 0 var(--ed-plate-keyline),
+    inset 0 -1px 0 0 var(--ed-plate-keyline),
+    inset 1px 0 0 0 var(--ed-plate-keyline);
+}
+
+.pos5045 {
+  object-position: 50% 45%;
+}
+
+.pos5040 {
+  object-position: 50% 40%;
+}
+
+.pos5085 {
+  object-position: 50% 85%;
+}
+
+.pos5840 {
+  object-position: 58% 40%;
+}
+
+.quoteRule {
+  display: block;
+  width: 3rem;
+  height: 1px;
+  margin-bottom: 1.25rem;
+  background-color: var(--ed-accent);
+}
+
+/* ---- CTAs (§C.12): the gold pill is the only rounded control ---- */
+.ctaGold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--ed-cta-min-h);
+  padding-inline: var(--ed-cta-pad);
+  border-radius: var(--ed-cta-radius);
+  background-color: var(--ed-cta-bg);
+  color: var(--ed-cta-fg);
+  font-family: var(--ed-text-family);
+  font-size: 0.9375rem;
+  line-height: 1;
+  letter-spacing: var(--ed-cta-tracking);
+  font-weight: var(--ed-cta-weight);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 250ms;
+}
+
+.ctaGold:hover {
+  background-color: var(--ed-cta-bg-hover);
+  color: var(--ed-cta-fg-hover);
+}
+
+.ctaRule {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--ed-ink);
+  font-family: var(--ed-text-family);
+  font-size: 0.9375rem;
+  line-height: 1;
+  letter-spacing: var(--ed-cta-tracking);
+  font-weight: var(--ed-cta-weight);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ctaRule::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0.55rem;
+  height: 1px;
+  background-color: var(--ed-rule);
+  transform-origin: 50% 100%;
+  transition: transform 250ms;
+}
+
+.ctaRule:hover,
+.ctaRule:focus-visible {
+  color: var(--ed-accent-text);
+}
+
+.ctaRule:hover::after,
+.ctaRule:focus-visible::after {
+  transform: scaleY(2);
+}
+
+.ctaRuleNight,
+.ctaRuleNight:hover,
+.ctaRuleNight:focus-visible {
+  color: var(--ed-on-night);
+}
+
+.ctaRuleNight::after {
+  background-color: var(--ed-rule-night);
+}
+
+/* ======================================================================
+ * 5a. Masthead (§H.1) — a div, never a <header>
+ * ====================================================================== */
+.masthead {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 50;
+  height: var(--ed-masthead-h);
+  background-color: transparent;
+  transition: background-color 400ms var(--ed-ease-reveal);
+}
+
+.masthead {
+  isolation: isolate;
+}
+
+.masthead[data-nav-state="solid"] {
+  background-color: var(--ed-paper);
+}
+
+/* The solid bar is printed on the same stock as the page (grain + mottle, no
+   vignette), so it never reads as a flat, brighter app bar over paper. */
+.mastStock {
+  opacity: 0;
+  transition: opacity 400ms var(--ed-ease-reveal);
+}
+
+.masthead[data-nav-state="solid"][data-nav-tone="light"] .mastStock {
+  opacity: 1;
+}
+
+.mastGrid {
+  position: relative;
+  z-index: 1;
+}
+
+/* Amended §H.1: a night tone. While the essay or the back cover is under the
+   bar, the solid masthead is night stock with paper ink, never a paper band
+   cut across a dark page. */
+.masthead[data-nav-state="solid"][data-nav-tone="dark"] {
+  background-color: var(--ed-night);
+}
+
+.masthead[data-nav-tone="dark"] :focus-visible {
+  outline-color: var(--ed-focus-night);
+}
+
+.masthead[data-nav-tone="dark"] .mastBrand,
+.masthead[data-nav-tone="dark"] .mastTrigger,
+.masthead[data-nav-tone="dark"] .mastBook,
+.masthead[data-nav-tone="dark"] .mastBook:hover,
+.masthead[data-nav-tone="dark"] .mastBook:focus-visible {
+  color: var(--ed-on-night);
+}
+
+.masthead[data-nav-tone="dark"] .mastBook::after {
+  background-color: var(--ed-rule-night);
+}
+
+.masthead[data-nav-tone="dark"] .mastBar::after {
+  background-color: var(--ed-hairline-night);
+}
+
+/* Amended §H.1: the name is printed once per screen. While the back-cover
+   wordmark row is in view, the masthead wordmark fades out (it stays a link,
+   and shows again whenever it takes keyboard focus). */
+.mastBrand {
+  transition:
+    opacity 300ms var(--ed-ease-reveal),
+    color 400ms var(--ed-ease-reveal);
+}
+
+.mastBrand[data-quiet] {
+  opacity: 0;
+}
+
+.mastBrand[data-quiet]:focus-visible {
+  opacity: 1;
+}
+
+.mastGrid {
+  height: 100%;
+}
+
+.mastBar {
+  position: relative;
+  grid-column: content-start / content-end;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-areas: "brand book trigger";
+  align-items: center;
+  column-gap: 1.5rem;
+  height: 100%;
+}
+
+.mastBar::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: var(--ed-hairline);
+}
+
+.mastBrand {
+  grid-area: brand;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 44px;
+  color: var(--ed-ink);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.mastBook {
+  grid-area: book;
+  justify-self: end;
+  display: none;
+}
+
+.mastTrigger {
+  grid-area: trigger;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 44px;
+  min-height: 44px;
+  margin-inline-end: -0.375rem;
+  padding: 0 0.375rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ed-ink);
+  cursor: pointer;
+}
+
+.mastTriggerLabel {
+  line-height: 1;
+}
+
+.glyph {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 8px;
+}
+
+/* Transform only: the lines never change `top`. */
+.glyph::before,
+.glyph::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: currentColor;
+  transition: transform 400ms var(--ed-ease-reveal);
+}
+
+.glyph::before {
+  top: 0;
+}
+
+.glyph::after {
+  top: 7px;
+}
+
+.glyph[data-open="true"]::before {
+  transform: translateY(3.5px) rotate(45deg);
+}
+
+.glyph[data-open="true"]::after {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+@media (min-width: 640px) {
+  .mastBook {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mastBar {
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: "trigger brand book";
+  }
+
+  .mastBrand {
+    justify-self: center;
+  }
+
+  .mastTrigger {
+    justify-self: start;
+    margin-inline: -0.375rem 0;
+  }
+}
+
+/* ======================================================================
+ * 5b. Overlay menu (§H.2): opaque paper, the contract of OverlayMenu
+ * ====================================================================== */
+@keyframes cpPanelIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cpItemRise {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.menuPanel {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background-color: var(--ed-paper);
+  outline: none;
+  animation: cpPanelIn 450ms var(--ed-ease-reveal) both;
+}
+
+.menuScroll {
+  min-height: 100%;
+}
+
+.menuSrClose {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+  padding: 0;
+  background: none;
+}
+
+.menuSrClose:focus {
+  position: fixed;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 3;
+  width: auto;
+  height: auto;
+  min-height: 44px;
+  padding-inline: 1.25rem;
+  overflow: visible;
+  clip-path: none;
+  border: 1px solid var(--ed-rule);
+  border-radius: 0;
+  background-color: var(--ed-paper);
+  color: var(--ed-ink);
+}
+
+.menuGrid {
+  padding-top: calc(var(--ed-masthead-h) + 1.5rem);
+  padding-bottom: var(--ed-space-block);
+}
+
+.menuNav {
+  grid-column: content-start / content-end;
+}
+
+.menuList li {
+  border-top: var(--ed-hair-w) solid var(--ed-hairline);
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.75rem;
+  padding-block: 0.6rem;
+  color: var(--ed-ink);
+  text-decoration: none;
+}
+
+.menuMask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.1em 0.2em;
+  margin-block: -0.1em -0.2em;
+}
+
+.menuLabel {
+  position: relative;
+  display: block;
+  animation: cpItemRise 800ms var(--ed-ease-reveal) both;
+  animation-delay: calc(100ms + var(--i, 0) * 60ms);
+}
+
+.menuLabel::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.02em;
+  height: 1px;
+  background-color: var(--ed-accent-text);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 400ms var(--ed-ease-reveal);
+}
+
+.menuLink:hover .menuLabel::after,
+.menuLink:focus-visible .menuLabel::after {
+  transform: scaleX(1);
+}
+
+.menuExt {
+  width: 12px;
+  height: 12px;
+  color: var(--ed-ink-soft);
+}
+
+.menuFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 2rem;
+  margin-top: var(--ed-space-block);
+  padding-top: var(--ed-space-pair);
+  border-top: var(--ed-hair-w) solid var(--ed-hairline);
+}
+
+.menuAddress {
+  color: var(--ed-ink-soft);
+}
+
+.menuPreview {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .menuGrid {
+    padding-top: calc(var(--ed-masthead-h) + clamp(3rem, 6vw, 5rem));
+  }
+
+  .menuNav {
+    grid-column: col 1 / span 7;
+  }
+
+  .menuPreview {
+    position: relative;
+    display: block;
+    grid-column: col 9 / span 4;
+    align-self: start;
+    aspect-ratio: 4 / 5;
+  }
+
+  .menuPreview::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px var(--ed-plate-keyline);
+  }
+
+  /* No photograph showing, no frame: an empty keyline read as a missing image. */
+  .menuPreview:not(:has([data-active]))::after {
+    box-shadow: none;
+  }
+
+  .menuPreviewFrame {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 600ms var(--ed-ease-reveal);
+  }
+
+  .menuPreviewFrame[data-active] {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menuPanel {
+    animation-duration: 200ms !important;
+    animation-timing-function: linear !important;
+  }
+
+  .menuLabel {
+    animation: none !important;
+  }
+}
+
+/* ======================================================================
+ * 5c. Cover (§D.4)
+ * ====================================================================== */
+.cover {
+  --cp-deck: var(--ed-t-deck);
+  /* The hung caption's reserved block (§C.9, §D.4): pair + tick + tier 1 +
+     two tier-2 lines, with slack. */
+  --cp-caption-block: calc(var(--ed-space-pair) + 6.25rem);
+
+  padding-top: calc(var(--ed-masthead-h) + 1rem);
+  padding-bottom: var(--ed-space-section);
+  overflow-x: clip;
+  background-color: var(--ed-paper);
+}
+
+.coverHead {
+  grid-column: content-start / content-end;
+  grid-row: 1;
+  margin-bottom: var(--ed-space-pair);
+}
+
+.coverH1 {
+  grid-column: content-start / content-end;
+  grid-row: 2;
+  z-index: 2;
+  color: var(--ed-ink);
+  text-wrap: nowrap;
+}
+
+.coverH1 .edLine {
+  white-space: nowrap;
+}
+
+.coverPlate {
+  grid-column: full-start / full-end;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+.coverFrame {
+  z-index: 1;
+  grid-column: full-start / full-end;
+  aspect-ratio: 3 / 2;
+  /* top 0.08em under line 2's baseline: line 3 prints on the sky */
+  margin-top: calc(var(--ed-t-cover) * -1.1185);
+}
+
+/* Below 1024 the cover plate bleeds off both edges: keyline top and bottom only. */
+@media (max-width: 1023.98px) {
+  .coverFrame.keyline::after {
+    box-shadow:
+      inset 0 1px 0 0 var(--ed-plate-keyline),
+      inset 0 -1px 0 0 var(--ed-plate-keyline);
+  }
+}
+
+@media (min-width: 1024px) {
+  .coverFrame.keyline::after {
+    box-shadow:
+      inset 0 1px 0 0 var(--ed-plate-keyline),
+      inset 0 -1px 0 0 var(--ed-plate-keyline),
+      inset 1px 0 0 0 var(--ed-plate-keyline);
+  }
+}
+
+.coverKb {
+  --ed-kb-origin: 50% 30%;
+  position: absolute;
+  inset: 0;
+}
+
+.coverImg {
+  object-position: 50% 50%;
+}
+
+.coverCaption {
+  position: relative;
+  z-index: 1;
+  grid-column: content-start / content-end;
+  margin-top: 0.75rem;
+}
+
+.coverMargin {
+  grid-column: content-start / content-end;
+  grid-row: 4;
+}
+
+.coverDeck {
+  max-width: 34ch;
+  min-height: 5lh;
+  margin-top: var(--ed-space-pair);
+  font-size: var(--cp-deck);
+  color: var(--ed-ink);
+  text-wrap: pretty;
+}
+
+.coverCtas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.75rem;
+  margin-top: var(--ed-space-pair);
+}
+
+@media (min-width: 1024px) {
+  .cover {
+    --cp-deck: 1.1875rem;
+    padding-top: calc(var(--ed-masthead-h) + 1.5rem);
+  }
+
+  .coverHead {
+    grid-column: col 1 / content-end;
+  }
+
+  /* Desktop runs the first two spans as one line: "Explore the unknown"
+     (inline content, so the h1 returns to block flow; one line junction). */
+  .coverH1 {
+    display: block;
+  }
+
+  .coverH1 .coverL0,
+  .coverH1 .coverL1 {
+    display: inline;
+    overflow: visible;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* line 2 starts on column 5 (where the plate starts) + 0.3em:
+     4 × (col + gutter) = (content width + gutter) / 3 */
+  .coverH1 .coverL2 {
+    padding-inline-start: calc((100% + var(--ed-gutter)) / 3 + 0.3em);
+  }
+
+  .coverPlate {
+    display: contents;
+  }
+
+  .coverFrame {
+    grid-column: col 5 / full-end;
+    grid-row: 3;
+    aspect-ratio: 5 / 3;
+    /* top 0.06em under line 1's baseline */
+    margin-top: calc(var(--ed-t-cover) * -1.0485);
+  }
+
+  .coverKb {
+    --ed-kb-origin: 38% 20%;
+  }
+
+  /* Amended from 38% 20%: the crop rises to the warm upper sky, so more
+     amber and fewer grey haze rows sit behind line 2 (spec §D.4 crop; the
+     per-frame warm lift of the derivative is G0's, see the build report). */
+  .coverImg {
+    object-position: 38% 8%;
+  }
+
+  /* The margin column shares the plate's row and ends at its foot; its deck's
+     first baseline sits on line 2's baseline (0.92 × cover below the plate
+     top, minus the deck's first-line ascent: 0.7 half-leading + 0.3615 in
+     Fraunces at line-height 1.4 → 1.0615em). CTAs bottom-anchored. */
+  .coverMargin {
+    z-index: 1;
+    grid-column: col 1 / span 4;
+    grid-row: 3;
+    align-self: stretch;
+    display: grid;
+    grid-template-rows: auto minmax(var(--ed-space-pair), 1fr) 6rem;
+    margin-top: calc(var(--ed-t-cover) * -1.0485);
+    padding-top: calc(var(--ed-t-cover) * 0.92 - var(--cp-deck) * 1.0615);
+  }
+
+  .coverDeck {
+    grid-row: 1;
+    min-height: 6lh;
+    max-width: 26rem;
+    margin-top: 0;
+  }
+
+  .coverCtas {
+    grid-row: 3;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 0;
+    margin-top: 0;
+  }
+
+  .coverCaption {
+    grid-column: col 5 / full-end;
+    grid-row: 4;
+    margin-top: 0.75rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .cover {
+    --cp-deck: var(--ed-t-deck);
+  }
+
+  /* Amended: the CTA row sits directly under the deck (a pair space below its
+     reservation); only the caption stays bottom-anchored. The deck reserves
+     5lh here: 4 lines measured in both font states at 1280, 1440 and 1920,
+     plus one line of slack, so a swap still moves nothing. */
+  .coverMargin {
+    grid-template-rows: auto var(--ed-space-pair) 3rem 1fr var(--cp-caption-block);
+  }
+
+  .coverDeck {
+    min-height: 5lh;
+  }
+
+  .coverCtas {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.75rem;
+  }
+
+  /* hung in the margin column at the plate foot */
+  .coverCaption {
+    grid-column: col 1 / span 4;
+    grid-row: 3;
+    align-self: end;
+    justify-content: flex-end;
+    min-height: var(--cp-caption-block);
+    margin-top: 0;
+    padding-top: var(--ed-space-pair);
+  }
+}
+
+/* ======================================================================
+ * 5d. I · Positioning spread and why-us rows (§D.4)
+ * ====================================================================== */
+.positioning {
+  padding-top: var(--ed-space-section);
+  background-color: var(--ed-paper);
+}
+
+.posFolio,
+.posStatement,
+.posBody,
+.posAttrs {
+  grid-column: content-start / content-end;
+}
+
+.posStatement {
+  color: var(--ed-ink);
+}
+
+/* sentence 2 indented one column (4 columns: (width + gutter) / 4) */
+.posIndent {
+  padding-inline-start: calc((100% + var(--ed-gutter)) / 4);
+}
+
+.posBody {
+  max-width: 66ch;
+  margin-top: var(--ed-space-block);
+  color: var(--ed-ink);
+}
+
+.posAttrs {
+  margin-top: var(--ed-space-block);
+}
+
+.posAttrs li {
+  padding-block: 0.9rem;
+  border-top: var(--ed-hair-w) solid var(--ed-hairline);
+  color: var(--ed-ink);
+}
+
+.posAttrs li:last-child {
+  border-bottom: var(--ed-hair-w) solid var(--ed-hairline);
+}
+
+.whyUs {
+  grid-column: full-start / full-end;
+  margin-top: var(--ed-space-section);
+  padding-block: var(--ed-space-section);
+  background-color: var(--ed-bone);
+}
+
+.whyRow {
+  align-items: start;
+}
+
+.whyRow + .whyRow {
+  margin-top: var(--ed-space-section);
+}
+
+.whyPlate {
+  grid-column: full-start / full-end;
+}
+
+.whyText {
+  grid-column: content-start / content-end;
+  margin-top: var(--ed-space-pair);
+}
+
+.whyStatement {
+  max-width: 18ch;
+  color: var(--ed-ink);
+  text-wrap: balance;
+}
+
+/* The credit is a caption under a 1.5rem hairline, not a tracked-capitals
+   label: it gives the text block a visible base. */
+.whyCredit {
+  margin-top: 1.25rem;
+  color: var(--ed-ink-soft);
+}
+
+.whyCredit::before {
+  content: "";
+  display: block;
+  width: 1.5rem;
+  height: var(--ed-hair-w);
+  margin-bottom: 0.625rem;
+  background-color: var(--ed-hairline-bone);
+}
+
+@media (min-width: 640px) {
+  .posFolio,
+  .posStatement {
+    grid-column: content-start / content-end;
+  }
+
+  .posIndent {
+    padding-inline-start: calc((100% + var(--ed-gutter)) / 8);
+  }
+
+  .posBody,
+  .posAttrs {
+    grid-column: col 2 / span 6;
+  }
+
+  .whyPlate {
+    grid-column: full-start / col 7;
+  }
+
+  .whyRow:nth-of-type(2) .whyPlate {
+    grid-column: col 3 / full-end;
+  }
+
+  .whyText {
+    grid-column: col 2 / span 6;
+  }
+}
+
+@media (min-width: 1024px) {
+  .posFolio {
+    grid-column: col 1 / content-end;
+  }
+
+  .posStatement {
+    grid-column: col 1 / span 11;
+  }
+
+  .posStatement .edLine {
+    white-space: nowrap;
+  }
+
+  /* sentence 2 indented two columns: 2 × (col + gutter) of an 11-column span */
+  .posIndent {
+    padding-inline-start: calc((100% + var(--ed-gutter)) * 2 / 11);
+  }
+
+  .posBody {
+    grid-column: col 3 / span 5;
+    grid-row: 3;
+  }
+
+  /* starts at the body's first baseline (Inter, line-height 1.65: 1.188em) */
+  .posAttrs {
+    grid-column: col 9 / span 4;
+    grid-row: 3;
+    align-self: start;
+    margin-top: calc(var(--ed-space-block) + clamp(1.0625rem, 1.25vw, 1.125rem) * 1.188);
+  }
+
+  .whyRow .whyPlate {
+    grid-column: full-start / col 6;
+    grid-row: 1;
+  }
+
+  .whyRow .whyText {
+    grid-column: col 8 / span 5;
+    grid-row: 1;
+    position: sticky;
+    top: calc(var(--ed-masthead-h) + 20vh);
+    align-self: start;
+    margin-top: 0;
+  }
+
+  /* Row 2 breaks the zig-zag: the statement is set larger across five
+     columns and hangs from the plate's foot, held at the viewport's bottom
+     edge while the plate scrolls. */
+  .whyRow:nth-of-type(2) .whyPlate {
+    grid-column: col 6 / full-end;
+  }
+
+  .whyRow:nth-of-type(2) .whyText {
+    grid-column: col 1 / span 5;
+    top: auto;
+    bottom: 4rem;
+    align-self: end;
+  }
+
+  .whyRow:nth-of-type(2) .whyStatement {
+    font-size: calc(var(--ed-t-pullquote) * 1.3);
+    line-height: 1.08;
+    letter-spacing: -0.012em;
+  }
+
+  /* Row 3: an inset portrait (no bleed) with the statement beside it. */
+  .whyRow:nth-of-type(3) .whyPlate {
+    grid-column: col 2 / span 4;
+  }
+
+  .whyRow:nth-of-type(3) .whyText {
+    grid-column: col 7 / span 5;
+  }
+}
+
+/* ======================================================================
+ * 5e. Marquee strap (static in the draft: the reduced-motion composition)
+ * ====================================================================== */
+.marquee {
+  padding-block: 1.75rem;
+  background-color: var(--ed-band);
+  color: var(--ed-on-band);
+}
+
+.marqueeList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0 2.5rem;
+  margin-inline: var(--ed-margin);
+  font-family: var(--ed-display-family);
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
+  line-height: 1.2;
+  font-weight: 360;
+  font-variation-settings: "opsz" 48;
+}
+
+.marqueeItem {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  white-space: nowrap;
+}
+
+/* Amended from 0.3em squares: a 1.25rem hairline dash, so the content's own
+   middle dot ("Rethymno · Crete") has no competing separator. */
+.marqueeDot {
+  flex: none;
+  width: 1.25rem;
+  height: 1px;
+  background-color: var(--ed-band-dot);
+}
+
+/* The still strap is set in deliberate lines, so a separator never opens a
+   line: phones one phrase per line (no separators); 640–1023 lines of 2, 2
+   and 1; ≥1024 lines of 3 and 2. The breaks are zero-height pseudo-element
+   flex items moved into place with `order`; if a line is still too long, the
+   flex row wraps as before. */
+.marqueeList::before,
+.marqueeList::after {
+  content: none;
+  flex-basis: 100%;
+  height: 0;
+}
+
+/* Phones: no centred five-line stack. Left-aligned lines of 2, 2 and 1 at
+   content-start, smaller and tighter, and the phrases may wrap (a larger
+   user text size never clips them). */
+@media (max-width: 639.98px) {
+  .marquee {
+    padding-block: 1.25rem;
+  }
+
+  .marqueeList {
+    justify-content: flex-start;
+    gap: 0.15rem 0.875rem;
+    margin-inline: var(--ed-margin);
+    font-size: clamp(1.25rem, 5.6vw, 1.5rem);
+  }
+
+  .marqueeItem {
+    gap: 0.875rem;
+    white-space: normal;
+  }
+
+  .marqueeDot {
+    width: 1rem;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .marqueeList::before,
+  .marqueeList::after {
+    content: "";
+  }
+
+  .marqueeList::before {
+    order: 1;
+  }
+
+  .marqueeList::after {
+    order: 3;
+  }
+
+  .marqueeItem:nth-child(n + 3) {
+    order: 2;
+  }
+
+  .marqueeItem:nth-child(n + 5) {
+    order: 4;
+  }
+
+  .marqueeItem:nth-child(3) .marqueeDot,
+  .marqueeItem:nth-child(5) .marqueeDot {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .marquee {
+    padding-block: 2.25rem;
+  }
+
+  .marqueeList::after {
+    content: "";
+    order: 1;
+  }
+
+  .marqueeItem:nth-child(n + 4) {
+    order: 2;
+  }
+
+  .marqueeItem:nth-child(4) .marqueeDot {
+    display: none;
+  }
+}
+
+/* ======================================================================
+ * 5f. II · Journeys: the Fitzroy index (§D.4)
+ * ====================================================================== */
+.journeys {
+  padding-block: var(--ed-space-section);
+  background-color: var(--ed-paper);
+  container-type: inline-size;
+}
+
+.jFolio,
+.jHeading {
+  grid-column: content-start / content-end;
+}
+
+.jHeading {
+  color: var(--ed-ink);
+}
+
+.contents {
+  --ed-col: min(var(--ed-col-max), (100cqi - 2 * var(--ed-margin) - (var(--ed-cols) - 1) * var(--ed-gutter)) / var(--ed-cols));
+  --ed-content-w: calc(var(--ed-cols) * var(--ed-col) + (var(--ed-cols) - 1) * var(--ed-gutter));
+  --ed-edge: calc((100cqi - var(--ed-content-w)) / 2);
+
+  position: relative;
+  grid-column: full-start / full-end;
+  margin-top: var(--ed-space-block);
+  container-type: inline-size;
+}
+
+.jFrame {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--ed-bone);
+}
+
+.jFrame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px var(--ed-plate-keyline);
+}
+
+/* next/image `fill` needs a positioned (non-sticky) parent: the sticky frame
+   holds this absolutely positioned layer, the image fills it. */
+.jFill {
+  position: absolute;
+  inset: 0;
+}
+
+.jImg {
+  object-fit: cover;
+}
+
+.entryLink {
+  display: block;
+  color: var(--ed-ink);
+  text-decoration: none;
+}
+
+.entryTitle {
+  margin-top: 0.5rem;
+  max-width: 22ch;
+}
+
+.entryTitleText {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.entryDeck {
+  max-width: 34ch;
+  margin-top: 0.5rem;
+  color: var(--ed-ink-soft);
+}
+
+.entryFacts {
+  margin-top: 0.75rem;
+  color: var(--ed-ink-soft);
+}
+
+/* The van is a studio cut-out on a grey seamless: it is mounted on a bone mat
+   (contained, 8 % margin, no keyline) instead of being keylined as a plate. */
+.jMat {
+  background-color: var(--ed-bone);
+}
+
+.jMat::after {
+  box-shadow: none;
+}
+
+.jMat .jFill {
+  inset: 8%;
+}
+
+.jMat .jImg {
+  object-fit: contain;
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .contents {
+    --ed-stage-w: calc(var(--ed-edge) + 5 * var(--ed-col) + 4 * var(--ed-gutter));
+    --ed-frame-max-h: calc(100svh - var(--ed-masthead-h) - 4rem);
+    min-height: calc(min(var(--ed-stage-w) * 1.5, var(--ed-frame-max-h)) + 4rem);
+  }
+
+  .entry {
+    grid-column: col 8 / span 5;
+    display: block;
+    margin: 0;
+    padding-block: 1.5rem;
+    border-top: var(--ed-hair-w) solid var(--ed-hairline);
+  }
+
+  .entry:last-child {
+    border-bottom: var(--ed-hair-w) solid var(--ed-hairline);
+  }
+
+  .jPlate {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: var(--ed-stage-w);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 500ms var(--ed-ease-reveal);
+  }
+
+  .entry:first-child .jPlate {
+    opacity: 1;
+  }
+
+  .entry:not(:first-child):is(:hover, :focus-within) .jPlate {
+    opacity: 1;
+    transition-duration: 700ms;
+  }
+
+  /* Frames now differ in size, so a later plate no longer covers plate 1:
+     plate 1 steps back while another entry is pointed at or focused. */
+  .contents:has(.entry:not(:first-child):is(:hover, :focus-within)) .entry:first-child .jPlate {
+    opacity: 0;
+  }
+
+  /* Amended §D.4: each frame is sized to its own plate (native aspect,
+     cover), right-aligned on the end of column 5, never taller than the
+     viewport under the masthead. No frame ever shows bone around a
+     photograph. */
+  .jFrame {
+    position: sticky;
+    top: calc(var(--ed-masthead-h) + 2rem);
+    width: min(var(--ed-stage-w), var(--ed-frame-max-h) * var(--cp-ar, 0.8));
+    margin-inline-start: auto;
+    aspect-ratio: var(--cp-ratio);
+  }
+
+  .jFrame .jImg {
+    object-fit: cover;
+  }
+
+  .jFrame.jMat .jImg {
+    object-fit: contain;
+  }
+
+  .entryLink .entryTitleText {
+    background: linear-gradient(var(--ed-accent-text), var(--ed-accent-text)) 0 100% / 0 1px no-repeat;
+    transition: background-size 400ms var(--ed-ease-reveal);
+  }
+
+  .entry:is(:hover, :focus-within) .entryTitleText {
+    background-size: 100% 1px;
+  }
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  .jPlate {
+    transition-property: opacity !important;
+    transition-duration: 150ms !important;
+    transition-timing-function: linear !important;
+  }
+}
+
+@media not all and (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .entry {
+    grid-column: full-start / full-end;
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: 1rem;
+  }
+
+  .entry + .entry {
+    margin-top: var(--ed-space-block);
+  }
+
+  .jPlate {
+    grid-row: 1;
+  }
+
+  .jFrame {
+    aspect-ratio: var(--cp-ratio);
+  }
+
+  .entryLink {
+    grid-row: 2;
+    grid-column: content-start / content-end;
+  }
+
+  .entry:nth-child(3n + 1) .jPlate {
+    grid-column: full-start / full-end;
+  }
+
+  .entry:nth-child(3n + 2) .jPlate {
+    grid-column: col 2 / full-end;
+  }
+
+  .entry:nth-child(3n) .jPlate {
+    grid-column: full-start / col 4;
+  }
+
+  /* keyline only where the plate meets paper */
+  .entry:nth-child(3n + 1) .jFrame::after {
+    box-shadow:
+      inset 0 1px 0 0 var(--ed-plate-keyline),
+      inset 0 -1px 0 0 var(--ed-plate-keyline);
+  }
+
+  .entry:nth-child(3n + 2) .jFrame::after {
+    box-shadow:
+      inset 0 1px 0 0 var(--ed-plate-keyline),
+      inset 0 -1px 0 0 var(--ed-plate-keyline),
+      inset 1px 0 0 0 var(--ed-plate-keyline);
+  }
+
+  .entry:nth-child(3n) .jFrame::after {
+    box-shadow:
+      inset 0 1px 0 0 var(--ed-plate-keyline),
+      inset 0 -1px 0 0 var(--ed-plate-keyline),
+      inset -1px 0 0 0 var(--ed-plate-keyline);
+  }
+
+  @media (min-width: 640px) {
+    .entry:nth-child(3n + 1) .jFrame::after {
+      box-shadow:
+        inset 0 1px 0 0 var(--ed-plate-keyline),
+        inset 0 -1px 0 0 var(--ed-plate-keyline),
+        inset -1px 0 0 0 var(--ed-plate-keyline);
+    }
+  }
+
+  /* the mat is never keylined (outranks the positional rules above) */
+  .entry:nth-child(n) .jFrame.jMat::after {
+    box-shadow: none;
+  }
+
+  @media (min-width: 640px) {
+    .entry:nth-child(3n + 1) .jPlate {
+      grid-column: full-start / col 6;
+    }
+
+    .entry:nth-child(3n + 2) .jPlate {
+      grid-column: col 3 / full-end;
+    }
+
+    .entry:nth-child(3n) .jPlate {
+      grid-column: full-start / col 7;
+    }
+
+    .entryLink {
+      grid-column: col 1 / span 6;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .entry:nth-child(3n + 2) .jPlate {
+      grid-column: col 6 / full-end;
+    }
+
+    .entry:nth-child(3n) .jPlate {
+      grid-column: full-start / col 9;
+    }
+
+    .entryLink {
+      grid-column: col 1 / span 7;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .jFolio {
+    grid-column: col 1 / content-end;
+  }
+
+  .jHeading {
+    grid-column: col 1 / span 8;
+  }
+}
+
+/* ======================================================================
+ * 5g. III · The signature photo essay (§D.4)
+ * ====================================================================== */
+.signature {
+  padding-block: var(--ed-space-section);
+}
+
+.sigHead,
+.chapter {
+  position: relative;
+  z-index: 1;
+}
+
+.sigFolio,
+.sigTitle,
+.sigRead {
+  grid-column: content-start / content-end;
+}
+
+.sigTitle {
+  color: var(--ed-on-night);
+}
+
+.sigRead {
+  justify-self: start;
+  margin-top: var(--ed-space-pair);
+}
+
+.chapter {
+  align-items: start;
+  margin-top: clamp(6rem, 12vw, 10rem);
+}
+
+.sigHead + .chapter {
+  margin-top: var(--ed-space-block);
+}
+
+.chapterPlate,
+.chapterPlatePortrait {
+  grid-column: full-start / full-end;
+}
+
+.chapterText {
+  grid-column: content-start / content-end;
+  margin-top: var(--ed-space-pair);
+}
+
+/* numeral and label on one baseline: the label is a place caption in the
+   serif (stone), not another tracked-capitals eyebrow */
+.chapterHead {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.chapterNumeral {
+  display: block;
+  color: var(--ed-stone);
+}
+
+.chapterLabel {
+  color: var(--ed-stone);
+}
+
+/* Amended: reversed running text gains weight on night, so the deck step is
+   set lighter and looser here (380, 1.5, 32ch) and reads as a caption beside
+   the photograph, not a slab of display serif. */
+.chapterBody {
+  max-width: 32ch;
+  margin-top: 1rem;
+  font-weight: 380;
+  line-height: 1.5;
+  color: var(--ed-on-night);
+  text-wrap: pretty;
+}
+
+/* chapter 1: a wider crop keeps most of the midday sky out of the essay */
+.chapterFrameSky {
+  aspect-ratio: 5 / 3;
+}
+
+.pos5080 {
+  object-position: 50% 80%;
+}
+
+.pos5070 {
+  object-position: 50% 70%;
+}
+
+@media (min-width: 640px) {
+  .chapterFrameSky,
+  .chapterFrameWide {
+    aspect-ratio: 2 / 1;
+  }
+}
+
+@media (min-width: 640px) {
+  .chapterPlatePortrait {
+    grid-column: col 2 / span 6;
+  }
+
+  .chapterText {
+    grid-column: col 1 / span 6;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sigFolio {
+    grid-column: col 1 / content-end;
+  }
+
+  .sigTitle,
+  .sigRead {
+    grid-column: col 1 / span 8;
+  }
+
+  .chapterPlate {
+    grid-column: col 5 / full-end;
+    grid-row: 1;
+  }
+
+  .chapterPlatePortrait {
+    grid-column: col 7 / span 5;
+    grid-row: 1;
+  }
+
+  .chapterText {
+    grid-column: col 1 / span 4;
+    grid-row: 1;
+    position: sticky;
+    top: calc(var(--ed-masthead-h) + 3rem);
+    margin-top: 0;
+  }
+
+  /* Pacing: chapter 2 mirrors (plate bleeds left, text on the right) */
+  .chapterMirror .chapterPlate {
+    grid-column: full-start / col 8;
+  }
+
+  .chapterMirror .chapterText {
+    grid-column: col 9 / span 4;
+  }
+
+  /* chapter 4: one wide breath across the content width at 2:1 (the
+     1024 px sources are not stretched to the full bleed), text under it */
+  .chapterWide .chapterPlate {
+    grid-column: content-start / content-end;
+  }
+
+  .chapterWide .chapterText {
+    grid-column: col 3 / span 6;
+    grid-row: 2;
+    position: static;
+    margin-top: var(--ed-space-pair);
+  }
+}
+
+/* ======================================================================
+ * 5h. The golden band (§D.4): car out of frame at every width
+ * ====================================================================== */
+.band {
+  padding-block: var(--ed-space-section) var(--ed-space-block);
+  overflow-x: clip;
+  background-color: var(--ed-paper);
+}
+
+.bandFigure {
+  grid-column: full-start / full-end;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+.bandFrame {
+  grid-column: full-start / full-end;
+  aspect-ratio: 1 / 1;
+}
+
+.bandImg {
+  object-position: 50% 30%;
+}
+
+/* below 1024 the band bleeds off both edges; above, off the left edge only */
+@media (max-width: 1023.98px) {
+  .bandFrame.keyline::after {
+    box-shadow:
+      inset 0 1px 0 0 var(--ed-plate-keyline),
+      inset 0 -1px 0 0 var(--ed-plate-keyline);
+  }
+}
+
+@media (min-width: 1024px) {
+  .bandFrame.keyline::after {
+    box-shadow:
+      inset 0 1px 0 0 var(--ed-plate-keyline),
+      inset 0 -1px 0 0 var(--ed-plate-keyline),
+      inset -1px 0 0 0 var(--ed-plate-keyline);
+  }
+}
+
+.bandCaption {
+  grid-column: content-start / content-end;
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .bandFrame {
+    aspect-ratio: 16 / 9;
+  }
+
+  .bandImg {
+    object-position: 50% 64%;
+  }
+
+  .bandCaption {
+    grid-column: col 1 / span 6;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bandFrame {
+    grid-column: full-start / col 9;
+    grid-row: 1;
+    aspect-ratio: 2 / 1;
+  }
+
+  .bandCaption {
+    grid-column: col 10 / span 3;
+    grid-row: 1;
+    align-self: end;
+    margin-top: 0;
+  }
+}
+
+/* ======================================================================
+ * 5i. IV · How to book (§D.4)
+ * ====================================================================== */
+.howToBook {
+  padding-block: var(--ed-space-section);
+  background-color: var(--ed-bone);
+}
+
+.hFolio,
+.hHeading {
+  grid-column: content-start / content-end;
+}
+
+.hHeading {
+  color: var(--ed-ink);
+}
+
+.steps {
+  grid-column: content-start / content-end;
+  display: grid;
+  grid-template-columns: subgrid;
+  margin-top: var(--ed-space-block);
+}
+
+.step {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  row-gap: 0.75rem;
+  padding-block: clamp(2rem, 3.5vw, 3rem);
+  border-top: var(--ed-hair-w) solid var(--ed-hairline-bone);
+}
+
+.step:last-child {
+  border-bottom: var(--ed-hair-w) solid var(--ed-hairline-bone);
+}
+
+.stepNumeral {
+  grid-column: col 1;
+  grid-row: 1;
+  color: var(--ed-accent-text);
+}
+
+.stepTitle {
+  grid-column: col 2 / content-end;
+  grid-row: 1;
+  color: var(--ed-ink);
+}
+
+/* The content's blank lines become paragraphs and its "• " lines a list with
+   hung bullets (markup only; every character is the content's). Below 640
+   the body takes the full content width under the numeral + title row. */
+.stepBody {
+  grid-column: content-start / content-end;
+  grid-row: 2;
+  max-width: 66ch;
+  color: var(--ed-ink);
+}
+
+.stepBody > * + * {
+  margin-top: 0.6em;
+}
+
+.stepList li {
+  padding-left: 1em;
+  text-indent: -1em;
+}
+
+.stepList li + li {
+  margin-top: 0.2em;
+}
+
+.promise {
+  grid-column: content-start / content-end;
+  margin-top: var(--ed-space-block);
+}
+
+.promiseText {
+  max-width: 18ch;
+  color: var(--ed-ink);
+}
+
+@media (min-width: 640px) {
+  .stepNumeral {
+    grid-column: col 1 / span 2;
+  }
+
+  .stepTitle,
+  .stepBody {
+    grid-column: col 3 / span 6;
+  }
+
+  .promise {
+    grid-column: col 2 / span 7;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hFolio {
+    grid-column: col 1 / content-end;
+  }
+
+  .hHeading {
+    grid-column: col 1 / span 8;
+  }
+
+  .stepTitle {
+    grid-column: col 3 / span 4;
+  }
+
+  .stepBody {
+    grid-column: col 7 / span 5;
+    grid-row: 1;
+  }
+
+  .promise {
+    grid-column: col 3 / span 8;
+  }
+}
+
+/* ======================================================================
+ * 5j. Back cover (§H.3) — a div, not a second <footer>
+ * ====================================================================== */
+.backCover > .edGrid {
+  position: relative;
+  z-index: 1;
+}
+
+.bcScene {
+  align-items: center;
+  padding-block: var(--ed-space-section);
+}
+
+.bcPlate {
+  grid-column: content-start / content-end;
+  max-width: 35rem;
+}
+
+.bcCaption {
+  margin-top: 0.75rem;
+}
+
+.bcClosing {
+  grid-column: content-start / content-end;
+  margin-top: var(--ed-space-block);
+}
+
+.bcLine {
+  max-width: 14ch;
+  margin-top: var(--ed-space-pair);
+  color: var(--ed-on-night);
+  text-wrap: balance;
+}
+
+.bcCtas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.75rem;
+  margin-top: var(--ed-space-pair);
+}
+
+.bcWordmarkWrap {
+  grid-column: content-start / content-end;
+  padding-top: var(--ed-space-block);
+  border-top: var(--ed-hair-w) solid var(--ed-hairline-night);
+}
+
+/* Fits one line at every width at the default text size (308 of 350 px at
+   390); may wrap instead of clipping when a reader enlarges text. */
+.bcWordmark {
+  color: var(--ed-on-night);
+  overflow-wrap: anywhere;
+}
+
+.bcAddress {
+  color: var(--ed-on-night-soft);
+}
+
+/* C+ removes the site's fixed full-viewport film grain (§B.4, §F.1
+   --ed-film-grain-display: none); the root layout still renders it, so the
+   draft hides it on its own pages only. */
+body:has(.root) :global(.film-grain) {
+  display: none;
+}
+
+.bcColumns {
+  row-gap: var(--ed-space-pair);
+  padding-block: var(--ed-space-block);
+}
+
+.bcColumn {
+  grid-column: content-start / content-end;
+  padding-top: 1.25rem;
+  border-top: var(--ed-hair-w) solid var(--ed-hairline-night);
+}
+
+.bcColHead {
+  margin-bottom: 0.75rem;
+}
+
+.bcList {
+  display: flex;
+  flex-direction: column;
+}
+
+.bcLink {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding-block: 0.7rem;
+  color: var(--ed-on-night-soft);
+  text-decoration: none;
+  text-underline-offset: 0.28em;
+}
+
+.bcLink:hover,
+.bcLink:focus-visible {
+  color: var(--ed-on-night);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+}
+
+.bcChannelLabel {
+  min-width: 5.5rem;
+}
+
+.bcExt {
+  width: 10px;
+  height: 10px;
+  align-self: center;
+}
+
+.bcLegal {
+  grid-column: content-start / content-end;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 2rem;
+  padding-block: 1rem 2rem;
+  border-top: var(--ed-hair-w) solid var(--ed-hairline-night);
+  color: var(--ed-on-night-soft);
+}
+
+.bcCredits {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--ed-on-night-soft);
+  text-decoration: none;
+}
+
+.bcCredits::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0.7rem;
+  height: 1px;
+  background-color: var(--ed-rule-night);
+  transform-origin: 50% 100%;
+  transition: transform 250ms;
+}
+
+.bcCredits:hover,
+.bcCredits:focus-visible {
+  color: var(--ed-on-night);
+}
+
+.bcCredits:hover::after,
+.bcCredits:focus-visible::after {
+  transform: scaleY(2);
+}
+
+@media (min-width: 640px) {
+  .bcPlate {
+    grid-column: col 1 / span 4;
+  }
+
+  .bcClosing {
+    grid-column: col 5 / span 4;
+    margin-top: 0;
+  }
+
+  .bcColumn:nth-child(1),
+  .bcColumn:nth-child(3) {
+    grid-column: col 1 / span 4;
+  }
+
+  .bcColumn:nth-child(2) {
+    grid-column: col 5 / span 4;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bcClosing {
+    grid-column: col 6 / span 7;
+  }
+
+  .bcColumn:nth-child(3) {
+    grid-column: col 9 / span 4;
+  }
+}

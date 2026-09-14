@@ -19,13 +19,15 @@
  *   node qa/design3-shots.mts
  */
 import { chromium, type Page } from "playwright";
+import sharp from "sharp";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { preflight } from "./preflight.mts";
 
 const BASE = process.env.QA_BASE_URL ?? "https://routes-crete-redesign.vercel.app";
 const OUT = path.join(process.cwd(), "public", "design3-assets");
-const DRAFTS = ["a", "b", "c"] as const;
+/* "c-plus" is the C+ draft, captured beside C for the /design-3 comparison. */
+const DRAFTS = ["a", "b", "c", "c-plus"] as const;
 const VIEWPORTS = [
   { key: "desktop", viewport: { width: 1440, height: 900 }, scale: 1 },
   { key: "mobile", viewport: { width: 390, height: 844 }, scale: 2 },
@@ -50,7 +52,7 @@ for (const draft of DRAFTS) {
   stamps.add(commit);
 }
 if (stamps.size !== 1) {
-  console.log(`FAIL  the three drafts report different builds: ${[...stamps].join(", ")}`);
+  console.log(`FAIL  the drafts report different builds: ${[...stamps].join(", ")}`);
   failed++;
 }
 const commit = [...stamps][0];
@@ -77,6 +79,41 @@ async function walk(page: Page) {
   }
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior }));
   await page.waitForTimeout(1200);
+}
+
+/* The whole draft as one JPEG, captured in clipped segments and stitched.
+   Chromium paints nothing past about 16,384 device px in a single capture, so
+   one fullPage screenshot of a tall page at ×2 comes back blank white below
+   about 8,192 CSS px (the C+ phone draft is about 13,200 CSS px, 26,400 device
+   px). A segment of 8,000 CSS px stays under that limit at ×2. Every draft and
+   viewport goes through this same path; a page shorter than one segment is a
+   single capture. sharp is the image library next/image already installs. */
+const SEGMENT = 8000;
+async function fullFrame(page: Page, scale: number, file: string, quality: number) {
+  const { width, height } = await page.evaluate(() => ({
+    width: document.documentElement.scrollWidth,
+    height: document.documentElement.scrollHeight,
+  }));
+  const parts: { input: Buffer; top: number; left: number }[] = [];
+  let top = 0;
+  for (let y = 0; y < height; y += SEGMENT) {
+    const input = await page.screenshot({
+      type: "png",
+      fullPage: true,
+      clip: { x: 0, y, width, height: Math.min(SEGMENT, height - y) },
+    });
+    const meta = await sharp(input).metadata();
+    parts.push({ input, top, left: 0 });
+    top += meta.height ?? 0;
+  }
+  await sharp({
+    create: { width: Math.round(width * scale), height: top, channels: 3, background: "#ffffff" },
+    limitInputPixels: false,
+  })
+    .composite(parts)
+    .jpeg({ quality })
+    .toFile(file);
+  return { segments: parts.length, height: top, expected: Math.round(height * scale) };
 }
 
 const browser = await chromium.launch();
@@ -106,9 +143,13 @@ for (const draft of DRAFTS) {
 
     await walk(page);
     const full = `${draft}-${vp.key}-full.jpg`;
-    await page.screenshot({ path: path.join(OUT, full), type: "jpeg", quality: 74, fullPage: true });
+    const shot = await fullFrame(page, vp.scale, path.join(OUT, full), 74);
+    if (shot.height !== shot.expected) {
+      console.log(`FAIL  ${full}: stitched ${shot.height}px of ${shot.expected}px`);
+      failed++;
+    }
     frames.push({ draft, viewport: vp.key, kind: "full", file: full });
-    console.log(`  + ${full}`);
+    console.log(`  + ${full} (${shot.segments} segment${shot.segments === 1 ? "" : "s"}, ${shot.height}px)`);
 
     await context.close();
   }
