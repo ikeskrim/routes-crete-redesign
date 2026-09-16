@@ -73,8 +73,8 @@
      lines to `italic` and
      `var(--font-fraunces-italic), var(--font-fraunces), Georgia, serif`. */
   --ed-display-family: var(--font-fraunces), Georgia, serif;
-  --ed-em-family: var(--ed-display-family);
-  --ed-em-style: normal;
+  --ed-em-family: var(--font-fraunces-italic), var(--font-fraunces), Georgia, serif;
+  --ed-em-style: italic;
   --ed-text-family: var(--font-inter), system-ui, sans-serif;
   --ed-display-weight: 340;
   --ed-display-weight-small: 420;
