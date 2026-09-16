@@ -3,11 +3,34 @@ import { extendTailwindMerge } from "tailwind-merge";
 
 /**
  * Our type scale lives in a custom `--text-*` namespace, and tailwind-merge
- * can't tell `text-display-lg` (a font size) from `text-ink` (a colour) on its
+ * can't tell `text-statement` (a font size) from `text-ink` (a colour) on its
  * own — it treats them as one conflict group and silently drops the size.
- * Declaring the scale here keeps size and colour independent.
+ * Declaring the scale here keeps size and colour independent. Every `--text-*`
+ * token in src/app/globals.css is listed (C+ SPEC §B.1, INDEX G10).
  */
 const FONT_SIZES = [
+  /* the C+ scale (§C.3) */
+  "cover",
+  "statement",
+  "section",
+  "pullquote",
+  "title",
+  "menu",
+  "wordmark-back",
+  "wordmark",
+  "numeral-step",
+  "folio",
+  "deck",
+  "caption-place",
+  "body-lg",
+  "body",
+  "ui",
+  /* the §C.3 `cta` step: `text-cta` is the gold colour utility, see the
+     comment on --text-cta-label in globals.css */
+  "cta-label",
+  "caption",
+  "eyebrow",
+  /* legacy scale, deleted with its tokens at the S9 cleanup */
   "display-2xl",
   "display-xl",
   "display-lg",
@@ -15,11 +38,7 @@ const FONT_SIZES = [
   "heading-lg",
   "heading-md",
   "heading-sm",
-  "body-lg",
-  "body",
   "body-sm",
-  "caption",
-  "eyebrow",
 ];
 
 const twMerge = extendTailwindMerge({

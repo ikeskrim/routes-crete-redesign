@@ -35,6 +35,30 @@ export function SmoothScroll({
       syncTouch: false,
     });
 
+    /* An anchor lands 24 px (1.5rem) under the fixed masthead, the same place
+       `scroll-padding-top: calc(var(--ed-masthead-h) + 1.5rem)` puts a native
+       jump: 56 + 24 below 1024, 64 + 24 above (C+ SPEC §D.1). Read from the
+       computed token on every jump, so a resize across 1024 is honoured.
+
+       Lenis is given the resulting position as a NUMBER. Given an element,
+       Lenis 1.3 already subtracts the document's scroll-padding-top (and the
+       target's scroll-margin-top) before adding `offset`, so an element
+       target with `offset: -(masthead + 24)` landed twice as far down: 176 px
+       at 1440, 160 px at 390 (and 192 px before C+, with 6rem twice). With a
+       number, Lenis applies neither, and the landing depends only on this
+       token and the target's own scroll-margin-top, exactly as a native jump
+       does. */
+    const anchorOffset = () => {
+      const root = document.documentElement;
+      const styles = getComputedStyle(root);
+      const token = styles.getPropertyValue("--ed-masthead-h").trim();
+      const value = parseFloat(token);
+      const masthead = token.endsWith("rem")
+        ? value * parseFloat(styles.fontSize)
+        : value;
+      return (Number.isFinite(masthead) ? masthead : 64) + 24;
+    };
+
     /* Exposed so tooling (and the QA screenshot harness) can position the
        scroll deterministically instead of fighting the smoothing. */
     (window as Window & { __lenis?: Lenis }).__lenis = lenis;
@@ -73,7 +97,13 @@ export function SmoothScroll({
       if (!target) return;
 
       event.preventDefault();
-      lenis.scrollTo(target as HTMLElement, { offset: -96 });
+      const margin = parseFloat(getComputedStyle(target).scrollMarginTop);
+      lenis.scrollTo(
+        target.getBoundingClientRect().top +
+          lenis.animatedScroll -
+          (Number.isFinite(margin) ? margin : 0) -
+          anchorOffset(),
+      );
       history.pushState(null, "", hash);
 
       /* Cancelling the click also cancels the browser's own fragment

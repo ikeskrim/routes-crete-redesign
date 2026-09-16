@@ -1,15 +1,56 @@
-import type { BookingStep } from "@/lib/types";
-import { pad } from "@/lib/utils";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
 import { SplitLines } from "@/components/ui/SplitLines";
+import type { BookingStep } from "@/lib/types";
+import { cn } from "@/lib/utils";
+
+import styles from "./HowToBook.module.css";
 
 /**
- * The booking steps as an editorial timeline.
+ * A step body as blocks, markup only: the content's blank lines separate
+ * paragraphs, and consecutive paragraphs that open with a bullet ("• ") form
+ * one list. A list item keeps the words after the bullet; the bullet itself
+ * is drawn beside it from the content's own character (`data-marker`), so no
+ * character of the body is dropped or added.
+ */
+type StepBlock =
+  | { kind: "p"; text: string }
+  | { kind: "ul"; items: { marker: string; text: string }[] };
+
+const BULLET = /^(•)\s+/u;
+
+function stepBlocks(body: string): StepBlock[] {
+  const blocks: StepBlock[] = [];
+  for (const para of body.split(/\n\s*\n/)) {
+    const text = para.trim();
+    if (!text) continue;
+    const bullet = BULLET.exec(text);
+    const last = blocks[blocks.length - 1];
+    if (bullet) {
+      const item = { marker: bullet[1], text: text.slice(bullet[0].length) };
+      if (last?.kind === "ul") last.items.push(item);
+      else blocks.push({ kind: "ul", items: [item] });
+    } else {
+      blocks.push({ kind: "p", text });
+    }
+  }
+  return blocks;
+}
+
+/**
+ * Movement IV, how to book (C+ SPEC §D.4, as built in the frozen draft):
+ * bone stock, folio IV, "Booking is a *conversation*", three hairline-ruled
+ * steps and the response promise set as a pull quote. Server component.
  *
- * The original site reused a single 160×160 image for every step, which is far
- * too small to show at any meaningful size — the numbering carries the sequence
- * instead. Step bodies are verbatim; step 3's heading is the client-supplied
- * correction of a copy-paste error on the live site (see CONTENT_INVENTORY.md).
+ * Each step: its number in the `numeral-step` cut (burnt sienna,
+ * `aria-hidden`; the order is carried by the `ol`), its title, and its body
+ * with the content's own paragraphs and bullets. Columns 11–12 stay air.
+ * Phones: numeral and title on one baseline, the body under them.
+ *
+ * No photograph in this movement: the page breathes before the back cover.
+ * The response promise renders only when the client has supplied one; there
+ * is no fallback string, because an invented reply time is exactly the kind
+ * of claim this project does not make.
  */
 export function HowToBook({
   heading,
@@ -20,80 +61,63 @@ export function HowToBook({
   heading: string;
   subheading: string;
   steps: BookingStep[];
-  /** Omitted entirely when null — we do not promise a time we were not given. */
+  /** Omitted entirely when null: we do not promise a time we were not given. */
   responsePromise?: string | null;
 }) {
   return (
     <section
       id="how-to-book"
       aria-labelledby="how-to-book-heading"
-      className="grain relative bg-ocean-950 py-section-lg text-sand-50"
+      className={cn("ed-grid bone-stock", styles.section)}
     >
-      <div aria-hidden className="grain-overlay" />
+      <div aria-hidden="true" className="bone-stock-layer" />
 
-      <div className="relative mx-auto w-full max-w-[92rem] px-6 sm:px-8 lg:px-12">
-        <div className="flex items-center gap-4">
-          <span aria-hidden className="h-px w-10 bg-gold-400/70" />
-          <p className="text-eyebrow uppercase text-sand-200/60">{subheading}</p>
-        </div>
+      <Eyebrow folio="IV" className={styles.folio}>
+        {subheading}
+      </Eyebrow>
 
-        <SplitLines
-          as="h2"
-          id="how-to-book-heading"
-          text={heading}
-          className="text-display-lg mt-6 max-w-[16ch] text-sand-50"
-        />
+      <SplitLines
+        as="h2"
+        id="how-to-book-heading"
+        text={heading}
+        emphasis="conversation"
+        className={cn("text-section", styles.heading)}
+      />
 
-        <ol className="mt-16 lg:mt-24">
-          {steps.map((step, i) => (
-            <li key={step.key}>
-              <Reveal delay={0.04 * i}>
-                <div className="grid gap-4 border-t border-sand-100/15 py-8 lg:grid-cols-12 lg:gap-8 lg:py-10">
-                  <p className="font-display text-eyebrow tabular-nums text-gold-400 lg:col-span-1">
-                    {pad(step.number)}
-                  </p>
+      <ol className={styles.steps}>
+        {steps.map((step) => (
+          <li key={step.key} className={styles.stepItem}>
+            <Reveal className={styles.step}>
+              <span aria-hidden="true" className={cn("text-numeral-step", styles.numeral)}>
+                {step.number}
+              </span>
+              <h3 className={cn("text-title", styles.title)}>{step.title}</h3>
+              <div className={cn("text-body", styles.body)}>
+                {stepBlocks(step.body).map((block, b) =>
+                  block.kind === "p" ? (
+                    <p key={b}>{block.text}</p>
+                  ) : (
+                    <ul key={b} className={styles.list}>
+                      {block.items.map((item) => (
+                        <li key={item.text} data-marker={item.marker}>
+                          {item.text}
+                        </li>
+                      ))}
+                    </ul>
+                  ),
+                )}
+              </div>
+            </Reveal>
+          </li>
+        ))}
+      </ol>
 
-                  <h3 className="text-heading-lg text-sand-50 lg:col-span-5">
-                    {step.title}
-                  </h3>
-
-                  <div className="text-body text-sand-200/75 lg:col-span-6">
-                    {step.bodyItems ? (
-                      <>
-                        <p>{step.bodyLead}</p>
-                        <ul className="mt-4 flex flex-col gap-2">
-                          {step.bodyItems.map((item) => (
-                            <li key={item} className="flex gap-3">
-                              <span aria-hidden className="text-gold-400">
-                                •
-                              </span>
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    ) : (
-                      step.body
-                    )}
-                  </div>
-                </div>
-              </Reveal>
-            </li>
-          ))}
-        </ol>
-        <div aria-hidden className="h-px w-full bg-sand-100/15" />
-
-        {/* Renders only if the client has supplied a real number. There is no
-            fallback string on purpose: an invented reply time is exactly the
-            kind of claim this project does not make. */}
-        {responsePromise && (
-          <Reveal delay={0.08}>
-            <p className="text-body mt-10 max-w-[46ch] text-sand-200/75">
-              {responsePromise}
-            </p>
-          </Reveal>
-        )}
-      </div>
+      {responsePromise && (
+        <Reveal className={styles.promise}>
+          <span aria-hidden="true" className={styles.quoteRule} />
+          <p className={cn("text-pullquote", styles.promiseText)}>{responsePromise}</p>
+        </Reveal>
+      )}
     </section>
   );
 }

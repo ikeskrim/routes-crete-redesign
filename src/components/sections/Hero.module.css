@@ -1,0 +1,251 @@
+/* ==========================================================================
+   THE COVER (C+ SPEC §D.4, as built in the frozen draft /design-3/c-plus,
+   c-plus.module.css "5c. Cover", including its review amendments).
+
+   The section is `ed-grid paper-stock` (G1 utilities); the type step is
+   `text-cover`. Rows: 1 running head, 2 headline, 3 plate (and, from 1024,
+   the margin column beside it), 4 caption and margin column (phones) or the
+   caption under the plate (1024–1279).
+
+   Every value is read from Layer E; nothing here declares an --ed-* value
+   (preflight P12) or a colour literal (P9). Local custom properties are
+   named --cover-*.
+   ========================================================================== */
+
+.cover {
+  --cover-deck: var(--ed-t-deck);
+  /* The hung caption's reserved block (§C.9): pair + tick + tier 1 + two
+     tier-2 lines, with slack. */
+  --cover-caption-block: calc(var(--ed-space-pair) + 6.25rem);
+
+  padding-top: calc(var(--ed-masthead-h) + 1rem);
+  padding-bottom: var(--ed-space-section);
+  overflow-x: clip;
+  background-color: var(--ed-paper);
+}
+
+.head {
+  grid-column: content-start / content-end;
+  grid-row: 1;
+  margin-bottom: var(--ed-space-pair);
+}
+
+.h1 {
+  grid-column: content-start / content-end;
+  grid-row: 2;
+  z-index: 2;
+  color: var(--ed-ink);
+  text-wrap: nowrap;
+}
+
+.h1 .l0,
+.h1 .l1,
+.h1 .l2 {
+  white-space: nowrap;
+}
+
+/* Below 1024 the figure spans the grid and lends its columns to the frame
+   and the caption under it. */
+.plate {
+  grid-column: full-start / full-end;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+.frame {
+  z-index: 1;
+  grid-column: full-start / full-end;
+  /* the frame's native 3:2 (2400 × 1603: no crop on the dusk coast) */
+  aspect-ratio: 3 / 2;
+  /* top 0.08em under line 2's baseline: line 3 prints on the sky */
+  margin-top: calc(var(--ed-t-cover) * -1.1185);
+}
+
+/* Keyline only where the plate meets paper (Plate.module.css edge switches):
+   below 1024 the plate bleeds off both edges, top and bottom only. Two
+   classes, so the switches outrank the frame's defaults. */
+.cover .frame {
+  --plate-kl-left: 0px;
+  --plate-kl-right: 0px;
+}
+
+/* The top band of the frame sits under the printed line. On the dusk coast
+   the 3:2 frame is native (≈0.5 px of play), so only a taller frame (the
+   portrait olive grove) is actually cropped, to its sky. */
+.img {
+  object-position: 50% 8%;
+}
+
+.caption {
+  position: relative;
+  z-index: 1;
+  grid-column: content-start / content-end;
+  justify-content: flex-start;
+  min-height: 0;
+  margin-top: 0.75rem;
+}
+
+.margin {
+  grid-column: content-start / content-end;
+  grid-row: 4;
+}
+
+.deck {
+  max-width: 34ch;
+  /* reserved for the measured worst case (4–5 lines at 360–390, both font
+     states), so the CTA row never moves when Fraunces arrives */
+  min-height: 5lh;
+  margin-top: var(--ed-space-pair);
+  font-size: var(--cover-deck);
+  color: var(--ed-ink);
+  text-wrap: pretty;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.75rem;
+  margin-top: var(--ed-space-pair);
+}
+
+/* ---- 1024 and up: the plate bleeds right beside the margin column ------ */
+@media (min-width: 1024px) {
+  .cover {
+    --cover-deck: 1.1875rem;
+
+    padding-top: calc(var(--ed-masthead-h) + 1.5rem);
+  }
+
+  .head {
+    grid-column: col 1 / content-end;
+  }
+
+  /* The first two spans run as one line, "Explore the unknown": inline
+     content, so the headline returns to block flow (one line junction). The
+     span inside each line is SplitLines' `span.block`; it runs inline too. */
+  .h1 {
+    display: block;
+  }
+
+  .h1 .l0,
+  .h1 .l1 {
+    display: inline;
+    overflow: visible;
+    padding: 0;
+    margin: 0;
+  }
+
+  .h1 .l0 > span,
+  .h1 .l1 > span {
+    display: inline;
+  }
+
+  /* Line 2 starts on column 5, where the plate starts, + 0.3em:
+     4 × (col + gutter) = (content width + gutter) / 3. */
+  .h1 .l2 {
+    padding-inline-start: calc((100% + var(--ed-gutter)) / 3 + 0.3em);
+  }
+
+  .plate {
+    display: contents;
+  }
+
+  .frame {
+    grid-column: col 5 / full-end;
+    grid-row: 3;
+    aspect-ratio: 5 / 3;
+    /* top 0.06em under line 1's baseline ("the unknown" has no descender
+       right of column 5) */
+    margin-top: calc(var(--ed-t-cover) * -1.0485);
+  }
+
+  .cover .frame {
+    --plate-kl-left: 1px;
+  }
+
+  /* The crop rises to the warm upper sky: more amber and fewer grey haze
+     rows behind line 2 (amended in the draft review from 38% 20%). */
+  .img {
+    object-position: 38% 8%;
+  }
+
+  /* The margin column shares the plate's row and ends at its foot. Its
+     deck's first baseline sits on line 2's baseline: 0.92 × the cover size
+     below the plate top, minus the deck's first-line ascent (0.7 half-leading
+     + 0.3615 in Fraunces at line-height 1.4 → 1.0615em). The CTAs are
+     bottom-anchored, so the deck's line count never moves them. */
+  .margin {
+    z-index: 1;
+    grid-column: col 1 / span 4;
+    grid-row: 3;
+    align-self: stretch;
+    display: grid;
+    grid-template-rows: auto minmax(var(--ed-space-pair), 1fr) 6rem;
+    margin-top: calc(var(--ed-t-cover) * -1.0485);
+    padding-top: calc(var(--ed-t-cover) * 0.92 - var(--cover-deck) * 1.0615);
+  }
+
+  .deck {
+    grid-row: 1;
+    min-height: 6lh;
+    max-width: 26rem;
+    margin-top: 0;
+  }
+
+  /* 1024–1279: the two CTAs stacked in a bottom-anchored 2 × 3rem block. */
+  .ctas {
+    grid-row: 3;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 0;
+    margin-top: 0;
+  }
+
+  /* 1024–1279: the caption goes under the plate (one line per tier at this
+     width in both font states; nothing sits below it in the section). */
+  .caption {
+    grid-column: col 5 / full-end;
+    grid-row: 4;
+    margin-top: 0.75rem;
+  }
+}
+
+/* ---- 1280 and up: the caption hangs in the margin column ---------------- */
+@media (min-width: 1280px) {
+  .cover {
+    --cover-deck: var(--ed-t-deck);
+  }
+
+  /* The CTA row sits a pair space under the deck's reservation; only the
+     caption is bottom-anchored. The deck reserves 5lh here: 4 lines measured
+     in both font states at 1280, 1440 and 1920, plus one line of slack. */
+  .margin {
+    grid-template-rows: auto var(--ed-space-pair) 3rem 1fr var(--cover-caption-block);
+  }
+
+  .deck {
+    min-height: 5lh;
+  }
+
+  .ctas {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.75rem;
+  }
+
+  /* hung in the margin column at the plate foot, in the margin's last row */
+  .caption {
+    grid-column: col 1 / span 4;
+    grid-row: 3;
+    align-self: end;
+    justify-content: flex-end;
+    min-height: var(--cover-caption-block);
+    margin-top: 0;
+    padding-top: var(--ed-space-pair);
+  }
+}

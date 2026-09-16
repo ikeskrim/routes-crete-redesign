@@ -1,0 +1,155 @@
+/* ==========================================================================
+   MOVEMENT IV: how to book (C+ SPEC §D.4, as built in the frozen draft,
+   c-plus.module.css "5i", with its review amendments).
+
+   The section is `ed-grid bone-stock`; the list and each step are subgrids,
+   so every placement below names the section's own column lines. Each step
+   row is the `Reveal` block inside its `li` (a subgrid of a subgrid).
+
+   Every value is read from Layer E; nothing here declares an --ed-* value
+   (preflight P12) or a colour literal (P9).
+   ========================================================================== */
+
+.section {
+  padding-block: var(--ed-space-section);
+  background-color: var(--ed-bone);
+}
+
+.folio,
+.heading {
+  grid-column: content-start / content-end;
+}
+
+.heading {
+  color: var(--ed-ink);
+}
+
+.steps {
+  grid-column: content-start / content-end;
+  display: grid;
+  grid-template-columns: subgrid;
+  margin-top: var(--ed-space-block);
+}
+
+.stepItem {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+.step {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  row-gap: 0.75rem;
+  padding-block: clamp(2rem, 3.5vw, 3rem);
+  border-top: var(--ed-hair-w) solid var(--ed-hairline-bone);
+}
+
+.stepItem:last-child .step {
+  border-bottom: var(--ed-hair-w) solid var(--ed-hairline-bone);
+}
+
+.numeral {
+  grid-column: col 1;
+  grid-row: 1;
+  color: var(--ed-accent-text);
+}
+
+.title {
+  grid-column: col 2 / content-end;
+  grid-row: 1;
+  color: var(--ed-ink);
+}
+
+/* The content's blank lines become paragraphs and its bullet lines a list
+   with hung bullets (markup only). Below 640 the body takes the full content
+   width under the numeral + title row. */
+.body {
+  grid-column: content-start / content-end;
+  grid-row: 2;
+  max-width: 66ch;
+  color: var(--ed-ink);
+}
+
+.body > * + * {
+  margin-top: 0.6em;
+}
+
+.list li {
+  padding-left: 1em;
+}
+
+.list li + li {
+  margin-top: 0.2em;
+}
+
+/* the content's own bullet character, hung in the indent; alt text "" keeps
+   it out of the accessible name (the draft kept it aria-hidden) */
+.list li::before {
+  content: attr(data-marker);
+  content: attr(data-marker) / "";
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+/* the terracotta pull-quote rule (§C.7, §C.8), decorative */
+.quoteRule {
+  display: block;
+  width: 3rem;
+  height: 1px;
+  margin-bottom: 1.25rem;
+  background-color: var(--ed-accent);
+}
+
+.promise {
+  grid-column: content-start / content-end;
+  margin-top: var(--ed-space-block);
+}
+
+.promiseText {
+  max-width: 18ch;
+  color: var(--ed-ink);
+}
+
+/* ---- 640 and up (8 columns) ---------------------------------------------- */
+@media (min-width: 640px) {
+  .numeral {
+    grid-column: col 1 / span 2;
+  }
+
+  .title,
+  .body {
+    grid-column: col 3 / span 6;
+  }
+
+  .promise {
+    grid-column: col 2 / span 7;
+  }
+}
+
+/* ---- 1024 and up (12 columns): columns 11–12 stay air --------------------- */
+@media (min-width: 1024px) {
+  .folio {
+    grid-column: col 1 / content-end;
+  }
+
+  .heading {
+    grid-column: col 1 / span 8;
+  }
+
+  .title {
+    grid-column: col 3 / span 4;
+  }
+
+  .body {
+    grid-column: col 7 / span 5;
+    grid-row: 1;
+  }
+
+  .promise {
+    grid-column: col 3 / span 8;
+  }
+}

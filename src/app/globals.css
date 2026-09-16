@@ -1,78 +1,106 @@
 @import "tailwindcss";
 
+/* Layer E, the edition tokens (C+ SPEC §B.1). Imported before any @theme so
+   every Layer S token below reads a declared --ed-* value. */
+@import "./edition.css";
+
 /* ------------------------------------------------------------------
    ROUTES CRETE — DESIGN TOKENS
-   Crete-inspired, desaturated, premium. No saturated colour anywhere.
+
+   Layer S (C+ SPEC §B.1): semantic utilities whose values are read from
+   Layer E. `@theme inline`, so a utility reads the edition token directly
+   (`bg-paper` → `background-color: var(--ed-paper)`) and a token revert in
+   edition.css reaches every utility without touching this file.
    ------------------------------------------------------------------ */
 
 @theme inline {
-  --font-display: var(--font-manrope);
+  /* --- Families (§B.3, §C.1) -----------------------------------
+     Named --font-editorial / --font-text, never --font-serif / --font-sans
+     (INDEX F6). Fraunces (display) and Inter (text) come from
+     src/app/fonts.ts. */
+  --font-editorial: var(--ed-display-family);
+  --font-text: var(--ed-text-family);
+
+  /* LEGACY, until the S9 cleanup. Manrope is no longer loaded; components not
+     yet migrated that still write `font-display` get the text face (the
+     nearest sans) instead of a silently dropped class. `font-sans` keeps the
+     Inter mapping it has always had. */
+  --font-display: var(--ed-text-family);
   --font-sans: var(--font-inter);
+
+  /* --- Colour (§B.2) ------------------------------------------ */
+  --color-paper: var(--ed-paper);
+  --color-bone: var(--ed-bone);
+  --color-ink: var(--ed-ink);
+  --color-ink-soft: var(--ed-ink-soft);
+  --color-accent-text: var(--ed-accent-text);
+  --color-accent: var(--ed-accent);
+  --color-label: var(--ed-label);
+  --color-band: var(--ed-band);
+  --color-on-band: var(--ed-on-band);
+  --color-band-dot: var(--ed-band-dot);
+  --color-stone: var(--ed-stone);
+  --color-hairline: var(--ed-hairline);
+  --color-hairline-bone: var(--ed-hairline-bone);
+  --color-rule: var(--ed-rule);
+  --color-hairline-night: var(--ed-hairline-night);
+  --color-rule-night: var(--ed-rule-night);
+  --color-plate-keyline: var(--ed-plate-keyline);
+  --color-night: var(--ed-night);
+  --color-night-raised: var(--ed-night-raised);
+  --color-on-night: var(--ed-on-night);
+  --color-on-night-soft: var(--ed-on-night-soft);
+  --color-scrim: var(--ed-scrim);
+  --color-focus: var(--ed-focus);
+  --color-focus-night: var(--ed-focus-night);
+
+  /* Gold: the gold pill's fill, label, hover and fallback edge, and nowhere
+     else (§B.2 "Where gold appears", §C.12; preflight P8). */
+  --color-cta: var(--ed-cta-bg);
+  --color-on-cta: var(--ed-cta-fg);
+  --color-cta-hover: var(--ed-cta-bg-hover);
+  --color-cta-edge: var(--ed-cta-edge);
+
+  /* Charts: LocationsMap on bone, RouteJourney on its clean night panel. */
+  --color-chart-grid: var(--ed-chart-grid);
+  --color-chart-route: var(--ed-chart-route);
+  --color-chart-pin: var(--ed-chart-pin);
+  --color-chart-grid-night: var(--ed-chart-grid-night);
+  --color-chart-route-night: var(--ed-chart-route-night);
+  --color-chart-pin-night: var(--ed-chart-pin-night);
+  --color-chart-stop-bg-night: var(--ed-chart-stop-bg-night);
+  --color-chart-stop-edge-night: var(--ed-chart-stop-edge-night);
+  --color-chart-stop-fg-night: var(--ed-chart-stop-fg-night);
+  --color-chart-stop-lit-edge-night: var(--ed-chart-stop-lit-edge-night);
+  --color-chart-stop-lit-fg-night: var(--ed-chart-stop-lit-fg-night);
+  --color-chart-stop-active-bg-night: var(--ed-chart-stop-active-bg-night);
+  --color-chart-stop-active-fg-night: var(--ed-chart-stop-active-fg-night);
+
+  /* --- Shape and motion (§B.4) -------------------------------- */
+  --radius-cta: var(--ed-cta-radius);
+  --ease-reveal: var(--ed-ease-reveal);
+  --ease-lay: var(--ed-ease-lay);
 }
 
 @theme {
-  /* --- Colour: Deep Ocean Blue --------------------------------- */
-  --color-ocean-950: #04141d;
-  --color-ocean-900: #082430;
-  --color-ocean-800: #0d3444;
-  --color-ocean-700: #14485c;
-  --color-ocean-600: #1d5f78;
-  --color-ocean-500: #2a7a95;
+  /* ------------------------------------------------------------------
+     LEGACY SCALES. The legacy colour scales (ocean, sand, olive, rock,
+     gold, shell) were deleted at the S9 cleanup, and preflight P10 now
+     keeps them out (SPEC 0.2 S9 step 2). What remains below is not a
+     colour. Never use it in new work.
+     ------------------------------------------------------------------ */
 
-  /* --- Colour: Sand ------------------------------------------- */
-  --color-sand-50: #faf6ef;
-  --color-sand-100: #f3ebdd;
-  --color-sand-200: #e8dcc6;
-  --color-sand-300: #dbcbae;
-  --color-sand-400: #c9b48f;
-
-  /* --- Colour: Olive ------------------------------------------ */
-  --color-olive-700: #414937;
-  --color-olive-600: #4f5843;
-  --color-olive-500: #646e54;
-  --color-olive-400: #808a6d;
-
-  /* --- Colour: Stone Gray -------------------------------------
-     400–600 carry small text (labels, captions, eyebrows) on the light
-     backgrounds, so they are tuned to clear 4.5:1 against shell (#faf8f4)
-     and sand-50 (#faf6ef). The earlier values sat at ~2.8–3.9:1 and failed
-     Lighthouse colour-contrast. Same stone family, just weighted properly. */
-  --color-rock-100: #eceae5;
-  --color-rock-200: #d8d5ce;
-  --color-rock-300: #bdb9b0;
-  --color-rock-400: #6e6a61;
-  --color-rock-500: #5c584f;
-  --color-rock-600: #47443d;
-
-  /* --- Colour: Sunset Gold (accent — use sparingly) ------------ */
-  --color-gold-300: #e2c893;
-  --color-gold-400: #d4ae6a;
-  --color-gold-500: #c1954a;
-  --color-gold-600: #a67c36;
-
-  /* --- Colour: neutrals --------------------------------------- */
-  --color-shell: #faf8f4; /* warm white — page background */
-  --color-ink: #14171a; /* near-black — body text        */
-
-  /* --- Type scale (fluid) ------------------------------------- */
-  /* Retuned airier. The benchmark's display type tops out around 72px and its
-     drama comes from air, not point size — measured, not assumed. Heroes and
-     the closing CTA stay meaningfully larger than that because the photography
-     carries them; everything below hero level comes down and gains room. */
-
-  /* Hero only. ~112px at 1440 rather than the previous ~166px. */
+  /* --- Legacy type scale (fluid) ------------------------------ */
   --text-display-2xl: clamp(2.75rem, 8.5vw, 7rem);
   --text-display-2xl--line-height: 0.92;
   --text-display-2xl--letter-spacing: -0.03em;
   --text-display-2xl--font-weight: 700;
 
-  /* Secondary heroes and the closing CTA. */
   --text-display-xl: clamp(2.25rem, 6vw, 4.75rem);
   --text-display-xl--line-height: 0.96;
   --text-display-xl--letter-spacing: -0.025em;
   --text-display-xl--font-weight: 700;
 
-  /* Section headings — now near the benchmark's own ceiling. */
   --text-display-lg: clamp(1.875rem, 4vw, 3.25rem);
   --text-display-lg--line-height: 1.04;
   --text-display-lg--letter-spacing: -0.02em;
@@ -98,42 +126,218 @@
   --text-heading-sm--letter-spacing: -0.005em;
   --text-heading-sm--font-weight: 600;
 
-  --text-body-lg: clamp(1.0625rem, 1.15vw, 1.1875rem);
-  --text-body-lg--line-height: 1.72;
-  --text-body-lg--letter-spacing: 0;
-
-  --text-body: 1rem;
-  --text-body--line-height: 1.7;
-  --text-body--letter-spacing: 0;
-
   --text-body-sm: 0.9375rem;
   --text-body-sm--line-height: 1.62;
   --text-body-sm--letter-spacing: 0;
 
-  --text-caption: 0.8125rem;
-  --text-caption--line-height: 1.5;
-  --text-caption--letter-spacing: 0.01em;
-
-  --text-eyebrow: 0.6875rem;
-  --text-eyebrow--line-height: 1.2;
-  --text-eyebrow--letter-spacing: 0.22em;
-  --text-eyebrow--font-weight: 500;
-
-  /* --- Motion ------------------------------------------------- */
+  /* --- Legacy motion, layout, radius -------------------------- */
   --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
 
-  /* --- Layout ------------------------------------------------- */
-  /* Air goes up as type comes down — the two halves of the same retune. */
   --spacing-gutter: 1.5rem;
   --spacing-section: clamp(6rem, 14vh, 11rem);
   --spacing-section-lg: clamp(8.5rem, 20vh, 16rem);
 
-  /* --- Radius ------------------------------------------------- */
   --radius-card: 2px;
   --radius-media: 3px;
   --radius-pill: 999px;
+
+  /* ------------------------------------------------------------------
+     THE C+ SCALE (§C.3)
+
+     Desktop about 1.333 from 17 px (17 → 23 → 32 → 43 → 56 → 78 → 151),
+     phone about 1.2 from 16 px. Sizes read Layer E where the edition has a
+     token; leading, tracking and step weights live here (§B.9 item 9).
+     Kept in plain `@theme` (not inline) so a width query can redefine a
+     sub-token on :root below. Every name is registered in FONT_SIZES
+     (src/lib/utils.ts). The family and optical size of each Fraunces step
+     ride on the same `text-*` class (the static @utility blocks further
+     down merge into it).
+     ------------------------------------------------------------------ */
+  --text-cover: var(--ed-t-cover);
+  --text-cover--line-height: 1.04; /* 0.98 at ≥1024, below */
+  --text-cover--letter-spacing: -0.02em;
+  --text-cover--font-weight: var(--ed-display-weight);
+
+  --text-statement: var(--ed-t-statement);
+  --text-statement--line-height: 1.04;
+  --text-statement--letter-spacing: -0.016em;
+  --text-statement--font-weight: var(--ed-display-weight);
+
+  /* Amended in the draft review (build report, "Spec amendments proposed"):
+     the section step joins the display cut, "opsz" 144 at weight 340 and
+     −0.014em, so no 56 px head renders a sturdier cut than a 43 px quote. */
+  --text-section: var(--ed-t-section);
+  --text-section--line-height: 1.06;
+  --text-section--letter-spacing: -0.014em;
+  --text-section--font-weight: var(--ed-display-weight);
+
+  --text-pullquote: var(--ed-t-pullquote);
+  --text-pullquote--line-height: 1.14;
+  --text-pullquote--letter-spacing: -0.008em;
+  --text-pullquote--font-weight: 360;
+
+  --text-title: var(--ed-t-title);
+  --text-title--line-height: 1.12;
+  --text-title--letter-spacing: -0.005em;
+  --text-title--font-weight: var(--ed-display-weight-small);
+
+  --text-menu: clamp(2.125rem, 4.2vw, 4rem);
+  --text-menu--line-height: 1;
+  --text-menu--letter-spacing: -0.012em;
+  --text-menu--font-weight: 360;
+
+  --text-wordmark-back: clamp(4rem, 14.5vw, 13.5rem);
+  --text-wordmark-back--line-height: 0.86;
+  --text-wordmark-back--letter-spacing: -0.03em;
+  --text-wordmark-back--font-weight: 300;
+
+  --text-wordmark: clamp(1.375rem, 1.8vw, 1.625rem);
+  --text-wordmark--line-height: 1;
+  --text-wordmark--letter-spacing: -0.01em;
+  --text-wordmark--font-weight: 440;
+
+  --text-numeral-step: clamp(3.5rem, 6vw, 6rem);
+  --text-numeral-step--line-height: 0.9;
+  --text-numeral-step--letter-spacing: -0.02em;
+  --text-numeral-step--font-weight: 300;
+
+  --text-folio: clamp(1.375rem, 2.08vw, 2rem);
+  --text-folio--line-height: 1;
+  --text-folio--letter-spacing: 0.02em;
+  --text-folio--font-weight: 320;
+
+  --text-deck: var(--ed-t-deck);
+  --text-deck--line-height: 1.4;
+  --text-deck--letter-spacing: 0;
+  --text-deck--font-weight: var(--ed-display-weight-small);
+
+  --text-caption-place: var(--ed-t-caption-place);
+  --text-caption-place--line-height: 1.35;
+  --text-caption-place--letter-spacing: 0.005em;
+  --text-caption-place--font-weight: 440;
+
+  /* Inter steps */
+  --text-body-lg: clamp(1.0625rem, 1.25vw, 1.125rem);
+  --text-body-lg--line-height: 1.65;
+  --text-body-lg--letter-spacing: 0;
+  --text-body-lg--font-weight: 400;
+
+  --text-body: 1rem; /* 1.0625rem at ≥1024, below */
+  --text-body--line-height: 1.7;
+  --text-body--letter-spacing: 0;
+  --text-body--font-weight: 400;
+
+  --text-ui: 0.9375rem;
+  --text-ui--line-height: 1.3;
+  --text-ui--letter-spacing: 0.005em;
+  --text-ui--font-weight: 500;
+
+  /* The §C.3 `cta` step, registered as `cta-label`. Tailwind 4 resolves
+     `text-<name>` against the colour namespace before the font-size one, and
+     `--color-cta` (the gold fill, §B.2) exists, so a step named `cta` would
+     compile `text-cta` to `color: var(--ed-cta-bg)`: gold label text and no
+     type step at all. `text-cta-label` is the CTA label step. */
+  --text-cta-label: 0.9375rem;
+  --text-cta-label--line-height: 1;
+  --text-cta-label--letter-spacing: var(--ed-cta-tracking);
+  --text-cta-label--font-weight: var(--ed-cta-weight);
+
+  /* 13 px; 14 px below 768 (the phone bump below). */
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.5;
+  --text-caption--letter-spacing: 0.005em;
+  --text-caption--font-weight: 400;
+
+  /* Letter-spaced capitals (§C.5): real Inter capitals at 12.8 px, whose cap
+     height equals the x-height of 17 px body text. Not small caps, which no
+     served font carries. Same size at every width. */
+  --text-eyebrow: var(--ed-label-size);
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: var(--ed-label-tracking);
+  --text-eyebrow--font-weight: var(--ed-label-weight);
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --text-cover--line-height: 0.98;
+    --text-body: 1.0625rem;
+  }
+}
+
+/* The family and optical size of every Fraunces step. A static @utility with
+   the name of a theme-derived `text-*` step is emitted as a second rule on
+   the same class (one class sets the whole §C.3 row; with a variant, Tailwind
+   merges both into one rule). An explicit `font-*` utility on the same
+   element still wins. Steps of 42 px and more share the display cut
+   (`--ed-display-opsz`); title, deck and caption-place keep opsz auto. */
+@utility text-cover {
+  font-family: var(--font-editorial);
+  font-variation-settings: var(--ed-display-opsz);
+}
+@utility text-statement {
+  font-family: var(--font-editorial);
+  font-variation-settings: var(--ed-display-opsz);
+}
+@utility text-section {
+  font-family: var(--font-editorial);
+  font-variation-settings: var(--ed-display-opsz);
+}
+@utility text-pullquote {
+  font-family: var(--font-editorial);
+  font-variation-settings: var(--ed-display-opsz);
+}
+@utility text-title {
+  font-family: var(--font-editorial);
+  font-variation-settings: normal;
+}
+@utility text-menu {
+  font-family: var(--font-editorial);
+  font-variation-settings: normal;
+}
+@utility text-wordmark-back {
+  font-family: var(--font-editorial);
+  font-variation-settings: var(--ed-display-opsz);
+}
+@utility text-wordmark {
+  font-family: var(--font-editorial);
+  font-variation-settings: "opsz" 36;
+}
+@utility text-numeral-step {
+  font-family: var(--font-editorial);
+  font-variation-settings: var(--ed-display-opsz);
+}
+@utility text-folio {
+  font-family: var(--font-editorial);
+  font-variation-settings: "opsz" 72;
+}
+@utility text-deck {
+  font-family: var(--font-editorial);
+  font-variation-settings: normal;
+}
+@utility text-caption-place {
+  font-family: var(--font-editorial);
+  font-style: var(--ed-caption-place-style);
+  font-variation-settings: normal;
+}
+
+/* The Inter UI steps name their family too, so an eyebrow, caption, UI label
+   or CTA label is set in Inter even inside a Fraunces heading (§C.3, §C.5).
+   `body` and `body-lg` are paragraph steps and inherit the body face. */
+@utility text-eyebrow {
+  font-family: var(--font-text);
+  font-stretch: var(--ed-label-stretch);
+  text-transform: var(--ed-label-case);
+}
+@utility text-caption {
+  font-family: var(--font-text);
+}
+@utility text-ui {
+  font-family: var(--font-text);
+}
+@utility text-cta-label {
+  font-family: var(--font-text);
 }
 
 /* ------------------------------------------------------------------
@@ -142,8 +346,11 @@
 
 @layer base {
   html {
-    /* Offset for the fixed nav when jumping to an #anchor */
-    scroll-padding-top: 6rem;
+    /* No faux bold, italic or small caps anywhere (§C.1, D3). */
+    font-synthesis: none;
+    /* An #anchor lands 1.5rem under the fixed masthead (§D.1); SmoothScroll
+       applies the same offset to Lenis. */
+    scroll-padding-top: calc(var(--ed-masthead-h) + 1.5rem);
     -webkit-text-size-adjust: 100%;
     /* The grey tap flash is redundant: every control has its own hover and
        :focus-visible styling below. */
@@ -160,36 +367,32 @@
   }
 
   body {
-    background-color: var(--color-shell);
+    background-color: var(--color-paper);
     color: var(--color-ink);
-    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-    font-synthesis-weight: none;
+    font-family: var(--font-text);
+    font-optical-sizing: auto;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* D1 — Fraunces on the headlines, and only on the headlines.
-   *
-   * h1 and h2 are exactly the scope the A/B compared, so they are exactly the
-   * scope that ships. h3/h4 stay Manrope: they sit inside sections as labels
-   * and sub-heads rather than as display type, and a serif there would be a
-   * change nobody reviewed. The eyebrows, the wordmark and everything using
-   * the `font-display` utility are likewise untouched.
-   *
-   * The serif is listed before --font-display so a missing variable falls back
-   * to the sans rather than to a system serif. */
+  /* Headlines in Fraunces at their optical size (§C.1). The weight here is
+     the fallback for a headline without a type step; every `text-*` step and
+     font-weight utility sets its own. */
   h1,
-  h2 {
-    font-family:
-      var(--font-serif), var(--font-display), ui-serif, Georgia, serif;
+  h2,
+  h3,
+  .font-editorial {
+    font-family: var(--font-editorial);
+    font-weight: var(--ed-display-weight-small);
+    font-optical-sizing: auto;
+    font-kerning: normal;
     text-wrap: balance;
-    letter-spacing: -0.02em;
+    hyphens: manual;
   }
 
-  h3,
   h4 {
-    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-text);
     text-wrap: balance;
   }
 
@@ -197,23 +400,51 @@
     text-wrap: pretty;
   }
 
-  /* Visible, on-brand focus for keyboard users only */
+  /* The one emphasis word in a headline (§C.1, §C.2). Whether it is italic is
+     the edition's call (--ed-em-style, §B.7); it is never recoloured or
+     resized, and its own ascent can never grow a line box. */
+  em.ed-em {
+    font-family: var(--ed-em-family);
+    font-style: var(--ed-em-style);
+    font-weight: inherit;
+    font-variation-settings: inherit;
+    color: inherit;
+    line-height: 0;
+    margin-inline-end: 0.04em; /* roman/italic junction when not line-final */
+  }
+
+  /* Visible focus for keyboard users only (§H.4). The ring follows the
+     element's own radius: square controls stay square. */
   :focus-visible {
-    outline: 2px solid var(--color-gold-500);
+    outline: 2px solid var(--ed-focus);
     outline-offset: 3px;
-    border-radius: 2px;
+  }
+
+  /* Night grounds, ink grounds, the olive band and a dark photographic hero
+     take the paper ring (sienna on night is 2.25:1, §B.2). A ground painted
+     by a module class instead of these utilities sets
+     `focus-visible:outline-focus-night` on its controls. */
+  :where(
+      .bg-night,
+      .bg-night-raised,
+      .bg-ink,
+      .bg-band,
+      [data-hero-tone="dark"]
+    )
+    :focus-visible {
+    outline-color: var(--ed-focus-night);
   }
 
   /* A section that received focus from an in-page link (the skip link, see
-     SmoothScroll) is a landing point, not a control — no ring round all of
+     SmoothScroll) is a landing point, not a control: no ring round all of
      <main>. */
   [data-anchor-focus]:focus-visible {
     outline: none;
   }
 
   ::selection {
-    background-color: var(--color-ocean-900);
-    color: var(--color-sand-100);
+    background-color: var(--ed-selection-bg);
+    color: var(--ed-selection-fg);
   }
 
   /* Media defaults */
@@ -221,6 +452,214 @@
   video {
     display: block;
     max-width: 100%;
+  }
+
+  /* Stock texture sits under the section's content (§F.1): every direct child
+     other than the texture layer is lifted above it. Zero specificity, so any
+     position utility or module rule on a child still wins. */
+  :where(.paper-stock, .bone-stock) > :where(:not(.paper-stock-layer, .bone-stock-layer)) {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* ------------------------------------------------------------------
+   EDITORIAL UTILITIES (C+ SPEC §D.1, §F.1, §G.1, §G.3, §C.2, §C.10)
+   ------------------------------------------------------------------ */
+
+/* The editorial grid (§D.1): 4 / 8 / 12 columns (--ed-cols) between named
+   full-bleed lines. `full-start / col 6` runs from the viewport edge to the
+   end of column 5; `col 6 / full-end` from column 6 off the right edge. Any
+   `col N` placement past column 4 belongs inside a ≥1024 query, or it creates
+   implicit tracks and overflows. Sections that bleed use overflow-x: clip,
+   never hidden (hidden disables position: sticky). */
+@utility ed-grid {
+  display: grid;
+  column-gap: var(--ed-gutter);
+  grid-template-columns:
+    [full-start] minmax(calc(var(--ed-margin) - var(--ed-gutter)), 1fr)
+    [content-start] repeat(var(--ed-cols), [col] minmax(0, var(--ed-col-max)))
+    [content-end] minmax(calc(var(--ed-margin) - var(--ed-gutter)), 1fr) [full-end];
+}
+
+/* Paper and bone stock (§F.1). The section carries `paper-stock` (or
+   `bone-stock`); its first child is
+   `<div aria-hidden className="paper-stock-layer" />`, whose own background
+   is the corner vignette, ::before the grain and ::after the mottle, all
+   multiplied into the ground. Add `no-vignette` to the layer where §F.1 says
+   so (golden band, menu panel, item sections). The layer is never on a
+   photograph, a CTA fill, a chart inset or the form frame, and never
+   `fixed` (preflight P7). The grain's 0.8 peak alpha lives in the data URI
+   and is what keeps text legible on the darkest speck (§F.2). */
+@utility paper-stock {
+  position: relative;
+  isolation: isolate;
+}
+
+@utility bone-stock {
+  position: relative;
+  isolation: isolate;
+}
+
+@utility paper-stock-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--ed-paper-vignette);
+
+  &.no-vignette {
+    background-image: none;
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: multiply;
+  }
+
+  /* grain: fractal noise 0.8 × 3 octaves, the §F.1 warm umber matrix, peak alpha 0.8, 180 px tile */
+  &::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.369 0 0 0 0 0.282 0 0 0 0 0.173 0.8 0 0 0 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    opacity: var(--ed-paper-grain-opacity);
+  }
+
+  /* mottle: fractal noise 0.02 × 4 octaves (amended in the draft review from
+     0.012 × 2: the extra octaves dither the plateaus into grain instead of
+     8-bit contour rings), same matrix, 640 px tile */
+  &::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='640'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.369 0 0 0 0 0.282 0 0 0 0 0.173 0.8 0 0 0 0'/%3E%3C/filter%3E%3Crect width='640' height='640' filter='url(%23m)'/%3E%3C/svg%3E");
+    background-size: 640px 640px;
+    opacity: var(--ed-paper-mottle-opacity);
+  }
+}
+
+@utility bone-stock-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: multiply;
+  }
+
+  &::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.369 0 0 0 0 0.282 0 0 0 0 0.173 0.8 0 0 0 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    opacity: var(--ed-bone-grain-opacity);
+  }
+
+  &::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='640'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.369 0 0 0 0 0.282 0 0 0 0 0.173 0.8 0 0 0 0'/%3E%3C/filter%3E%3Crect width='640' height='640' filter='url(%23m)'/%3E%3C/svg%3E");
+    background-size: 640px 640px;
+    opacity: var(--ed-bone-mottle-opacity);
+  }
+}
+
+/* Night density (§F.1): the deepening toward the corners of a night ground,
+   below plates, never on a photograph or text. */
+@utility night-density {
+  background-image: var(--ed-night-density);
+}
+
+/* Ken Burns on the cover plate (§G.3). On the wrapper inside the plate's
+   `overflow: hidden` frame; `both` holds scale(1) from time zero, so the LCP
+   image paints unclipped on its first frame and nothing waits for hydration.
+   At the plain-C token values (0s / 1) it is a no-op. */
+@keyframes ed-push {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(var(--ed-kenburns-scale));
+  }
+}
+
+@utility ken-burns-cover {
+  animation: ed-push var(--ed-kenburns-duration) cubic-bezier(0.33, 0, 0.67, 1) both;
+  transform-origin: var(--ed-kb-origin, 38% 20%);
+}
+
+/* A headline line mask that never clips (§C.2 item 4): room for Fraunces
+   descenders at line-height ≤ 1.06 and for the italic overhang, paint only. */
+@utility ed-line {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.1em 0.2em;
+  margin-block: -0.1em -0.2em;
+  padding-inline-end: 0.1em;
+  margin-inline-end: -0.1em;
+}
+
+/* The parent of pre-split `ed-line` blocks (SplitLines `lines` mode, the
+   draft's `.edLines`). In block flow the negative margins of two adjacent
+   lines collapse (-0.2em and -0.1em give -0.2em, not -0.3em), which pushes
+   every following line 0.1em down and loosens the set leading; flex items'
+   margins never collapse. The literal space between the line spans is not
+   rendered by a flex container but stays in textContent and the accessible
+   name. */
+@utility ed-lines {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The item pull quote's opening quotation mark hangs (§C.4): natively where
+   `hanging-punctuation` is supported (Safari), by a negative indent only
+   where it is not, so the mark never hangs twice. 0.42em is the measured
+   advance of “ at opsz 144. */
+@utility pullquote-hang {
+  hanging-punctuation: first;
+
+  @supports not (hanging-punctuation: first) {
+    text-indent: -0.42em;
+  }
+}
+
+/* Drop cap (§C.10): terracotta, three lines tall. `::first-letter` is CSS, so
+   the text itself is untouched. */
+@utility ed-dropcap {
+  &::first-letter {
+    float: left;
+    margin: 0.06em 0.1em 0 0;
+    font-family: var(--font-editorial);
+    font-weight: 340;
+    font-variation-settings: "opsz" 144;
+    font-size: 3.9em;
+    line-height: 0.78;
+    color: var(--ed-dropcap-color);
+  }
+
+  @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
+    &::first-letter {
+      float: none;
+      /* Amended in the draft: the T's crossbar already supplies the side
+         bearing; 0.12em opened a gap wider than a word space. */
+      margin: 0 0.02em 0 0;
+      font-size: inherit;
+      line-height: inherit;
+      -webkit-initial-letter: var(--ed-dropcap-lines);
+      initial-letter: var(--ed-dropcap-lines);
+    }
+  }
+}
+
+/* The scoped reduced-motion exception (§G.1), declared after the global
+   clamp below. A layered !important outranks the unlayered clamp, so this
+   150 ms opacity crossfade survives it. It reaches CSS transitions only; its
+   one user is the Fitzroy plate. Motion-driven fades read useReducedMotion(). */
+@utility motion-fade-reduced {
+  @media (prefers-reduced-motion: reduce) {
+    transition-property: opacity !important;
+    transition-duration: 150ms !important;
+    transition-timing-function: linear !important;
   }
 }
 
@@ -239,41 +678,108 @@
   background-color: color-mix(in srgb, var(--color-ink) 12%, transparent);
 }
 
-/* Cinematic scrim for full-bleed imagery — keeps overlay text legible
-   without flattening the photograph.
+/* The item hero's legibility scrim, tied to its text block (§B.2 "text on
+   photographs", §D.6 item 1). A legibility gradient, not a warmth overlay
+   (D2). The text block draws it, so its night follows the height of the
+   text, not of the photograph: above the block's 6rem lead-in the
+   photograph is left clear. It replaced a frame-wide `scrim` whose stops
+   were fractions of the photograph's height (94 / 82 / 66 % night up to 60 %
+   of the frame, whatever the text needed), and `scrim-soft`, which nothing
+   used; both are gone.
 
-   The two lower stops are the text zone and are untouched: the hero headline
-   and its subcopy sit inside the bottom 45%, and their legibility is not a
-   thing to trade for atmosphere.
+   Use: `scrim-text` on the hero's text block, the element whose foot is
+   the photograph's foot (ItemHero's bottom-aligned block over the frame),
+   in place of a scrim layer in the frame. The gradient is a border image
+   with `fill`, outset 6rem above the block and 100vw to either side, so it
+   spans the full bleed with no wrapper. A border image outside the border
+   box is ink overflow: it adds no scrollable width, and no larger
+   composited layer (both measured: .hunt/cplus/rollout/g1/scrim-layers.log,
+   scrim-tc-v4.log).
 
-   The upper stops were doing something else. At 42-58% opacity across the top
-   of the frame — where no text ever goes — they were veiling the photograph in
-   the one place a visitor looks first. That was defensible when every image
-   was graded matte; with Grade C it means the client's "brighter and more
-   vivid" is invisible exactly where it should land hardest. The sky and the
-   canopy come back; the words do not move. */
-@utility scrim {
+   The stops, from the least uniform night share each run needs on the three
+   item photographs (grade D, 360-1920 wide, first and Ken Burns end frame,
+   .hunt/cplus/rollout/g1/scrim-tc-need.log): the 12.8 px eyebrow up to 65 % for 5.0:1, the title up to
+   60 % for 4.0:1, the 19 px deck in on-night-soft up to 84 % for 5.0:1. So
+   67 % at the block's top edge (the eyebrow's line), 70 % at 45 % of the
+   height (the title), 86 % at 32 % (the deck sits below that) and 90 % at
+   the foot, with a smoothstep fade to nothing over the 6rem above. A block
+   with no deck paragraph (`> p`) needs only the eyebrow's and the title's
+   share and stays at 64-67 %. Without :has(), the deck stops apply (the
+   safe side). Measured with these stops: title >= 5.13, eyebrow >= 5.23,
+   deck >= 5.38 at the worst pixel (g1/scrim-tc-v4.log). */
+@utility scrim-text {
+  --scrim-mid: 70%;
+  --scrim-deck: 86%;
+  --scrim-foot: 90%;
+  &:not(:has(> p)) {
+    --scrim-mid: 64%;
+    --scrim-deck: 64%;
+    --scrim-foot: 66%;
+  }
+  border-image: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--ed-scrim) var(--scrim-foot), transparent) 0%,
+      color-mix(in srgb, var(--ed-scrim) var(--scrim-deck), transparent) 32%,
+      color-mix(in srgb, var(--ed-scrim) var(--scrim-mid), transparent) 45%,
+      color-mix(in srgb, var(--ed-scrim) 67%, transparent) calc(100% - 6rem),
+      color-mix(in srgb, var(--ed-scrim) 56%, transparent) calc(100% - 4.5rem),
+      color-mix(in srgb, var(--ed-scrim) 34%, transparent) calc(100% - 3rem),
+      color-mix(in srgb, var(--ed-scrim) 11%, transparent) calc(100% - 1.5rem),
+      transparent 100%
+    )
+    fill 0 / 0 / 6rem 100vw 0;
+}
+
+/* The item heroes' top legibility band under the transparent masthead
+   (§D.6 item 1): night at --ed-scrim-top, normal blend. Text legibility,
+   not a warmth overlay (D2). A masthead run over the photograph failed
+   text-contrast at 55 %, so the §B.2 token fallback is live: --ed-scrim-top
+   70 % in edition.css (S9). An absolutely positioned layer of its own, above
+   the photograph and below the text.
+
+   The share is held over the masthead's text rows (to 2rem, then 67 % at
+   2.875rem) and fades out by 9rem along a smoothstep. With the old frame-wide
+   `scrim`, a linear fade from the top was enough, because that scrim added
+   22-34 % night under the masthead; `scrim-text` adds none there. The
+   Kourtaliotis masthead runs need up to 63 % night for 4.5:1 and 66 % for
+   5.0:1 over their rows (y 14-48 px); a linear fade from 70 % holds 66 %
+   only over the top 8 px. Measured with this band: masthead runs under
+   24 px >= 5.27 (.hunt/cplus/rollout/g1/scrim-tc-need.log, scrim-tc-v4.log). */
+@utility scrim-top {
   background: linear-gradient(
-    to top,
-    color-mix(in srgb, var(--color-ocean-950) 94%, transparent) 0%,
-    color-mix(in srgb, var(--color-ocean-950) 78%, transparent) 30%,
-    color-mix(in srgb, var(--color-ocean-950) 40%, transparent) 58%,
-    color-mix(in srgb, var(--color-ocean-950) 22%, transparent) 80%,
-    color-mix(in srgb, var(--color-ocean-950) 34%, transparent) 100%
+    to bottom,
+    color-mix(in srgb, var(--ed-night) var(--ed-scrim-top), transparent) 2rem,
+    color-mix(in srgb, var(--ed-night) calc(var(--ed-scrim-top) * 0.96), transparent) 2.875rem,
+    color-mix(in srgb, var(--ed-night) calc(var(--ed-scrim-top) * 0.84), transparent) 3.75rem,
+    color-mix(in srgb, var(--ed-night) calc(var(--ed-scrim-top) * 0.5), transparent) 5.5rem,
+    color-mix(in srgb, var(--ed-night) calc(var(--ed-scrim-top) * 0.16), transparent) 7.25rem,
+    transparent 9rem
   );
 }
 
-@utility scrim-soft {
-  background: linear-gradient(
-    to top,
-    color-mix(in srgb, var(--color-ocean-950) 85%, transparent) 0%,
-    color-mix(in srgb, var(--color-ocean-950) 45%, transparent) 45%,
-    color-mix(in srgb, var(--color-ocean-950) 12%, transparent) 100%
-  );
+/* Browsers without color-mix(). For a color-mix() over a variable it cannot
+   resolve, Tailwind emits a compatibility fallback that keeps only the colour:
+   `linear-gradient(to top, var(--ed-scrim) 0%, …)`, an opaque night block
+   over the whole photograph (the stops live in custom properties or not, it
+   rewrites both). These unlayered rules outrank that fallback there and draw
+   plain fades in the same places instead; browsers with color-mix() never
+   match them and keep the stops above. */
+@supports not (color: color-mix(in lab, red, red)) {
+  /* The text block cannot take an opacity (its text would fade), so its
+     fallback is solid night under the text and a plain fade over the lead. */
+  .scrim-text {
+    border-image-source: linear-gradient(to top, var(--ed-scrim) calc(100% - 6rem), transparent);
+  }
+
+  .scrim-top {
+    background: linear-gradient(to bottom, var(--ed-night) 2rem, transparent 9rem);
+    opacity: var(--ed-scrim-top);
+  }
 }
 
-/* Very fine film grain — adds depth to large flat dark areas.
-   Pure CSS, no image request. */
+/* Night grain (§F.1): `grain` on the night ground, `grain-overlay` as its
+   absolutely positioned child, always under plates in z-order. Pure CSS, no
+   image request. Never `grain fixed` (preflight P1). */
 @utility grain {
   position: relative;
 }
@@ -281,13 +787,22 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: var(--ed-night-grain-opacity);
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
 }
 
+/* Texture never competes with a user's contrast preference (§F.1). */
+@media (forced-colors: active), (prefers-contrast: more) {
+  .paper-stock-layer,
+  .bone-stock-layer,
+  .grain-overlay {
+    display: none;
+  }
+}
+
 /* ------------------------------------------------------------------
-   KEN BURNS
+   KEN BURNS (item heroes)
 
    Deliberately CSS, not JavaScript. The hero photograph is the LCP element,
    so it must paint on the first frame and start its push from scale(1) —
@@ -308,7 +823,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ken-burns {
+  .ken-burns,
+  .ken-burns-cover {
     animation: none;
   }
 }
@@ -387,14 +903,25 @@
   }
 }
 
+/* 1.6 s (§G.1 row 17). Under reduced motion the bar holds still where it is
+   drawn, over the left third of its track. */
 @utility loading-sweep {
-  animation: loading-sweep 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: loading-sweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-sweep {
+    animation: none;
+    transform: none;
+  }
 }
 
 /* ------------------------------------------------------------------
    MOTION PREFERENCES
    Every animation in the app is transform/opacity only, and all of it
-   collapses to a static end-state when the user asks for less motion.
+   collapses to a static end-state when the user asks for less motion. The
+   one scoped exception is `motion-fade-reduced` (above), a 150 ms opacity
+   crossfade that answers something the user did.
    ------------------------------------------------------------------ */
 
 @media (prefers-reduced-motion: reduce) {
@@ -442,47 +969,6 @@
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* --------------------------------------------------------------------------
-   Sand — the light-section counterpart to `grain`.
-
-   `grain` gives the dark movements depth by breaking up large flat areas of
-   ocean-950. The light movements had nothing: bg-shell rendered as a perfectly
-   even field, which is what made the page read as "web section" next to the
-   photography rather than as paper.
-
-   Same construction as the grain so the two belong to one system — a
-   fractal-noise SVG, no image request — but warmer, weaker, and multiplied
-   instead of overlaid, so it settles INTO the sand rather than lifting it.
-   A single very wide warm radial sits under it so the field is not uniform.
-
-   Pure CSS. Nothing here is animated and nothing is charged against TBT.
-   -------------------------------------------------------------------------- */
-@utility sand {
-  position: relative;
-}
-
-@utility sand-overlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.055;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23s)' opacity='0.85'/%3E%3C/svg%3E");
-}
-
-/* A wide, very low-contrast warm wash so the light field has a centre of
-   gravity instead of being flat. */
-@utility sand-wash {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: radial-gradient(
-    120% 90% at 50% 0%,
-    color-mix(in srgb, var(--color-gold-400) 7%, transparent) 0%,
-    transparent 62%
-  );
-}
-
 /* A strip you drag should not also show a scrollbar — the grab cursor and the
    motion are the affordance. Native overflow scrolling is deliberately kept,
    so the wheel and the keyboard still work. */
@@ -496,32 +982,24 @@
 }
 
 /* --------------------------------------------------------------------------
-   D9 — the small labels come up one step on phones, and only on phones.
-   
-   The eyebrow (11px) and caption (13px) are the design's voice at desktop
-   sizes and stay exactly as they are there. On a 390px screen held at arm's
-   length they were genuinely small, which the mobile audit had been reporting
-   on every run as an open decision rather than enforcing.
-   
-   The Tailwind utilities resolve `font-size: var(--text-eyebrow)`, so
-   redefining the variable under a width query raises every one of them at
-   once — no component touched, nothing to keep in sync, and desktop provably
-   unchanged because the query cannot reach it.
+   D9 — captions come up one step on phones, and only on phones: 13 px → 14 px
+   below 768. The eyebrow no longer takes this bump; it is 12.8 px at every
+   width (§C.3).
+
+   The Tailwind utility resolves `font-size: var(--text-caption)`, so
+   redefining the variable under a width query raises every caption at once.
    -------------------------------------------------------------------------- */
 @media (max-width: 767px) {
   :root {
-    --text-eyebrow: 0.75rem;   /* 11px -> 12px */
-    --text-caption: 0.875rem;  /* 13px -> 14px */
+    --text-caption: 0.875rem;
   }
 }
 
 /* ------------------------------------------------------------------
-   MENU DRIFT
+   MENU DRIFT — LEGACY (the menu backdrop is retired in C+, §G.2)
 
    A very slow pan on the photograph behind the open overlay menu. Transform
-   only, so it composites; 44s so it reads as drift rather than movement.
-   Paused under reduced motion rather than removed — the photograph still
-   shows, it simply holds still.
+   only; paused under reduced motion.
    ------------------------------------------------------------------ */
 @keyframes menu-drift {
   0% {
@@ -549,18 +1027,18 @@
 /* ------------------------------------------------------------------
    FILM GRAIN, SITE-WIDE
 
+   Off in C+ (the edition sets --ed-film-grain-display to none, §F.1): the texture is printed
+   into the paper and bone sections instead, so no full-viewport blend layer
+   composites over the page, the menu or the lightbox.
+
    Deliberately NOT the `grain` utility. That one is `position: relative` and
    is emitted after `.fixed` at equal specificity, so `grain fixed` silently
    resolves to relative — which is how a "fullscreen" overlay menu once
    shipped as an in-flow block. qa/preflight.mts fails the build on that
    pairing, and this class exists so the site-wide layer never needs it.
-
-   `position: fixed` with its own stacking context, pointer-events: none, and
-   the same fractal-noise source as the sectional grain so the two belong to
-   one system. Opacity is lower than the sectional grain because this one is
-   over EVERYTHING, including light sections and photographs.
    ------------------------------------------------------------------ */
 @utility film-grain {
+  display: var(--ed-film-grain-display);
   position: fixed;
   inset: 0;
   z-index: 60;
@@ -596,6 +1074,17 @@
 @media (max-width: 1023px) {
   html:has([data-booking-bar][data-visible]) {
     scroll-padding-bottom: 5.5rem;
+  }
+}
+
+/* The same for the spinning badge (SpinningBadge.tsx), from lg, where it is
+   shown: a fixed disc 2rem in from the bottom right, 7rem across (8rem from
+   xl). While it renders, a link focused by keyboard is scrolled to rest
+   above the disc's band (2rem + 8rem + 1rem) rather than under it
+   (WCAG 2.4.11). The badge renders only from verified social proof. */
+@media (min-width: 1024px) {
+  html:has([data-spinning-badge]) {
+    scroll-padding-bottom: 11rem;
   }
 }
 

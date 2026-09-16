@@ -25,16 +25,23 @@
  *     clips its content. A copy that is visible stays counted whatever its
  *     class is called, and a copy that is hidden is excluded whatever its
  *     class is called.
- *   - DUAL-MODE readiness wait. After `document.fonts.ready` the route is
- *     polled for up to 2,200 ms. If any headline carries `data-lines-ready`
- *     the route runs in `ready` mode and every headline must carry it within
- *     8,000 ms. Otherwise it runs in `fallback` mode: today's wait, fonts.ready
- *     + 2,200 ms. The mode is printed per route.
- *     (S9 deletes the fallback branch; see FALLBACK below.)
+ *   - Readiness. The S1q dual-mode wait (a `fallback` of fonts.ready +
+ *     2,200 ms for routes whose headlines never declared readiness) was
+ *     deleted at S9 (SPEC §0.2 step 5).
+ *
+ * C+ assertion (§I.2, §I.3): every route runs `ready`. After fonts.ready
+ * every `[data-split-source]` must carry `data-lines-ready` within
+ * 8,000 ms, or the route fails as
+ *   FAIL <route>: data-lines-ready missing after 8000 ms on N sources
+ * (the pre-rollout SplitLines never emits the attribute, so this cannot pass
+ * before C+). The §0 trap (a `lines`-mode headline that also renders an
+ * `sr-only` copy) needs no new code: pre-measure reads `innerText`, which
+ * includes a clipped copy, so it fails as `[pre-measure]: text doubled`.
  *
  *   node qa/headline-guard.mts
  */
 import { chromium } from "playwright";
+import { cplusS9Line } from "./cplus-stage.mts";
 import { preflight } from "./preflight.mts";
 
 const BASE = process.env.QA_BASE_URL ?? "http://localhost:3009";
@@ -55,14 +62,14 @@ const ROUTES: ReadonlyArray<readonly [route: string, minimum: number]> = [
   ["/credits", 1],
 ];
 
-/** How long after fonts.ready a route has to show any `data-lines-ready`. */
-const MODE_WINDOW_MS = 2_200;
-/** In `ready` mode, how long every headline has to carry it. */
+/** How long every headline has to carry `data-lines-ready`. */
 const READY_TIMEOUT_MS = 8_000;
 const POLL_MS = 100;
 
 const norm = (s: string) => s.replace(/\s+/g, " ").trim();
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
+console.log(cplusS9Line());
 
 const browser = await chromium.launch();
 await preflight(BASE, process.cwd() + "/qa");
@@ -92,28 +99,9 @@ for (const [route, minimum] of ROUTES) {
     return true;
   });
 
-  /* Which wait applies. Poll the whole window; the last poll lands at or after
-     MODE_WINDOW_MS, so a route that never declares readiness has waited at
-     least as long as the fixed 2,200 ms this replaces. */
-  const anyReady = () =>
-    page.evaluate(
-      () => document.querySelector("[data-split-source][data-lines-ready]") !== null,
-    );
-  let mode: "ready" | "fallback" = "fallback";
-  const windowStart = Date.now();
-  for (;;) {
-    if (await anyReady()) {
-      mode = "ready";
-      break;
-    }
-    const elapsed = Date.now() - windowStart;
-    if (elapsed >= MODE_WINDOW_MS) break;
-    await page.waitForTimeout(Math.max(1, Math.min(POLL_MS, MODE_WINDOW_MS - elapsed)));
-  }
-
-  if (mode === "ready") {
-    /* Headlines declare when their lines are final. Once one does, all must:
-       a headline that never declares it is reported by source, loudly. */
+  {
+    /* Headlines declare when their lines are final, on every route: a
+       headline that never declares it is reported by source, loudly. */
     const unreadySources = () =>
       page.evaluate(() =>
         [...document.querySelectorAll("[data-split-source]:not([data-lines-ready])")].map(
@@ -130,13 +118,11 @@ for (const [route, minimum] of ROUTES) {
     if (unready.length > 0) {
       failures++;
       report.push(
-        `  FAIL ${route}: mode ready, data-lines-ready missing after ${READY_TIMEOUT_MS} ms on ${plural(unready.length, "source")}`,
+        `  FAIL ${route}: data-lines-ready missing after ${READY_TIMEOUT_MS} ms on ${plural(unready.length, "source")} (every route must run ready)`,
       );
       for (const source of unready) report.push(`    unready: "${norm(source)}"`);
     }
   }
-  // FALLBACK: `fallback` needs no further wait; the mode window above was it.
-  // S9 deletes this branch and fails any route that is not `ready`.
 
   const settled = await page.evaluate(() => {
     /**
@@ -210,7 +196,7 @@ for (const [route, minimum] of ROUTES) {
   }
 
   console.log(
-    `${route.padEnd(46)} ${early.length} headline(s) (minimum ${minimum})  mode ${mode}`,
+    `${route.padEnd(46)} ${early.length} headline(s) (minimum ${minimum})  mode ready (required)`,
   );
   for (const line of report) console.log(line);
   await context.close();

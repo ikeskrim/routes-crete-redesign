@@ -8,20 +8,31 @@ import { cn } from "@/lib/utils";
 
 type Direction = "up" | "down" | "left" | "right" | "none";
 
+/* The slow block reveal (C+ SPEC §G.1 #6): 16 px (was 28), 1.1 s, on the
+   edition's reveal curve (`--ed-ease-reveal`, as a motion easing). */
 const OFFSET: Record<Direction, { x: number; y: number }> = {
-  up: { x: 0, y: 28 },
-  down: { x: 0, y: -28 },
-  left: { x: 28, y: 0 },
-  right: { x: -28, y: 0 },
+  up: { x: 0, y: 16 },
+  down: { x: 0, y: -16 },
+  left: { x: 16, y: 0 },
+  right: { x: -16, y: 0 },
   none: { x: 0, y: 0 },
 };
+
+const EASE_REVEAL = [0.2, 0.7, 0.1, 1] as const;
+
+/* Reduced motion is designed, not disabled: the block is present from the
+   first paint. Before hydration nothing knows the preference, so the
+   server-rendered hidden state is cancelled in CSS (an !important class
+   outranks motion's inline style); after hydration no motion renders. */
+const PRESENT_WHEN_REDUCED = "motion-reduce:opacity-100! motion-reduce:transform-none!";
 
 /**
  * Scroll-triggered reveal. Animates transform + opacity only, so it stays on
  * the compositor at 60fps.
  *
  * Three things it deliberately guards against:
- *  - `prefers-reduced-motion` → renders the final state, no animation at all.
+ *  - `prefers-reduced-motion` → the final state from the first paint, no
+ *    animation at all.
  *  - Landing *below* the element (a deep link, or a restored scroll position)
  *    → an intersection would never fire, so the content is shown immediately
  *    instead of staying invisible forever.
@@ -32,7 +43,7 @@ export function Reveal({
   children,
   className,
   delay = 0,
-  duration = 0.8,
+  duration = 1.1,
   direction = "up",
 }: {
   children: React.ReactNode;
@@ -60,10 +71,10 @@ export function Reveal({
     <motion.div
       ref={ref}
       data-reveal
-      className={cn(className)}
+      className={cn(PRESENT_WHEN_REDUCED, className)}
       initial={{ opacity: 0, x, y }}
       animate={show ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x, y }}
-      transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration, delay, ease: EASE_REVEAL }}
     >
       {children}
     </motion.div>

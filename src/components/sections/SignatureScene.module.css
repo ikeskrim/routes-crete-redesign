@@ -1,0 +1,176 @@
+/* ==========================================================================
+   MOVEMENT III: the signature photo essay (C+ SPEC §D.4, as built and paced
+   in the frozen draft, c-plus.module.css "5g", with its review amendments).
+
+   The section carries the global `grain` utility (position: relative) with
+   the `night-density` and `grain-overlay` layers as its first children; the
+   head and every chapter sit above them.
+
+   Every value is read from Layer E; nothing here declares an --ed-* value
+   (preflight P12) or a colour literal (P9).
+   ========================================================================== */
+
+.section {
+  padding-block: var(--ed-space-section);
+  background-color: var(--ed-night);
+  color: var(--ed-on-night);
+}
+
+.head,
+.chapter {
+  position: relative;
+  z-index: 1;
+}
+
+.folio,
+.title,
+.read {
+  grid-column: content-start / content-end;
+}
+
+.title {
+  color: var(--ed-on-night);
+}
+
+.read {
+  justify-self: start;
+  margin-top: var(--ed-space-pair);
+}
+
+.chapter {
+  align-items: start;
+  margin-top: clamp(6rem, 12vw, 10rem);
+}
+
+.head + .chapter {
+  margin-top: var(--ed-space-block);
+}
+
+.plate,
+.platePortrait {
+  grid-column: full-start / full-end;
+}
+
+.text {
+  grid-column: content-start / content-end;
+  margin-top: var(--ed-space-pair);
+}
+
+/* The numeral and the label on one baseline; the label is a place caption in
+   the serif, in stone (7.04 on night, 6.95 on the worst speckle), not another
+   tracked-capitals eyebrow (amended in the draft review). */
+.chapterHead {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.numeral {
+  display: block;
+  color: var(--ed-stone);
+}
+
+.label {
+  color: var(--ed-stone);
+}
+
+/* Reversed running text gains weight on night, so the deck step is set
+   lighter and looser here (380, 1.5, 32ch) and reads as a caption beside the
+   photograph, not a slab of display serif (amended in the draft review). */
+.body {
+  max-width: 32ch;
+  margin-top: 1rem;
+  font-weight: 380;
+  line-height: 1.5;
+  color: var(--ed-on-night);
+  text-wrap: pretty;
+}
+
+/* chapter 1: a wider crop keeps most of the midday sky out of the essay */
+.frameSky {
+  aspect-ratio: 5 / 3;
+}
+
+.frameWide {
+  aspect-ratio: 3 / 2;
+}
+
+.cropSky {
+  object-position: 50% 80%;
+}
+
+.cropWide {
+  object-position: 50% 70%;
+}
+
+.cropPortrait {
+  object-position: 50% 40%;
+}
+
+/* ---- 640 and up (8 columns) ---------------------------------------------- */
+@media (min-width: 640px) {
+  .frameSky,
+  .frameWide {
+    aspect-ratio: 2 / 1;
+  }
+
+  .platePortrait {
+    grid-column: col 2 / span 6;
+  }
+
+  .text {
+    grid-column: col 1 / span 6;
+  }
+}
+
+/* ---- 1024 and up (12 columns) -------------------------------------------- */
+@media (min-width: 1024px) {
+  .folio {
+    grid-column: col 1 / content-end;
+  }
+
+  .title,
+  .read {
+    grid-column: col 1 / span 8;
+  }
+
+  .plate {
+    grid-column: col 5 / full-end;
+    grid-row: 1;
+  }
+
+  .platePortrait {
+    grid-column: col 7 / span 5;
+    grid-row: 1;
+  }
+
+  /* The chapter column holds still while its photograph scrolls past. */
+  .text {
+    grid-column: col 1 / span 4;
+    grid-row: 1;
+    position: sticky;
+    top: calc(var(--ed-masthead-h) + 3rem);
+    margin-top: 0;
+  }
+
+  /* chapter 2 mirrors: the plate bleeds left, the text sits on the right */
+  .mirror .plate {
+    grid-column: full-start / col 8;
+  }
+
+  .mirror .text {
+    grid-column: col 9 / span 4;
+  }
+
+  /* chapter 4: one wide breath across the content width at 2:1, text under it */
+  .wide .plate {
+    grid-column: content-start / content-end;
+  }
+
+  .wide .text {
+    grid-column: col 3 / span 6;
+    grid-row: 2;
+    position: static;
+    margin-top: var(--ed-space-pair);
+  }
+}

@@ -10,9 +10,30 @@
  *
  * Defaults to the production server on :3009 (`npm start`), which is both
  * faster and closer to what ships than the dev server.
+ *
+ * Every failed group is printed as `failedGroups: …` and fails the run
+ * (C+ SPEC §I.1, S1q).
+ *
+ * New C+ groups (§D.4, §G.1, §I.1; on at S9 through qa/cplus-stage.mts),
+ * asserted whatever capture filter is given:
+ *   sticky           at 1440 the why-us row 1 (`#why-us article`) and the
+ *                    first Kourtaliotis place break (`[data-band="place"]`)
+ *                    are scrolled to 50 % of their plate height; the sticky
+ *                    text must sit at masthead + 20vh (± 2 px) and at
+ *                    masthead + 2.5rem (± 2 px). A hidden-overflow ancestor
+ *                    fails it as "sticky top drifts".
+ *   Fitzroy touch    in `hasTouch` contexts at 1180 x 820 and 390 x 844 the
+ *                    fine-pointer query must not match; every
+ *                    `ul[data-journeys] > li` is as wide as the list (± 1),
+ *                    each plate's edges follow the §D.4 default-branch table
+ *                    (± 1), each entry has one img, nothing overflows.
+ *   reduced preview  reduced motion, 1440: 200 ms after hovering menu item 2
+ *                    the visible preview is at opacity 1 with no transform
+ *                    on it or any ancestor inside the dialog.
  */
 import { chromium, type Browser, type Page } from "playwright";
 import fs from "node:fs/promises";
+import { cplusS9, cplusS9Line } from "./cplus-stage.mts";
 import { preflight } from "./preflight.mts";
 import path from "node:path";
 
@@ -201,10 +222,279 @@ async function openPage(
   return { context, page };
 }
 
+/* ------------------------------------------------ C+ S9 groups (§I.1) */
+
+const STICKY_TOLERANCE_PX = 2;
+const EDGE_TOLERANCE_PX = 1;
+
+/**
+ * Scroll `row` so that it has moved 50 % of its plate's height past the
+ * point where its sticky text first sticks, then read where that text is.
+ */
+async function stickyAt(
+  page: Page,
+  rowSelector: string,
+  label: string,
+  expectedTop: (masthead: number, vh: number, rem: number) => number,
+  expectedName: string,
+) {
+  const before = await page.evaluate((sel) => {
+    const row = document.querySelector(sel);
+    if (!row) return { found: false } as const;
+    const sticky = [row, ...row.querySelectorAll("*")].find((el) => getComputedStyle(el).position === "sticky");
+    const img = row.querySelector("img");
+    const header = document.querySelector("header[data-site-chrome]");
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    return {
+      found: true,
+      sticky: !!sticky,
+      stickyTag: sticky ? `${sticky.tagName.toLowerCase()}.${String(sticky.className).slice(0, 30)}` : "",
+      declaredTop: sticky ? parseFloat(getComputedStyle(sticky).top) : NaN,
+      rowTop: window.scrollY + row.getBoundingClientRect().top,
+      plateH: img ? img.getBoundingClientRect().height : 0,
+      masthead: header ? header.getBoundingClientRect().height : 0,
+      vh: window.innerHeight,
+      rem,
+    } as const;
+  }, rowSelector);
+
+  if (!before.found) {
+    failedGroups.push(`sticky: ${label} missing (${rowSelector})`);
+    return;
+  }
+  if (!before.sticky) {
+    failedGroups.push(`sticky: no position: sticky element in ${label}`);
+    return;
+  }
+  if (!(before.plateH > 0)) {
+    failedGroups.push(`sticky: ${label} has no plate to measure against`);
+    return;
+  }
+  const expected = expectedTop(before.masthead, before.vh, before.rem);
+  console.log(
+    `  sticky ${label}: ${before.stickyTag} declared top ${before.declaredTop}px, expected ${expectedName} = ${expected.toFixed(1)}px`,
+  );
+  if (Math.abs(before.declaredTop - expected) > STICKY_TOLERANCE_PX) {
+    failedGroups.push(
+      `sticky top drifts: ${label} declares top ${before.declaredTop}px, expected ${expectedName} = ${expected.toFixed(1)} ± ${STICKY_TOLERANCE_PX}`,
+    );
+  }
+
+  const stickAt = Number.isFinite(before.declaredTop) ? before.declaredTop : expected;
+  await scrollTo(page, before.rowTop + before.plateH * 0.5 - stickAt, 900);
+  const after = await page.evaluate((sel) => {
+    const row = document.querySelector(sel)!;
+    const sticky = [row, ...row.querySelectorAll("*")].find((el) => getComputedStyle(el).position === "sticky")!;
+    const clipping: string[] = [];
+    for (let n = sticky.parentElement; n && n !== document.documentElement; n = n.parentElement) {
+      const cs = getComputedStyle(n);
+      if (!["visible", "clip"].includes(cs.overflowX) || !["visible", "clip"].includes(cs.overflowY)) {
+        clipping.push(`${n.tagName.toLowerCase()}${n.id ? `#${n.id}` : ""} (overflow ${cs.overflowX} ${cs.overflowY})`);
+      }
+    }
+    return {
+      top: sticky.getBoundingClientRect().top,
+      rowTop: row.getBoundingClientRect().top,
+      clipping,
+    };
+  }, rowSelector);
+  const drift = after.top - expected;
+  console.log(
+    `  sticky ${label} at 50 % of its plate: text top ${after.top.toFixed(1)}px (row top ${after.rowTop.toFixed(1)}px), drift ${drift.toFixed(1)}px`,
+  );
+  if (Math.abs(drift) > STICKY_TOLERANCE_PX) {
+    failedGroups.push(
+      `sticky top drifts: ${label} text top ${after.top.toFixed(1)} vs ${expectedName} ${expected.toFixed(1)} ± ${STICKY_TOLERANCE_PX}` +
+        (after.clipping.length ? ` (scroll container above it: ${after.clipping.join(", ")})` : ""),
+    );
+  }
+  await shot(page, `sticky-${label.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+}
+
+async function stickyGroups(browser: Browser) {
+  await group("C+ sticky — desktop", async () => {
+    {
+      const { context, page } = await openPage(browser, ROUTES.home, DESKTOP);
+      await stickyAt(page, "#why-us article", "why-us row 1", (m, vh) => m + 0.2 * vh, "masthead + 20vh");
+      await context.close();
+    }
+    {
+      const { context, page } = await openPage(browser, ROUTES.kourtaliotis, DESKTOP);
+      await stickyAt(page, '[data-band="place"]', "place break 1", (m, _vh, rem) => m + 2.5 * rem, "masthead + 2.5rem");
+      await context.close();
+    }
+  });
+}
+
+async function fitzroyTouchGroups(browser: Browser) {
+  for (const viewport of [
+    { width: 1180, height: 820 },
+    { width: 390, height: 844 },
+  ]) {
+    const tag = `hasTouch ${viewport.width}`;
+    await group(`C+ Fitzroy index — ${tag}`, async () => {
+      const context = await browser.newContext({
+        viewport,
+        deviceScaleFactor: 1,
+        hasTouch: true,
+        isMobile: viewport.width < 768,
+      });
+      try {
+        const page = await context.newPage();
+        page.on("pageerror", (e) => allErrors.push(`[${ROUTES.home} ${tag}] ${String(e)}`));
+        await page.goto(`${BASE}${ROUTES.home}`, { waitUntil: "domcontentloaded", timeout: 45_000 });
+        await settleLoad(page);
+        const r = await page.evaluate((tol) => {
+          const fine = matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)").matches;
+          const ul = document.querySelector("ul[data-journeys]");
+          if (!ul) return { fine, found: false } as const;
+          const cs = getComputedStyle(ul);
+          const tracks = [...cs.gridTemplateColumns.matchAll(/(-?\d+(?:\.\d+)?)px/g)].map((m) => parseFloat(m[1]));
+          const gap = parseFloat(cs.columnGap) || 0;
+          const box = ul.getBoundingClientRect();
+          const x0 = box.left + parseFloat(cs.borderLeftWidth) + parseFloat(cs.paddingLeft);
+          const start = (k: number) => x0 + tracks.slice(0, k).reduce((a, b) => a + b, 0) + k * gap;
+          const end = (k: number) => start(k) + tracks[k];
+          const cols = tracks.length - 2;
+          const fullStart = start(0);
+          const fullEnd = end(tracks.length - 1);
+          const col = (j: number) => ({ start: start(j), end: end(j) });
+          const expected = (n: number): [number, number, string] => {
+            const r = n % 3;
+            if (cols >= 12) {
+              if (r === 1) return [fullStart, col(5).end, "full-start / col 6"];
+              if (r === 2) return [col(6).start, fullEnd, "col 6 / full-end"];
+              return [fullStart, col(8).end, "full-start / col 9"];
+            }
+            if (cols >= 8) {
+              if (r === 1) return [fullStart, col(5).end, "full-start / col 6"];
+              if (r === 2) return [col(3).start, fullEnd, "col 3 / full-end"];
+              return [fullStart, col(6).end, "full-start / col 7"];
+            }
+            if (r === 1) return [fullStart, fullEnd, "full-start / full-end"];
+            if (r === 2) return [col(2).start, fullEnd, "col 2 / full-end"];
+            return [fullStart, col(3).end, "full-start / col 4"];
+          };
+          const entries = [...ul.children].filter((c) => c.tagName === "LI");
+          const problems: string[] = [];
+          entries.forEach((li, i) => {
+            const n = i + 1;
+            const lb = li.getBoundingClientRect();
+            if (lb.width < box.width - tol) problems.push(`entry width < ul width: entry ${n} is ${lb.width.toFixed(1)} px, ul ${box.width.toFixed(1)} px`);
+            const imgs = li.querySelectorAll("img").length;
+            if (imgs !== 1) problems.push(`entry ${n} has ${imgs} img (one per journey expected)`);
+            const plate = [...li.children].find((c) => c.querySelector("img")) ?? null;
+            if (!plate) {
+              problems.push(`entry ${n} has no plate`);
+              return;
+            }
+            const pb = plate.getBoundingClientRect();
+            const [left, right, area] = expected(n);
+            if (Math.abs(pb.left - left) > tol || Math.abs(pb.right - right) > tol) {
+              problems.push(
+                `plate edge ≠ placement: entry ${n} plate ${pb.left.toFixed(1)}–${pb.right.toFixed(1)}, ${area} is ${left.toFixed(1)}–${right.toFixed(1)}`,
+              );
+            }
+          });
+          return {
+            fine,
+            found: true,
+            cols,
+            entries: entries.length,
+            problems,
+            scrollWidth: document.documentElement.scrollWidth,
+            vw: Math.min(window.innerWidth, document.documentElement.clientWidth),
+          } as const;
+        }, EDGE_TOLERANCE_PX);
+
+        if (r.fine) failedGroups.push(`Fitzroy touch layout (${tag}): instrument, the context still matches the fine-pointer query`);
+        if (!r.found) {
+          failedGroups.push(`Fitzroy touch layout (${tag}): ul[data-journeys] missing`);
+          return;
+        }
+        console.log(`  ${tag}: ${r.entries} entries on a ${r.cols}-column grid, ${r.problems.length} problem(s), scrollWidth ${r.scrollWidth} vs ${r.vw}`);
+        if (r.entries === 0) failedGroups.push(`Fitzroy touch layout (${tag}): no entries`);
+        for (const p of r.problems) {
+          const kind = p.match(/^([^:]+): (.*)$/);
+          failedGroups.push(kind ? `Fitzroy touch layout: ${kind[1]} (${tag}): ${kind[2]}` : `Fitzroy touch layout (${tag}): ${p}`);
+        }
+        if (r.scrollWidth > r.vw + 1) failedGroups.push(`Fitzroy touch layout (${tag}): horizontal overflow, scrollWidth ${r.scrollWidth} vs ${r.vw}`);
+        await page.evaluate(() => document.querySelector("ul[data-journeys]")?.scrollIntoView({ block: "start" }));
+        await page.waitForTimeout(600);
+        await shot(page, `fitzroy-touch-${viewport.width}`);
+      } finally {
+        await context.close();
+      }
+    });
+  }
+}
+
+async function reducedMenuPreviewGroup(browser: Browser) {
+  await group("C+ menu preview — desktop-reduced", async () => {
+    const { context, page } = await openPage(browser, ROUTES.home, DESKTOP, { reducedMotion: "reduce" });
+    try {
+      const toggle = page.locator('button[aria-controls="overlay-menu"]');
+      if (!(await toggle.count())) {
+        failedGroups.push("reduced-motion menu preview: menu trigger missing");
+        return;
+      }
+      await toggle.first().click();
+      await page.locator('[role="dialog"]').first().waitFor({ state: "visible", timeout: 5_000 });
+      await page.waitForTimeout(300);
+      const item = page.locator('[role="dialog"] nav a').nth(1);
+      if (!(await item.count())) {
+        failedGroups.push("reduced-motion menu preview: menu item 2 missing");
+        return;
+      }
+      await item.hover();
+      await page.waitForTimeout(200);
+      const previews = await page.evaluate(() => {
+        const dialog = document.querySelector('[role="dialog"]');
+        if (!dialog) return [];
+        return [...dialog.querySelectorAll("img")]
+          .filter((img) => !img.closest("nav"))
+          .map((img) => {
+            const chain: Element[] = [];
+            for (let n: Element | null = img; n && n !== dialog.parentElement; n = n.parentElement) chain.push(n);
+            let opacity = 1;
+            const transforms: string[] = [];
+            for (const el of chain) {
+              const cs = getComputedStyle(el);
+              opacity *= parseFloat(cs.opacity);
+              if (cs.transform !== "none" || (cs.scale && cs.scale !== "none") || (cs.translate && cs.translate !== "none")) {
+                transforms.push(`<${el.tagName}${el.className ? `.${String(el.className).split(" ")[0]}` : ""}> ${cs.transform !== "none" ? cs.transform : `scale ${cs.scale} translate ${cs.translate}`}`);
+              }
+            }
+            const box = img.getBoundingClientRect();
+            return { opacity, transforms, visible: opacity > 0.01 && box.width > 0 && box.height > 0 };
+          });
+      });
+      const visible = previews.filter((p) => p.visible);
+      console.log(`  ${previews.length} preview img(s) in the dialog, ${visible.length} visible 200 ms after hovering item 2`);
+      if (!visible.length) failedGroups.push("reduced-motion menu preview: no visible preview 200 ms after hovering item 2");
+      for (const p of visible) {
+        if (p.transforms.length) failedGroups.push(`reduced-motion menu preview: preview transform ≠ none: ${p.transforms.join("; ")}`);
+        if (p.opacity < 0.99) failedGroups.push(`reduced-motion menu preview: preview opacity ≠ 1 (${p.opacity.toFixed(2)})`);
+      }
+      await shot(page, "menu-preview-desktop-reduced");
+    } finally {
+      await context.close();
+    }
+  });
+}
+
 async function run() {
   await fs.mkdir(OUT, { recursive: true });
+  console.log(cplusS9Line());
   await preflight(BASE, OUT);
   const browser = await chromium.launch();
+
+  if (cplusS9()) {
+    console.log("\nC+ groups");
+    await stickyGroups(browser);
+    await fitzroyTouchGroups(browser);
+    await reducedMenuPreviewGroup(browser);
+  }
 
   /* ------------------------------------------------------ home: desktop */
   console.log("\nhome — desktop");

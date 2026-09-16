@@ -1,0 +1,183 @@
+/* ==========================================================================
+   LAYER E: THE EDITION TOKENS (C+ SPEC §B.1–§B.4)
+
+   The only CSS whose values differ between plain C and C+. Every other
+   stylesheet and component reads these through Layer S (globals.css) or by
+   name; nothing else declares an --ed-* value (preflight P12).
+
+   Values: the C+ column of §B.2–§B.4, copied unchanged from the frozen
+   draft's Layer E block (src/app/design-3/c-plus/c-plus.module.css `.root`,
+   §0.1), including the two mottle strengths amended in the draft review
+   (.hunt/cplus/build/build-report.md, "Spec amendments proposed": lighter
+   only, so every §F.2 worst-speckle ratio improves). The one difference from
+   the draft block is --ed-display-family, which takes the §B.3 value: the
+   draft read the pre-S5 `--font-serif` as a fallback, and no loader sets that
+   variable any more (Fraunces is `--font-fraunces`, src/app/fonts.ts).
+
+   Colours are opaque hex literals by construction: a computed color-mix()
+   serialises as color(srgb …), which the menu-audit parser misreads (§B.1).
+
+   Plain-C revert (§B.9): replace the values below with the "Plain C" column
+   of §B.2–§B.4, and flip the switches in src/lib/edition.ts.
+   ========================================================================== */
+
+:root {
+  /* §B.2 colour */
+  --ed-paper: #f6f0e4;
+  --ed-bone: #ece3d2;
+  --ed-ink: #28231f;
+  --ed-ink-soft: #5c524a;
+  --ed-accent-text: #8f3c1e;
+  --ed-accent: #b4532e;
+  --ed-label: #58623a;
+  --ed-band: #58623a;
+  --ed-on-band: #f6f0e4;
+  --ed-band-dot: #afb098;
+  --ed-stone: #b3a792;
+  --ed-hairline: #d1cbc1;
+  --ed-hairline-bone: #c9c0b2;
+  --ed-rule: #7a746a;
+  --ed-hairline-night: #403b35;
+  --ed-rule-night: #8c877f;
+  --ed-plate-keyline: #ddd7cc;
+  --ed-cta-bg: #d1a043;
+  --ed-cta-fg: var(--ed-ink);
+  --ed-cta-bg-hover: #c28f33;
+  --ed-cta-fg-hover: var(--ed-ink);
+  --ed-cta-edge: #8f6722;
+  --ed-focus: var(--ed-accent-text);
+  --ed-focus-night: var(--ed-paper);
+  --ed-selection-bg: var(--ed-accent-text);
+  --ed-selection-fg: var(--ed-paper);
+  --ed-night: #221d19;
+  --ed-night-raised: #2e2823;
+  --ed-on-night: var(--ed-paper);
+  --ed-on-night-soft: #bbb5ab;
+  --ed-scrim: var(--ed-night);
+  --ed-chart-grid: #dcd4c4;
+  --ed-chart-route: var(--ed-accent);
+  --ed-chart-pin: var(--ed-ink);
+  --ed-chart-grid-night: #403b35;
+  --ed-chart-route-night: var(--ed-accent);
+  --ed-chart-pin-night: var(--ed-paper);
+  --ed-chart-stop-bg-night: var(--ed-night);
+  --ed-chart-stop-edge-night: var(--ed-stone);
+  --ed-chart-stop-fg-night: var(--ed-on-night-soft);
+  --ed-chart-stop-lit-edge-night: var(--ed-accent);
+  --ed-chart-stop-lit-fg-night: var(--ed-paper);
+  --ed-chart-stop-active-bg-night: var(--ed-paper);
+  --ed-chart-stop-active-fg-night: var(--ed-night);
+
+  /* §B.3 type. R1: the emphasis word is set roman in the display family, so
+     no italic file is ever requested. R2 (§K.4) changes exactly these two
+     lines to `italic` and
+     `var(--font-fraunces-italic), var(--font-fraunces), Georgia, serif`. */
+  --ed-display-family: var(--font-fraunces), Georgia, serif;
+  --ed-em-family: var(--ed-display-family);
+  --ed-em-style: normal;
+  --ed-text-family: var(--font-inter), system-ui, sans-serif;
+  --ed-display-weight: 340;
+  --ed-display-weight-small: 420;
+  --ed-display-opsz: "opsz" 144;
+  --ed-cover-fit: 1;
+  --ed-label-case: uppercase;
+  --ed-label-tracking: 0.1em;
+  --ed-label-weight: 540;
+  --ed-label-size: 0.8rem;
+  --ed-label-stretch: 100%;
+  --ed-t-cover: calc(clamp(4.25rem, 18vw, 8.5rem) * var(--ed-cover-fit));
+  --ed-t-statement: clamp(2.625rem, 5.4vw, 5.25rem);
+  --ed-t-section: clamp(2.0625rem, 3.9vw, 3.75rem);
+  --ed-t-pullquote: clamp(1.75rem, 2.97vw, 3rem);
+  --ed-t-title: clamp(1.5rem, 2.22vw, 2.25rem);
+  --ed-t-deck: clamp(1.1875rem, 1.6vw, 1.5rem);
+  --ed-t-caption-place: clamp(0.9375rem, 1.11vw, 1rem);
+  --ed-caption-place-style: normal;
+  --ed-dropcap-color: var(--ed-accent);
+  --ed-dropcap-lines: 3;
+
+  /* §B.4 texture, grade-in-CSS, motion, grid, CTA shape */
+  --ed-paper-grain-opacity: 0.07;
+  --ed-paper-mottle-opacity: 0.02;
+  --ed-bone-grain-opacity: 0.06;
+  --ed-bone-mottle-opacity: 0.015;
+  --ed-paper-vignette: radial-gradient(130% 110% at 50% 45%, transparent 58%, rgb(94 72 44 / 0.06) 100%);
+  --ed-night-grain-opacity: 0.045;
+  --ed-night-density: radial-gradient(120% 90% at 50% 40%, transparent 55%, color-mix(in srgb, #000 18%, transparent) 100%);
+  --ed-film-grain-display: none;
+  --ed-plate-grade: none;
+  --ed-plate-print: none;
+  --ed-plate-print-blend: normal;
+  --ed-ease-reveal: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ed-ease-lay: cubic-bezier(0.65, 0, 0.35, 1);
+  --ed-kenburns-duration: 22s;
+  --ed-kenburns-scale: 1.045;
+  --ed-margin: clamp(1.25rem, 5vw, 5rem);
+  --ed-gutter: clamp(1rem, 1.667vw, 1.5rem);
+  --ed-col-max: 6rem;
+  --ed-masthead-h: 3.5rem;
+  --ed-cta-radius: 999px;
+  --ed-cta-weight: 560;
+  --ed-cta-tracking: 0.01em;
+  --ed-cta-min-h: 3rem;
+  --ed-cta-pad: 1.625rem;
+  --ed-radius-media: 0;
+  --ed-hair-w: 1px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --ed-t-cover: calc(clamp(6.5rem, 10.5vw, 10.5rem) * var(--ed-cover-fit));
+    --ed-masthead-h: 4rem;
+  }
+}
+
+/* Decorative hairlines only; control rules stay 1 px (§C.7). */
+@media (min-resolution: 2dppx) {
+  :root {
+    --ed-hair-w: 0.5px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Grid, rhythm, cover-motion and hero-band values (§D.1, §D.6, §G.1 row 1).
+   Not part of the draft's Layer E block above (the draft declares its own
+   in its blocks); the same in both editions, and declared here because every
+   --ed-* value lives in this file (preflight P12).
+   -------------------------------------------------------------------------- */
+:root {
+  --ed-cols: 4;
+  --ed-space-section: clamp(5rem, 10vw, 9rem);
+  --ed-space-block: clamp(3rem, 5vw, 4.5rem);
+  --ed-space-pair: clamp(1.5rem, 2.2vw, 2rem);
+
+  /* Ken Burns push origin on the cover plate (read by `ken-burns-cover`). */
+  --ed-kb-origin: 50% 30%;
+
+  /* Night share of the item heroes' top legibility band (`scrim-top`,
+     §D.6 item 1). 55% in the spec; the §B.2 token-level fallback, 70%, is
+     taken (S9): at 55% the transparent masthead's "Book Now" measured 4.00
+     over the Kourtaliotis hero (text-contrast, 1440 x 900, 4.5 floor). */
+  --ed-scrim-top: 70%;
+
+  /* Container maths for absolutely positioned stages (§D.1). `cqi` is left
+     unresolved in a custom property and resolves where the value is used,
+     against that element's nearest `container-type: inline-size` ancestor,
+     so a section only has to declare the container. */
+  --ed-col: min(var(--ed-col-max), (100cqi - 2 * var(--ed-margin) - (var(--ed-cols) - 1) * var(--ed-gutter)) / var(--ed-cols));
+  --ed-content-w: calc(var(--ed-cols) * var(--ed-col) + (var(--ed-cols) - 1) * var(--ed-gutter));
+  --ed-edge: calc((100cqi - var(--ed-content-w)) / 2);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --ed-cols: 8;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --ed-cols: 12;
+    --ed-kb-origin: 38% 20%;
+  }
+}

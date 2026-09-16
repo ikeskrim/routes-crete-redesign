@@ -56,15 +56,29 @@
  * where display lines overlap, a neighbouring line's glyphs are other text, not
  * the backdrop this run is read against.
  *
- * Not at this stage (C+ S9, §I.3 — they need C+ markup that the pre-rollout
- * site does not have): measuring `[data-on-photo]` runs and the >= 1
- * `[data-on-photo]` assertion on `/`, the Ken Burns end-frame seek, and the 4.5
- * floor below 24 px.
+ * New C+ assertions (§B.2, §I.1, §I.3; on at S9 through qa/cplus-stage.mts;
+ * they need C+ markup that the pre-rollout site does not have):
+ *  - Per route, the measured groups are the first `h1` (on `/` the cover,
+ *    which spans paper and plate), the home subcopy (optional), and every
+ *    `[data-on-photo]` element outside them: the ItemHero eyebrow and
+ *    subtitle, and the transparent masthead's wordmark, trigger label and
+ *    "Book Now". A run inside `[data-on-photo]` is an on-photo run; the
+ *    others are measured against whatever is behind them (paper, for the
+ *    cover's first line), with the same instrument.
+ *  - Floors per run: 3.0 for runs of 24 px and more, 4.5 below 24 px.
+ *  - Non-vacuity: at least one on-photo run on each route (`/`, Kourtaliotis
+ *    and the transfer detail), printed as "0 on-photo runs on <route>".
+ *  - Two frames: every CSS animation under `[data-hero]` (the Ken Burns push)
+ *    is paused and sought to t = 0 for the first frame, then to its end
+ *    (`currentTime = effect.getComputedTiming().endTime`) for the end frame;
+ *    `animation-play-state` can only pause, not seek. Each failure names its
+ *    frame: "first frame: …" or "end frame: …".
  *
  * WCAG: large text needs 3:1 (AA) and 4.5:1 (AAA). These are display sizes, so
- * the floor enforced here is 3:1 at the worst pixel.
+ * the floor enforced here is 3:1 at the worst pixel (before S9).
  */
 import { chromium, type Page } from "playwright";
+import { cplusS9, cplusS9Line } from "./cplus-stage.mts";
 import { preflight } from "./preflight.mts";
 
 const BASE = process.env.QA_BASE_URL ?? "http://localhost:3009";
@@ -113,11 +127,24 @@ interface Box {
   height: number;
 }
 
+/** C+ S9 (§B.2): runs under 24 px must clear 4.5:1 at their worst pixel. */
+const SMALL_FLOOR = 4.5;
+const LARGE_TEXT_PX = 24;
+
+/** C+ S9: the routes whose text sits on photographs, and their groups. */
+const S9_ROUTES: { route: string; label: string; subcopy?: boolean }[] = [
+  { route: "/", label: "home", subcopy: true },
+  { route: "/experiences/kourtaliotis-temple-of-nature", label: "experience hero" },
+  { route: "/transfers/private-transfers-rethymno", label: "transfer hero" },
+];
+
 interface Run {
   /** Index into the page's `window.__textContrast.nodes`. */
   id: number;
   excerpt: string;
   fontSize: string;
+  /** The run sits inside a `[data-on-photo]` element. */
+  onPhoto: boolean;
   color: string;
   /** Product of every ancestor's computed opacity. */
   opacity: number;
@@ -270,6 +297,7 @@ function scan(page: Page, selector: string): Promise<Group | null> {
           id: number;
           excerpt: string;
           fontSize: string;
+          onPhoto: boolean;
           color: string;
           opacity: number;
           raw: Box[];
@@ -305,6 +333,7 @@ function scan(page: Page, selector: string): Promise<Group | null> {
           id: store.nodes.push(node) - 1,
           excerpt,
           fontSize: style.fontSize,
+          onPhoto: parent.closest("[data-on-photo]") !== null,
           color: style.webkitTextFillColor || style.color,
           opacity,
           raw: where.raw,
@@ -540,11 +569,170 @@ const fail = (line: string) => {
   console.log(line);
 };
 
+/**
+ * Pause every animation under `[data-hero]` and seek it: to t = 0 (the first
+ * frame) or to its end (`effect.getComputedTiming().endTime`; one millisecond
+ * earlier when the animation does not fill forwards, so the end keyframe is
+ * still applied). Infinite animations are left alone.
+ */
+function seekHero(page: Page, to: "first" | "end"): Promise<number[]> {
+  return page.evaluate((to) => {
+    const ends: number[] = [];
+    for (const animation of document.getAnimations()) {
+      const target = (animation.effect as KeyframeEffect | null)?.target as Element | null | undefined;
+      if (!target?.closest?.("[data-hero]")) continue;
+      const timing = animation.effect?.getComputedTiming();
+      const end = Number(timing?.endTime ?? NaN);
+      if (!Number.isFinite(end)) continue;
+      const fillsForward = timing?.fill === "forwards" || timing?.fill === "both";
+      animation.pause();
+      animation.currentTime = to === "first" ? 0 : fillsForward ? end : Math.max(0, end - 1);
+      ends.push(end);
+    }
+    return ends;
+  }, to);
+}
+
+interface S9Group {
+  key: string;
+  label: string;
+  optional: boolean;
+}
+
+/** Mark the groups measured on a C+ route: the first h1, the home subcopy,
+    and the topmost `[data-on-photo]` elements outside them. */
+function markGroups(page: Page, subcopy: boolean): Promise<S9Group[]> {
+  return page.evaluate((subcopy) => {
+    const groups: { key: string; label: string; optional: boolean }[] = [];
+    const taken: Element[] = [];
+    const mark = (el: Element, key: string, label: string, optional: boolean) => {
+      el.setAttribute("data-tc-group", key);
+      taken.push(el);
+      groups.push({ key, label, optional });
+    };
+    const h1 = document.querySelector("h1");
+    if (h1) mark(h1, "h1", "headline", false);
+    if (subcopy) {
+      const p = document.querySelector("h1 ~ * p, h1 + p");
+      if (p) mark(p, "subcopy", "subcopy", true);
+    }
+    let i = 0;
+    for (const el of document.querySelectorAll("[data-on-photo]")) {
+      if (taken.some((t) => t.contains(el) || el.contains(t))) continue;
+      const where = el.closest("header") ? "masthead" : el.closest("[data-hero]") ? "hero" : "page";
+      const text = (el.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 24);
+      mark(el, `photo-${i++}`, `on-photo ${where} <${el.tagName.toLowerCase()}> "${text}"`, true);
+    }
+    return groups;
+  }, subcopy);
+}
+
+async function runS9(browser: import("playwright").Browser): Promise<void> {
+  for (const target of S9_ROUTES) {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await context.newPage();
+    try {
+      await page.goto(`${BASE}${target.route}`, { waitUntil: "domcontentloaded", timeout: 45_000 });
+      await page.evaluate(async () => {
+        await document.fonts.ready;
+      });
+      await page.waitForTimeout(2200);
+
+      console.log(`\n${target.route}`);
+      const marked = await markGroups(page, !!target.subcopy);
+      const groups: { g: S9Group; group: Group }[] = [];
+      for (const g of marked) {
+        const where = `${target.route}  ${target.label} ${g.label}`;
+        const group = await scan(page, `[data-tc-group="${g.key}"]`);
+        if (!group || group.width < 1 || group.height < 1) {
+          if (g.optional) console.log(`  skip  ${where}: not rendered at 1440 x 900`);
+          else fail(`  MISS  ${where}: not found or no box`);
+          continue;
+        }
+        console.log(
+          `  ${where} <${group.tag}>: ${group.runs.length} painted run(s), ${group.runs.filter((r) => r.onPhoto).length} on the photograph` +
+            `; not painted: ${group.hiddenByVisibility} visibility-hidden, ${group.clippedAway} clipped or not rendered`,
+        );
+        for (const excerpt of group.offscreen) {
+          fail(`  FAIL  run ${JSON.stringify(excerpt)} lies outside the 1440 x 900 viewport, so it cannot be measured`);
+        }
+        if (!group.runs.length) {
+          if (!group.offscreen.length && !g.optional) {
+            fail(`  MISS  ${where}: the element is on the page but none of its text is painted, so nothing was measured`);
+          }
+          continue;
+        }
+        groups.push({ g, group });
+      }
+      if (!groups.length) fail(`  MISS  ${target.route}: no h1 was measured`);
+
+      const onPhotoRuns = groups.reduce((n, { group }) => n + group.runs.filter((r) => r.onPhoto).length, 0);
+      if (onPhotoRuns === 0) fail(`  FAIL  0 on-photo runs on ${target.route}`);
+      else console.log(`  ok    ${onPhotoRuns} on-photo run(s) on ${target.route}`);
+
+      for (const frame of ["first", "end"] as const) {
+        const ends = await seekHero(page, frame);
+        await page.waitForTimeout(150);
+        console.log(
+          ends.length
+            ? `  -- ${frame} frame: ${ends.length} animation(s) under [data-hero] sought to ${frame === "first" ? "t = 0" : `the end (t = ${ends.map((e) => Math.round(e)).join(", ")} ms)`}`
+            : `  -- ${frame} frame: note, no finite animation under [data-hero] to seek; the frame is the page as painted`,
+        );
+        for (const { g, group } of groups) {
+          const { stats, moved } = await measure(page, group);
+          for (const excerpt of moved) {
+            fail(
+              `  FAIL  ${frame} frame: hiding run ${JSON.stringify(excerpt)} moved a run by more than ${MOVE_TOLERANCE_PX} px ` +
+                `(or it left the page): the backdrop is not the one the text sits on`,
+            );
+          }
+          group.runs.forEach((run, i) => {
+            const s = stats[i];
+            const px = parseFloat(run.fontSize);
+            const floor = px >= LARGE_TEXT_PX ? FLOOR : SMALL_FLOOR;
+            const bright = s.worst >= floor;
+            const ok = bright && s.painted > 0;
+            const name = `${target.label} ${g.label}, run ${i + 1}`;
+            console.log(
+              `  ${ok ? "ok  " : "FAIL"}  ${frame.padEnd(5)} ${g.key.padEnd(8)} run ${String(i + 1).padEnd(2)} ` +
+                `${JSON.stringify(run.excerpt).padEnd(30)} ${run.fontSize.padStart(8)} ${run.onPhoto ? "on photo" : "        "}  ` +
+                `mean ${s.mean.toFixed(2)}:1   p05 ${s.p05.toFixed(2)}:1   worst pixel ${s.worst.toFixed(2)}:1   floor ${floor.toFixed(1)}` +
+                (s.alpha < 0.999 ? `   (alpha ${s.alpha.toFixed(2)}, composited)` : ""),
+            );
+            if (ok) return;
+            failures++;
+            if (!bright) {
+              console.log(
+                px >= LARGE_TEXT_PX
+                  ? `        -> ${frame} frame: worst pixel < ${FLOOR.toFixed(1)} on ${target.route} (${name})`
+                  : `        -> ${frame} frame: run < ${SMALL_FLOOR.toFixed(1)} (${Number(px.toFixed(2))} px), worst pixel ${s.worst.toFixed(2)} on ${target.route} (${name})`,
+              );
+            }
+            if (s.painted === 0) {
+              console.log(
+                `        -> ${frame} frame: hiding the run changed none of its ${s.pixels} px by ${PAINT_DELTA}+ levels: ` +
+                  `its box is not where its glyphs are painted`,
+              );
+            }
+          });
+        }
+      }
+    } catch (error) {
+      fail(`\n  FAIL  ${target.route}: instrument error — ${(error as Error).message.split("\n")[0]}`);
+    } finally {
+      await context.close();
+    }
+  }
+}
+
+const S9 = cplusS9();
+console.log(cplusS9Line());
 await preflight(BASE, process.cwd() + "/qa");
 const browser = await chromium.launch();
 
 try {
-  for (const target of TARGETS) {
+  if (S9) await runS9(browser);
+  else for (const target of TARGETS) {
     const where = `${target.route}  ${target.label}`;
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     const page = await context.newPage();
@@ -637,5 +825,8 @@ if (failures > 0) {
   process.exit(1);
 }
 console.log(
-  `TEXT CONTRAST OK - every painted text run of every headline over a photograph clears ${FLOOR}:1 at its worst pixel`,
+  S9
+    ? `TEXT CONTRAST OK - every painted text run over a photograph clears ${FLOOR}:1 (${LARGE_TEXT_PX} px and up) ` +
+        `or ${SMALL_FLOOR}:1 (below) at its worst pixel, in the first and the Ken Burns end frame`
+    : `TEXT CONTRAST OK - every painted text run of every headline over a photograph clears ${FLOOR}:1 at its worst pixel`,
 );

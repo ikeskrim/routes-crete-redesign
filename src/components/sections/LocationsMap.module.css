@@ -1,0 +1,80 @@
+/* ==========================================================================
+   THE ISLAND CHART (C+ SPEC §D.4 map block, §B.2 --ed-chart-*).
+
+   A clean bone inset: no texture layer under the chart, whose pins are
+   controls. SVG colours are edition tokens set here, never literals in the
+   markup (preflight P9). Every value is read from Layer E; nothing here
+   declares an --ed-* value (P12).
+   ========================================================================== */
+
+/* The chart is as wide, relative to its height, as the ground its places
+   cover (`--map-aspect`, set inline from the coordinates at server render,
+   2.22 for today's places), so both axes share one scale and no empty grid
+   is added above or below the data. `isolation` keeps the pins' own stacking
+   (hit boxes under dots and names, the preview over both) inside the chart. */
+.chart {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  aspect-ratio: var(--map-aspect, 2 / 1);
+  overflow: clip;
+  border-radius: var(--ed-radius-media);
+  background-color: var(--ed-bone);
+}
+
+/* grid hairlines: ink 8 % into bone (1.16, decorative) */
+.grid {
+  stroke: var(--ed-chart-grid);
+}
+
+/* the route: terracotta dashes (3.91 on bone) */
+.route {
+  stroke: var(--ed-chart-route);
+}
+
+/* arrivals: a quieter connector from each airport to the route */
+.arrival {
+  stroke: var(--ed-hairline-bone);
+}
+
+/* ---- the preview: a framed plate on columns 8–12 of the chart (≥1024) ----
+   The chart spans the 12-column content width W, so five columns and four
+   gutters are 5W/12 − 7g/12, flush with the chart's right edge. */
+.previewSlot {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .previewSlot {
+    position: absolute;
+    z-index: 20;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    display: block;
+    width: calc((100% * 5 - var(--ed-gutter) * 7) / 12);
+    pointer-events: none;
+  }
+}
+
+.preview {
+  margin: 0;
+  padding-bottom: 0.75rem;
+  background-color: var(--ed-bone);
+}
+
+.previewFrame {
+  position: relative;
+  overflow: clip;
+  aspect-ratio: 3 / 2;
+  background-color: var(--ed-bone);
+}
+
+/* the 1 px keyline where the plate meets the pale ground (§F.1) */
+.previewFrame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px var(--ed-plate-keyline);
+}

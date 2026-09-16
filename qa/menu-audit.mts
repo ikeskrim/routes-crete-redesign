@@ -49,6 +49,11 @@ const BASE = process.env.QA_BASE_URL ?? "http://localhost:3009";
 /** A page whose hero is dark, and one whose top is light. */
 const DARK_HERO = "/";
 const LIGHT_PAGE = "/experiences";
+/** C+ (S9): "/" now opens on the paper cover (tone light), so the tones audit
+    also opens the menu over a photographic hero (tone dark), where the bar's
+    type turns from paper to ink as the panel opens (SPEC §0.4 C4). Additive:
+    the two routes above keep every check they had. */
+const PHOTO_HERO = "/experiences/kourtaliotis-temple-of-nature";
 
 /** The two viewports every per-viewport audit runs at. */
 const VIEWPORTS = [
@@ -897,7 +902,7 @@ async function auditLazyPreviews(browser: Browser, [w, h]: Viewport) {
 
 async function auditTones(browser: Browser, [w, h]: Viewport) {
   console.log(`\n[tone ${w}x${h}] the bar reads correctly over the open panel (canvas-composite)`);
-  for (const route of [DARK_HERO, LIGHT_PAGE]) {
+  for (const route of [DARK_HERO, PHOTO_HERO, LIGHT_PAGE]) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h } });
     const page = await ctx.newPage();
     await page.goto(`${BASE}${route}`, { waitUntil: "domcontentloaded", timeout: 45_000 });

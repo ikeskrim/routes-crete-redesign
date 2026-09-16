@@ -1,35 +1,46 @@
-"use client";
-
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
-
+import { Button } from "@/components/ui/Button";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Plate } from "@/components/ui/Plate";
 import { SplitLines } from "@/components/ui/SplitLines";
-import { cn, pad } from "@/lib/utils";
+import { getImageSize } from "@/lib/content";
+import { cn } from "@/lib/utils";
 
-const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+import styles from "./SignatureScene.module.css";
 
 export interface Scene {
   label: string;
   text: string;
+  /** Graded operator photograph. */
   image: string;
-  blurDataURL?: string;
 }
 
 /**
- * The signature journey, told as a pinned film.
+ * Movement III, the signature journey as a photo essay (C+ SPEC §D.4, as
+ * built and paced in the frozen draft). Server component: the GSAP pinned
+ * film, ScrollTrigger, the Lenis bridge, the chapter state and the progress
+ * ticks have left the homepage (§G.2, §K.2).
  *
- * The section is tall; an inner sticky frame holds the viewport while
- * ScrollTrigger scrubs the photographs across each other and advances the
- * chapter. Text is verbatim from the experience content — the scene only
- * references paragraphs, it never restates them.
+ * Night ground with its density and grain layers under the plates; folio III,
+ * the journey's title and a rule link to its page; then five chapters in the
+ * journey's own order. Each chapter is a row as tall as its photograph, with
+ * its numeral, label and text in a column that holds still (sticky) while the
+ * photograph scrolls past, under reduced motion too. Phones: the plate full
+ * bleed, then the numeral, label and text.
  *
- * Under prefers-reduced-motion the pin is dropped entirely and the chapters
- * render as a plain stacked sequence.
+ * Pacing (chapters keep the content order): 1 a wide crop that keeps most of
+ * the midday sky out; 2 mirrored, the plate bleeding left and the text on the
+ * right; 3 as set; 4 one wide breath across the content width (the sources
+ * are 1024 px, so never stretched to full bleed) with its text under it; any
+ * portrait source (5) an inset 4:5 plate.
+ *
+ * Chapter texts are the experience's own paragraphs, referenced by index;
+ * the content's `**` emphasis markers are markup, not words, and are not
+ * printed (parity strips them too). Each is a `[data-split-source]`
+ * paragraph that rises once. The photographs are operator frames: `alt=""`,
+ * no caption, lazy, unclipped once from their bleed edge.
+ *
+ * Kept: `section#signature[data-scene]`. Retired: `data-scene-image`,
+ * `data-scene-inner` (no guard reads them).
  */
 export function SignatureScene({
   eyebrow,
@@ -44,249 +55,81 @@ export function SignatureScene({
   href: string;
   ctaLabel?: string;
 }) {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
-  const reduced = useReducedMotionSafe();
-
-  useIsomorphicLayoutEffect(() => {
-    if (reduced) return;
-    const wrapper = wrapperRef.current;
-    if (!wrapper) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    /* Lenis drives scroll from its own rAF loop, so ScrollTrigger has to be
-       told when to recompute rather than relying on native scroll events. */
-    const lenis = (
-      window as Window & { __lenis?: { on: (e: string, cb: () => void) => void; off?: (e: string, cb: () => void) => void } }
-    ).__lenis;
-    const update = () => ScrollTrigger.update();
-    lenis?.on("scroll", update);
-
-    const ctx = gsap.context(() => {
-      const layers = gsap.utils.toArray<HTMLElement>("[data-scene-image]");
-
-      // Crossfade + slow push between consecutive photographs.
-      layers.forEach((layer, i) => {
-        if (i === 0) return;
-        gsap.fromTo(
-          layer,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: wrapper,
-              start: `${(i - 0.55) / scenes.length * 100}% top`,
-              end: `${(i + 0.1) / scenes.length * 100}% top`,
-              scrub: true,
-            },
-          },
-        );
-      });
-
-      layers.forEach((layer, i) => {
-        gsap.fromTo(
-          layer.querySelector("[data-scene-inner]"),
-          { scale: 1.16 },
-          {
-            scale: 1.02,
-            ease: "none",
-            scrollTrigger: {
-              trigger: wrapper,
-              start: `${(i - 0.6) / scenes.length * 100}% top`,
-              end: `${(i + 1) / scenes.length * 100}% top`,
-              scrub: true,
-            },
-          },
-        );
-      });
-
-      // Which chapter's words are showing.
-      ScrollTrigger.create({
-        trigger: wrapper,
-        start: "top top",
-        end: "bottom bottom",
-        onUpdate: (self) => {
-          const index = Math.min(
-            scenes.length - 1,
-            Math.floor(self.progress * scenes.length + 0.15),
-          );
-          setActive((current) => (current === index ? current : index));
-        },
-      });
-    }, wrapper);
-
-    ScrollTrigger.refresh();
-
-    return () => {
-      lenis?.off?.("scroll", update);
-      ctx.revert();
-    };
-  }, [reduced, scenes.length]);
-
-  /* ---------------------------------------------- reduced-motion variant */
-  if (reduced) {
-    return (
-      <section
-        id="signature"
-        className="grain relative bg-ocean-950 py-section-lg text-sand-50"
-      >
-        <div aria-hidden className="grain-overlay" />
-        <div className="relative mx-auto max-w-[92rem] px-6 sm:px-8 lg:px-12">
-          <p className="text-eyebrow uppercase text-gold-300">{eyebrow}</p>
-          <h2 className="text-display-lg mt-6 max-w-[18ch]">{title}</h2>
-
-          <div className="mt-16 flex flex-col gap-20">
-            {scenes.map((scene, i) => (
-              <article key={i} className="grid gap-8 lg:grid-cols-2 lg:items-center">
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={scene.image}
-                    alt={scene.label}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 46vw"
-                    placeholder={scene.blurDataURL ? "blur" : undefined}
-                    blurDataURL={scene.blurDataURL}
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="text-eyebrow uppercase text-gold-300">
-                    {pad(i + 1)} — {scene.label}
-                  </p>
-                  <p className="text-body-lg mt-5 text-sand-100/85">{scene.text}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <Link
-            href={href}
-            className="mt-16 inline-flex min-h-11 items-center gap-3 text-eyebrow uppercase text-sand-50 transition-colors duration-300 hover:text-gold-300"
-          >
-            <span aria-hidden className="h-px w-10 bg-gold-400" />
-            {ctaLabel}
-          </Link>
-        </div>
-      </section>
-    );
-  }
-
-  /* ------------------------------------------------------ pinned variant */
   return (
     <section
       id="signature"
-      ref={wrapperRef}
-      data-scene
-      className="relative bg-ocean-950"
-      style={{ height: `${scenes.length * 100}svh` }}
+      data-scene=""
+      aria-labelledby="signature-heading"
+      className={cn("grain", styles.section)}
     >
-      <div className="grain sticky top-0 h-[100svh] overflow-hidden">
-        {/* Stacked photographs — the first is the base, the rest fade over it */}
-        {scenes.map((scene, i) => (
-          <div
-            key={i}
-            data-scene-image
-            className="absolute inset-0 will-change-[opacity]"
-            style={{ opacity: i === 0 ? 1 : 0 }}
+      <div aria-hidden="true" className="night-density absolute inset-0 pointer-events-none" />
+      <div aria-hidden="true" className="grain-overlay" />
+
+      <div className={cn("ed-grid", styles.head)}>
+        <Eyebrow folio="III" tone="night" className={styles.folio}>
+          {eyebrow}
+        </Eyebrow>
+        <h2 id="signature-heading" className={cn("text-section", styles.title)}>
+          {title}
+        </h2>
+        <Button variant="rule" tone="night" href={href} className={styles.read}>
+          {ctaLabel}
+        </Button>
+      </div>
+
+      {scenes.map((scene, i) => {
+        const size = getImageSize(scene.image);
+        const portrait = size ? size.height > size.width : false;
+        const sky = !portrait && i === 0;
+        const mirror = !portrait && i === 1;
+        const wide = !portrait && i === 3;
+        return (
+          <article
+            key={scene.label}
+            className={cn(
+              "ed-grid",
+              styles.chapter,
+              mirror && styles.mirror,
+              wide && styles.wide,
+            )}
           >
-            <div
-              data-scene-inner
-              className="absolute inset-[-6%] will-change-transform"
-            >
-              <Image
-                src={scene.image}
-                alt=""
-                fill
-                sizes="100vw"
-                quality={68}
-                placeholder={scene.blurDataURL ? "blur" : undefined}
-                blurDataURL={scene.blurDataURL}
-                className="object-cover"
+            <Plate
+              src={scene.image}
+              alt=""
+              ratio={portrait ? "4 / 5" : sky || wide ? undefined : "3 / 2"}
+              sizes={
+                portrait
+                  ? "(min-width: 1024px) 36vw, 100vw"
+                  : wide
+                    ? "(min-width: 1024px) 90vw, 100vw"
+                    : "(min-width: 1024px) 64vw, 100vw"
+              }
+              /* the unclip opens from the bleed edge (inset plates from the left) */
+              bleed={portrait || wide ? undefined : mirror ? "left" : "right"}
+              unclip
+              className={portrait ? styles.platePortrait : styles.plate}
+              frameClassName={sky ? styles.frameSky : wide ? styles.frameWide : undefined}
+              imgClassName={
+                portrait ? styles.cropPortrait : sky ? styles.cropSky : wide ? styles.cropWide : undefined
+              }
+            />
+            <div className={styles.text}>
+              <div className={styles.chapterHead}>
+                <span aria-hidden="true" className={cn("text-folio", styles.numeral)}>
+                  {i + 1}
+                </span>
+                <p className={cn("text-caption-place", styles.label)}>{scene.label}</p>
+              </div>
+              <SplitLines
+                as="p"
+                text={scene.text.replace(/\*\*/g, "")}
+                stagger={0.06}
+                className={cn("text-deck", styles.body)}
               />
             </div>
-          </div>
-        ))}
-
-        <div aria-hidden className="scrim absolute inset-0" />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(110%_80%_at_78%_20%,transparent_20%,rgba(4,20,29,0.62)_100%)]"
-        />
-        <div aria-hidden className="grain-overlay" />
-
-        {/* Chapter copy */}
-        <div className="relative flex h-full items-end">
-          <div className="mx-auto w-full max-w-[92rem] px-6 pb-16 sm:px-8 lg:px-12 lg:pb-24">
-            <div className="flex items-center gap-4">
-              <span aria-hidden className="h-px w-10 bg-gold-400/70" />
-              <p className="text-eyebrow uppercase text-gold-300">{eyebrow}</p>
-            </div>
-
-            <h2 className="text-display-md mt-5 max-w-[20ch] text-sand-50">
-              {title}
-            </h2>
-
-            {/* Height is reserved for the longest chapter so the progress row
-                below never moves as chapters change. */}
-            <div className="relative mt-8 min-h-[19rem] max-w-[42rem] sm:min-h-[15rem] lg:min-h-[13rem]">
-              {scenes.map((scene, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    "absolute inset-0 ease-luxe",
-                    // The outgoing chapter clears fast and the incoming one
-                    // waits for it. Fading both over the same 700ms left two
-                    // chapters legible at once, which read as a printing error
-                    // rather than a crossfade.
-                    i === active
-                      ? "opacity-100 transition-opacity delay-300 duration-500"
-                      : "pointer-events-none opacity-0 transition-opacity delay-0 duration-200",
-                  )}
-                  // No aria-hidden on the inactive chapters. Which one shows is
-                  // set by scroll alone, and a screen reader's cursor never
-                  // scrolls the hold, so hiding them left one chapter of the
-                  // story reachable. They are opacity-0 and hold nothing
-                  // focusable; SplitLines exposes each text once.
-                >
-                  <p className="text-eyebrow uppercase text-sand-200/60">
-                    {pad(i + 1)} / {pad(scenes.length)} — {scene.label}
-                  </p>
-                  <SplitLines
-                    as="p"
-                    text={scene.text}
-                    active={i === active}
-                    stagger={0.045}
-                    duration={0.95}
-                    className="text-body-lg mt-4 text-sand-50"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Chapter progress */}
-            <div className="mt-10 flex items-center gap-2">
-              {scenes.map((_, i) => (
-                <span
-                  key={i}
-                  aria-hidden
-                  className={cn(
-                    "h-px transition-[width,background-color] duration-700 ease-luxe",
-                    i === active ? "w-12 bg-gold-400" : "w-6 bg-sand-100/25",
-                  )}
-                />
-              ))}
-              <Link
-                href={href}
-                className="ml-6 inline-flex min-h-11 items-center gap-3 text-eyebrow uppercase text-sand-100/80 transition-colors duration-300 hover:text-gold-300"
-              >
-                {ctaLabel}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+          </article>
+        );
+      })}
     </section>
   );
 }

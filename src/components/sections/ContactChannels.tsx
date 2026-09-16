@@ -1,12 +1,29 @@
 import type { SiteContent } from "@/lib/types";
+import { Button } from "@/components/ui/Button";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Reveal } from "@/components/ui/Reveal";
-import { pad } from "@/lib/utils";
 
 /**
  * Every way to reach Routes Crete that actually exists.
  *
  * There is no public email address, no social account and no newsletter, so
  * none of those appear. Nothing here is a placeholder.
+ *
+ * C+ (SPEC §D.6 `/contact`): two items on the night head's editorial grid,
+ * on its third row.
+ * - The channels, a directory at `col 1 / span 7`: hairline rows, the label
+ *   as letter-spaced capitals in stone, the value in the Fraunces title cut
+ *   in paper, a 1 px paper underline on hover and focus, 44 px targets and no
+ *   numerals. "Where we are" is a row without a link.
+ * - The details card at `col 9 / span 4` (under the channels at `col 1 /
+ *   span 6` from 640 to 1023): a 1 px control rule, the gold "Message on
+ *   WhatsApp" pill (this page's one gold pill) and the brochure as a rule
+ *   link.
+ * - 1024–1279: four columns of 61–76 px left the card's body a 230 px
+ *   measure that ragged badly ("your preferred / date, the number of"), so
+ *   there the card takes `col 8 / span 5` and the channels `col 1 / span 6`
+ *   (column 7 stays air; the longest value, the address, needs about 270 px
+ *   of the 452 at 1024). From 1280 the §D.6 placement holds.
  */
 export function ContactChannels({ site }: { site: SiteContent }) {
   const { contact, brochure } = site;
@@ -40,91 +57,74 @@ export function ContactChannels({ site }: { site: SiteContent }) {
   ];
 
   return (
-    <div className="grid gap-x-10 gap-y-12 lg:grid-cols-12">
-      <div className="lg:col-span-7">
-        <ul className="border-t border-sand-100/15">
-          {channels.map((channel, i) => {
-            const inner = (
-              <span className="flex items-baseline gap-6 py-6">
-                <span className="font-display text-eyebrow tabular-nums text-gold-400">
-                  {pad(i + 1)}
-                </span>
-                <span className="flex-1">
-                  <span className="block text-eyebrow uppercase text-sand-200/55">
-                    {channel.label}
-                  </span>
-                  {/* The hover colour lives here, on the value: every text node
-                      in the row sets its own colour, so a colour on the anchor
-                      was inherited by nothing and hovering showed no change. */}
-                  <span className="mt-2 block text-heading-md text-sand-50 transition-colors duration-500 group-hover:text-gold-300">
-                    {channel.value}
-                  </span>
-                </span>
+    <>
+      <ul className="col-[content-start/content-end] mt-(--ed-space-block) border-t-(length:--ed-hair-w) border-hairline-night lg:col-[col_1/span_6] lg:row-start-3 xl:col-[col_1/span_7]">
+        {channels.map((channel, i) => {
+          const inner = (
+            <>
+              <Eyebrow as="span" tone="night">
+                {channel.label}
+              </Eyebrow>
+              {/* The underline lives on the value: it is the text a visitor
+                  reads as the link. */}
+              <span className="mt-2 block text-title text-on-night underline decoration-transparent decoration-1 underline-offset-[0.2em] transition-[text-decoration-color] duration-250 group-hover:decoration-on-night group-focus-visible:decoration-on-night">
+                {channel.value}
               </span>
-            );
+            </>
+          );
 
-            return (
-              <li key={channel.label} className="border-b border-sand-100/15">
-                <Reveal delay={i * 0.06}>
-                  {channel.href ? (
-                    <a
-                      href={channel.href}
-                      {...(channel.external
-                        ? { target: "_blank", rel: "noopener noreferrer" }
-                        : {})}
-                      className="group block"
-                    >
-                      {inner}
-                    </a>
-                  ) : (
-                    inner
-                  )}
-                </Reveal>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+          return (
+            <li
+              key={channel.label}
+              className="border-b-(length:--ed-hair-w) border-hairline-night"
+            >
+              <Reveal delay={i * 0.06}>
+                {channel.href ? (
+                  <a
+                    href={channel.href}
+                    {...(channel.external
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                    className="group flex min-h-11 flex-col justify-center py-5"
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <div className="flex min-h-11 flex-col justify-center py-5">{inner}</div>
+                )}
+              </Reveal>
+            </li>
+          );
+        })}
+      </ul>
 
-      <div className="lg:col-span-5">
+      <div className="col-[content-start/content-end] mt-(--ed-space-block) sm:col-[col_1/span_6] lg:col-[col_8/span_5] lg:row-start-3 lg:self-start xl:col-[col_9/span_4]">
         <Reveal delay={0.12}>
-          <div className="rounded-media border border-sand-100/15 p-8">
-            <p className="text-eyebrow uppercase text-sand-200/55">
-              Send us your details
-            </p>
-            <p className="text-body-sm mt-5 text-sand-200/80">
+          <div className="border border-rule-night p-6 sm:p-8">
+            <Eyebrow tone="night">Send us your details</Eyebrow>
+            <p className="mt-4 text-body text-on-night-soft">
               The excursion you selected, your preferred date, the number of
               participants, and your accommodation location.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3">
+            <div className="mt-(--ed-space-pair) flex flex-col items-start gap-2">
               {waHref && (
-                <a
-                  href={waHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center rounded-pill bg-sand-50 px-6 py-4 font-display text-eyebrow uppercase text-ocean-950 transition-colors duration-500 hover:bg-white"
-                >
+                <Button variant="gold" tone="night" href={waHref} external full>
                   Message on WhatsApp
-                </a>
+                </Button>
               )}
-              <a
-                href={brochure.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center rounded-pill border border-sand-100/30 px-6 py-4 font-display text-eyebrow uppercase text-sand-50 transition-colors duration-500 hover:border-sand-100/70"
-              >
+              <Button variant="rule" tone="night" href={brochure.href} external>
                 Download the brochure
-              </a>
+              </Button>
             </div>
 
-            <p className="text-caption mt-6 text-sand-200/55">
+            <p className="mt-6 text-caption text-on-night-soft">
               We&rsquo;ll respond promptly with availability, final details, and
               booking confirmation.
             </p>
           </div>
         </Reveal>
       </div>
-    </div>
+    </>
   );
 }

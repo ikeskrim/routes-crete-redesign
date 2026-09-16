@@ -1,17 +1,18 @@
 /**
- * The film grain that sits over the whole site.
+ * The site-wide film grain: one fixed layer, `pointer-events: none`, over the
+ * whole viewport.
  *
- * A single fixed layer, `pointer-events: none`, above the page and below the
- * overlay menu. Server-rendered with no JavaScript at all: it is a static
- * element with a CSS background, so it costs one paint and nothing else — no
- * hydration, no canvas, no rAF loop, and nothing on the main thread. That
- * matters here because the TBT ceiling is 250 ms and a grain layer is exactly
- * the sort of ambient flourish that gets implemented as an animation loop and
- * quietly eats the budget.
+ * OFF IN C+. The `film-grain` utility reads `display: var(--ed-film-grain-display)`,
+ * which the edition sets to `none` (C+ SPEC §F.1): the texture is printed into
+ * the paper and bone sections instead (`paper-stock`, `bone-stock`), so no
+ * full-viewport overlay blend layer composites over the page, the overlay
+ * menu or the lightbox. The element stays so an edition can switch it back on
+ * with one token.
  *
- * The noise is one inline `feTurbulence` SVG as a data URI — no network
- * request, and the same fractal-noise source the sectional `grain` uses, so
- * the two read as one system rather than two different films.
+ * Server-rendered with no JavaScript at all: a static element with a CSS
+ * background costs one paint and nothing else — no hydration, no canvas, no
+ * rAF loop, nothing on the main thread against the 250 ms TBT ceiling. The
+ * noise is one inline `feTurbulence` SVG as a data URI, so no network request.
  *
  * WHY NOT THE `grain` UTILITY: `@utility grain` is `position: relative` and
  * Tailwind emits it into the same layer as `.fixed`, at equal specificity,
@@ -21,9 +22,10 @@
  * fails the build on the pairing, and `film-grain` is its own utility with its
  * own `position: fixed` so this layer can never rediscover that bug.
  *
- * The z-index sits at 60: above the page, below the overlay menu at z-40's
- * stacking context and below the skip link at z-100. Grain over the menu would
- * be grain over a photograph over a scrim, which is one layer too many.
+ * Stacking, when switched on: z-index 60 puts it ABOVE the fixed masthead
+ * (z-50) and the overlay menu (z-40), and below only the skip link (z-100).
+ * It is last in <body>, so at that z-index it lies over everything a visitor
+ * sees, photographs included.
  */
 export function FilmGrain() {
   return <div aria-hidden className="film-grain" />;

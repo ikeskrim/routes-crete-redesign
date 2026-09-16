@@ -1,40 +1,91 @@
+import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
+
+import { getImageSize } from "@/lib/content";
 import type { ContentItem } from "@/lib/types";
-import { cn, pad } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+
+import { Eyebrow } from "./Eyebrow";
 import { MediaFrame } from "./Media";
 
 /**
- * The large editorial card used for experiences and transfers.
+ * The card's keyboard focus ring, in the ground's focus token (§H.4), drawn
+ * twice: on the title and on the plate frame. The link draws none of its
+ * own: on the index pages it is a full-bleed subgrid row, so its outline
+ * would lie on the viewport edges. The plate ring is there because an entry
+ * can be taller than the viewport (a 4:5 plate with the text under it, at
+ * 1023 × 768 or on a phone held landscape): the browser then scrolls the
+ * link's top into view and the title stays below the fold, so a ring on the
+ * title alone would not be seen. The pre-C+ card drew its ring on the frame.
+ */
+const FOCUS_RING =
+  "group-focus-visible:outline-2 group-focus-visible:outline-offset-3 group-focus-visible:outline-focus group-focus-visible:outline-solid";
+
+/**
+ * An experience or transfer entry (C+ SPEC §D.6, §E.1): a plate at the
+ * photograph's native aspect with its text under it (or beside it, when the
+ * composition places the two parts with `plateClassName` / `bodyClassName`,
+ * e.g. as a subgrid row). The whole entry is one link.
  *
- * Sized to look deliberate at two items and to tile cleanly at ten — the grid
- * that holds it decides the columns, the card only owns its own proportions.
+ * Text, all existing strings: the title (`title` step), the subtitle
+ * (`deck`, ink-soft) and the facts (`.text-caption`: region / duration,
+ * availability or "Duration on request"). The "Discover" label and the card
+ * numeral are gone (§C.6, §J); `index` is accepted and ignored until its call
+ * sites drop it.
+ *
+ * The category (letter-spaced capitals) prints only with `showCategory`. An
+ * eyebrow must carry information (§C.5): on an index every entry repeats the
+ * category the page already names ("EXPERIENCES" over each entry under the
+ * h1 "Experiences"), so the label is off by default, as on the homepage
+ * index, where the draft drops it for the same reason. A list whose entries
+ * mix categories (an item page's related entries) passes it.
+ *
+ * Hover and focus underline the title in burnt sienna; the keyboard focus
+ * ring (`FOCUS_RING`) is drawn on the title and on the plate frame. No image
+ * zoom, no filter, no scrim (§G.2, D2).
  */
 export function ContentCard({
   item,
-  index,
   sizes = "(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 42vw",
-  ratio = "aspect-[4/5]",
-  priority = false,
+  ratio = "native",
+  preload,
+  priority,
   className,
+  plateClassName,
+  bodyClassName,
   id,
+  showCategory = false,
 }: {
   item: ContentItem;
+  /** @deprecated The card numeral is removed (§C.6); ignored. */
   index?: number;
   sizes?: string;
+  /**
+   * `"native"` (default) sets the plate at the photograph's own aspect, read
+   * from the file; otherwise an aspect-ratio utility such as `aspect-[3/2]`.
+   */
   ratio?: string;
+  /** The LCP entry only (next/image `preload`, contract C6). */
+  preload?: boolean;
+  /** @deprecated Renamed `preload` (C+ SPEC §0.4 C6); still honoured. */
   priority?: boolean;
   className?: string;
+  /** On the plate, for compositions that place it. */
+  plateClassName?: string;
+  /** On the text block, for compositions that place it. */
+  bodyClassName?: string;
   /**
-   * Anchor target. The transfers card carries #transfers now that the
-   * standalone spotlight is gone — legacyAnchorMap sends #portfolio1 there,
-   * and a legacy link must still land on the transfers content, not nowhere.
+   * Anchor target. The transfers entry carries #transfers: legacyAnchorMap
+   * sends #portfolio1 there, and a legacy link must still land on it.
    */
   id?: string;
+  /**
+   * Print the category above the title. Off by default: only where the
+   * entries around it differ in category does the label say anything (§C.5).
+   */
+  showCategory?: boolean;
 }) {
-  /* availability carries transfers, duration carries experiences. The
-     transfer spotlight used to be the only place `availability` appeared on
-     the homepage; folding it in here is what let that section be cut without
-     losing the fact. */
+  /* availability carries transfers, duration carries experiences. */
   const facts = [
     item.facts.region,
     item.facts.duration ?? item.facts.availability ?? "Duration on request",
@@ -42,75 +93,75 @@ export function ContentCard({
     .filter(Boolean)
     .slice(0, 2);
 
+  const size = ratio === "native" ? getImageSize(item.cardImage) : null;
+  const nativeStyle = size
+    ? ({ aspectRatio: `${size.width} / ${size.height}` } satisfies CSSProperties)
+    : undefined;
+
   return (
     <Link
       id={id}
       href={item.href}
-      className={cn(
-        "group block focus-visible:outline-none",
-        // The whole card is one link; the focus ring goes on the frame.
-        "[&:focus-visible_.card-frame]:outline [&:focus-visible_.card-frame]:outline-2",
-        "[&:focus-visible_.card-frame]:outline-offset-4 [&:focus-visible_.card-frame]:outline-gold-500",
-        className,
-      )}
+      className={cn("group block focus-visible:outline-none", className)}
     >
-      <MediaFrame
-        src={item.cardImage}
-        // Decorative inside this link: the h3 below already names it, and a
-        // repeated alt would read the title twice.
-        alt=""
-        sizes={sizes}
-        ratio={ratio}
-        priority={priority}
-        className="card-frame"
-      >
-        <div aria-hidden className="scrim-soft absolute inset-0" />
+      <div className={plateClassName}>
+        <MediaFrame
+          src={item.cardImage}
+          /* Decorative inside this link: the h3 names it. */
+          alt=""
+          sizes={sizes}
+          ratio={ratio === "native" ? (size ? "" : "aspect-[4/5]") : ratio}
+          style={nativeStyle}
+          /* An outline lies outside the box: the frame's overflow-hidden keeps it. */
+          className={FOCUS_RING}
+          preload={preload ?? priority}
+          quality={68}
+        />
+      </div>
 
-        {index !== undefined && (
+      {/* Without the label, 24 px from the plate's foot to the title's box:
+          the draft's gap under its entry plates (390). On the block, not the
+          h3, whose margin would collapse into this one. */}
+      <div className={cn(showCategory ? "mt-5" : "mt-6", bodyClassName)}>
+        {showCategory && <Eyebrow as="span">{item.category}</Eyebrow>}
+        <h3 className={cn(showCategory && "mt-3", "text-title text-ink")}>
           <span
-            aria-hidden
-            className="absolute top-6 left-6 font-display text-eyebrow tabular-nums text-sand-100/80"
+            className={cn(
+              "bg-[linear-gradient(var(--ed-accent-text),var(--ed-accent-text))] bg-[length:0_1px] bg-[position:0_100%] bg-no-repeat",
+              "[box-decoration-break:clone] transition-[background-size] duration-400 ease-reveal",
+              "group-hover:bg-[length:100%_1px] group-focus-visible:bg-[length:100%_1px]",
+              FOCUS_RING,
+            )}
           >
-            {pad(index)}
+            {item.title}
           </span>
+        </h3>
+
+        {item.subtitle && (
+          <p className="mt-2 max-w-[34ch] text-deck text-ink-soft">{item.subtitle}</p>
         )}
 
-        <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
-          <span className="text-eyebrow uppercase text-gold-300">
-            {item.category}
-          </span>
-          <h3 className="text-display-md mt-3 text-sand-50">{item.title}</h3>
-
-          {item.subtitle && (
-            <p className="text-body-sm mt-2 max-w-[28rem] text-sand-200/80">
-              {item.subtitle}
-            </p>
-          )}
-
-          <div className="mt-6 flex items-center gap-3 overflow-hidden">
-            <span
-              aria-hidden
-              // Scaled, not widened: 32px x 1.75 is the old 56px, and the
-              // label slides the matching 24px, so nothing re-lays out.
-              className="h-px w-8 shrink-0 origin-left bg-sand-100/40 transition-[scale,background-color] duration-700 ease-luxe group-hover:scale-x-[1.75] group-hover:bg-gold-400"
-            />
-            <span className="text-eyebrow uppercase text-sand-100/85 transition-transform duration-700 ease-luxe group-hover:translate-x-6">
-              Discover
-            </span>
+        {facts.length > 0 && (
+          /* Spans, not a paragraph: the separator is decoration, and the
+             spaces around it sit outside it, so the link's accessible name
+             reads "Central Crete Day trip". */
+          <div className="mt-4 text-caption text-ink-soft">
+            {facts.map((fact, i) => (
+              <Fragment key={i}>
+                {i > 0 && (
+                  <>
+                    {" "}
+                    <span aria-hidden="true" className="mx-1">
+                      /
+                    </span>{" "}
+                  </>
+                )}
+                <span>{fact}</span>
+              </Fragment>
+            ))}
           </div>
-        </div>
-      </MediaFrame>
-
-      {facts.length > 0 && (
-        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1">
-          {facts.map((fact, i) => (
-            <span key={i} className="text-caption text-rock-500">
-              {i > 0 && <span aria-hidden className="mr-4 text-rock-300">/</span>}
-              {fact}
-            </span>
-          ))}
-        </div>
-      )}
+        )}
+      </div>
     </Link>
   );
 }

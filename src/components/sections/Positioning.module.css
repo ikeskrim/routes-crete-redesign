@@ -1,0 +1,221 @@
+/* ==========================================================================
+   MOVEMENT I: the positioning spread and the why-us rows (C+ SPEC §D.4, as
+   built in the frozen draft, c-plus.module.css "5d", with its review
+   amendments). Read by Positioning.tsx and by ui/StackedPanels.tsx, which
+   renders the why-us rows nested inside this movement.
+
+   Every value is read from Layer E; nothing here declares an --ed-* value
+   (preflight P12) or a colour literal (P9).
+   ========================================================================== */
+
+/* ---- the spread ---------------------------------------------------------- */
+.section {
+  padding-top: var(--ed-space-section);
+  background-color: var(--ed-paper);
+}
+
+/* Without the why-us rows the spread closes on its own air. */
+.section:not(:has(> [data-stacked])) {
+  padding-bottom: var(--ed-space-section);
+}
+
+.folio,
+.statement,
+.body,
+.attributes {
+  grid-column: content-start / content-end;
+}
+
+.statement {
+  color: var(--ed-ink);
+}
+
+/* sentence 2 indented one column (4 columns: (width + gutter) / 4) */
+.indent {
+  padding-inline-start: calc((100% + var(--ed-gutter)) / 4);
+}
+
+.body {
+  max-width: 66ch;
+  margin-top: var(--ed-space-block);
+  color: var(--ed-ink);
+}
+
+.attributes {
+  margin-top: var(--ed-space-block);
+}
+
+.attributes li {
+  padding-block: 0.9rem;
+  border-top: var(--ed-hair-w) solid var(--ed-hairline);
+  color: var(--ed-ink);
+}
+
+.attributes li:last-child {
+  border-bottom: var(--ed-hair-w) solid var(--ed-hairline);
+}
+
+/* ---- the why-us rows: section#why-us[data-stacked] ----------------------- */
+.whyUs {
+  grid-column: full-start / full-end;
+  margin-top: var(--ed-space-section);
+  padding-block: var(--ed-space-section);
+  background-color: var(--ed-bone);
+}
+
+.whyRow {
+  align-items: start;
+}
+
+.whyRow + .whyRow {
+  margin-top: var(--ed-space-section);
+}
+
+.whyPlate {
+  grid-column: full-start / full-end;
+}
+
+.whyText {
+  grid-column: content-start / content-end;
+  margin-top: var(--ed-space-pair);
+}
+
+/* the terracotta pull-quote rule (§C.7, §C.8), decorative */
+.quoteRule {
+  display: block;
+  width: 3rem;
+  height: 1px;
+  margin-bottom: 1.25rem;
+  background-color: var(--ed-accent);
+}
+
+.whyStatement {
+  max-width: 18ch;
+  color: var(--ed-ink);
+  text-wrap: balance;
+}
+
+/* The credit is a caption under a 1.5rem hairline, not a tracked-capitals
+   label: it gives the text block a visible base (amended in the draft
+   review). ink-soft on bone: 5.97 clean, 5.36 on the worst speckle. */
+.whyCredit {
+  margin-top: 1.25rem;
+  color: var(--ed-ink-soft);
+}
+
+.whyCredit::before {
+  content: "";
+  display: block;
+  width: 1.5rem;
+  height: var(--ed-hair-w);
+  margin-bottom: 0.625rem;
+  background-color: var(--ed-hairline-bone);
+}
+
+/* row 1: crop the midday sky out, keep the grove */
+.cropGrove {
+  object-position: 50% 85%;
+}
+
+/* ---- 640–1023 (8 columns) ------------------------------------------------ */
+@media (min-width: 640px) {
+  /* sentence 2 indented one column of eight */
+  .indent {
+    padding-inline-start: calc((100% + var(--ed-gutter)) / 8);
+  }
+
+  .body,
+  .attributes {
+    grid-column: col 2 / span 6;
+  }
+
+  .whyPlate {
+    grid-column: full-start / col 7;
+  }
+
+  .whyRow:nth-of-type(2) .whyPlate {
+    grid-column: col 3 / full-end;
+  }
+
+  .whyText {
+    grid-column: col 2 / span 6;
+  }
+}
+
+/* ---- 1024 and up (12 columns) -------------------------------------------- */
+@media (min-width: 1024px) {
+  .folio {
+    grid-column: col 1 / content-end;
+  }
+
+  .statement {
+    grid-column: col 1 / span 11;
+  }
+
+  .statement > span {
+    white-space: nowrap;
+  }
+
+  /* sentence 2 indented two columns: 2 × (col + gutter) of an 11-column span */
+  .indent {
+    padding-inline-start: calc((100% + var(--ed-gutter)) * 2 / 11);
+  }
+
+  .body {
+    grid-column: col 3 / span 5;
+    grid-row: 3;
+  }
+
+  /* starts at the body's first baseline (Inter, line-height 1.65: 1.188em) */
+  .attributes {
+    grid-column: col 9 / span 4;
+    grid-row: 3;
+    align-self: start;
+    margin-top: calc(var(--ed-space-block) + clamp(1.0625rem, 1.25vw, 1.125rem) * 1.188);
+  }
+
+  .whyRow .whyPlate {
+    grid-column: full-start / col 6;
+    grid-row: 1;
+  }
+
+  /* The statement holds still while its photograph scrolls past (sticky is
+     layout, so it holds under reduced motion too). No ancestor clips on y. */
+  .whyRow .whyText {
+    grid-column: col 8 / span 5;
+    grid-row: 1;
+    position: sticky;
+    top: calc(var(--ed-masthead-h) + 20vh);
+    align-self: start;
+    margin-top: 0;
+  }
+
+  /* Row 2 breaks the zig-zag: the statement is set larger across five
+     columns and hangs from the plate's foot, held at the viewport's bottom
+     edge while the plate scrolls. */
+  .whyRow:nth-of-type(2) .whyPlate {
+    grid-column: col 6 / full-end;
+  }
+
+  .whyRow:nth-of-type(2) .whyText {
+    grid-column: col 1 / span 5;
+    top: auto;
+    bottom: 4rem;
+    align-self: end;
+  }
+
+  .whyRow:nth-of-type(2) .whyStatement {
+    font-size: calc(var(--ed-t-pullquote) * 1.3);
+    line-height: 1.08;
+    letter-spacing: -0.012em;
+  }
+
+  /* Row 3: an inset portrait (no bleed) with the statement beside it. */
+  .whyRow:nth-of-type(3) .whyPlate {
+    grid-column: col 2 / span 4;
+  }
+
+  .whyRow:nth-of-type(3) .whyText {
+    grid-column: col 7 / span 5;
+  }
+}

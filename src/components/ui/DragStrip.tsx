@@ -56,21 +56,29 @@ export function DragStrip({
     pointerId: -1,
   });
 
+  /* One frame of the throw, re-scheduling itself. The loop is a plain inner
+     function, so the callback never refers to itself before it exists. */
   const glide = useCallback(() => {
-    const el = ref.current;
     const d = drag.current;
-    if (!el) return;
+    const step = () => {
+      const el = ref.current;
+      if (!el) {
+        d.frame = 0;
+        return;
+      }
 
-    d.velocity *= 0.94;
-    el.scrollLeft -= d.velocity;
+      d.velocity *= 0.94;
+      el.scrollLeft -= d.velocity;
 
-    // Stop the loop rather than let it idle at zero: an animation frame that
-    // runs forever to move nothing is the exact cost this component avoids.
-    if (Math.abs(d.velocity) > 0.4) {
-      d.frame = requestAnimationFrame(glide);
-    } else {
-      d.frame = 0;
-    }
+      // Stop the loop rather than let it idle at zero: an animation frame that
+      // runs forever to move nothing is the exact cost this component avoids.
+      if (Math.abs(d.velocity) > 0.4) {
+        d.frame = requestAnimationFrame(step);
+      } else {
+        d.frame = 0;
+      }
+    };
+    step();
   }, []);
 
   const onPointerDown = useCallback(

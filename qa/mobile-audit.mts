@@ -30,6 +30,12 @@
  *     `main h1, main h2`, unless the header is transparent over a photographic
  *     `[data-hero-tone="dark"]` hero that holds that heading.
  *
+ * C+ (§D.1, §D.4, §I.3 S9 rows; no new switch, the assertions above already
+ * cover the C+ build): an overlap over the paper cover
+ * (`[data-hero-tone="light"]`) is reported as "the header covers the h1 on
+ * the paper … cover", and every U1 failure also prints
+ * "-> U1 <width> on <route>: scrollWidth N > <allowance>".
+ *
  *   node qa/mobile-audit.mts
  */
 import { chromium, type Page } from "playwright";
@@ -112,6 +118,8 @@ function reportOverflow(route: string, label: string, o: Awaited<ReturnType<type
     `U1 ${label}: scrollWidth ${o.scrollWidth} vs ${o.vw}` +
       (o.overflowing.length ? ` — ${o.overflowing.join("; ")}` : ok ? " — no horizontal overflow" : ""),
   );
+  // The route and the allowance, named, so a log line says where it broke.
+  if (!ok) console.log(`        -> U1 ${label} on ${route}: scrollWidth ${o.scrollWidth} > ${o.vw + 1}`);
 }
 
 await preflight(BASE, process.cwd() + "/qa");
@@ -215,7 +223,7 @@ for (const route of ROUTES) {
       if (getComputedStyle(h).visibility === "hidden") return false;
       return !clippedToAPixel(h);
     });
-    let u6: { ok: boolean; line: string };
+    let u6: { ok: boolean; line: string; covered?: string };
     if (!header) {
       u6 = { ok: false, line: "U6: site header not found (header[data-site-chrome])" };
     } else if (!heading) {
@@ -265,12 +273,18 @@ for (const route of ROUTES) {
             line: `U6: header bottom > ${tag} top, exempt: transparent header over a photographic [data-hero-tone="dark"] hero — ${measured}`,
           };
         } else {
+          /* C+: the cover is paper ([data-hero-tone="light"]); a transparent
+             bar over it shows ink over ink, so an overlap there is never
+             exempt and is named for what it is. */
+          const paperCover = transparent && !!heading.closest('[data-hero-tone="light"]');
           const why = !transparent
             ? "header not transparent"
-            : !heroBehind
-              ? `no [data-hero-tone="dark"] hero holding the ${tag} behind the header`
-              : "no loaded photograph behind the header";
-          u6 = { ok: false, line: `U6: header bottom > ${tag} top — ${measured} (${why})` };
+            : paperCover
+              ? `the header covers the ${tag} on the paper [data-hero-tone="light"] cover`
+              : !heroBehind
+                ? `no [data-hero-tone="dark"] hero holding the ${tag} behind the header`
+                : "no loaded photograph behind the header";
+          u6 = { ok: false, line: `U6: header bottom > ${tag} top — ${measured} (${why})`, covered: `${tag} "${name}"` };
         }
       }
     }
@@ -314,6 +328,9 @@ for (const route of ROUTES) {
     `U5: images declare their dimensions — ${report.undimensioned}/${report.images} without intrinsic size`,
   );
   check("U6", route, report.u6.ok, report.u6.line);
+  if (!report.u6.ok && report.u6.covered) {
+    console.log(`        -> U6 on ${route}: the header covers the ${report.u6.covered}`);
+  }
   await page.close();
 
   for (const { viewport, ctx: wide } of wideContexts) {

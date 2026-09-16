@@ -1,36 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
+import { Fragment, useState } from "react";
+
 import { cn } from "@/lib/utils";
 
-/** One half of the strip. Declared outside the component so it isn't
- *  recreated on every render. `wrap` lays the same items out as a still,
- *  centred block for reduced motion. */
-function MarqueeTrack({
-  items,
-  ariaHidden,
-  wrap = false,
-}: {
-  items: string[];
-  ariaHidden?: boolean;
-  wrap?: boolean;
-}) {
+/* The strap's type (C+ SPEC §D.4): Fraunces at optical size 48, weight 360,
+   paper on olive (5.74). */
+const TYPE = "font-editorial font-[360] leading-[1.2] [font-variation-settings:'opsz'_48]";
+
+/** A separator: a 1.25rem hairline dash in the band-dot tone (decorative). */
+function Dash({ className }: { className?: string }) {
+  return <span aria-hidden="true" className={cn("block h-px w-5 shrink-0 bg-band-dot", className)} />;
+}
+
+/** One half of the moving strap. */
+function MovingHalf({ items, ariaHidden }: { items: string[]; ariaHidden?: boolean }) {
   return (
-    <span
-      aria-hidden={ariaHidden}
-      className={cn(
-        "flex items-center gap-x-14",
-        wrap ? "flex-wrap justify-center gap-y-4" : "shrink-0 pr-14",
-      )}
-    >
+    <span aria-hidden={ariaHidden} className="flex shrink-0 items-center gap-x-10 pr-10">
       {items.map((item, i) => (
-        <span key={i} className={cn("flex items-center gap-x-14", !wrap && "shrink-0")}>
-          <span className={wrap ? undefined : "whitespace-nowrap"}>{item}</span>
-          <span
-            aria-hidden
-            className="inline-block size-1.5 shrink-0 rounded-pill bg-gold-400/80"
-          />
+        <span key={i} className="flex shrink-0 items-center gap-x-10">
+          <span className="whitespace-nowrap">{item}</span>
+          <Dash />
         </span>
       ))}
     </span>
@@ -38,94 +28,88 @@ function MarqueeTrack({
 }
 
 /**
- * A slow repeating text track.
+ * The marquee strap between movements I and II (C+ SPEC §D.4, §G.1 #13):
+ * an olive band, `div[data-marquee]`, never a section.
  *
- * Two identical halves translate as one strip; when the first has travelled
- * exactly its own width the animation restarts, so the seam never shows. The
- * transform is the only animated property, and the whole thing is one CSS
- * animation rather than a rAF loop, so it costs nothing on the main thread.
+ * Moving: two identical halves translate as one strip (`marquee-track`, 60 s
+ * linear, transform only); the second half is `aria-hidden`. The loop never
+ * ends on its own, so it carries a pause control (WCAG 2.2.2): a 44 px
+ * square with a 1 px paper edge, the only control on the band, whose focus
+ * ring is the night token. Pausing only flips `animation-play-state`.
  *
- * The loop never ends on its own, so it carries a pause control (WCAG 2.2.2);
- * pausing only flips `animation-play-state` and adds no work either.
+ * Reduced motion is a designed still, not a stopped strip (as the frozen
+ * draft sets it): the five phrases in deliberate lines, 2 + 2 + 1 below 1024
+ * (left-aligned below 640, where a phrase may wrap) and 3 + 2 from 1024,
+ * centred, no pause button. A separator never opens a line.
  *
- * Under prefers-reduced-motion the track holds still and simply reads as a
- * line of text.
+ * Both compositions are server-rendered and switched by the
+ * `prefers-reduced-motion` media query alone, so nothing waits for
+ * hydration and nothing moves when it lands. The still strap is a list by
+ * role; its phrases are spans, as the moving strap's are.
+ *
+ * No texture on the band; no gold anywhere on it.
  */
 export function Marquee({
   items,
   className,
-  speed = 48,
+  speed = 60,
   reverse = false,
 }: {
   items: string[];
   className?: string;
-  /** Seconds for one full pass. Slower is more expensive-looking. */
+  /** Seconds for one full pass. */
   speed?: number;
   reverse?: boolean;
 }) {
-  const reduced = useReducedMotionSafe();
   const [paused, setPaused] = useState(false);
 
-  const frame = cn(
-    "grain relative w-full overflow-hidden bg-olive-700 py-7 lg:py-9",
-    className,
-  );
-
-  /* Reduced motion: a still, nowrap strip inside overflow-hidden clipped every
-     item past the viewport edge, with no way to reach them, and the left
-     feather faded the first one. So: one copy, wrapped and centred, no
-     feathers, and nothing to pause. */
-  if (reduced) {
-    return (
-      <div data-marquee className={frame}>
-        <div aria-hidden className="grain-overlay" />
-        <div className="mx-auto max-w-[92rem] px-6 text-display-md text-sand-50 sm:px-8 lg:px-12">
-          <MarqueeTrack items={items} wrap />
+  return (
+    <div
+      data-marquee=""
+      className={cn(
+        "relative w-full bg-band py-7 text-on-band lg:py-9 max-sm:motion-reduce:py-5",
+        className,
+      )}
+    >
+      {/* ---- moving ---- */}
+      <div className="relative overflow-clip motion-reduce:hidden">
+        {/* Feathered edges: the phrases enter and leave rather than clip. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-linear-to-r from-band to-transparent"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-linear-to-l from-band to-transparent"
+        />
+        <div
+          className={cn(
+            "flex w-max text-[length:clamp(1.75rem,3vw,2.75rem)]",
+            TYPE,
+            reverse ? "marquee-track-reverse" : "marquee-track",
+          )}
+          style={{
+            animationDuration: `${speed}s`,
+            animationPlayState: paused ? "paused" : "running",
+          }}
+        >
+          <MovingHalf items={items} />
+          <MovingHalf items={items} ariaHidden />
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div data-marquee className={frame}>
-      <div aria-hidden className="grain-overlay" />
-
-      {/* Feathered edges so the text enters and leaves rather than clipping. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-olive-700 to-transparent"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-olive-700 to-transparent"
-      />
-
-      <div
-        className={cn(
-          "flex w-max text-display-md text-sand-50",
-          reverse ? "marquee-track-reverse" : "marquee-track",
-        )}
-        style={{
-          animationDuration: `${speed}s`,
-          animationPlayState: paused ? "paused" : "running",
-        }}
-      >
-        <MarqueeTrack items={items} />
-        <MarqueeTrack items={items} ariaHidden />
-      </div>
-
-      {/* Pause. It sits on the right feather, where the text is already fading
-          out, so it covers nothing a reader is reading; 44px square for the
-          tap-target audit. */}
+      {/* Pause. On the right feather, where the phrases already fade, so it
+          covers nothing being read; square, like every control but the gold
+          pill (§C.12). */}
       <button
         type="button"
         onClick={() => setPaused((p) => !p)}
-        className="absolute top-1/2 right-4 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-pill border border-sand-100/25 bg-olive-700 text-sand-100/80 transition-colors duration-500 hover:border-gold-300/60 hover:text-gold-300 lg:right-8"
+        className="absolute top-1/2 right-4 z-20 flex size-11 -translate-y-1/2 items-center justify-center border border-on-band bg-band text-on-band transition-colors duration-250 hover:bg-on-band hover:text-band focus-visible:outline-focus-night lg:right-8 motion-reduce:hidden"
       >
         <span className="sr-only">
           {paused ? "Play the moving text" : "Pause the moving text"}
         </span>
-        <svg aria-hidden viewBox="0 0 12 12" fill="currentColor" className="size-3">
+        <svg aria-hidden="true" viewBox="0 0 12 12" fill="currentColor" className="size-3">
           {paused ? (
             <path d="M3 1.5v9l7.5-4.5z" />
           ) : (
@@ -136,6 +120,51 @@ export function Marquee({
           )}
         </svg>
       </button>
+
+      {/* ---- still (reduced motion) ---- */}
+      <div
+        role="list"
+        className={cn(
+          "mx-(--ed-margin) hidden flex-wrap items-center justify-start gap-x-3.5 gap-y-[0.15rem] motion-reduce:flex",
+          "text-[length:clamp(1.25rem,5.6vw,1.5rem)] sm:justify-center sm:gap-x-10 sm:gap-y-0 sm:text-[length:clamp(1.75rem,3vw,2.75rem)]",
+          TYPE,
+        )}
+      >
+        {items.map((item, i) => {
+          /* Lines of two below 1024, of three from 1024. */
+          const opensSmall = i > 0 && i % 2 === 0;
+          const opensLarge = i > 0 && i % 3 === 0;
+          return (
+            <Fragment key={i}>
+              {(opensSmall || opensLarge) && (
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "h-0 basis-full",
+                    opensSmall && !opensLarge && "lg:hidden",
+                    opensLarge && !opensSmall && "hidden lg:block",
+                  )}
+                />
+              )}
+              <span
+                role="listitem"
+                className="flex items-center gap-x-3.5 sm:gap-x-10 sm:whitespace-nowrap"
+              >
+                {i > 0 && (
+                  <Dash
+                    className={cn(
+                      "max-sm:w-4",
+                      opensSmall && "max-lg:hidden",
+                      opensLarge && "lg:hidden",
+                    )}
+                  />
+                )}
+                <span>{item}</span>
+              </span>
+            </Fragment>
+          );
+        })}
+      </div>
     </div>
   );
 }

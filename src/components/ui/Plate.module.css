@@ -1,0 +1,267 @@
+/* ==========================================================================
+   PLATES (C+ SPEC §E, §F.1 keyline, §G.1 #5, §D.4 golden band, §D.6 place
+   breaks). Read by Plate.tsx, Unclip.tsx and Cinematic.tsx.
+
+   Every value is read from Layer E (src/app/edition.css); nothing here
+   declares an --ed-* value (preflight P12) or a colour literal (P9). The
+   local custom properties are named --plate-*.
+
+   D2: no CSS filter, blend or overlay is laid on a photograph. The two
+   declarations preflight P13 allowlists live here and nowhere else: the
+   grade token on `.img` (every plate but the cover) and the print-blend
+   token on `.cover::after`.
+   In C+ both tokens are `none` / `normal`: nothing is painted and no
+   compositing layer or isolation group is created (§B.4). They exist so the
+   plain-C revert brings back C's photo treatment from tokens alone.
+   ========================================================================== */
+
+/* ---- the frame ---------------------------------------------------------- */
+.frame {
+  /* Keyline edges (§F.1, amended in the draft review): drawn only where the
+     plate meets paper. 1px draws an edge, 0px leaves it out. A composition
+     whose bleed changes with the width overrides these in its own rules. */
+  --plate-kl-top: 1px;
+  --plate-kl-right: 1px;
+  --plate-kl-bottom: 1px;
+  --plate-kl-left: 1px;
+
+  position: relative;
+  /* clip, not hidden: clips the settling photograph without making the
+     frame a scroll container. */
+  overflow: clip;
+  border-radius: var(--ed-radius-media);
+  background-color: var(--ed-bone);
+}
+
+/* An aspect ratio given as a prop (`ratio="4 / 5"`); a composition that
+   changes the ratio by width sets `aspect-ratio` in its own class instead. */
+.ratio {
+  aspect-ratio: var(--plate-ratio);
+}
+
+.bleedLeft {
+  --plate-kl-left: 0px;
+}
+
+.bleedRight {
+  --plate-kl-right: 0px;
+}
+
+.bleedBoth {
+  --plate-kl-left: 0px;
+  --plate-kl-right: 0px;
+}
+
+/* The 1px inset keyline where a pale edge meets paper (§F.1). Night plates,
+   place breaks and essay plates have dark edges and take none. */
+.keyline::after,
+.cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow:
+    inset 0 var(--plate-kl-top) 0 0 var(--ed-plate-keyline),
+    inset calc(-1 * var(--plate-kl-right)) 0 0 0 var(--ed-plate-keyline),
+    inset 0 calc(-1 * var(--plate-kl-bottom)) 0 0 var(--ed-plate-keyline),
+    inset var(--plate-kl-left) 0 0 0 var(--ed-plate-keyline);
+}
+
+/* The cover plate's frame (§B.4 `--ed-plate-print`): the print layer and the
+   keyline on one ::after, as C's cover had them (c.module.css:337-351). */
+.cover::after {
+  background-image: var(--ed-plate-print);
+  mix-blend-mode: var(--ed-plate-print-blend);
+}
+
+/* ---- the photograph ----------------------------------------------------- */
+.img {
+  object-fit: cover;
+  filter: var(--ed-plate-grade);
+}
+
+/* The cover photograph takes the print layer above instead of the grade. */
+.imgCover {
+  object-fit: cover;
+}
+
+/* The Ken Burns wrapper inside the cover frame (§G.1 #1; the push itself is
+   the `ken-burns-cover` utility, which reads --ed-kb-origin). */
+.kenBurns {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- the unclip (§G.1 #5, amended in the draft review) -------------------
+   A below-the-fold plate is uncovered once, across from its bleed edge
+   (`data-from`), 0.9 s on the lay curve, while the photograph settles from
+   1.06 over 1.8 s. Never on a preloaded plate, never in the Fitzroy frame.
+   Reduced motion: the plate is set from the first paint. JavaScript off: the
+   root layout's noscript rule clears `[data-reveal]` (both layers carry it). */
+.unclip {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.9s var(--ed-ease-lay);
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+}
+
+.unclip[data-from="right"] {
+  clip-path: inset(0 0 0 100%);
+}
+
+.unclip[data-from="top"] {
+  clip-path: inset(0 0 100% 0);
+}
+
+.unclip[data-from="bottom"] {
+  clip-path: inset(100% 0 0 0);
+}
+
+.unclip[data-in] {
+  clip-path: inset(0);
+}
+
+.unclipInner {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.06);
+  transition: transform 1.8s var(--ed-ease-reveal);
+}
+
+.unclip[data-in] > .unclipInner {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unclip {
+    clip-path: none !important;
+  }
+
+  .unclipInner {
+    transform: none !important;
+  }
+}
+
+/* ---- the golden band: div[data-band="bridge"] (§D.4) ---------------------
+   Paper stock without vignette, the plate bleeding left at ≥1024 with its
+   caption hung at the plate foot; 16:9 and 1:1 below, caption under. The
+   car in the source frame (rows ≈ 1,908–2,016) is out of every crop. */
+.band {
+  padding-block: var(--ed-space-section) var(--ed-space-block);
+  overflow-x: clip;
+  background-color: var(--ed-paper);
+}
+
+/* The figure spans the band and lends its columns to plate and caption. */
+.bandFigure {
+  grid-column: full-start / full-end;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+.bandFrame {
+  --plate-kl-left: 0px;
+  --plate-kl-right: 0px;
+
+  grid-column: full-start / full-end;
+  aspect-ratio: 1 / 1;
+}
+
+.bandImg {
+  object-position: 50% 30%;
+}
+
+.bandCaption {
+  grid-column: content-start / content-end;
+}
+
+@media (min-width: 640px) {
+  .bandFrame {
+    aspect-ratio: 16 / 9;
+  }
+
+  .bandImg {
+    object-position: 50% 64%;
+  }
+
+  .bandCaption {
+    grid-column: col 1 / span 6;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bandFrame {
+    --plate-kl-right: 1px;
+
+    grid-column: full-start / col 9;
+    grid-row: 1;
+    aspect-ratio: 2 / 1;
+  }
+
+  /* Column 9 stays air; the caption hangs at the plate foot. */
+  .bandCaption {
+    grid-column: col 10 / span 3;
+    grid-row: 1;
+    align-self: end;
+    margin-top: 0;
+  }
+}
+
+/* ---- a place break: div[data-band="place"] (§D.6 item 5) ----------------
+   The plate bleeds right (3:2, or 4:5 for a portrait source); its caption
+   holds still beside it at ≥1024 while the plate scrolls past (sticky needs
+   ancestors that are not scroll containers: the band clips on x only).
+   Below 1024 the plate runs full bleed with the caption under it. Dark
+   edges: no keyline. */
+.place {
+  overflow-x: clip;
+}
+
+.placeFigure {
+  grid-column: full-start / full-end;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: start;
+}
+
+.placeFrame {
+  grid-column: full-start / full-end;
+  aspect-ratio: 3 / 2;
+}
+
+.placePortrait {
+  aspect-ratio: 4 / 5;
+}
+
+.placeCaption {
+  grid-column: content-start / content-end;
+}
+
+@media (min-width: 640px) {
+  .placeCaption {
+    grid-column: col 1 / span 6;
+  }
+}
+
+@media (min-width: 1024px) {
+  .placeFrame {
+    grid-column: col 5 / full-end;
+    grid-row: 1;
+  }
+
+  .placePortrait {
+    grid-column: col 7 / full-end;
+  }
+
+  .placeCaption {
+    grid-column: col 1 / span 3;
+    grid-row: 1;
+    position: sticky;
+    top: calc(var(--ed-masthead-h) + 2.5rem);
+    margin-top: 0;
+  }
+}

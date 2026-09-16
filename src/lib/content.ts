@@ -12,6 +12,7 @@ import type {
   PhotoCredits,
   SiteContent,
 } from "./types";
+import { GRADE } from "./edition";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -33,10 +34,11 @@ const CONTENT_DIR = path.join(process.cwd(), "content");
  * sat 0.66, actively DESATURATING every frame, over blacks lifted to matte.
  * The Kourtaliotis river, captioned "crystal clear waters", rendered grey.
  *
- * C "vivid" is the answer, and it is still one constant. Flipping this back to
- * "b" restores the previous look across the entire site in one edit — the
- * graded trees for both live side by side under public/images/graded/. */
-const GRADE = "c";
+ * C "vivid" answered that. C+ (SPEC §0.2 S9) serves grade D "amber soft". The
+ * letter is still one constant, now `GRADE` in src/lib/edition.ts (contract
+ * C10), imported above: changing it there restores another grade across the
+ * entire site in one edit — the graded trees live side by side under
+ * public/images/graded/. */
 const GRADED_PREFIX = `/images/graded/${GRADE}`;
 
 /**

@@ -1,49 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter, Manrope } from "next/font/google";
 
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
 import { FilmGrain } from "@/components/ui/FilmGrain";
 import { SpinningBadge } from "@/components/ui/SpinningBadge";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
-import { getExperiences, getSite, getTransfers } from "@/lib/content";
+import { getBlur, getExperiences, getSite, getTransfers } from "@/lib/content";
+import { THEME_COLOR } from "@/lib/edition";
 import { socialImage } from "@/lib/site-url";
 
+import { fontVariables } from "./fonts";
 import "./globals.css";
 
-/* Both are variable fonts, self-hosted by next/font — no request ever leaves
-   the origin, and there is no layout shift on load. */
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-/* The headline face, client-approved after the A/B (D1).
-   Variable, so display sizes get real optical sizing rather than a text face
-   stretched large. Self-hosted by next/font — no request leaves the origin.
-   Applied to h1 and h2 ONLY, which is exactly the scope the A/B compared;
-   h3/h4, the eyebrows and the wordmark stay Manrope.
-
-   `opsz` only, deliberately. Shipping it with SOFT as well cost 118 KB for
-   this one face — font payload went 90 KB to 208 KB — and dropped the
-   experience route's Lighthouse performance from a 94/89/94/89 spread to
-   87/89/90/85, i.e. under the 89 floor. Requesting `opsz` alone halves the
-   file to 65 KB. SOFT only rounds the serif terminals slightly; optical
-   sizing is the reason this face was chosen over a static one, so when only
-   one axis could stay, it was never going to be SOFT. */
-const fraunces = Fraunces({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  display: "swap",
-  axes: ["opsz"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
+/* Fonts: every loader, and the edition's preload profile, is in ./fonts.ts
+   (C+ SPEC §B.6). Their CSS variables all go on <html>; the family tokens in
+   ./edition.css decide which faces a page actually uses. */
 
 export function generateMetadata(): Metadata {
   const site = getSite();
@@ -104,8 +75,9 @@ export function generateMetadata(): Metadata {
   };
 }
 
+/* The browser chrome matches the paper ground (§H.4). */
 export const viewport: Viewport = {
-  themeColor: "#04141d",
+  themeColor: THEME_COLOR,
   colorScheme: "light",
 };
 
@@ -125,11 +97,33 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     brochure: experiences[0]?.gallery[2]?.src,
   };
 
+  /* Contract C7 (C+ SPEC §0.4): the three new optional Nav props, handed over
+     as one spread so this file compiles on both sides of the masthead
+     migration (a spread variable carries no excess-property check; once Nav
+     declares a prop, its type is checked):
+     - previewBlur: the blur placeholder of each menu preview;
+     - address: the menu foot's address line;
+     - itemHrefs: every experience and transfer page that exists, so only a
+       real item route is treated as having a dark photographic hero (a slug
+       that 404s gets the solid masthead at load).
+     The menu backdrop photograph is retired (C7, §G.2): no `menuBackdrop` is
+     passed, and the open menu shows no drifting photograph. */
+  const navContract = {
+    previewBlur: Object.fromEntries(
+      Object.entries(menuPreviews).map(([key, src]) => [key, src ? getBlur(src) : undefined]),
+    ) as Record<string, string | undefined>,
+    address: site.contact.address ?? undefined,
+    itemHrefs: [
+      ...experiences.map((item) => `/experiences/${item.slug}`),
+      ...transfers.map((item) => `/transfers/${item.slug}`),
+    ],
+  };
+
   return (
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${manrope.variable} ${fraunces.variable} ${inter.variable} h-full`}
+      className={`${fontVariables} h-full`}
     >
       <body className="flex min-h-full flex-col">
         {/* Scroll-reveal animations start at opacity 0. If JavaScript never
@@ -139,9 +133,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <style>{`[data-reveal]{opacity:1!important;transform:none!important;clip-path:none!important}`}</style>
         </noscript>
 
+        {/* Square, on night, with the paper focus ring (§0.2 S5, §C.12: the
+            gold pill is the only rounded control). */}
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-pill focus:bg-ocean-950 focus:px-6 focus:py-3 focus:text-sand-50"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-none focus:bg-night focus:px-6 focus:py-3 focus:text-on-night focus-visible:outline-focus-night"
         >
           Skip to content
         </a>
@@ -181,10 +177,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           items={site.nav}
           brandName={site.brand.name}
           previews={menuPreviews}
-          /* Drawn from the content like every other preview, so the menu's
-             backdrop can never drift from a photograph the site actually
-             ships. */
-          menuBackdrop={experiences[1]?.heroImage ?? experiences[0]?.heroImage}
+          {...navContract}
         />
 
         <main id="main" className="flex-1">
@@ -201,7 +194,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           verifiedOn={site.socialProof?.verifiedOn}
         />
 
-        {/* Last in the body, over everything, interactive with nothing. */}
+        {/* Site-wide film grain: rendered, but `display: none` in C+
+            (--ed-film-grain-display, §F.1). */}
         <FilmGrain />
       </body>
     </html>

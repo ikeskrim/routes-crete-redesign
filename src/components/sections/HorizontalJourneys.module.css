@@ -1,0 +1,331 @@
+/* ==========================================================================
+   MOVEMENT II: the journeys and the Fitzroy index (C+ SPEC §D.4, §0.4 C3, as
+   built in the frozen draft, c-plus.module.css "5f", with its review
+   amendments), and the map block.
+
+   Every value is read from Layer E; nothing here declares an --ed-* value
+   (preflight P12) or a colour literal (P9). Local custom properties are
+   named --j-*. The container maths (--ed-col, --ed-edge) are G1's root
+   tokens: their `cqi` resolves where they are used, against the nearest
+   inline-size container, so the section and the list both declare one.
+   ========================================================================== */
+
+.section {
+  padding-block: var(--ed-space-section);
+  background-color: var(--ed-paper);
+  container-type: inline-size;
+}
+
+.folio,
+.heading {
+  grid-column: content-start / content-end;
+}
+
+.heading {
+  color: var(--ed-ink);
+}
+
+/* ---- the index ----------------------------------------------------------- */
+.contents {
+  position: relative;
+  grid-column: full-start / full-end;
+  margin-top: var(--ed-space-block);
+  container-type: inline-size;
+}
+
+.frame {
+  position: relative;
+  overflow: clip;
+  aspect-ratio: var(--j-ratio);
+  background-color: var(--ed-bone);
+}
+
+/* the 1 px keyline where the pale plate meets paper (§F.1) */
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px var(--ed-plate-keyline);
+}
+
+/* next/image `fill` needs a positioned, non-sticky parent: the sticky frame
+   holds this absolutely positioned layer and the image fills it. */
+.fill {
+  position: absolute;
+  inset: 0;
+}
+
+.img {
+  object-fit: cover;
+}
+
+.entryLink {
+  display: block;
+  color: var(--ed-ink);
+  text-decoration: none;
+}
+
+.title {
+  max-width: 22ch;
+  margin-top: 0.5rem;
+  color: var(--ed-ink);
+}
+
+.titleText {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.deck {
+  max-width: 34ch;
+  margin-top: 0.5rem;
+  color: var(--ed-ink-soft);
+}
+
+.facts {
+  display: block;
+  margin-top: 0.75rem;
+  color: var(--ed-ink-soft);
+}
+
+/* The van is a studio cut-out on a grey seamless: mounted on a bone mat
+   (contained, 8 % margin, no keyline) instead of being keylined as a plate. */
+.mat::after {
+  box-shadow: none;
+}
+
+.mat .fill {
+  inset: 8%;
+}
+
+.mat .img {
+  object-fit: contain;
+}
+
+/* ---- fine pointer, 1024 and up: one sticky stage, the list beside it ----- */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .contents {
+    --j-stage-w: calc(var(--ed-edge) + 5 * var(--ed-col) + 4 * var(--ed-gutter));
+    --j-frame-max-h: calc(100svh - var(--ed-masthead-h) - 4rem);
+
+    min-height: calc(min(var(--j-stage-w) * 1.5, var(--j-frame-max-h)) + 4rem);
+  }
+
+  .entry {
+    grid-column: col 8 / span 5;
+    display: block;
+    margin: 0;
+    padding-block: 1.5rem;
+    border-top: var(--ed-hair-w) solid var(--ed-hairline);
+  }
+
+  .entry:last-child {
+    border-bottom: var(--ed-hair-w) solid var(--ed-hairline);
+  }
+
+  /* Each plate is an absolute column as tall as the list; its frame is
+     sticky inside it, so the plate holds still while the list scrolls.
+     Later plates stack above earlier ones in DOM order. */
+  .plate {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: var(--j-stage-w);
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 500ms var(--ed-ease-reveal);
+  }
+
+  .entry:first-child .plate {
+    opacity: 1;
+  }
+
+  .entry:not(:first-child):is(:hover, :focus-within) .plate {
+    opacity: 1;
+    transition-duration: 700ms;
+  }
+
+  /* Frames differ in size, so a later plate does not cover plate 1: plate 1
+     steps back while another entry is pointed at or focused. */
+  .contents:has(.entry:not(:first-child):is(:hover, :focus-within)) .entry:first-child .plate {
+    opacity: 0;
+  }
+
+  /* Each frame is sized to its own plate (native aspect, cover), right-aligned
+     on the end of column 5, never taller than the viewport under the
+     masthead. */
+  .frame {
+    position: sticky;
+    top: calc(var(--ed-masthead-h) + 2rem);
+    width: min(var(--j-stage-w), var(--j-frame-max-h) * var(--j-aspect, 0.8));
+    margin-inline-start: auto;
+  }
+
+  .titleText {
+    background: linear-gradient(var(--ed-accent-text), var(--ed-accent-text)) 0 100% / 0 1px no-repeat;
+    transition: background-size 400ms var(--ed-ease-reveal);
+  }
+
+  .entry:is(:hover, :focus-within) .titleText {
+    background-size: 100% 1px;
+  }
+}
+
+/* ---- every other case: touch or coarse pointers, or below 1024 ---------- */
+@media not all and (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  /* Each entry spans the list as a subgrid row (without it an entry would
+     auto-place into one 68–86 px track). Subgrid inherits the col,
+     content-* and full-* line names. */
+  .entry {
+    grid-column: full-start / full-end;
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: 1rem;
+  }
+
+  .entry + .entry {
+    margin-top: var(--ed-space-block);
+  }
+
+  .plate {
+    grid-row: 1;
+    margin: 0;
+  }
+
+  .entryLink {
+    grid-row: 2;
+    grid-column: content-start / content-end;
+  }
+
+  /* 4 columns: full bleed, then bleeding right, then left (ends with col 3) */
+  .entry:nth-child(3n + 1) .plate {
+    grid-column: full-start / full-end;
+  }
+
+  .entry:nth-child(3n + 2) .plate {
+    grid-column: col 2 / full-end;
+  }
+
+  .entry:nth-child(3n) .plate {
+    grid-column: full-start / col 4;
+  }
+
+  /* keyline only on the edges that meet paper */
+  .entry:nth-child(3n + 1) .frame::after {
+    box-shadow:
+      inset 0 1px 0 0 var(--ed-plate-keyline),
+      inset 0 -1px 0 0 var(--ed-plate-keyline);
+  }
+
+  .entry:nth-child(3n + 2) .frame::after {
+    box-shadow:
+      inset 0 1px 0 0 var(--ed-plate-keyline),
+      inset 0 -1px 0 0 var(--ed-plate-keyline),
+      inset 1px 0 0 0 var(--ed-plate-keyline);
+  }
+
+  .entry:nth-child(3n) .frame::after {
+    box-shadow:
+      inset 0 1px 0 0 var(--ed-plate-keyline),
+      inset 0 -1px 0 0 var(--ed-plate-keyline),
+      inset -1px 0 0 0 var(--ed-plate-keyline);
+  }
+
+  /* the mat is never keylined (outranks the positional rules above) */
+  .entry:nth-child(n) .frame.mat::after {
+    box-shadow: none;
+  }
+
+  /* 8 columns */
+  @media (min-width: 640px) {
+    .entry:nth-child(3n + 1) .plate {
+      grid-column: full-start / col 6;
+    }
+
+    .entry:nth-child(3n + 1) .frame::after {
+      box-shadow:
+        inset 0 1px 0 0 var(--ed-plate-keyline),
+        inset 0 -1px 0 0 var(--ed-plate-keyline),
+        inset -1px 0 0 0 var(--ed-plate-keyline);
+    }
+
+    .entry:nth-child(3n + 2) .plate {
+      grid-column: col 3 / full-end;
+    }
+
+    .entry:nth-child(3n) .plate {
+      grid-column: full-start / col 7;
+    }
+
+    .entryLink {
+      grid-column: col 1 / span 6;
+    }
+  }
+
+  /* 12 columns, coarse or non-hover pointers */
+  @media (min-width: 1024px) {
+    .entry:nth-child(3n + 2) .plate {
+      grid-column: col 6 / full-end;
+    }
+
+    .entry:nth-child(3n) .plate {
+      grid-column: full-start / col 9;
+    }
+
+    .entryLink {
+      grid-column: col 1 / span 7;
+    }
+  }
+}
+
+/* ---- the map block ------------------------------------------------------- */
+.mapBlock {
+  grid-column: full-start / full-end;
+  margin-top: var(--ed-space-section);
+}
+
+/* the hairline across the content box, above the map heading */
+.mapBlock::before {
+  content: "";
+  grid-column: content-start / content-end;
+  grid-row: 1;
+  border-top: var(--ed-hair-w) solid var(--ed-hairline);
+}
+
+.mapHeading {
+  grid-column: content-start / content-end;
+  grid-row: 2;
+  margin-top: var(--ed-space-block);
+  /* the title step × 1.25 (§C.3) */
+  font-size: calc(var(--ed-t-title) * 1.25);
+  color: var(--ed-ink);
+}
+
+.chart {
+  grid-column: content-start / content-end;
+  grid-row: 3;
+  margin-top: var(--ed-space-pair);
+}
+
+@media (min-width: 640px) {
+  .mapHeading {
+    grid-column: col 1 / span 6;
+  }
+}
+
+@media (min-width: 1024px) {
+  .folio {
+    grid-column: col 1 / content-end;
+  }
+
+  .heading {
+    grid-column: col 1 / span 8;
+  }
+
+  .chart {
+    grid-column: col 1 / content-end;
+  }
+}

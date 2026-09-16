@@ -84,7 +84,7 @@
       "label": "Tell me more",
       "href": "#services"
     },
-    "backgroundImage": "/images/site/hero-home.jpg",
+    "backgroundImage": "/images/sourced/libyan-sea-coast-dusk.jpg",
     "backgroundImageMaster": "/images/experiences/kourtaliotis-temple-of-nature/ku1574-dsc06647.jpg",
     "backgroundImageOriginal": "/images/experiences/heart-of-cretan-tradition/sp1-17.jpg",
     "backgroundImageLcpNote": "hero-home.jpg is a 1600×2400 derivative of the 4000×6000 master. The master is 24 megapixels, which the image optimiser had to decode and re-encode on demand — the dominant cost in a 4.9s mobile LCP. The derivative still covers a 1440px desktop slot and any phone at 3x.",

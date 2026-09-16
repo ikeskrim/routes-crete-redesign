@@ -16,6 +16,24 @@
  *   6. a written permission points at its stored confirmation
  *   7. /credits renders every author, licence and source link
  *   8. the footer links to /credits from every page
+ *   9. C15 (C+ SPEC §I.2): every caption that credits a photograph names
+ *      what the ledger records for THAT photograph
+ *
+ * C15, on the nine routes: every `figcaption` whose tier 2
+ * (`[data-caption-tier="2"]`) starts "Photograph: " belongs to a figure whose
+ * image is a ledgered file, and
+ *   - tier 2 is exactly that record's credit line, `Photograph: {author},
+ *     {licence}` + ` (colour-graded)` when the record says modified (the
+ *     author, the licence and the modification note are each named when
+ *     wrong: "author not in ledger", …);
+ *   - tier 1 is that record's `subject`, or, for a frame that is not a mood
+ *     frame, a content `placeBreaks[].place` of the same file or its
+ *     src/lib/place-images.ts alt line (itinerary captions).
+ * A figcaption that says "Photograph:" without the tier markers fails too.
+ * C15 always runs (before C+ no caption credits a photograph, so it finds
+ * none); from S9 (qa/cplus-stage.mts) each route must show at least one
+ * checked credit (the back cover's) and `/` at least three (cover, golden
+ * band, back cover).
  *
  *   node qa/credits-guard.mts
  */
@@ -23,6 +41,7 @@ import { chromium } from "playwright";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { cplusS9, cplusS9Line } from "./cplus-stage.mts";
 import { preflight } from "./preflight.mts";
 
 const BASE = process.env.QA_BASE_URL ?? "http://localhost:3009";
@@ -55,11 +74,14 @@ const check = (name: string, ok: boolean, detail: string) => {
 const ledger = JSON.parse(fs.readFileSync("content/photo-credits.json", "utf8")) as {
   photographs: {
     file: string;
+    subject: string;
     author: string;
     licence: string;
     licenceUrl: string;
     source: string;
     sha1: string;
+    modified?: boolean;
+    surface?: string;
     /** For "Written permission": repo path of the stored written confirmation. */
     permission?: string;
   }[];
@@ -200,6 +222,7 @@ for (const photo of ledger.photographs) {
 
 console.log("\n[page] /credits publishes the attribution");
 
+console.log(cplusS9Line());
 await preflight(BASE, process.cwd() + "/qa");
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } } as never);
@@ -269,6 +292,119 @@ const C14_ROUTES = [
 ];
 const CREDITS_LINK = 'a[href="/credits"]';
 
+/* C15 oracle -------------------------------------------------------------- */
+
+/** A served path's ledger name: basename, as .jpg (the pipeline writes .jpg). */
+const ledgerName = (p: string) => (p.split("/").pop() ?? p).replace(/\.(jpe?g|png)$/i, ".jpg");
+const byFile = new Map(ledger.photographs.map((p) => [ledgerName(p.file), p]));
+const creditLine = (p: (typeof ledger.photographs)[number]) =>
+  `Photograph: ${p.author}, ${p.licence}${p.modified ? " (colour-graded)" : ""}`;
+
+/** Itinerary captions per file: content place breaks and the place-images alt lines. */
+const placesFor = new Map<string, Set<string>>();
+const addPlace = (file: string, place: string) => {
+  const key = ledgerName(file);
+  if (!placesFor.has(key)) placesFor.set(key, new Set());
+  placesFor.get(key)!.add(place.replace(/\s+/g, " ").trim());
+};
+for (const collection of ["experiences", "transfers"]) {
+  const dir = path.join("content", collection);
+  if (!fs.existsSync(dir)) continue;
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith(".json"))) {
+    const item = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")) as {
+      placeBreaks?: { src: string; place: string }[];
+    };
+    for (const b of item.placeBreaks ?? []) addPlace(b.src, b.place);
+  }
+}
+{
+  const source = fs
+    .readFileSync(path.join("src", "lib", "place-images.ts"), "utf8")
+    .replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, "");
+  for (const m of source.matchAll(/\[\s*"([^"]+)"\s*,\s*"([^"]+)"\s*,\s*"([^"]+)"\s*,?\s*\]/g)) {
+    addPlace(`${m[2]}.jpg`, m[3]);
+  }
+}
+
+const S9 = cplusS9();
+/** C+ S9 minimum checked photo credits per route (the back cover everywhere;
+    cover, band and back cover on /). */
+const C15_MINIMUM = (route: string) => (route === "/" ? 3 : 1);
+
+interface CaptionProbe {
+  tier1: string | null;
+  tier2: string | null;
+  marked: boolean;
+  src: string | null;
+  where: string;
+}
+
+const probeCaptions = () =>
+  page.evaluate((): CaptionProbe[] => {
+    const text = (el: Element | null) => (el ? (el.textContent ?? "").replace(/\s+/g, " ").trim() : null);
+    return [...document.querySelectorAll("figcaption")]
+      .map((fc) => {
+        const tier1 = fc.querySelector('[data-caption-tier="1"]');
+        const tier2 = fc.querySelector('[data-caption-tier="2"]');
+        const img = fc.closest("figure")?.querySelector("img") ?? null;
+        let src: string | null = null;
+        if (img) {
+          const raw = img.getAttribute("src") ?? "";
+          try {
+            const url = new URL(raw, location.href);
+            src = decodeURIComponent(url.searchParams.get("url") ?? url.pathname);
+          } catch {
+            src = raw;
+          }
+        }
+        const chain: string[] = [];
+        for (let n: Element | null = fc; n && n !== document.body && chain.length < 4; n = n.parentElement) {
+          chain.unshift(n.tagName.toLowerCase());
+        }
+        return {
+          tier1: text(tier1),
+          tier2: text(tier2),
+          marked: !!tier2,
+          src,
+          where: chain.join(" > "),
+          all: text(fc) ?? "",
+        };
+      })
+      .filter((c) => (c.tier2 ?? "").startsWith("Photograph: ") || (!c.marked && c.all.includes("Photograph:")))
+      .map((c) => ({ tier1: c.tier1, tier2: c.tier2, marked: c.marked, src: c.src, where: c.where }));
+  });
+
+function judgeCaption(c: CaptionProbe): string[] {
+  const problems: string[] = [];
+  if (!c.marked) return [`a photo credit without data-caption-tier markers at ${c.where}`];
+  if (!c.src) return [`"${c.tier2}" at ${c.where}: caption without a photograph in its figure`];
+  const file = ledgerName(c.src);
+  const record = byFile.get(file);
+  if (!record) return [`${file}: no ledger record for the captioned photograph`];
+  const expected = creditLine(record);
+  if (c.tier2 !== expected) {
+    const named = c.tier2!.match(/^Photograph: (.+), ([^,]+?)( \(colour-graded\))?$/);
+    if (!named || named[1] !== record.author) {
+      problems.push(`${file}: author not in ledger for this photograph: "${named?.[1] ?? c.tier2}" (ledger: "${record.author}")`);
+    } else if (named[2] !== record.licence) {
+      problems.push(`${file}: licence not in ledger for this photograph: "${named[2]}" (ledger: "${record.licence}")`);
+    } else {
+      problems.push(`${file}: modification note ≠ ledger: "${c.tier2}" (ledger: "${expected}")`);
+    }
+  }
+  const places = placesFor.get(file) ?? new Set<string>();
+  const tier1Ok =
+    c.tier1 === record.subject || (record.surface !== "mood" && c.tier1 !== null && places.has(c.tier1));
+  if (!tier1Ok) {
+    problems.push(
+      `${file}: tier 1 ≠ ledger subject: "${c.tier1 ?? "(missing)"}" (subject "${record.subject}"` +
+        (record.surface !== "mood" && places.size ? `, or a content place: ${[...places].map((p) => `"${p}"`).join(", ")}` : "") +
+        ")",
+    );
+  }
+  return problems;
+}
+
 const probeCreditsLink = async () => {
   const links = page.locator(CREDITS_LINK);
   const total = await links.count();
@@ -318,6 +454,25 @@ for (const route of C14_ROUTES) {
     `${route}: ${verdict}`,
     status === expected && missing.length === 0 && outside.length === 0,
     `${summary}${outside.length && found.length ? `; found at ${found.join(" | ")}` : ""}`,
+  );
+
+  /* C15: every photo credit on this route names this photograph's record. */
+  const captions = await probeCaptions();
+  let good = 0;
+  for (const c of captions) {
+    const problems = judgeCaption(c);
+    if (problems.length === 0) good++;
+    for (const p of problems) check(`${route} C15`, false, p);
+  }
+  const minimum = S9 ? C15_MINIMUM(route) : 0;
+  check(
+    `${route} C15: ${good} of ${captions.length} photo credit(s) match the ledger`,
+    good === captions.length && captions.length >= minimum,
+    captions.length >= minimum
+      ? captions
+          .map((c) => (c.src ? ledgerName(c.src) : "?"))
+          .join(", ")
+      : `C15: ${captions.length} photo credit(s) < minimum ${minimum}`,
   );
 }
 

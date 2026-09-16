@@ -1,37 +1,39 @@
-"use client";
-
-import { useRef, useState } from "react";
-import Image from "next/image";
-import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
-
-import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
-import { cn, pad } from "@/lib/utils";
+import { Plate } from "@/components/ui/Plate";
+import styles from "@/components/sections/Positioning.module.css";
+import { cn } from "@/lib/utils";
 
 export interface StackedPanel {
-  /** Small uppercase label above the statement. */
+  /** The credit under the statement (`site.whyUs[].title`). */
   eyebrow: string;
-  /** The centred statement. Kept short — this is punctuation, not prose. */
+  /** The pull quote (`site.whyUs[].statement`). */
   statement: string;
-  /** Optional supporting line beneath. */
-  detail?: string;
+  /** An operator photograph (graded path), decoration beside its statement. */
   image?: string;
-  blurDataURL?: string;
 }
 
 /**
- * A section that holds while its content transitions, then releases.
+ * The why-us rows (C+ SPEC §D.4): three pull quotes that hold still beside
+ * photographs bleeding alternately left and right. Server component.
  *
- * Generalises the machinery proven in the signature scene. The section is
- * `panels.length` viewports tall; an inner sticky frame pins the view while
- * scroll progress crossfades the imagery and advances the statement, and the
- * page carries on when the last panel is done.
+ * Kept as `section#why-us[data-stacked]` nested in `#positioning` (the stacked
+ * scene's anchor and attribute contracts), on bone stock. Each row is an
+ * `article.ed-grid` as tall as its plate; at ≥1024 the statement column is
+ * sticky, so the words hold while the photograph scrolls past. Sticky is
+ * layout, not motion: the rows hold under reduced motion too.
  *
- * Deliberately built on `position: sticky` plus scroll progress rather than a
- * ScrollTrigger pin: sticky needs no pin-spacer, cannot desynchronise from
- * Lenis, and reflows correctly on resize for free.
+ *   row 1  plate bleeds left (4:5), statement on columns 8–12
+ *   row 2  plate bleeds right (3:2, the landscape source is never cropped to
+ *          portrait), statement larger on columns 1–5, hung from the plate foot
+ *   row 3  inset portrait on columns 2–5, statement on columns 7–11
  *
- * Under prefers-reduced-motion the pin is dropped entirely and the panels
- * render as a plain stacked sequence.
+ * Phones: plate, then rule, statement, credit; nothing sticky.
+ *
+ * The photographs are operator frames: `alt=""`, no caption, lazy, unclipped
+ * once from their bleed edge. All three titles stay in the text (arc-guard).
+ * The layout lives with the movement it belongs to (Positioning.module.css).
+ *
+ * Retired (§G.2): the pinned crossfade, the drift and counter-parallax, the
+ * rail and the active-panel state. No client code remains.
  */
 export function StackedPanels({
   panels,
@@ -42,247 +44,39 @@ export function StackedPanels({
   id?: string;
   className?: string;
 }) {
-  const ref = useRef<HTMLElement>(null);
-  const reduced = useReducedMotionSafe();
-  const [active, setActive] = useState(0);
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"],
-  });
-
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const next = Math.min(
-      panels.length - 1,
-      Math.max(0, Math.floor(v * panels.length + 0.12)),
-    );
-    setActive((current) => (current === next ? current : next));
-  });
-
-  /* Ambient: the imagery drifts the whole way through the hold, so the scene
-     is never fully still even while the statement is settled. */
-  const drift = useTransform(scrollYProgress, [0, 1], ["-3%", "3%"]);
-  const zoom = useTransform(scrollYProgress, [0, 1], [1.06, 1.14]);
-
-  /* Layered depth: the words travel the opposite way to the photograph behind
-     them, and a third of the distance. Parallax reads as depth only when the
-     planes disagree — matching rates just looks like the whole scene sliding.
-     Transform only, so it composites and costs no layout. */
-  const textDrift = useTransform(scrollYProgress, [0, 1], ["1.4%", "-1.4%"]);
-  /* A third plane on the vignette was measured and REMOVED. It promoted a
-     full-viewport gradient to its own compositor layer for a movement almost
-     nobody could see, and home performance went 90-95 -> 88-90 with one
-     reading under the 89 floor. Two planes that disagree already read as
-     depth; the third was cost without effect. */
-
-  if (reduced) {
-    return (
-      <section
-        id={id}
-        data-stacked
-        className={cn("grain relative bg-olive-700 py-section-lg", className)}
-      >
-        <div aria-hidden className="grain-overlay" />
-        {/* Reduced motion means no MOTION, not no PICTURES.
-            An earlier version of this branch dropped `panel.image` entirely
-            and left three statements ranged left on a flat olive field with
-            two thirds of the page empty — a bulleted list, not a scene. The
-            photographs are the whole point of the scene, and they cost a
-            reduced-motion visitor nothing: they simply do not move.
-            Composed instead as alternating editorial pairs, so the sequence
-            still has a rhythm without a single transform. */}
-        <div className="relative mx-auto flex max-w-[92rem] flex-col gap-24 px-6 sm:px-8 lg:px-12">
-          {panels.map((panel, i) => (
-            <article
-              key={i}
-              className={cn(
-                "grid items-center gap-8 lg:grid-cols-2 lg:gap-16",
-                i % 2 === 1 && "lg:[&>figure]:order-last",
-              )}
-            >
-              {panel.image && (
-                <figure className="relative aspect-[4/3] overflow-hidden rounded-media">
-                  <Image
-                    src={panel.image}
-                    alt=""
-                    fill
-                    quality={68}
-                    sizes="(max-width: 1024px) 100vw, 44vw"
-                    placeholder={panel.blurDataURL ? "blur" : undefined}
-                    blurDataURL={panel.blurDataURL}
-                    className="object-cover"
-                  />
-                </figure>
-              )}
-              <div className="max-w-[36ch]">
-                <p className="text-eyebrow uppercase text-gold-300">
-                  {pad(i + 1)} — {panel.eyebrow}
-                </p>
-                <p className="text-display-md mt-5 text-sand-50">{panel.statement}</p>
-                {panel.detail && (
-                  <p className="text-body mt-5 text-sand-200/75">{panel.detail}</p>
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section
-      id={id}
-      ref={ref}
-      data-stacked
-      className={cn("relative bg-olive-700", className)}
-      style={{ height: `${panels.length * 100}svh` }}
-    >
-      <div className="grain sticky top-0 flex h-[100svh] items-center overflow-hidden">
-        {/* Imagery: one layer per panel, crossfading. */}
-        {panels.map((panel, i) =>
-          panel.image ? (
-            <motion.div
-              key={i}
-              className="absolute inset-0"
-              animate={{ opacity: i === active ? 1 : 0 }}
-              transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <motion.div
-                className="absolute inset-[-8%] will-change-transform"
-                style={{ y: drift, scale: zoom }}
-              >
-                <Image
-                  src={panel.image}
-                  alt=""
-                  fill
-                  quality={68}
-                  sizes="100vw"
-                  placeholder={panel.blurDataURL ? "blur" : undefined}
-                  blurDataURL={panel.blurDataURL}
-                  className="object-cover"
-                />
-              </motion.div>
-            </motion.div>
-          ) : null,
-        )}
+    <section id={id} data-stacked="" className={cn("bone-stock", styles.whyUs, className)}>
+      <div aria-hidden="true" className="bone-stock-layer" />
 
-        {/* The photograph is atmosphere, not subject. Side by side with the
-            benchmark a 72% wash left the image still legible and the statement
-            reading washy; the reference holds its centred statements on a
-            near-black ground. Deeper wash plus a vignette gives the type the
-            same punch while the imagery still drifts behind it. */}
-        <div aria-hidden className="absolute inset-0 bg-olive-700/90" />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,transparent_10%,rgba(20,23,26,0.55)_100%)]"
-        />
-        <div aria-hidden className="grain-overlay" />
-
-        {/* Sticky chapter index: a vertical ledger pinned to the edge for the
-            whole hold, so you always know how far through the scene you are.
-            Hidden on small screens, where the horizontal ledger below carries
-            it instead. */}
-        <div
-          aria-hidden
-          className="absolute top-1/2 left-6 hidden -translate-y-1/2 flex-col gap-4 lg:left-12 lg:flex"
-        >
-          {/* A rail behind the numbers, filled by the scene's own scroll
-              progress. The numbers alone said WHICH chapter; the rail says how
-              far through it you are, which is the question you actually have
-              while a scene is holding you in place.
-
-              It reuses `scrollYProgress` — already computed for the imagery —
-              and animates scaleY only, so it is a transform on a 1px element
-              and adds no listener and no measurable time. */}
-          <span className="absolute left-[3px] top-0 bottom-0 w-px bg-sand-100/15">
-            <motion.span
-              className="absolute inset-x-0 top-0 block origin-top bg-gold-400/70 will-change-transform"
-              style={{ height: "100%", scaleY: scrollYProgress }}
-            />
-          </span>
-
-          {panels.map((_, i) => (
-            <span key={i} className="relative flex items-center gap-3 pl-3">
-              {/* The tick doubles by scale rather than width, and the number
-                  travels the same 1rem by translate, so the change composites
-                  instead of laying the ledger out again. Tailwind v4 writes
-                  `scale` and `translate`, not `transform` — hence the lists. */}
-              <span
-                className={cn(
-                  "h-px w-4 origin-left transition-[scale,background-color] duration-700 ease-luxe",
-                  i === active ? "scale-x-200 bg-gold-400" : "scale-x-100 bg-sand-100/30",
-                )}
+      {panels.map((panel, i) => {
+        const landscape = i === 1;
+        return (
+          <article key={panel.eyebrow} className={cn("ed-grid", styles.whyRow)}>
+            {panel.image && (
+              <Plate
+                src={panel.image}
+                alt=""
+                ratio={landscape ? "3 / 2" : "4 / 5"}
+                sizes={
+                  landscape
+                    ? "(min-width: 1024px) 57vw, 100vw"
+                    : "(min-width: 1024px) 42vw, 100vw"
+                }
+                /* the unclip opens from the bleed edge; the inset row 3 from the left */
+                bleed={landscape ? "right" : i === 0 ? "left" : undefined}
+                unclip
+                className={styles.whyPlate}
+                imgClassName={i === 0 ? styles.cropGrove : undefined}
               />
-              <span
-                className={cn(
-                  "font-display text-eyebrow tabular-nums transition-[translate,color] duration-700",
-                  i === active ? "translate-x-4 text-gold-300" : "translate-x-0 text-sand-100/35",
-                )}
-              >
-                {pad(i + 1)}
-              </span>
-            </span>
-          ))}
-        </div>
-
-        {/* Centred statement — punctuation between the lighter sections. */}
-        <motion.div
-          style={{ y: textDrift }}
-          className="relative mx-auto w-full max-w-[92rem] px-6 text-center will-change-transform sm:px-8 lg:px-12"
-        >
-          {panels.map((panel, i) => (
-            // No aria-hidden on the inactive panels: which one shows is set by
-            // scroll alone, and a screen reader's cursor never scrolls the
-            // hold, so panels 2 and 3 were unreachable. They are already
-            // opacity-0 and pointer-events-none, and hold nothing focusable.
-            <div
-              key={i}
-              className={cn(
-                "ease-luxe",
-                i === active
-                  ? "opacity-100 transition-opacity delay-300 duration-500"
-                  : "pointer-events-none absolute inset-x-0 top-0 opacity-0 transition-opacity duration-200",
-              )}
-            >
-              {/* pad(i + 1), NOT the section `index` prop. This read the
-                  component-level section number inside a per-panel loop, so
-                  all three statements printed the same "03 ·" while the
-                  ledger below them counted 01 02 03 correctly — the two
-                  disagreed on screen. The reduced-motion branch above always
-                  had this right. */}
-              <p className="text-eyebrow uppercase text-gold-300">
-                {`${pad(i + 1)} · `}
-                {panel.eyebrow}
-              </p>
-              <p className="text-display-lg mx-auto mt-7 max-w-[20ch] text-balance text-sand-50">
-                {panel.statement}
-              </p>
-              {panel.detail && (
-                <p className="text-body mx-auto mt-7 max-w-[46ch] text-sand-100/75">
-                  {panel.detail}
-                </p>
-              )}
+            )}
+            <div className={styles.whyText}>
+              <span aria-hidden="true" className={styles.quoteRule} />
+              <p className={cn("text-pullquote", styles.whyStatement)}>{panel.statement}</p>
+              <p className={cn("text-caption", styles.whyCredit)}>{panel.eyebrow}</p>
             </div>
-          ))}
-
-          {/* Ledger */}
-          <div className="mt-14 flex items-center justify-center gap-3">
-            {panels.map((_, i) => (
-              <span
-                key={i}
-                aria-hidden
-                className={cn(
-                  "font-display text-eyebrow tabular-nums transition-colors duration-500",
-                  i === active ? "text-gold-300" : "text-sand-100/35",
-                )}
-              >
-                {pad(i + 1)}
-              </span>
-            ))}
-          </div>
-        </motion.div>
-      </div>
+          </article>
+        );
+      })}
     </section>
   );
 }

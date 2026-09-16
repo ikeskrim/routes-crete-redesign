@@ -56,7 +56,10 @@ export function SpinningBadge({
 
   const disc = (
     <span className="relative block size-28 xl:size-32">
-      <span className="badge-spin absolute inset-0 block">
+      {/* The ring loops forever, so it stops while the pointer is on the
+          badge or the badge has focus (WCAG 2.2.2), and never turns under
+          reduced motion (globals.css). */}
+      <span className="badge-spin absolute inset-0 block group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]">
         <svg viewBox="0 0 100 100" className="size-full" aria-hidden>
           <defs>
             <path
@@ -65,7 +68,7 @@ export function SpinningBadge({
               d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
             />
           </defs>
-          <text className="fill-sand-50 text-[7.4px] font-medium tracking-[0.16em] uppercase">
+          <text className="fill-on-night text-[7.4px] font-medium tracking-[0.16em] uppercase">
             <textPath href="#badge-ring" startOffset="0%">
               {ring}
             </textPath>
@@ -73,18 +76,34 @@ export function SpinningBadge({
         </svg>
       </span>
 
-      {/* The still centre. */}
+      {/* The still centre: a stone mark, decorative (gold is reserved for the
+          gold pill, C+ SPEC §B.2). */}
       <span className="absolute inset-0 flex items-center justify-center">
-        <span className="block size-2 rounded-pill bg-gold-400" />
+        <span className="block size-2 rounded-pill bg-stone" />
       </span>
     </span>
   );
 
-  // Before this ships: pause the spin on hover/focus (it loops forever), and give the footer's bottom bar lg clearance so the disc cannot cover "Photography credits".
+  /* Clearance (measured with a text-free stand-in of this disc at 1024-1920
+     on /, an item page and /contact, .hunt/cplus/rollout/g1/badge-*.log): at
+     the end of a page the disc rests over empty night; the back cover's legal
+     line is packed to the left, and "Photography credits" ends far short of
+     the disc. A link focused mid-page, though, is scrolled to the viewport's
+     bottom edge, under the disc, so `data-spinning-badge` raises the page's
+     bottom scroll padding while the badge renders (globals.css, as for the
+     booking bar). Re-measure if the legal line ever runs to the right edge. */
+  /* C+ edition: an opaque night disc (no backdrop blur, no shadow literal) in
+     paper type. Its round shape is allowlisted by preflight P8 because it
+     renders only verified social proof.
+     The disc is fixed, so it passes over paper and night grounds alike: its
+     focus ring is two-tone, a 2 px paper outline against the disc (14.71:1,
+     and against any night ground) inside a 2 px sienna band from a 4 px ring
+     (6.53:1 on paper). Neither colour alone is visible on both grounds. */
   const shell =
-    "fixed bottom-8 right-8 z-50 hidden place-items-center rounded-pill " +
-    "bg-ocean-950/85 backdrop-blur-sm shadow-[0_18px_50px_-24px_rgba(0,0,0,0.9)] " +
-    "lg:grid";
+    "fixed bottom-8 right-8 z-50 hidden place-items-center rounded-pill bg-night lg:grid";
+  const focusRing =
+    "focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-focus-night " +
+    "focus-visible:ring-4 focus-visible:ring-focus";
 
   return (
     <Link
@@ -92,7 +111,8 @@ export function SpinningBadge({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`${label} — verified ${verified}, opens the listing`}
-      className={`${shell} transition-transform duration-700 ease-luxe hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-400`}
+      data-spinning-badge=""
+      className={`group ${shell} ${focusRing} transition-transform duration-700 ease-luxe hover:scale-105`}
     >
       {disc}
     </Link>

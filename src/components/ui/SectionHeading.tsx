@@ -1,13 +1,17 @@
-import { cn, pad } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+
+import { Eyebrow } from "./Eyebrow";
 import { Reveal } from "./Reveal";
 
 /**
- * The editorial section header: a numbered waypoint index, a hairline rule,
- * then the display heading. The numbering is the spine of the brand — the site
- * is a set of routes, so every section is a marked point along one.
+ * A movement opener (C+ SPEC §C.6): the folio row (Roman numeral, hairline,
+ * department name) or a plain eyebrow, then the `section`-step heading and an
+ * optional deck. A `div`, never a `<header>`: the masthead is the page's one
+ * header. Numbering is Roman and only on the four interior movements; there
+ * are no Arabic section numbers.
  */
 export function SectionHeading({
-  index,
+  folio,
   eyebrow,
   title,
   subtitle,
@@ -17,53 +21,36 @@ export function SectionHeading({
   className,
   children,
 }: {
-  index?: number;
+  folio?: "I" | "II" | "III" | "IV";
   eyebrow?: string;
   title: string;
   subtitle?: string;
   id?: string;
   align?: "left" | "center";
-  /** `dark` = dark text on light bg. `light` = light text on dark bg. */
+  /** `dark` = ink on a light ground. `light` = paper on night. */
   tone?: "dark" | "light";
   className?: string;
   children?: React.ReactNode;
 }) {
-  const muted = tone === "dark" ? "text-rock-500" : "text-sand-200/70";
-  const ruleColor = tone === "dark" ? "bg-ink/15" : "bg-sand-100/25";
+  const night = tone === "light";
 
   return (
-    <header
+    <div
       className={cn(
         "flex flex-col",
         align === "center" && "items-center text-center",
         className,
       )}
     >
-      {(index !== undefined || eyebrow) && (
+      {eyebrow && (
         <Reveal>
-          <div
-            className={cn(
-              "flex items-center gap-4",
-              align === "center" && "justify-center",
-            )}
+          <Eyebrow
+            folio={folio}
+            tone={night ? "night" : "light"}
+            className={cn(folio && align === "center" && "justify-center")}
           >
-            {index !== undefined && (
-              <span
-                className={cn(
-                  "font-display text-eyebrow tabular-nums",
-                  tone === "dark" ? "text-gold-600" : "text-gold-400",
-                )}
-              >
-                {pad(index)}
-              </span>
-            )}
-            <span aria-hidden className={cn("h-px w-8", ruleColor)} />
-            {eyebrow && (
-              <span className={cn("text-eyebrow uppercase", muted)}>
-                {eyebrow}
-              </span>
-            )}
-          </div>
+            {eyebrow}
+          </Eyebrow>
         </Reveal>
       )}
 
@@ -71,8 +58,9 @@ export function SectionHeading({
         <h2
           id={id}
           className={cn(
-            "text-display-lg mt-6",
-            tone === "dark" ? "text-ink" : "text-sand-50",
+            "text-section",
+            !(eyebrow && folio) && "mt-6",
+            night ? "text-on-night" : "text-ink",
           )}
         >
           {title}
@@ -83,9 +71,9 @@ export function SectionHeading({
         <Reveal delay={0.12}>
           <p
             className={cn(
-              "text-body-lg mt-5 max-w-[42rem]",
+              "mt-5 max-w-[34ch] text-deck",
               align === "center" && "mx-auto",
-              tone === "dark" ? "text-rock-600" : "text-sand-200/85",
+              night ? "text-on-night-soft" : "text-ink-soft",
             )}
           >
             {subtitle}
@@ -94,6 +82,6 @@ export function SectionHeading({
       )}
 
       {children}
-    </header>
+    </div>
   );
 }

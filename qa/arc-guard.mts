@@ -39,10 +39,21 @@
  *       named for it. Before, any labelled link anywhere in <main> satisfied
  *       "> 0", so losing five of six pins passed.
  *
+ * New C+ assertion (§D.4, §I.1, §I.3; on at S9 through qa/cplus-stage.mts):
+ *
+ *   BAND  The golden band is `div[data-band="bridge"]`, exactly once, never a
+ *         <section> and a direct child of <main> (so the five movements stay
+ *         five), placed after #signature and before #how-to-book. It holds a
+ *         photograph, the ledgered pexels-27015910 frame, and its caption's
+ *         tier 1 (`figcaption [data-caption-tier="1"]`) is that record's
+ *         subject, read from content/photo-credits.json ("A mountain road in
+ *         Crete"). It replaces the dead `[data-bridge]` query.
+ *
  *   node qa/arc-guard.mts
  */
 import fs from "node:fs";
 import { chromium } from "playwright";
+import { cplusS9, cplusS9Line } from "./cplus-stage.mts";
 import { preflight } from "./preflight.mts";
 
 const BASE = process.env.QA_BASE_URL ?? "http://localhost:3009";
@@ -73,6 +84,9 @@ const ARC: { id: string; must: string[] }[] = [
 
 /** Structural elements that are deliberately NOT movements. */
 const BANDS = ["marquee", "bridge"];
+
+/** C+ S9: the golden band's photograph, by its ledger file. */
+const BAND_FILE = "pexels-27015910.jpg";
 
 /**
  * A6 oracle: the mappable locations that have a link, from content.
@@ -107,6 +121,8 @@ const check = (name: string, ok: boolean, detail: string) => {
   if (!ok) failed++;
 };
 
+const S9 = cplusS9();
+console.log(cplusS9Line());
 await preflight(BASE, process.cwd() + "/qa");
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } } as never);
@@ -184,8 +200,6 @@ const bands = await page.evaluate(
   () => ({
     marquee: !!document.querySelector("[data-marquee], .marquee, main [aria-hidden] [data-marquee]"),
     marqueeText: (document.body.textContent ?? "").includes("Booked by conversation"),
-    bridge: !!document.querySelector("[data-bridge]"),
-    bridgeImg: document.querySelectorAll("main > figure, main > div img").length,
   }),
 );
 check(
@@ -194,6 +208,96 @@ check(
   bands.marqueeText ? "found by its copy" : "not found",
 );
 console.log(`  note  bands are uncounted by design: ${BANDS.join(", ")}`);
+
+if (S9) {
+  console.log('\n[band] the golden band is a div[data-band="bridge"] between the essay and How to Book');
+  const ledger = JSON.parse(fs.readFileSync(new URL("content/photo-credits.json", REPO), "utf8")) as {
+    photographs: { file: string; subject: string }[];
+  };
+  const subject = ledger.photographs.find((p) => p.file === BAND_FILE)?.subject ?? null;
+  check(`the ledger has ${BAND_FILE}`, subject !== null, subject ? `subject "${subject}"` : "no ledger record");
+
+  const band = await page.evaluate((file) => {
+    const all = [...document.querySelectorAll('[data-band="bridge"]')];
+    const el = all[0] ?? null;
+    if (!el) {
+      return {
+        count: 0,
+        tag: "",
+        parent: "",
+        insideSection: false,
+        afterSignature: false,
+        beforeHowToBook: false,
+        imgs: 0,
+        bandImg: false,
+        srcs: [] as string[],
+        caption: null as string | null,
+      };
+    }
+    const signature = document.getElementById("signature");
+    const howToBook = document.getElementById("how-to-book");
+    const after = (a: Element | null, b: Element) =>
+      !!a && !a.contains(b) && !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const imgs = [...el.querySelectorAll("img")];
+    const srcOf = (img: HTMLImageElement) => {
+      const raw = img.currentSrc || img.getAttribute("src") || "";
+      try {
+        const url = new URL(raw, location.href);
+        return decodeURIComponent(url.searchParams.get("url") ?? url.pathname);
+      } catch {
+        return raw;
+      }
+    };
+    const tier1 = el.querySelector('figcaption [data-caption-tier="1"]');
+    return {
+      count: all.length,
+      tag: el.tagName,
+      parent: el.parentElement?.tagName ?? "",
+      insideSection: !!el.parentElement?.closest("section"),
+      afterSignature: !!signature && after(signature, el),
+      beforeHowToBook: !!howToBook && after(el, howToBook),
+      imgs: imgs.length,
+      bandImg: imgs.map(srcOf).some((s) => s.split("/").pop() === file),
+      srcs: imgs.map(srcOf).slice(0, 2),
+      caption: tier1 ? (tier1.textContent ?? "").replace(/\s+/g, " ").trim() : null,
+    };
+  }, BAND_FILE);
+
+  check(
+    'exactly one div[data-band="bridge"]',
+    band.count === 1,
+    band.count === 1 ? "found once" : `band ×${band.count}`,
+  );
+  if (band.count >= 1) {
+    check("the band is not a <section>", band.tag !== "SECTION", `<${band.tag.toLowerCase()}>`);
+    check(
+      "the band is a direct child of <main>",
+      band.parent === "MAIN" && !band.insideSection,
+      band.parent === "MAIN" && !band.insideSection
+        ? "main > div"
+        : `band inside <${band.parent.toLowerCase()}>${band.insideSection && band.parent !== "SECTION" ? " within a <section>" : ""}, not a direct child of <main>`,
+    );
+    check(
+      "the band sits between #signature and #how-to-book",
+      band.afterSignature && band.beforeHowToBook,
+      `${band.afterSignature ? "after #signature" : "NOT after #signature"}, ${band.beforeHowToBook ? "before #how-to-book" : "NOT before #how-to-book"}`,
+    );
+    check(
+      `the band holds the ${BAND_FILE} photograph`,
+      band.imgs > 0 && band.bandImg,
+      band.imgs === 0 ? "band has no img" : band.bandImg ? `${band.imgs} img` : `band img is ${band.srcs.join(", ")}`,
+    );
+    check(
+      "the band caption is the ledger subject",
+      band.caption !== null && band.caption === subject,
+      band.caption === null
+        ? "band caption tier 1 not found"
+        : band.caption === subject
+          ? `"${band.caption}"`
+          : `caption ≠ ledger subject: "${band.caption}" vs "${subject}"`,
+    );
+  }
+}
 
 /* The content the cut sections used to carry must still be reachable. Cutting
    the transfer spotlight is only legitimate because these survived. */

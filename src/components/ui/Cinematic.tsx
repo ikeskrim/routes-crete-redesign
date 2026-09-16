@@ -4,18 +4,23 @@ import { useRef } from "react";
 import Image from "next/image";
 import {
   motion,
-
   useMotionValue,
   useScroll,
   useSpring,
   useTransform,
 } from "motion/react";
 import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
-import { useRevealTrigger } from "@/lib/use-reveal-trigger";
 import { cn } from "@/lib/utils";
 
+import { Unclip } from "./Unclip";
+
 /* ------------------------------------------------------------------ *
- * ImageReveal — clip-path wipe + slow scale-down as it enters view.
+ * ImageReveal — a standalone framed photograph, uncovered once as it
+ * enters view (C+ SPEC §G.1 #5: across from its edge, 0.9 s, while the
+ * image settles from 1.06). The frame is square, bone while loading, with
+ * nothing laid over the photograph. A preloaded (LCP) image is never
+ * clipped: it paints at once. `Unclip` is the same reveal for frames that
+ * already exist.
  * ------------------------------------------------------------------ */
 
 export function ImageReveal({
@@ -25,9 +30,11 @@ export function ImageReveal({
   sizes,
   className,
   ratio = "aspect-[3/4]",
+  preload,
   priority,
   delay = 0,
-  from = "bottom",
+  from = "left",
+  quality,
 }: {
   src: string;
   alt: string;
@@ -35,64 +42,49 @@ export function ImageReveal({
   sizes: string;
   className?: string;
   ratio?: string;
+  preload?: boolean;
+  /** @deprecated Renamed `preload` (C+ SPEC §0.4 C6); still honoured. */
   priority?: boolean;
   delay?: number;
-  from?: "bottom" | "left";
+  /** The edge the photograph is uncovered from. */
+  from?: "left" | "right" | "top" | "bottom";
+  quality?: number;
 }) {
-  const reduced = useReducedMotionSafe();
-  const ref = useRef<HTMLDivElement>(null);
-  const seen = useRevealTrigger(ref);
-  /* A preloaded image is the one the page is measured on, so it must never
-     wait behind a reveal — the same rule MediaFrame applies. Without this the
-     server ships it fully clipped (reduced motion is unknown there) and it
-     stays invisible until hydration and the observer fire. */
-  const skip = reduced || !!priority;
-  const show = seen || skip;
-  const hidden =
-    from === "bottom" ? "inset(100% 0% 0% 0%)" : "inset(0% 100% 0% 0%)";
+  const eager = preload ?? priority ?? false;
+  const image = (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes={sizes}
+      preload={eager}
+      quality={quality}
+      placeholder={blurDataURL ? "blur" : undefined}
+      blurDataURL={blurDataURL}
+      className="object-cover"
+    />
+  );
 
   return (
-    <motion.div
-      ref={ref}
-      data-reveal
-
-      className={cn("relative overflow-hidden bg-ocean-900", ratio, className)}
-      initial={skip ? false : { clipPath: hidden }}
-      animate={{ clipPath: show ? "inset(0% 0% 0% 0%)" : hidden }}
-      transition={{
-        duration: 1.3,
-        delay,
-        ease: [0.16, 1, 0.3, 1],
-      }}
-    >
-      <motion.div
-        className="absolute inset-0 will-change-transform"
-        initial={skip ? false : { scale: 1.15 }}
-        animate={{ scale: show ? 1 : 1.15 }}
-        transition={{
-          duration: 1.8,
-          delay,
-          ease: [0.16, 1, 0.3, 1],
-        }}
-      >
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          sizes={sizes}
-          preload={priority}
-          placeholder={blurDataURL ? "blur" : undefined}
-          blurDataURL={blurDataURL}
-          className="object-cover"
-        />
-      </motion.div>
-    </motion.div>
+    <div className={cn("relative overflow-hidden bg-bone", ratio, className)}>
+      {eager ? (
+        image
+      ) : (
+        <Unclip delay={delay} from={from}>
+          {image}
+        </Unclip>
+      )}
+    </div>
   );
 }
 
 /* ------------------------------------------------------------------ *
- * Bridge — full-bleed cinematic image band between scenes, scrubbed by
- * scroll so the photograph drifts and breathes as it passes.
+ * Bridge — a full-bleed photograph between blocks, now a still plate.
+ *
+ * The scroll scrub is retired (C+ SPEC §G.2: still plates), and nothing is
+ * laid over the photograph (D2): no scrim, no grain. The caption sits under
+ * the frame on the night ground. The C+ surfaces use `PlateBand` instead;
+ * this stays until its last call sites move.
  * ------------------------------------------------------------------ */
 
 export function Bridge({
@@ -118,45 +110,26 @@ export function Bridge({
   className?: string;
   height?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotionSafe();
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.12, 1.04, 1.12]);
-
   return (
-    <div
-      ref={ref}
-      className={cn("grain relative w-full overflow-hidden bg-ocean-950", height, className)}
-    >
-      <motion.div
-        className="absolute inset-[-10%] will-change-transform"
-        style={reduced ? undefined : { y, scale }}
-      >
+    <div className={cn("w-full bg-night", className)}>
+      <div className={cn("relative w-full overflow-hidden", height)}>
         <Image
           src={src}
           alt={alt}
           fill
           sizes="100vw"
+          loading="lazy"
           placeholder={blurDataURL ? "blur" : undefined}
           blurDataURL={blurDataURL}
           className="object-cover"
         />
-      </motion.div>
-
-      <div aria-hidden className="scrim-soft absolute inset-0" />
-      <div aria-hidden className="grain-overlay" />
+      </div>
 
       {caption && (
-        <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 lg:p-14">
-          <p className="text-eyebrow uppercase text-sand-100/70">{caption}</p>
+        <div className="px-(--ed-margin) py-5">
+          <p className="text-caption-place text-on-night">{caption}</p>
           {creditNote && (
-            <p className="text-caption mt-1.5 text-sand-200/55">{creditNote}</p>
+            <p className="mt-[0.15rem] text-caption text-on-night-soft">{creditNote}</p>
           )}
         </div>
       )}
