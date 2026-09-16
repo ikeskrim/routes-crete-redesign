@@ -114,7 +114,7 @@ export function Footer({ site }: { site: SiteContent }) {
   const pageLinks = nav.filter((item) => !item.external);
 
   return (
-    <footer data-site-chrome className="grain night-density bg-night text-on-night">
+    <footer data-site-chrome className="defer-render grain night-density bg-night text-on-night [--defer-block-size:110rem]">
       {/* The night grain: above the ground, under every row (each row is
           positioned and comes later in the tree). */}
       <div aria-hidden="true" className="grain-overlay" />

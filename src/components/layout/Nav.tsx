@@ -203,8 +203,13 @@ export function Nav({
         }
       }
       setOverNight(night);
+      /* The back cover defers its rendering (`defer-render`): measuring
+         anything inside it forces its layout, and with it the Greek font.
+         So look inside only once the footer's own box is on screen. */
       const row = document.querySelector(BACK_WORDMARK);
-      const box = (row?.querySelector("h2") ?? row)?.getBoundingClientRect();
+      const cover = row?.closest("footer")?.getBoundingClientRect();
+      const coverShown = !!cover && cover.top < window.innerHeight && cover.bottom > 0;
+      const box = coverShown ? (row?.querySelector("h2") ?? row)?.getBoundingClientRect() : undefined;
       setQuiet(!!box && box.height > 0 && box.top < window.innerHeight && box.bottom > 0);
     };
     const schedule = () => {
