@@ -17,6 +17,15 @@
  * before anything is captured.
  *
  *   node qa/design3-shots.mts
+ *
+ * QA_PAIRS=1 (C+ SPEC S10c, additive): the C+ draft beside the rolled-out
+ * homepage, `/design-3/c-plus` and `/`, from the same build. Both viewports,
+ * with motion on (frames at t = 2.5 s) and with reduced motion, the first
+ * screen and the whole page: 16 `pair-*.jpg` frames. The existing C / C+
+ * frames and their build are left as they are; `pairs` is added to
+ * manifest.json with its own build commit.
+ *
+ *   QA_PAIRS=1 node qa/design3-shots.mts
  */
 import { chromium, type Page } from "playwright";
 import sharp from "sharp";
@@ -33,29 +42,12 @@ const VIEWPORTS = [
   { key: "mobile", viewport: { width: 390, height: 844 }, scale: 2 },
 ] as const;
 
+const PAIRS = process.env.QA_PAIRS === "1";
+
 await fs.mkdir(OUT, { recursive: true });
 await preflight(BASE, process.cwd() + "/qa");
 
 let failed = 0;
-const frames: { draft: string; viewport: string; kind: string; file: string }[] = [];
-
-/* The commit every frame below is of. */
-const stamps = new Set<string>();
-for (const draft of DRAFTS) {
-  const res = await fetch(`${BASE}/design-3/${draft}`);
-  const html = await res.text();
-  const commit = html.match(/name="build-commit" content="([^"]+)"/)?.[1] ?? "unknown";
-  const noindex = /<meta name="robots" content="noindex, ?nofollow"/.test(html);
-  const marked = html.includes("data-draft-page");
-  console.log(`/design-3/${draft}: ${res.status}, build ${commit}, noindex ${noindex}, marked ${marked}`);
-  if (res.status !== 200 || !noindex || !marked) failed++;
-  stamps.add(commit);
-}
-if (stamps.size !== 1) {
-  console.log(`FAIL  the drafts report different builds: ${[...stamps].join(", ")}`);
-  failed++;
-}
-const commit = [...stamps][0];
 
 async function settle(page: Page) {
   try {
@@ -116,54 +108,167 @@ async function fullFrame(page: Page, scale: number, file: string, quality: numbe
   return { segments: parts.length, height: top, expected: Math.round(height * scale) };
 }
 
-const browser = await chromium.launch();
-for (const draft of DRAFTS) {
-  for (const vp of VIEWPORTS) {
-    const context = await browser.newContext({
-      viewport: vp.viewport,
-      deviceScaleFactor: vp.scale,
-      reducedMotion: "reduce",
-    });
-    const page = await context.newPage();
-    await page.goto(`${BASE}/design-3/${draft}`, { waitUntil: "load", timeout: 60_000 });
-    await settle(page);
+/* QA_PAIRS: the draft beside the rolled-out site. */
+async function capturePairs() {
+  const PAGES = [
+    { key: "draft", route: "/design-3/c-plus" },
+    { key: "site", route: "/" },
+  ] as const;
+  const MOTIONS = [
+    { key: "motion", reducedMotion: "no-preference" },
+    { key: "reduced", reducedMotion: "reduce" },
+  ] as const;
 
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - window.innerWidth,
-    );
-    if (overflow > 1) {
-      console.log(`FAIL  ${draft} ${vp.key}: ${overflow}px of horizontal overflow`);
-      failed++;
-    }
-
-    const fold = `${draft}-${vp.key}-fold.jpg`;
-    await page.screenshot({ path: path.join(OUT, fold), type: "jpeg", quality: 80 });
-    frames.push({ draft, viewport: vp.key, kind: "fold", file: fold });
-    console.log(`  + ${fold}`);
-
-    await walk(page);
-    const full = `${draft}-${vp.key}-full.jpg`;
-    const shot = await fullFrame(page, vp.scale, path.join(OUT, full), 74);
-    if (shot.height !== shot.expected) {
-      console.log(`FAIL  ${full}: stitched ${shot.height}px of ${shot.expected}px`);
-      failed++;
-    }
-    frames.push({ draft, viewport: vp.key, kind: "full", file: full });
-    console.log(`  + ${full} (${shot.segments} segment${shot.segments === 1 ? "" : "s"}, ${shot.height}px)`);
-
-    await context.close();
+  /* One build for both pages, read from the pages themselves. */
+  const builds = new Set<string>();
+  for (const p of PAGES) {
+    const res = await fetch(`${BASE}${p.route}`);
+    const html = await res.text();
+    const build = html.match(/name="build-commit" content="([^"]+)"/)?.[1] ?? "unknown";
+    const marked = html.includes("data-draft-page");
+    console.log(`${p.route}: ${res.status}, build ${build}, draft marker ${marked}`);
+    if (res.status !== 200 || marked !== (p.key === "draft")) failed++;
+    builds.add(build);
   }
-}
-await browser.close();
+  if (builds.size !== 1) {
+    console.log(`FAIL  the pair pages report different builds: ${[...builds].join(", ")}`);
+    failed++;
+  }
+  const pairsCommit = [...builds][0];
+  const pairs: { page: string; viewport: string; motion: string; kind: string; file: string }[] = [];
 
-await fs.writeFile(
-  path.join(OUT, "manifest.json"),
-  JSON.stringify({ base: BASE, commit, capturedAt: new Date().toISOString(), frames }, null, 2) + "\n",
-);
-console.log(`\nmanifest.json — build ${commit}, ${frames.length} frames`);
+  const browser = await chromium.launch();
+  for (const p of PAGES) {
+    for (const vp of VIEWPORTS) {
+      for (const m of MOTIONS) {
+        const context = await browser.newContext({
+          viewport: vp.viewport,
+          deviceScaleFactor: vp.scale,
+          reducedMotion: m.reducedMotion,
+        });
+        const page = await context.newPage();
+        await page.goto(`${BASE}${p.route}`, { waitUntil: "load", timeout: 60_000 });
+        const loadedAt = Date.now();
+        if (m.key === "motion") {
+          /* The motion-on first screen at t = 2.5 s after load. */
+          await page.evaluate(async () => {
+            await document.fonts.ready;
+          });
+          await page.waitForTimeout(Math.max(0, 2500 - (Date.now() - loadedAt)));
+        } else {
+          await settle(page);
+        }
+
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth - window.innerWidth,
+        );
+        if (overflow > 1) {
+          console.log(`FAIL  ${p.key} ${vp.key} ${m.key}: ${overflow}px of horizontal overflow`);
+          failed++;
+        }
+
+        const fold = `pair-${p.key}-${vp.key}-${m.key}-fold.jpg`;
+        await page.screenshot({ path: path.join(OUT, fold), type: "jpeg", quality: 80 });
+        pairs.push({ page: p.key, viewport: vp.key, motion: m.key, kind: "fold", file: fold });
+        console.log(`  + ${fold}`);
+
+        await walk(page);
+        const full = `pair-${p.key}-${vp.key}-${m.key}-full.jpg`;
+        const shot = await fullFrame(page, vp.scale, path.join(OUT, full), 74);
+        if (shot.height !== shot.expected) {
+          console.log(`FAIL  ${full}: stitched ${shot.height}px of ${shot.expected}px`);
+          failed++;
+        }
+        pairs.push({ page: p.key, viewport: vp.key, motion: m.key, kind: "full", file: full });
+        console.log(`  + ${full} (${shot.segments} segment${shot.segments === 1 ? "" : "s"}, ${shot.height}px)`);
+
+        await context.close();
+      }
+    }
+  }
+  await browser.close();
+
+  const manifestPath = path.join(OUT, "manifest.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  manifest.pairs = { base: BASE, commit: pairsCommit, capturedAt: new Date().toISOString(), frames: pairs };
+  await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
+  console.log(`\nmanifest.json pairs — build ${pairsCommit}, ${pairs.length} frames`);
+}
+
+/* The C / C+ comparison frames (the default mode). */
+async function captureDrafts() {
+  const frames: { draft: string; viewport: string; kind: string; file: string }[] = [];
+
+  /* The commit every frame below is of. */
+  const stamps = new Set<string>();
+  for (const draft of DRAFTS) {
+    const res = await fetch(`${BASE}/design-3/${draft}`);
+    const html = await res.text();
+    const commit = html.match(/name="build-commit" content="([^"]+)"/)?.[1] ?? "unknown";
+    const noindex = /<meta name="robots" content="noindex, ?nofollow"/.test(html);
+    const marked = html.includes("data-draft-page");
+    console.log(`/design-3/${draft}: ${res.status}, build ${commit}, noindex ${noindex}, marked ${marked}`);
+    if (res.status !== 200 || !noindex || !marked) failed++;
+    stamps.add(commit);
+  }
+  if (stamps.size !== 1) {
+    console.log(`FAIL  the drafts report different builds: ${[...stamps].join(", ")}`);
+    failed++;
+  }
+  const commit = [...stamps][0];
+
+  const browser = await chromium.launch();
+  for (const draft of DRAFTS) {
+    for (const vp of VIEWPORTS) {
+      const context = await browser.newContext({
+        viewport: vp.viewport,
+        deviceScaleFactor: vp.scale,
+        reducedMotion: "reduce",
+      });
+      const page = await context.newPage();
+      await page.goto(`${BASE}/design-3/${draft}`, { waitUntil: "load", timeout: 60_000 });
+      await settle(page);
+
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - window.innerWidth,
+      );
+      if (overflow > 1) {
+        console.log(`FAIL  ${draft} ${vp.key}: ${overflow}px of horizontal overflow`);
+        failed++;
+      }
+
+      const fold = `${draft}-${vp.key}-fold.jpg`;
+      await page.screenshot({ path: path.join(OUT, fold), type: "jpeg", quality: 80 });
+      frames.push({ draft, viewport: vp.key, kind: "fold", file: fold });
+      console.log(`  + ${fold}`);
+
+      await walk(page);
+      const full = `${draft}-${vp.key}-full.jpg`;
+      const shot = await fullFrame(page, vp.scale, path.join(OUT, full), 74);
+      if (shot.height !== shot.expected) {
+        console.log(`FAIL  ${full}: stitched ${shot.height}px of ${shot.expected}px`);
+        failed++;
+      }
+      frames.push({ draft, viewport: vp.key, kind: "full", file: full });
+      console.log(`  + ${full} (${shot.segments} segment${shot.segments === 1 ? "" : "s"}, ${shot.height}px)`);
+
+      await context.close();
+    }
+  }
+  await browser.close();
+
+  await fs.writeFile(
+    path.join(OUT, "manifest.json"),
+    JSON.stringify({ base: BASE, commit, capturedAt: new Date().toISOString(), frames }, null, 2) + "\n",
+  );
+  console.log(`\nmanifest.json — build ${commit}, ${frames.length} frames`);
+}
+
+if (PAIRS) await capturePairs();
+else await captureDrafts();
 
 if (failed === 0) {
-  console.log("DESIGN-3 CAPTURES OK");
+  console.log(PAIRS ? "DESIGN-3 PAIR CAPTURES OK" : "DESIGN-3 CAPTURES OK");
 } else {
   console.log(`DESIGN-3 CAPTURES: ${failed} failure(s)`);
   process.exitCode = 1;

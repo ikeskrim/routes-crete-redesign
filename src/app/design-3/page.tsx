@@ -21,7 +21,27 @@ type Manifest = {
   commit: string;
   capturedAt: string;
   frames: { draft: string; viewport: string; kind: string; file: string }[];
+  /** C+ draft beside the rolled-out homepage (`QA_PAIRS=1`), from its own build. */
+  pairs?: {
+    base: string;
+    commit: string;
+    capturedAt: string;
+    frames: { page: string; viewport: string; motion: string; kind: string; file: string }[];
+  };
 };
+
+/* The pair columns: the frozen draft, then the site as rolled out. */
+const PAIR_PAGES = [
+  { key: "draft", name: "C+ draft" },
+  { key: "site", name: "Rolled-out site" },
+] as const;
+
+const PAIR_ROWS = [
+  { viewport: "desktop", motion: "motion", label: "Desktop · motion", width: 1440, height: 900 },
+  { viewport: "desktop", motion: "reduced", label: "Desktop · reduced motion", width: 1440, height: 900 },
+  { viewport: "mobile", motion: "motion", label: "Phone · motion", width: 780, height: 1688 },
+  { viewport: "mobile", motion: "reduced", label: "Phone · reduced motion", width: 780, height: 1688 },
+] as const;
 
 function readManifest(): Manifest | null {
   try {
@@ -268,6 +288,67 @@ export default function DesignThreeIndex() {
             ))}
           </ol>
         </section>
+
+        {/* ------------------------- C+ draft beside the rolled-out site */}
+        {manifest?.pairs && (
+          <section aria-labelledby="c-plus-rollout" className="mt-14 border-t border-[#16181b]/15 pt-10">
+            <h2
+              id="c-plus-rollout"
+              className="text-[clamp(1.5rem,4vw,2.25rem)] font-semibold tracking-[-0.015em]"
+            >
+              C+ draft and the rolled-out site
+            </h2>
+            <p className="mt-3 max-w-[56ch] text-[0.9375rem] leading-relaxed text-[#3d4044]">
+              The draft beside the live homepage, from the same build{" "}
+              <code>{manifest.pairs.commit}</code>: with motion (the first screen 2.5 seconds after
+              loading) and with reduced motion.
+            </p>
+
+            {PAIR_ROWS.map((row) => (
+              <div
+                key={`${row.viewport}-${row.motion}`}
+                className={`mt-6 grid grid-cols-2 items-start gap-3 sm:gap-6 ${row.viewport === "mobile" ? "sm:max-w-[34rem]" : ""}`}
+              >
+                {PAIR_PAGES.map((p) => {
+                  const find = (kind: string) =>
+                    manifest.pairs?.frames.find(
+                      (f) => f.page === p.key && f.viewport === row.viewport && f.motion === row.motion && f.kind === kind,
+                    );
+                  const fold = find("fold");
+                  const full = find("full");
+                  return (
+                    <figure key={p.key} className="min-w-0">
+                      {fold ? (
+                        <Image
+                          src={`/design3-assets/${fold.file}`}
+                          alt={`${p.name} · ${row.label} · first screen`}
+                          width={row.width}
+                          height={row.height}
+                          loading="lazy"
+                          sizes={row.viewport === "mobile" ? "(max-width: 640px) 45vw, 260px" : "(max-width: 1216px) 48vw, 580px"}
+                          className={`h-auto w-full border border-[#16181b]/10 ${row.viewport === "mobile" ? "rounded-[14px]" : "rounded-[6px]"}`}
+                        />
+                      ) : (
+                        pending
+                      )}
+                      <figcaption className="mt-2 text-[0.875rem] text-[#5a5d61]">
+                        {p.name} · {row.label}{" "}
+                        {full && (
+                          <a
+                            className="inline-flex min-h-11 items-center underline underline-offset-4"
+                            href={`/design3-assets/${full.file}`}
+                          >
+                            whole page
+                          </a>
+                        )}
+                      </figcaption>
+                    </figure>
+                  );
+                })}
+              </div>
+            ))}
+          </section>
+        )}
 
         <ol className="mt-14 flex flex-col gap-20">
           {DIRECTIONS.map((d, i) => {

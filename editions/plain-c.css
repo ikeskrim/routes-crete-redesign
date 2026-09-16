@@ -1,0 +1,167 @@
+/* ==========================================================================
+   PLAIN C: THE EDITION TOKENS OF DIRECTION C, AS A DROP-IN FOR C+
+
+   Not imported by anything. This is the "Plain C" column of the C+ spec
+   (§B.2–§B.4), laid out exactly like src/app/edition.css, so that reverting
+   the look to plain C is a token-level change:
+
+     1. Copy this file over src/app/edition.css.
+     2. In src/lib/edition.ts set GRADE = "c", THEME_COLOR = "#faf4e8",
+        DUOTONE = false and ITALIC_EMPHASIS = false.
+     3. Optional, only to restore C's preload profile: flip the `preload`
+        literals in src/app/fonts.ts as their comments say.
+
+   Then build and run the guards (preflight P12 checks that plate grading is
+   off while GRADE is "d", and on only with "c").
+
+   What this does NOT revert (it is composition, in components): the cover
+   geometry, the positioning spread, the why-us rows, the journeys index, the
+   golden band, the photo essay, the place breaks, the back cover, the paper
+   menu, which surfaces are paper, bone or night, the choice of emphasis
+   words, the folios and numerals, and the caption markup under plates.
+   ========================================================================== */
+
+:root {
+  /* §B.2 colour */
+  --ed-paper: #faf4e8;
+  --ed-bone: #f1e6d2;
+  --ed-ink: #2a2119;
+  --ed-ink-soft: #5b4d3f;
+  --ed-accent-text: #94401f;
+  --ed-accent: #b4532e;
+  --ed-label: #58623a;
+  --ed-band: #58623a;
+  --ed-on-band: #faf4e8;
+  --ed-band-dot: #b1b29a;
+  --ed-stone: #b3a792;
+  --ed-hairline: var(--ed-ink);
+  --ed-hairline-bone: var(--ed-ink);
+  --ed-rule: var(--ed-ink);
+  --ed-hairline-night: #473f36;
+  --ed-rule-night: #928b81;
+  --ed-plate-keyline: transparent;
+  --ed-cta-bg: #94401f;
+  --ed-cta-fg: var(--ed-paper);
+  --ed-cta-bg-hover: var(--ed-ink);
+  --ed-cta-fg-hover: var(--ed-paper);
+  --ed-cta-edge: transparent;
+  --ed-focus: var(--ed-accent-text);
+  --ed-focus-night: var(--ed-paper);
+  --ed-selection-bg: var(--ed-accent-text);
+  --ed-selection-fg: var(--ed-paper);
+  --ed-night: #2a2119;
+  --ed-night-raised: #342c23;
+  --ed-on-night: var(--ed-paper);
+  --ed-on-night-soft: var(--ed-bone);
+  --ed-scrim: var(--ed-night);
+  --ed-chart-grid: #e1d6c3;
+  --ed-chart-route: var(--ed-accent);
+  --ed-chart-pin: var(--ed-ink);
+  --ed-chart-grid-night: #473f36;
+  --ed-chart-route-night: var(--ed-accent);
+  --ed-chart-pin-night: var(--ed-paper);
+  --ed-chart-stop-bg-night: var(--ed-night);
+  --ed-chart-stop-edge-night: var(--ed-stone);
+  --ed-chart-stop-fg-night: var(--ed-on-night-soft);
+  --ed-chart-stop-lit-edge-night: var(--ed-accent);
+  --ed-chart-stop-lit-fg-night: var(--ed-paper);
+  --ed-chart-stop-active-bg-night: var(--ed-paper);
+  --ed-chart-stop-active-fg-night: var(--ed-night);
+
+  /* §B.3 type (Instrument Serif and Instrument Sans are already declared in
+     src/app/fonts.ts; Inter keeps the Greek registration line) */
+  --ed-display-family: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
+  --ed-em-family: var(--font-instrument-serif), Georgia, serif;
+  --ed-em-style: italic;
+  --ed-text-family: var(--font-instrument-sans), var(--font-inter), system-ui, sans-serif;
+  --ed-display-weight: 400;
+  --ed-display-weight-small: 400;
+  --ed-display-opsz: normal;
+  --ed-cover-fit: 1;
+  --ed-label-case: none;
+  --ed-label-tracking: 0.02em;
+  --ed-label-weight: 600;
+  --ed-label-size: 0.8125rem;
+  --ed-label-stretch: 87.5%;
+  --ed-t-cover: clamp(3.5rem, 17.5vw, 7.5rem);
+  --ed-t-statement: clamp(2.5rem, 6.2vw, 5.75rem);
+  --ed-t-section: clamp(2.25rem, 3.9vw, 3.5rem);
+  --ed-t-pullquote: clamp(2rem, 3.1vw, 2.75rem);
+  --ed-t-title: clamp(1.625rem, 2vw, 1.75rem);
+  --ed-t-deck: clamp(1.0625rem, 1.3vw, 1.25rem);
+  --ed-t-caption-place: 1.125rem;
+  --ed-caption-place-style: italic;
+  --ed-dropcap-color: var(--ed-accent);
+  --ed-dropcap-lines: 3;
+
+  /* §B.4 texture, grade-in-CSS, motion, grid, CTA shape */
+  --ed-paper-grain-opacity: 0;
+  --ed-paper-mottle-opacity: 0;
+  --ed-bone-grain-opacity: 0;
+  --ed-bone-mottle-opacity: 0;
+  --ed-paper-vignette: none;
+  --ed-night-grain-opacity: 0;
+  --ed-night-density: none;
+  --ed-film-grain-display: none;
+  --ed-plate-grade: sepia(0.32) saturate(1.12) contrast(0.97) brightness(1.03);
+  --ed-plate-print: linear-gradient(180deg, rgb(180 83 46 / 0.3) 0%, rgb(180 83 46 / 0.16) 28%, rgb(199 145 55 / 0.12) 55%, rgb(199 145 55 / 0.1) 100%);
+  --ed-plate-print-blend: multiply;
+  --ed-ease-reveal: cubic-bezier(0.22, 0.61, 0.2, 1);
+  --ed-ease-lay: cubic-bezier(0.7, 0, 0.18, 1);
+  --ed-kenburns-duration: 0s;
+  --ed-kenburns-scale: 1;
+  --ed-margin: clamp(1.25rem, 3.9vw, 3.5rem);
+  --ed-gutter: clamp(1rem, 1.7vw, 1.5rem);
+  --ed-col-max: calc((90rem - 2 * var(--ed-margin) - 11 * var(--ed-gutter)) / 12);
+  --ed-masthead-h: 3.5rem;
+  --ed-cta-radius: 0;
+  --ed-cta-weight: 600;
+  --ed-cta-tracking: 0.005em;
+  --ed-cta-min-h: 3rem;
+  --ed-cta-pad: 1.6rem;
+  --ed-radius-media: 0;
+  --ed-hair-w: 2px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --ed-t-cover: clamp(8rem, 11.5vw, 11.5rem);
+    --ed-masthead-h: 4rem;
+  }
+}
+
+/* Plain C draws its rules at 2 px at every resolution. */
+@media (min-resolution: 2dppx) {
+  :root {
+    --ed-hair-w: 2px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Grid, rhythm, cover-motion and hero-band values: the same in both editions
+   (copied unchanged from src/app/edition.css).
+   -------------------------------------------------------------------------- */
+:root {
+  --ed-cols: 4;
+  --ed-space-section: clamp(5rem, 10vw, 9rem);
+  --ed-space-block: clamp(3rem, 5vw, 4.5rem);
+  --ed-space-pair: clamp(1.5rem, 2.2vw, 2rem);
+  --ed-kb-origin: 50% 30%;
+  --ed-scrim-top: 70%;
+  --ed-col: min(var(--ed-col-max), (100cqi - 2 * var(--ed-margin) - (var(--ed-cols) - 1) * var(--ed-gutter)) / var(--ed-cols));
+  --ed-content-w: calc(var(--ed-cols) * var(--ed-col) + (var(--ed-cols) - 1) * var(--ed-gutter));
+  --ed-edge: calc((100cqi - var(--ed-content-w)) / 2);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --ed-cols: 8;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --ed-cols: 12;
+    --ed-kb-origin: 38% 20%;
+  }
+}

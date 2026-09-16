@@ -99,5 +99,124 @@
       "kind": "full",
       "file": "c-plus-mobile-full.jpg"
     }
-  ]
+  ],
+  "pairs": {
+    "base": "https://routes-crete-redesign.vercel.app",
+    "commit": "b019985",
+    "capturedAt": "2026-09-16T22:32:39.818Z",
+    "frames": [
+      {
+        "page": "draft",
+        "viewport": "desktop",
+        "motion": "motion",
+        "kind": "fold",
+        "file": "pair-draft-desktop-motion-fold.jpg"
+      },
+      {
+        "page": "draft",
+        "viewport": "desktop",
+        "motion": "motion",
+        "kind": "full",
+        "file": "pair-draft-desktop-motion-full.jpg"
+      },
+      {
+        "page": "draft",
+        "viewport": "desktop",
+        "motion": "reduced",
+        "kind": "fold",
+        "file": "pair-draft-desktop-reduced-fold.jpg"
+      },
+      {
+        "page": "draft",
+        "viewport": "desktop",
+        "motion": "reduced",
+        "kind": "full",
+        "file": "pair-draft-desktop-reduced-full.jpg"
+      },
+      {
+        "page": "draft",
+        "viewport": "mobile",
+        "motion": "motion",
+        "kind": "fold",
+        "file": "pair-draft-mobile-motion-fold.jpg"
+      },
+      {
+        "page": "draft",
+        "viewport": "mobile",
+        "motion": "motion",
+        "kind": "full",
+        "file": "pair-draft-mobile-motion-full.jpg"
+      },
+      {
+        "page": "draft",
+        "viewport": "mobile",
+        "motion": "reduced",
+        "kind": "fold",
+        "file": "pair-draft-mobile-reduced-fold.jpg"
+      },
+      {
+        "page": "draft",
+        "viewport": "mobile",
+        "motion": "reduced",
+        "kind": "full",
+        "file": "pair-draft-mobile-reduced-full.jpg"
+      },
+      {
+        "page": "site",
+        "viewport": "desktop",
+        "motion": "motion",
+        "kind": "fold",
+        "file": "pair-site-desktop-motion-fold.jpg"
+      },
+      {
+        "page": "site",
+        "viewport": "desktop",
+        "motion": "motion",
+        "kind": "full",
+        "file": "pair-site-desktop-motion-full.jpg"
+      },
+      {
+        "page": "site",
+        "viewport": "desktop",
+        "motion": "reduced",
+        "kind": "fold",
+        "file": "pair-site-desktop-reduced-fold.jpg"
+      },
+      {
+        "page": "site",
+        "viewport": "desktop",
+        "motion": "reduced",
+        "kind": "full",
+        "file": "pair-site-desktop-reduced-full.jpg"
+      },
+      {
+        "page": "site",
+        "viewport": "mobile",
+        "motion": "motion",
+        "kind": "fold",
+        "file": "pair-site-mobile-motion-fold.jpg"
+      },
+      {
+        "page": "site",
+        "viewport": "mobile",
+        "motion": "motion",
+        "kind": "full",
+        "file": "pair-site-mobile-motion-full.jpg"
+      },
+      {
+        "page": "site",
+        "viewport": "mobile",
+        "motion": "reduced",
+        "kind": "fold",
+        "file": "pair-site-mobile-reduced-fold.jpg"
+      },
+      {
+        "page": "site",
+        "viewport": "mobile",
+        "motion": "reduced",
+        "kind": "full",
+        "file": "pair-site-mobile-reduced-full.jpg"
+      }
+    ]
+  }
 }
