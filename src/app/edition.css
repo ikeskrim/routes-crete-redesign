@@ -6,7 +6,7 @@
    name; nothing else declares an --ed-* value (preflight P12).
 
    Values: the C+ column of §B.2–§B.4, copied unchanged from the frozen
-   draft's Layer E block (src/app/design-3/c-plus/c-plus.module.css `.root`,
+   draft's Layer E block (the C+ draft's c-plus.module.css `.root`, removed at close; in git history at e5b1059,
    §0.1), including the two mottle strengths amended in the draft review
    (.hunt/cplus/build/build-report.md, "Spec amendments proposed": lighter
    only, so every §F.2 worst-speckle ratio improves). The one difference from

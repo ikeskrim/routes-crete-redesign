@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { FeaturedFrame } from "@/components/sections/FeaturedFrame";
 import { ContentCard } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -8,11 +7,6 @@ import { SplitLines } from "@/components/ui/SplitLines";
 import { getExperiences, getImageSize, getSite } from "@/lib/content";
 import type { ContentItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-/** The most arresting frame on the site. Capped at 1024px, so it is shown at
- *  its native size rather than stretched. */
-const FEATURED_SRC =
-  "/images/experiences/kourtaliotis-temple-of-nature/ku953-dsc05531.jpg";
 
 export function generateMetadata(): Metadata {
   const site = getSite();
@@ -129,12 +123,6 @@ function plateRatio(portrait: boolean): string {
  */
 export default function ExperiencesPage() {
   const experiences = getExperiences();
-  const featuredOwner = experiences.find((e) =>
-    e.gallery.some((g) => g.src === FEATURED_SRC),
-  );
-  const featured = featuredOwner
-    ? { src: FEATURED_SRC, href: featuredOwner.href }
-    : null;
 
   return (
     <>
@@ -203,22 +191,6 @@ export default function ExperiencesPage() {
           </>
         )}
       </section>
-
-      {/* Never rendered: the gallery holds graded paths, so the ungraded
-          FEATURED_SRC never matches (INDEX R7). Kept, with its import, until
-          FeaturedFrame is deleted at S15 (C+ SPEC §0.2 S9). */}
-      {featured && (
-        <section className="bg-bone py-(--ed-space-section)">
-          <div className="mx-auto w-full max-w-[92rem] px-6 sm:px-8 lg:px-12">
-            <FeaturedFrame
-              src={featured.src}
-              href={featured.href}
-              caption="Following the river’s path, visitors continue through a unique natural environment that eventually leads to the lagoon and palm forest of Preveli, where the river meets the Libyan Sea."
-              credit="Kourtaliotis — The Temple of Nature"
-            />
-          </div>
-        </section>
-      )}
     </>
   );
 }

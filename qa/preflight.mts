@@ -242,16 +242,11 @@ async function readSources(root = "src"): Promise<SourceFile[]> {
 
 /* ---- allowlist helpers (each use carries its own comment) --------------- */
 
-/** The /design-3 drafts: frozen after their S3 captures and deleted at close. */
-const isDraft = (rel: string) => rel.startsWith("src/app/design-3/");
 const EDITION_CSS = "src/app/edition.css";
 const EDITION_TS = "src/lib/edition.ts";
 const GLOBALS_CSS = "src/app/globals.css";
 const BUTTON_TSX = "src/components/ui/Button.tsx";
 const PLATE_CSS = "src/components/ui/Plate.module.css";
-/** Imported by experiences/page.tsx, never rendered (INDEX R7). Its entries
-    in P9 and P10 EXPIRE AT S15, when the file is deleted. */
-const FEATURED_FRAME = "src/components/sections/FeaturedFrame.tsx";
 
 /* ---- CSS ----------------------------------------------------------------- */
 
@@ -752,7 +747,6 @@ const PILL_RADIUS = /(?<![\w.])9{3,}px|calc\(\s*infinity/;
    - rounded-pill / rounded-full in LocationsMap.tsx and RouteJourney.tsx:
      data marks (map markers, route stops), the only other round shapes.
    - SpinningBadge.tsx: renders nothing until verified social proof exists.
-   - src/app/design-3/**: the drafts (deleted at close).
    - src/app/edition.css: declares the --ed-cta-* values and the 999px
      pill radius themselves (Layer E).
    - @theme blocks in src/app/globals.css: register those values as the
@@ -768,7 +762,7 @@ function p8(ctx: RuleContext): Finding[] {
   const out: Finding[] = [];
   for (const info of ctx.infos) {
     const rel = info.file.rel;
-    if (rel === BUTTON_TSX || isDraft(rel)) continue;
+    if (rel === BUTTON_TSX) continue;
     for (const s of info.strings) {
       for (const token of s.text.split(/\s+/).filter(Boolean)) {
         if (CTA_UTILITY.test(baseUtility(token))) {
@@ -792,7 +786,7 @@ function p8(ctx: RuleContext): Finding[] {
     }
   }
   for (const f of ctx.files.filter((x) => x.kind === "css")) {
-    if (isDraft(f.rel) || f.rel === EDITION_CSS) continue;
+    if (f.rel === EDITION_CSS) continue;
     for (const d of parseCss(f)) {
       if (f.rel === GLOBALS_CSS && inAtRule(d, "theme")) continue;
       if (d.prop === "@apply") {
@@ -833,20 +827,14 @@ const STYLE_COLOUR_KEYS = /^(color|background(Color|Image)?|border(\w*Color)?|ou
        use): the untouched third-party form sits on white.
    (2) the mask stops inside src/app/globals.css utilities (`#000` / `black`
        in mask-image): an alpha mask, not a painted colour.
-   (3) src/app/design-3/**: the drafts (deleted at close).
-   (4) src/components/sections/FeaturedFrame.tsx, at most 2 occurrences:
-       never rendered; EXPIRES AT S15, when it is deleted.
    The rule's own scope: src/app/edition.css, and src/lib/edition.ts, its
    TypeScript twin (THEME_COLOR, §B.5). The night-density black lives in
    edition.css (`--ed-night-density`), so it needs no entry. */
 const P9_FORM_FRAME = { rel: "src/app/contact/page.tsx", token: "bg-white", max: 1 };
-const P9_FEATURED_MAX = 2;
 
 function p9(ctx: RuleContext): Finding[] {
   const out: Finding[] = [];
-  const counts = new Map<string, number>();
   const hit = (rel: string, line: number, what: string) => {
-    counts.set(rel, (counts.get(rel) ?? 0) + 1);
     out.push({ rule: "P9", where: at(rel, line), what });
   };
   const literalIn = (text: string) => {
@@ -857,7 +845,7 @@ function p9(ctx: RuleContext): Finding[] {
   let formFrameUses = 0;
   for (const info of ctx.infos) {
     const rel = info.file.rel;
-    if (isDraft(rel) || rel === EDITION_TS) continue;
+    if (rel === EDITION_TS) continue;
     for (const s of info.strings) {
       const lit = literalIn(s.text);
       if (lit) hit(rel, s.line, `colour literal ${lit} in "${s.text.trim().slice(0, 60)}"`);
@@ -887,7 +875,7 @@ function p9(ctx: RuleContext): Finding[] {
     }
   }
   for (const f of ctx.files.filter((x) => x.kind === "css")) {
-    if (isDraft(f.rel) || f.rel === EDITION_CSS) continue;
+    if (f.rel === EDITION_CSS) continue;
     for (const d of parseCss(f)) {
       if (d.prop.startsWith("@")) continue;
       const mask = /^(-webkit-)?mask(-image)?$/.test(d.prop);
@@ -904,13 +892,7 @@ function p9(ctx: RuleContext): Finding[] {
       }
     }
   }
-  /* (4) FeaturedFrame.tsx: up to its two known occurrences, never more. */
-  const featured = counts.get(FEATURED_FRAME) ?? 0;
-  const kept = out.filter((f) => !f.where.startsWith(`${FEATURED_FRAME}:`) || featured > P9_FEATURED_MAX);
-  if (featured > 0 && featured <= P9_FEATURED_MAX) {
-    ctx.notes.push(`P9 allowlist: ${featured} occurrence(s) in ${FEATURED_FRAME} (at most ${P9_FEATURED_MAX}, expires at S15)`);
-  }
-  return kept;
+  return out;
 }
 
 /* P10 --------------------------------------------------------------------- */
@@ -920,22 +902,18 @@ const LEGACY_SHELL = /(?<![\w-])(?:[^\s:"'`]+:)*!?(?:bg|text|border(?:-[xytrblse
 const LEGACY_TEXTURE = /(?<![\w-])(?:[^\s:"'`]+:)*(?:sand|sand-overlay|sand-wash)(?![\w-])/;
 const LEGACY_VAR = /--color-(?:(?:ocean|sand|gold|rock|olive)-\d{2,3}|shell)(?![\w-])/;
 
-/* P10 allowlist, commented per SPEC §I.2:
-   - src/app/design-3/**: the drafts (deleted at close);
-   - src/components/sections/FeaturedFrame.tsx: never rendered; EXPIRES AT
-     S15, when it is deleted. */
+/* P10 has no allowlist: its two entries (the /design-3 drafts and
+   FeaturedFrame.tsx) expired with their files at the C+ close (S15). */
 function p10(ctx: RuleContext): Finding[] {
   const out: Finding[] = [];
   for (const info of ctx.infos) {
     const rel = info.file.rel;
-    if (isDraft(rel) || rel === FEATURED_FRAME) continue;
     for (const s of info.strings) {
       const m = s.text.match(LEGACY_SCALE) ?? s.text.match(LEGACY_SHELL) ?? (s.classLike ? s.text.match(LEGACY_TEXTURE) : null) ?? s.text.match(LEGACY_VAR);
       if (m) out.push({ rule: "P10", where: at(rel, s.line), what: `legacy scale ${m[0]}` });
     }
   }
   for (const f of ctx.files.filter((x) => x.kind === "css")) {
-    if (isDraft(f.rel)) continue;
     const seenSelectors = new Set<string>();
     for (const d of parseCss(f)) {
       const where = at(f.rel, d.line);
@@ -958,36 +936,22 @@ function p10(ctx: RuleContext): Finding[] {
 
 /* P11 --------------------------------------------------------------------- */
 
-/* P11 allowlist (S9 integrator), the P9/P10 entry of SPEC §I.2 extended to
-   this rule: src/components/sections/FeaturedFrame.tsx, never rendered,
-   keeps its two legacy `text-rock-*` classes until it is deleted. The S9
-   cleanup deleted the legacy colour scales (§0.2 S9 step 2), so those
-   classes, which P10 admits in that file, name no token any more. Only a
-   legacy-scale colour, only in that file, at most 2 occurrences; any other
-   undefined colour there still fails. EXPIRES AT S15, with the file. */
-const P11_FEATURED_MAX = 2;
-const LEGACY_SCALE_COLOUR = /^(?:(?:ocean|sand|gold|rock|olive)-\d{2,3}|shell)$/;
+/* P11 has no allowlist: its one entry (FeaturedFrame.tsx) expired with the
+   file at the C+ close (S15). */
 
 function p11(ctx: RuleContext): Finding[] {
   const out: Finding[] = [];
   const defined = (c: string) => COLOUR_KEYWORDS.has(c) || ctx.theme.appColours.has(c) || ctx.theme.defaultColours.has(c);
-  const featured: Finding[] = [];
   for (const info of ctx.infos) {
     for (const s of info.strings) {
       if (!s.classLike) continue;
       for (const token of s.text.split(/\s+/).filter(Boolean)) {
         const colour = colourOf(token, ctx.theme);
         if (colour && !defined(colour)) {
-          const finding: Finding = { rule: "P11", where: at(info.file.rel, s.line), what: `P11: ${colour} undefined (${token}: no --color-${colour} token)` };
-          if (info.file.rel === FEATURED_FRAME && LEGACY_SCALE_COLOUR.test(colour)) featured.push(finding);
-          else out.push(finding);
+          out.push({ rule: "P11", where: at(info.file.rel, s.line), what: `P11: ${colour} undefined (${token}: no --color-${colour} token)` });
         }
       }
     }
-  }
-  if (featured.length > P11_FEATURED_MAX) out.push(...featured);
-  else if (featured.length > 0) {
-    ctx.notes.push(`P11 allowlist: ${featured.length} legacy-scale class(es) in ${FEATURED_FRAME} (at most ${P11_FEATURED_MAX}, expires at S15)`);
   }
   for (const f of ctx.files.filter((x) => x.kind === "css")) {
     for (const d of parseCss(f)) {
@@ -1014,13 +978,12 @@ function p11(ctx: RuleContext): Finding[] {
 
 const EDITION_CONSTANTS = new Set(["GRADE", "THEME_COLOR", "DUOTONE", "ITALIC_EMPHASIS"]);
 
-/* P12 allowlist, commented per SPEC §I.2: src/app/design-3/** (C's
-   c.module.css declares 136 --ed-* values and the C+ draft module declares
-   the Layer E block; both are drafts, deleted at close). */
+/* P12 has no allowlist: its one entry (the /design-3 drafts, which declared
+   their own --ed-* values) expired with the drafts at the C+ close (S15). */
 function p12(ctx: RuleContext): Finding[] {
   const out: Finding[] = [];
   for (const f of ctx.files.filter((x) => x.kind === "css")) {
-    if (isDraft(f.rel) || f.rel === EDITION_CSS) continue;
+    if (f.rel === EDITION_CSS) continue;
     for (const d of parseCss(f)) {
       if (/^--ed-/.test(d.prop)) {
         out.push({ rule: "P12", where: at(f.rel, d.line), what: `${d.prop} declared outside ${EDITION_CSS}` });
@@ -1029,7 +992,6 @@ function p12(ctx: RuleContext): Finding[] {
   }
   for (const info of ctx.infos) {
     const rel = info.file.rel;
-    if (isDraft(rel)) continue;
     for (const k of info.customPropKeys) {
       if (k.name.startsWith("--ed-")) {
         out.push({ rule: "P12", where: at(rel, k.line), what: `${k.name} declared in a style object, outside ${EDITION_CSS}` });
@@ -1136,7 +1098,6 @@ function p13(ctx: RuleContext): Finding[] {
   /* (a–c) faux small caps, old-style figures, font synthesis: CSS. */
   let synthesisNone = false;
   for (const f of ctx.files.filter((x) => x.kind === "css")) {
-    if (isDraft(f.rel)) continue;
     for (const d of parseCss(f)) {
       const where = at(f.rel, d.line);
       if ((d.prop === "font-variant-caps" || d.prop === "font-variant") && /small-caps|petite-caps|unicase|titling-caps/.test(d.value)) {
@@ -1158,7 +1119,6 @@ function p13(ctx: RuleContext): Finding[] {
 
   /* (d) filter / blend / backdrop on a photograph: CSS. */
   for (const f of ctx.files.filter((x) => x.kind === "css")) {
-    if (isDraft(f.rel)) continue;
     for (const d of parseCss(f)) {
       if (!FILTER_PROPS.has(d.prop) || HARMLESS_FILTER_VALUE.test(d.value)) continue;
       const sel = declSelector(d);
@@ -1231,7 +1191,6 @@ function p13(ctx: RuleContext): Finding[] {
 
   for (const info of ctx.infos) {
     const rel = info.file.rel;
-    if (isDraft(rel)) continue;
 
     for (const s of info.strings) {
       for (const token of s.text.split(/\s+/).filter(Boolean)) {

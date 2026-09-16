@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
  * so an unknown value never shows as a placeholder. The closing line stays
  * roman: global chrome never requests the italic file (§C.2 rule 4).
  *
- * Placement follows the draft (`src/app/design-3/c-plus`, the back-cover
+ * Placement follows the draft (the C+ draft, removed at close, the back-cover
  * block): below 640 one column; 640–1023 plate `col 1 / span 4` beside the
  * closing block `col 5 / span 4`, link columns two per row; from 1024 the
  * closing block moves to `col 6 / span 7` and the columns sit three across.

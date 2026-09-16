@@ -36,7 +36,7 @@ export function photoRecord(file: string): PhotoCredit | undefined {
 /**
  * The tier-2 credit line of a ledger record: `Photograph: {author},
  * {licence}`, plus ` (colour-graded)` when the record says the file was
- * modified. The live pattern of `src/app/design-3/c/credit.ts:18`.
+ * modified. The pattern draft C used (its credit.ts, removed at close).
  */
 export function creditLine(record: Pick<PhotoCredit, "author" | "licence" | "modified">): string {
   return `Photograph: ${record.author}, ${record.licence}${record.modified ? " (colour-graded)" : ""}`;
@@ -46,7 +46,7 @@ export function creditLine(record: Pick<PhotoCredit, "author" | "licence" | "mod
  * A photograph's caption and credit, read from content/photo-credits.json
  * (the same record /credits renders), so neither string lives in a page.
  * `caption` is the record's `subject`, verbatim; `credit` is `creditLine()`.
- * Moved unchanged from `src/app/design-3/c/credit.ts` (§C.9): no ledger
+ * Moved unchanged from draft C's credit.ts (§C.9): no ledger
  * record → `null`, and a caller renders nothing (fail closed).
  */
 export function photoCredit(file: string): { caption: string; credit: string } | null {

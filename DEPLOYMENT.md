@@ -220,22 +220,20 @@ The git-main alias carries `X-Robots-Tag: noindex`, so Lighthouse reports
 images resolve on whatever origin is actually serving. After DNS cutover the
 two converge and the file becomes a no-op — no change required.
 
-**One temporary route is live: `/design-3`.** It holds three drafts of the
-homepage top (`/design-3/a`, `/b`, `/c`) and an index page, built so the client
-can choose the new direction from his phone. It is `noindex, nofollow`, linked
-from nowhere, and absent from the sitemap. **Delete it once the client has
-picked, and before cutover**:
+**No temporary route is live.** `/design-3` held the three drafts of the
+homepage top, the C+ draft and their captures while the client chose a
+direction. It was deleted at the C+ close, together with
+`public/design3-assets`, `qa/design3-shots.mts` and the draft block in
+`src/app/globals.css`. The captures remain in git history at `e5b1059`.
 
-```bash
-git rm -r src/app/design-3 public/design3-assets qa/design3-shots.mts
-```
+The `data-site-chrome` attributes on the masthead and the footer **stay**. The
+draft block no longer needs them, but the guards (nav-flash-guard,
+credits-guard) and the masthead's night-surface reader find the site chrome
+by them.
 
-Then remove the matching leftovers by hand:
-- the `/design-3 DRAFTS` block at the end of `src/app/globals.css`
-- the `data-site-chrome` attributes in `Nav.tsx` and `Footer.tsx`
-
-Three earlier temporary routes existed, each for one conversation, and each was
+Four earlier temporary routes existed, each for one conversation, and each was
 deleted once that conversation closed:
+- `/design-3` (the three directions, then C beside C+)
 - `/serif-preview` (the typeface A/B)
 - `/review` (the first ten decisions as a page)
 - `/review-2` (the beauty, interaction and photo-hunt passes, nine items plus the trust line)

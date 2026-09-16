@@ -165,8 +165,10 @@ const nextConfig: NextConfig = {
     deviceSizes: [420, 640, 768, 1024, 1280, 1536, 1920, 2560],
     imageSizes: [32, 48, 64, 96, 128, 256, 384],
     /* Next 16 defaults to [75]; 68 is enough for these photographs and shaves a
-       meaningful amount off the gallery pages. */
-    qualities: [68, 75, 90],
+       meaningful amount off the gallery pages. 75 is the item heroes' measured
+       LCP setting (C+ contract C8). 90 served only the /design-3 drafts and
+       left with them. */
+    qualities: [68, 75],
     minimumCacheTTL: 31_536_000,
   },
 

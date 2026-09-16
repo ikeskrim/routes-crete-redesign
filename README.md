@@ -102,7 +102,6 @@ qa/                          ← verification harnesses (dev-only, not shipped)
 
 src/
   app/                         routes, layout, metadata, sitemap.ts, robots.ts
-    design-3/                  TEMPORARY: three draft directions for the client's pick, noindex; deleted after it (DEPLOYMENT.md)
   components/
     ui/                        Button, Card, Container, Section, SectionHeading, RichText,
                                Media, Reveal, SplitLines, Cinematic, EmptyState, SmoothScroll
