@@ -511,7 +511,7 @@ export function ItemDetail({ item }: { item: ContentItem }) {
       {locations.length > 0 && (
         <section
           aria-labelledby="route-heading"
-          className="defer-render grain bg-night py-(--ed-space-section) text-on-night [--defer-block-size:85rem]"
+          className="grain bg-night py-(--ed-space-section) text-on-night"
         >
           <div aria-hidden="true" className="night-density pointer-events-none absolute inset-0" />
           <div aria-hidden="true" className="grain-overlay" />
@@ -566,7 +566,7 @@ export function ItemDetail({ item }: { item: ContentItem }) {
       {related.length > 0 && (
         <section
           aria-labelledby="related-heading"
-          className="defer-render ed-grid paper-stock bg-paper py-(--ed-space-section) text-ink [--defer-block-size:70rem]"
+          className="ed-grid paper-stock bg-paper py-(--ed-space-section) text-ink"
         >
           <div aria-hidden="true" className="paper-stock-layer no-vignette" />
           <Eyebrow className={cn(HEAD_COL, "sm:row-start-1")}>Continue</Eyebrow>

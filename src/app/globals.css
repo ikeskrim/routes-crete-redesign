@@ -777,22 +777,6 @@
   }
 }
 
-/* Deferred rendering for blocks that always start below the first screen
-   (C+ S9b, measured on the branch preview). The browser skips their style,
-   layout and paint until they near the viewport, so the first frame lays out
-   only what it shows. The footer's Greek registration line then no longer
-   pulls the Greek font file in before the page's largest paint. Kourtaliotis
-   lost the race between that paint and hydration in most Lighthouse runs.
-   The size stands in for the block until it has rendered once; `auto` then
-   keeps the real size. Only for blocks with no fixed-position descendant:
-   containment makes the block the fixed element's containing block and clips
-   its paint. So never on the story (the phone booking bar) or the gallery
-   (the lightbox). */
-@utility defer-render {
-  content-visibility: auto;
-  contain-intrinsic-block-size: auto var(--defer-block-size, 60rem);
-}
-
 /* Night grain (§F.1): `grain` on the night ground, `grain-overlay` as its
    absolutely positioned child, always under plates in z-order. Pure CSS, no
    image request. Never `grain fixed` (preflight P1). */
