@@ -1,3 +1,880 @@
+# DIRECTION C CHOSEN — C+, THE ROLLOUT, AND THE FOUNDATIONS — 2026-09-14 to 2026-09-17
+
+The client picked **C — Warm Editorial**, with one instruction: "it can become
+even more beautiful." This brief refines C into C+, publishes the comparison
+for the record, rolls C+ out across the whole site without waiting, and then
+finishes the rest of the list. No approval stops: every judgement call is taken
+on a conservative default and logged below.
+
+## Where it ended
+
+- **Live:** production serves `main`, the C+ edition with the italic
+  emphasis word; the `/design-3` drafts are deleted.
+  - `014b9e9` was R1, the rollout.
+  - `b019985` was R2, the italic.
+  - `e5b1059` holds the side-by-side record.
+  - `524cada` closed the code.
+  - The record commit after it changes documents and one ledger note only.
+
+  `HEAD` = `origin/main`, and the working tree is clean.
+- **Budgets on the deployment,** median of 5 interleaved runs on `524cada`:
+
+  | Route | Performance |
+  |---|---|
+  | `/` | 90 |
+  | Kourtaliotis | 90 |
+  | Transfer detail | 93 |
+  | `/transfers` | 94 |
+  | `/contact` | 97 |
+
+  a11y is 100, CLS 0 and TBT ≤ 63 ms everywhere. The floors (89 / CLS 0 /
+  TBT ≤ 250 / a11y 100) were never touched.
+- **Guards:** all ten, plus copy-subset and visual-check, pass against the
+  live alias. Preflight passes on the tree.
+- **Proofs:** every changed instrument was proven both ways with seeded
+  faults; the seeded faults for each stage are listed below.
+- **Nothing cutover-related was touched:** no DNS, no domain, no project
+  settings.
+
+## Ground truth at the start
+
+- Working tree clean; `HEAD` = `origin/main` = `aa617b0`.
+- The production alias is LIVE on `aa617b0`.
+
+## Ratified by the client (recorded as given)
+
+- Folding the research brief into the running reset instead of restarting.
+- Refusing the project-settings items (Vercel Bot Protection, Deployment
+  Protection, Trusted IPs), and deferring HSTS `preload` / `includeSubDomains`
+  to the cutover as domain policy.
+- Draft A's contrast band, measured to the worst letter pixel.
+- The tenth guard (security headers) is permanent.
+
+## Conservative defaults taken
+
+- **The C+ grade is D "amber soft"**, chosen by eye from five prototypes on
+  ten representative frames: the hero meadow, Balos water, a golden-hour
+  mountain road, Preveli's palms, Spili village, the harbour at night, the
+  dusk coast, two tour photographs with people, and the van.
+  - **Rejected:** D2 "sienna matte" (milky skies, a muddy white background)
+    and D1 "warm film" (a veil over the blacks, a lavender-grey sky, warmth
+    leaning yellow-green). D5 "amber film" was one step too far: the dusk
+    coast went milky.
+  - **Chosen over D3 "golden soft"**, which read yellow on the dusk sky. D4
+    moves the warmth toward amber and peach.
+  - **What it does against C:** a highlight shoulder so skies and clouds roll
+    off instead of clipping; a gentle filmic contrast (1.06 against 1.10); a
+    faint warm black lift; red-leaning warmth; turquoise calmed (cyan lift
+    0.08 against 0.22); foliage tempered toward olive.
+  - **Known and accepted:** a faint lavender cast in clear blue skies.
+  - **Mechanism:** the shoulder is a new LUT term in `qa/grade.ps1`, zero for
+    A/B/C, so those grades reproduce byte-for-byte.
+
+- **Grade D is proven not to disturb the live grade.** After the patch, two
+  committed grade-C frames were regraded, and `public/images/graded/c` stayed
+  byte-identical (`git status` empty). The whole corpus then graded to D:
+  83 images in 24 s.
+- **Where this brief overrides the mapping stage's cautious defaults.** Eight
+  readers and a synthesis mapped the project first (local,
+  `.hunt/cplus/understand/`). Several of its defaults assumed client gates
+  that this brief removes. The brief wins, in these places:
+  - **No approval gates.** The C vs C+ comparison is published for the record,
+    and the rollout follows immediately. Pushes and deploys go ahead as the
+    brief orders them.
+  - **The hero photograph is in scope.** The brief lists it among the rollout
+    items, so changing `site.hero.backgroundImage` is authorised. It still
+    must be a ledgered, licence-clean frame, captioned honestly.
+  - **Italics for the emphasis word** are built, because the brief asks for
+    them. The guard is budget, not approval: the Fraunces italic file ships
+    only if a 5-run interleaved measurement holds the floors. Rules: the
+    word is never recoloured; at most one per headline; it must match the
+    content verbatim, or nothing is set in italic; never a place or brand
+    name.
+  - **The Fitzroy hover image swap on the journeys** is built, because the
+    brief asks for it. It is CSS only, with no new client JavaScript on `/`,
+    where TBT headroom is 63 ms. Touch devices get the plates inline.
+  - **The kinetic cursor on the hero is retired.** Brief item 6 asks for
+    restrained, editorial motion (slow reveals, sticky captions, Ken Burns),
+    and type that moves against its photograph breaks the printed-plate cover.
+  - **No separate "specimen" route.** The rollout itself is judged, through
+    side-by-sides of the draft against the rolled-out site at desktop, at
+    390, and under reduced motion.
+
+- **Grade D, verified before anything renders with it:**
+  - Uniformity: `qa/grade-diff.ps1 -From c -To d` shows all 83 files differ
+    from C, so none was skipped. The mean delta is 6.55/255; the smallest is
+    2.3 (a shaded tour photograph) and the largest 12.0 (a turquoise Pexels
+    sea).
+  - Bytes: the corpus is 35,622,685 B in C and 33,963,378 B in D (−4.7%). The
+    softer highlights compress better. Dusk-coast cover candidate
+    218,334 → 196,822 B; current home hero 883,266 → 868,474 B.
+  - Blur placeholders: 83 generated for D. The map is a union: 217 → 300
+    entries, so C keeps its placeholders.
+  - No EXIF in any derivative (and none in C).
+  - The three guards that hard-coded grade letters now read every letter
+    directory. `credits-guard`'s Pixabay hold would otherwise have gone
+    silently blind to `d`; `asset-audit`'s retired team photographs are now
+    tested under every letter (15 URLs, up from 7); `parity`'s fallback was
+    stale at `b`.
+- **Secrets, re-scanned at today's HEAD.** gitleaks 8.30.1 (release zip
+  SHA-256 checked against the release's checksum file; binary
+  `17157e2e…fcb7c`) scanned all 116 commits on every ref at `aa617b0`
+  (`gitleaks git --log-opts="--all" --redact`), 2026-09-14T07:21Z:
+  **no leaks.** If anything is ever found: rotate the credential first, then
+  rewrite history, then re-scan.
+
+- **Skills: three first-party skills installed, nothing else.**
+  - **What was fetched and read.** Every file was fetched read-only through the
+    GitHub API at a pinned commit and read in full before install. Sources:
+    - `anthropics/skills@34040c9` (verified Anthropic organisation);
+    - `vercel-labs/agent-skills@063bee9` (verified Vercel Labs organisation);
+    - the guidelines snapshot `vercel-labs/web-interface-guidelines@e3d624b`.
+
+    None of the three skill folders contains a script, an executable or a
+    symlink.
+  - **What was installed** into `.claude/skills/`: 80 files, each checked
+    against its recorded sha256 before copying and again after.
+    - `frontend-design`: `SKILL.md` and its Apache-2.0 `LICENSE.txt`, verbatim.
+    - `vercel-react-best-practices`: `SKILL.md`, `AGENTS.md`, `metadata.json`
+      and all 72 rule files, verbatim. Its contributor README is omitted.
+    - `web-design-guidelines`, **pinned**: upstream `SKILL.md` makes the agent
+      fetch its rules from a mutable `main`-branch URL before every review. For
+      a live commercial site that is a standing invitation for a third-party
+      push to change what reviews do. The reviewed `command.md` (sha256
+      `5a775e64…`) is vendored with its MIT licence, and `SKILL.md` is edited
+      only to read it locally.
+  - **Why and how:** `.claude/skills/PROVENANCE.md` holds every file's
+    upstream path, ref, bytes and sha256, the exact diff, and the conditions of
+    use:
+    1. `content/*.json` stays the only copy source.
+    2. The client chose C, so frontend-design's own "the brief's own words
+       always win" applies against its cream/serif/terracotta tell list.
+    3. Next.js examples are checked against the local Next 16 docs.
+    4. No new dependencies come from the rules.
+  - **Not committed, on purpose.** `.claude/` is excluded by this clone's own
+    `.git/info/exclude` (not by `.gitignore`), most likely to keep local agent
+    settings out of a public repository. Force-adding would publish past a
+    deliberate rule, and the brief asks to install and record, not to publish.
+    The skills are installed on this machine; this record is the committed
+    account. To share them: `git add -f .claude/skills`.
+  - **No community skills,** per the brief.
+
+- **"Letter-spaced small-caps eyebrows" cannot be delivered with the fonts the
+  site serves, and nothing will fake them.**
+  - **Method.** An offline check parsed all 37 built WOFF2 files (the table
+    directory, the Brotli stream, GSUB/GPOS feature lists, and glyph outlines
+    for the figures). A Cormorant Garamond control confirmed the method detects
+    old-style figures when they exist. Scripts are local, in
+    `.hunt/cplus/spec/fontcheck-data/`.
+  - **Small caps:** no `smcp`/`c2sc` and no small-cap glyph in any file,
+    Fraunces and Inter included. Browsers would synthesise faux small caps
+    (shrunken capitals), which is exactly what a magazine would never print.
+  - **Folios:** no `onum` either, so the section numerals are designed for
+    Fraunces' lining figures. Where numerals must align in a column, Inter
+    tabular figures are available and verified.
+  - **What does work:** Fraunces carries its optical-size axis up to 144, so
+    "Fraunces at its display optical size" is delivered as asked.
+  - **The only route to true small caps** would be a self-hosted font built
+    from upstream sources. That needs a download, an OFL licence check, proof
+    that the upstream font even has small caps (unverified), and the same
+    budget measurement as the italic. Not done here; it stays open for the
+    client.
+
+- **CSP scoped to the Monday.com origin, without a report-only gap.**
+  - **Before:** `frame-src https://forms.monday.com` went out on every route,
+    although only `/contact` frames anything.
+  - **Now:** `frame-src 'none'` everywhere, with the form's origin on
+    `/contact` only. That comes from a later `/contact` headers entry: Next's
+    docs say the last matching key wins. The contact value is a complete
+    policy, because CSP values are replaced, not merged.
+  - **How it earned enforcement.** The documented procedure (switch to
+    report-only, deploy, check, re-enforce) would have left the live site with
+    no enforcing policy between deploys. Instead the existing policy kept
+    enforcing, and the scoped policy rode alongside it as
+    `Content-Security-Policy-Report-Only`, which `qa/security-headers.mts`
+    counts. A clean deployment run switches `FRAME_SCOPE` to `"enforced"`.
+  - **The trial, `aad17be`, live:** security-headers saw zero violations on
+    all nine routes, report-only included. The form check also passed on the
+    deployment at 1280×900 and 1920×1080: no request before scrolling, the
+    same 12 fields and 6 buttons, and the `<noscript>` fallback present. That
+    earned the switch to enforcing.
+  - **Enforced, `634f538`, live:**
+    - `/` and `/experiences` send an enforcing `frame-src 'none'`;
+    - `/contact` alone allows `https://forms.monday.com`;
+    - no report-only header remains;
+    - security-headers passes with zero violations;
+    - the form check passes again at both viewports.
+
+    Throughout, the live site never went without an enforcing policy.
+  - **A regression I introduced and then caught: `next dev` would not start.**
+    CSP headers are production-only, so in development the new `/contact`
+    entry carried `headers: []`. Next rejects that at startup ("Invalid header
+    found").
+    - **Why nothing caught it:** every production build, deploy and live check
+      passed, because none of them runs the dev server. It surfaced when the
+      shared dev server for the C+ draft build crashed on start.
+    - **Fix (`95e821a`):** the `/contact` entry is now emitted only when it has
+      headers. The dev server then started in 407 ms and served the drafts.
+      Production output is unchanged, confirmed on the live alias after the
+      fix: `/` and `/experiences` enforce `frame-src 'none'`, `/contact` allows
+      only forms.monday.com, and no report-only header remains.
+- **The Monday.com form now really loads lazily.**
+  - **Before:** native `loading="lazy"` was lazy in name only.
+  - **Now:** a small client component reserves the same 1600 px box in the
+    server HTML, then inserts the iframe (same sandbox, same title) when the
+    box comes within 120 px below the viewport.
+  - **The margin is measured.** The box starts 184–633 px below the fold,
+    from 1920×1080 up to 390×844. A first 400 px margin mounted the form at
+    load on every desktop size, so it was not lazy at all.
+  - **The check** (local, `.hunt/cplus/checks/monday-lazy-check.mjs`, looking
+    only, never typing or submitting) passes at 1280×900 and 1920×1080:
+    - nothing is requested from forms.monday.com before scrolling;
+    - the box already holds its height, so no layout shift;
+    - scrolling mounts one sandboxed iframe, with the same 12 fields and
+      6 buttons as before and no CSP messages;
+    - without JavaScript, a `<noscript>` iframe keeps the form.
+  - **No click-to-load facade:** the form stays one scroll away with nothing
+    to press, and the headers guard still finds its sandboxed iframe.
+  - **Referrer:** now follows the site-wide `strict-origin-when-cross-origin`.
+- **Dependabot:**
+  - `next` now travels with `eslint-config-next`, and `react` with `react-dom`
+    and their types. Both pairs are pinned exactly, so a major arriving as two
+    PRs would fail each on a peer mismatch.
+  - **A supply-chain cooldown:** 5 days by default, 30 for majors, 7 for
+    minors, 3 for patches. The key names were verified in GitHub's options
+    reference, which also states cooldown never delays security updates.
+  - The file's comment no longer claims a CI workflow that does not exist.
+  - **`engines.node` deliberately not added:** Vercel reads it to choose the
+    build runtime, so a version range could silently move production to a
+    newer Node major. That is a project-settings effect.
+
+- **The C+ specification** (local, `.hunt/cplus/spec/SPEC.md`, 1,533 lines).
+  - **How it was written:** three independent spec candidates, each led by a
+    different angle (typography, grid and imagery, systems and budget). Three
+    judges then scored them, each with a different lens (editorial beauty,
+    accessibility and performance, the walls). The winner was synthesised with
+    the best ideas of the other two grafted in, then a completeness critic and
+    an amend pass followed.
+  - **Result:** the typography-led candidate won (weighted 168.5, against
+    164 for the art-director candidate and 147 for the systems candidate).
+  - **What the critic caught, all amended before anything was built:**
+    - A guard proof that could never pass: the updated headline-guard waited
+      on an attribute the live site does not emit. It now has a dual-mode wait.
+    - A deploy order that would have taken the pre-rollout commit off the
+      alias before the guard proofs ran. This added stage S1q, below.
+    - A route-map line on a dark panel at 2.92:1. The chart panel is now plain
+      night, where the line measures 3.35:1.
+    - A "token-level revert" that was not literally true (derived values; C's
+      CSS photo treatment). Every plain-C token now has a literal value, and
+      what does not revert is listed.
+  - **A session limit interrupted it once.** The continuation reused the two
+    finished candidates and resumed where the third stopped, instead of
+    restarting.
+- **No push between the spec and the guard proofs (spec stage S1q).**
+  - **The rule.** Each rewritten guard instrument must pass against the live
+    alias while it still serves the pre-rollout commit `95e821a`. It must also
+    fail on a seeded fault in a local production build, one fault per build.
+    Both halves finish before the C+ draft is pushed.
+  - **Why the draft commit cannot stand in as the reference:** Tailwind scans
+    `src/app/design-3/**`, so the draft can change the CSS bundle every site
+    route loads.
+- **Photo pool, the same interruption.** The continuation reused the 38
+  finished verifications; all 33 PASS/CONDITIONAL masters were on disk with
+  matching SHA-1. It re-ran only what was missing, four items at a time, to
+  stay under the limit.
+
+- **A second and third session limit, and the pacing that followed.**
+  - **What was lost:** three large workflows running side by side exhausted
+    the window twice. The work on disk survived each time, and nothing unsafe
+    was left behind: no seeded fault was applied to a site file, and no stray
+    server was left running.
+  - **From then on:**
+    - one workflow at a time, on the critical path;
+    - the photo pool deferred until after the rollout, since its frames swap
+      in later anyway;
+    - the purely mechanical proof steps moved to a plain runner script
+      (`.hunt/cplus/proofs/run-proofs.mjs`), which judges by declared exit
+      codes and expected strings and spends no model tokens. For each fault it
+      applies, builds, serves, runs the guard, stops only its own server,
+      reverts, checks the files equal HEAD, and stops everything if a revert
+      is not exact.
+- **S0, the pre-rollout baseline** (captured from the alias on `95e821a`):
+  - **Copy-subset units:** 1,090 across the 9 routes and `/design-3/c`
+    (96 on `/`), under the spec's own unit definition. This is the record the
+    new "nothing invented" guard compares against.
+  - **Script chunks on `/`:** 12 chunks, 945,800 B raw and 304,437 B gzipped,
+    the reference for the JavaScript C+ removes.
+- **S4d, the one terracotta duotone:**
+  - **File:** `graded/d/duotone/sourced/south-coast-storm-cloud.jpg`, a mood
+    frame. 1400×1219, 161,065 B, SHA-1 `6679e475…6324c`, all metadata
+    stripped.
+  - **How it was made:** a CIE-Lab ramp from night through terracotta to
+    bone, over the grade-D derivative. `qa/grade.ps1` was untouched, so the
+    grade-C byte-identity proof stands.
+  - **How it looks:** the cloud keeps its modelling, but the frame reads
+    strongly orange, and the tower's outline softens where colour used to
+    separate it from the sky.
+  - **credits-guard's Pixabay hold** now walks every graded subfolder. Proven
+    both ways: green on the live alias, and it catches a seeded held frame
+    copied into the duotone folder, which the old instrument missed on the
+    same tree (the control). The test ledger entry was removed, and the ledger
+    is byte-identical to HEAD.
+- **S1q pass halves so far,** each against the live alias on `95e821a`,
+  confirmed LIVE before and after:
+  - headline-guard (per-route minimum counts, hidden-by-geometry, dual-mode
+    readiness wait): 64 assertions, 0 failures;
+  - nav-flash-guard (explicit single `<header>`, `header[data-site-chrome]`
+    target): 0 failures.
+
+- **The shared dev server died twice mid-build, and why.**
+  - **Symptom:** the verifier found nothing listening on 3104. The log ended
+    in `^C`, and an immediate relaunch died the same way seconds after
+    "Ready".
+  - **Cause:** other sessions on this machine broadcast console Ctrl+C.
+    My launches used WMI without a new console or process group, so the
+    server shared a console group those broadcasts could reach.
+  - **Fix:** a restart-loop supervisor (`dev3104-supervisor.cmd`), started
+    through WMI with `CREATE_NEW_CONSOLE | CREATE_NEW_PROCESS_GROUP`
+    (`Win32_ProcessStartup.CreateFlags = 0x210`) in a hidden window. It
+    answered in 10 s, held, and logs each restart with a timestamp.
+
+- **The C+ draft (`/design-3/c-plus`), built.**
+  - **Process:** a builder worked against the shared dev server. Two
+    independent critics followed, an editorial one (7/10, 19 findings) and an
+    accessibility/performance/contract one (8.5/10, 12 findings). The builder
+    then revised, and a verifier ran twelve checks with evidence.
+  - **All twelve pass:**
+    - `tsc` clean;
+    - noindex, the draft marker, and exactly one `<header>` and one
+      `<footer>` (the hidden site chrome; the masthead and back cover are
+      `div`s);
+    - no horizontal overflow at 390 or 1440, and no console or page errors;
+    - text contrast at the worst pixel under every run: 126 runs at 1440 and
+      122 at 390, lowest 4.89:1 on bone. "side of Crete" printed on the
+      photograph measures 8.97:1, and 9.10–9.13:1 at both ends of the Ken
+      Burns push;
+    - CLS 0.00000 with every font held back 2 s;
+    - a complete still composition under reduced motion;
+    - every tap target at 390 at least 44 px;
+    - the index's C · C+ block with the 15 change lines;
+    - `design3-shots` keeps every assertion;
+    - 99 rendered strings traced to content or live code;
+    - all 17 photographs are grade D, and the ledgered three carry their
+      ledger subject and credit.
+  - **My own pass:**
+    - **Desktop cover:** reads as a magazine cover. Fraunces set large, one
+      italic word in ink (not a coloured accent), the last line printed on
+      the dusk plate, one gold pill, an underlined-rule secondary CTA, and the
+      caption set as a credit.
+    - **The issue:** holds together from the positioning spread and the
+      asymmetric why-us rows to the olive strap, the Fitzroy index, the night
+      photo essay, how-to-book on bone and the duotone back cover.
+  - **Rulings on what the critics left open:**
+    - **Cover sky warmth:** the sky stays as grade D renders it. The grade is
+      the approved pipeline, and warming one photograph with CSS would break
+      the no-filter rule.
+    - **Photo essay order:** stays in the real order of the journey;
+      reordering for colour would misstate the tour.
+    - **Masthead focus order at 390:** the menu trigger is the first Tab stop
+      but drawn last. A real, minor defect. The draft is frozen for its
+      captures, so the rollout masthead (G3) must not repeat it.
+    - **Typographic quotes** in three change lines (the spec has ASCII): kept,
+      better typography, same words.
+
+- **Two guard updates proven both ways (S1q):**
+  - **headline-guard:** passes on the live `95e821a` alias (64 assertions).
+    Each seeded fault, built locally, fails exactly as declared:
+    - one split headline removed from `/`: `8 split headlines < minimum 9`;
+    - the `/credits` headline unmarked: `0 < minimum 1`;
+    - a visible copy under an empty class: `text doubled`;
+    - one headline marked ready while eight are not:
+      `data-lines-ready missing after 8000 ms on 8 sources`.
+
+    **The control:** on a build where the copy is correctly hidden under a
+    class not named `sr-only`, the new geometry instrument passes, and the
+    `95e821a` instrument reports a false mismatch.
+  - **nav-flash-guard:** passes on the alias. A second `<header>` fails with
+    `header count 2`, and a header without `data-site-chrome` fails with
+    `site header not found`.
+  - **The proof runner's revert check once stopped a valid run.** The reverse
+    apply left `credits/page.tsx` with Windows line endings and identical
+    content. The runner now restores patched paths from HEAD, deletes created
+    files, and judges by content; the file was confirmed byte-identical to a
+    checkout.
+
+- **The Fraunces italic, measured for the first time** (clean production
+  build `sRBChLXCvqEMo2ktLQ46I`, which includes the draft's italic loader).
+  - **Preloaded italic latin file:** 81,704 B, about 14 KB heavier than the
+    roman optical-size latin file (67,388 B) the site already preloads.
+  - **Not preloaded:** two further italic files, 71,568 B and 22,148 B, for
+    other character ranges, fetched only if those characters appear.
+  - **How it ships:** the draft preloads it, and that is information only. On
+    live routes the italic ships behind the budget gate, loaded with
+    `preload: false`, and only if a 5-run interleaved measurement on the
+    deployment holds every floor.
+
+- **S1q closed: all eleven guard instruments proven both ways, before the
+  draft was deployed.**
+  - **The other nine guards** (text-contrast, menu-audit, arc-guard,
+    asset-audit, mobile-audit, security-headers, parity, visual-check,
+    credits-guard) each passed against the live alias on `95e821a`. The alias
+    was re-asserted on `95e821a` afterwards.
+  - **Fail halves:** 29 seeded faults, each in its own local production
+    build, all failed exactly as declared (exit code and printed text):
+    - menu-audit: 6 faults;
+    - asset-audit: 5;
+    - mobile-audit: 4;
+    - arc-guard and security-headers: 3 each;
+    - parity and credits-guard: 2 each;
+    - text-contrast and visual-check: 1 each.
+  - **Controls:** 13 of them showed the reason for each change. The
+    `95e821a` instrument misses or misjudges what the new one catches or
+    correctly passes: a srcset's later candidates, CSS `url()` images, a
+    dropped `NEVER_GRADE` entry, an unreadable `GRADE`, the new routes and
+    widths, the lazily mounted form under Lenis, a credits link in a
+    `contentinfo` landmark.
+  - **Afterwards:** a clean rebuild, and every site file equal to HEAD.
+  - **Cost:** the whole run spent no model tokens. It is the mechanical
+    runner judging declared expectations, with patches and logs kept locally
+    under `.hunt/cplus/proofs/`.
+
+- **S3: the C+ draft deployed and captured beside C, after S1q closed.**
+  - **The commit.** `5967a0f` holds the draft, the index's C · C+ block,
+    `design3-shots` with C+ added, the duotone, and the eleven proven guards.
+    Nothing on the live routes changed.
+  - **The captures.** `qa/design3-shots.mts` ran against the live alias on
+    `5967a0f` and took 16 frames: A, B, C and C+ at 1440×900 and 390×844, the
+    first screen and the whole draft. Every draft answered 200, noindex, with
+    the marker and one build stamp, and no overflow. The C+ issue is
+    14,038 px tall on desktop and 26,344 px on the phone.
+  - **What the side-by-side shows, first screen:**
+    - **Headline:** C's condensed Instrument Serif becomes Fraunces at display
+      optical size, with "unknown" in italic ink.
+    - **Masthead:** C's inline nav bar becomes a flag (Menu, a centred serif
+      wordmark, Book Now) over a hairline.
+    - **Eyebrow:** tracked capitals in olive.
+    - **Deck:** set larger, in Fraunces.
+    - **CTAs:** C's terracotta block becomes one gold pill with an ink label,
+      plus an underlined-rule secondary.
+    - **Plate:** now bleeds off the right edge.
+    - **Caption:** set as a credit under a hairline.
+    - **Sky:** the plate's sky turns from C's peach to a paler gold. C's peach
+      came from a CSS overlay on the photograph, which C+ removes: the warmth
+      is grade D's alone.
+
+- **S3 closed.** The frames are committed as `5ad04e2`, and the alias is live
+  on it. The live `/design-3` index (noindex) shows C and C+ side by side from
+  the `5967a0f` captures: all four C+ frames and all four C frames, with no
+  "Captures pending", and a frame served 200. The draft is frozen from here.
+  Then the site-wide rollout (spec stages S5–S9) was launched as a single
+  workflow, against the shared dev server, with the mechanical runner for its
+  seeded-fault proofs.
+
+- **The rollout was interrupted once.** The session ended about 17 minutes
+  into the foundation stage (G1), and that run left no completed step to
+  reuse.
+  - **What survived:** G1's partial work stayed inside the files it owns
+    (tokens, fonts, globals, layout, grain, badge, the smooth scroller's
+    offset, `utils.ts`, the preflight additions). Nothing had been committed
+    or pushed.
+  - **What died:** the shared dev server was gone.
+  - **The restart** (2026-09-16): the dev server came back under its
+    Ctrl+C-proof supervisor, the pages still rendered with the partial
+    foundation, and the rollout was relaunched with G1 told to review and
+    finish its own partial work rather than start over.
+
+- **The rollout ran to the end** (workflow run `wf_0cb2ac4e-d8b`, 27 agents,
+  none failed): foundation (G1), primitives (G2), the surfaces in two waves
+  (G3–G7) with the guard work (G8), integration, two critics, a fix round and a
+  final integration pass on a local production build.
+  - **Critics:** editorial 7.5/10 (6 major, 9 minor); accessibility and
+    performance 7.5/10 (3 major, 14 minor). Every finding went to its owner.
+  - **Final pass:** 8 of the 9 majors fixed and proven on the production build.
+    The ten guards, copy-subset and visual-check all passed. Also clean:
+    preflight, axe (0 violations on 9 routes at 390 and 1440), and slow-asset
+    CLS (60 runs of 0.00000, plus 76 extra runs, all 0).
+  - **The ninth major, finished by the orchestrator:** the item-hero scrim.
+    The frame-wide 94 / 82 / 66 % night gradient made the photographs murky.
+    It now sits on the text block (`scrim-text`), so the picture above the text
+    stays clear. The retired `scrim` and `scrim-soft` utilities are deleted.
+- **Rulings on what the rollout left open:**
+  - **Masthead order below 1024 px.** The fix round had moved the phone
+    masthead to the draft's arrangement (wordmark left, trigger right) with the
+    trigger still the first Tab stop. That is the defect the earlier ruling
+    forbade, so the orchestrator reverted it. The masthead now draws trigger,
+    centred wordmark and Book Now at every width, in DOM order. This departs
+    from SPEC §H.1 and the frozen draft on phones, and the S10c side-by-sides
+    show it. Checked at 320–1920 on three routes: drawn order equals Tab order,
+    no overflow, and the wordmark is centred from 360 up. At 320 it sits just
+    right of centre, because the trigger's column leaves too little room.
+  - **Night masthead and quiet wordmark (amended §H.1): kept.** Over the night
+    essay, the item route chart and the back cover, the bar turns night. The
+    masthead wordmark fades while the back cover's large wordmark is on screen.
+    Both are set by scrolling only, so the load state is unchanged
+    (nav-flash-guard).
+  - **Card focus ring (§H.4 amended):** drawn on the plate frame as well as the
+    title, so a tall first entry never takes focus with its only indicator
+    below the fold.
+  - **Menu preview blur (C7): kept.** Removing it would save 0.23–0.34 KB
+    brotli per full page load and nothing on client navigation. The blur is the
+    specified loading state for previews at 1024 px and up.
+  - **Fitzroy `sizes` (C3): unchanged.** Exact per-position strings were
+    measured. They would save one image step for the second and third entries
+    on phones (about 42 KiB, lazy and below the fold), but they are coupled to
+    every grid token. Recorded as a known minor over-serve rather than shipped.
+  - **The `/contact` night head** does not turn the masthead night. It sits
+    under the bar at load, where nav-flash-guard requires a paper bar.
+- **Recorded departures from the SPEC's wording**, each measured by its owner:
+  - the hero eyebrow is paper, not on-night-soft;
+  - the facts strip is sized to its item count, not a fixed 4 columns;
+  - `/experiences` entry plates take their ratio from orientation, and the
+    portrait lead plate is capped to the viewport;
+  - portrait story breaks are capped at 5 columns;
+  - `/experiences` cards drop the redundant category label;
+  - the Transfers menu preview and the `/transfers` plate mount the studio
+    van on a bone mat;
+  - loading.tsx is a fixed paper sheet with its status on the spoken text only.
+
+- **S9b, the preview gate, stopped the release once, as designed.**
+  - **First measurement:** integration commit `59de988` on branch
+    `cplus-integration`, preview alias asserted on that commit. Lighthouse,
+    5 interleaved runs per route: `/` 90, Kourtaliotis **87** (85–88), the
+    transfer 90, `/transfers` 97, `/contact` 100. a11y 100, CLS 0 and TBT
+    ≤ 63 ms everywhere. Kourtaliotis was under the 89 floor, so main was
+    left untouched.
+  - **Control, same hour:** production (`5ad04e2`, before the rollout)
+    measured 93 on Kourtaliotis (89–94).
+  - **Cause, found in the traces:**
+    - The route-level `loading.tsx` wrapped every page in Suspense. React
+      streamed each page behind a full-screen paper fallback and swapped
+      the content in only after the whole body was parsed (125 KB on
+      Kourtaliotis). In all five runs the first paint was the fallback. The
+      hero photograph painted only after hydration: observed LCP 521 ms
+      against FCP 204 ms.
+    - Lighthouse's simulation counts every script evaluated before the
+      observed LCP, so simulated LCP came out at 3.9–4.3 s.
+  - **Fix 1 (`a833d0c`): the loading boundary is gone.**
+    - The prerendered HTML now has no fallback and no swap. The hero is
+      11 KB into the document and paints in the first frame.
+    - Static routes are prefetched, so client navigation needs no loading
+      screen.
+    - **Follow-on (`014b9e9`):** without the boundary, an unknown item slug
+      answered 404 with an empty error shell (no header, no content without
+      JavaScript). nav-flash-guard caught it: "header count 0".
+      - Fix: `dynamicParams = false` on both item routes. Every item is
+        generated at build, so any other slug now gets the prerendered 404
+        page: full HTML, the solid masthead, noindex, and a real 404 instead
+        of the old soft one.
+      - Proof bookkeeping: `nav-flash-guard-s9-unknown-slug` is retired. Its
+        Nav fault can no longer reach that server HTML, so the guard passes
+        on its build, correctly. In its place,
+        `nav-flash-guard-014b9e9-dynamic-params` (turning `dynamicParams` back
+        on) fails as declared.
+      - Re-proven on the new tree: `nav-flash-guard-s9-tone`,
+        `text-contrast-s9-small-floor` and `visual-check-s9-sticky`.
+      - The full guard suite passed: all ten, copy-subset, visual-check,
+        preflight and the masthead order check. nav-flash-guard ran again
+        after the fix. The others use an unmatched URL for their 404 checks,
+        which the fix does not touch.
+    - Kourtaliotis rose to 88 (median of 11 runs; 86–97, bimodal).
+  - **What was left: a race.**
+    - When scripts arrive before the first frame, the run scores 86–88;
+      when they arrive after it, 94–97.
+    - The first frame costs about 65 ms of style and layout, against about
+      45 ms on production. Production itself loses the race in about 40 % of
+      runs (88–89).
+  - **Tried and reverted (`6c36767`, reverted in `abebb96`): deferred
+    rendering.**
+    - What it did: `content-visibility: auto` on the back cover, the item
+      route map and the related entries.
+    - With it the preview still read 88 on Kourtaliotis (7 runs: 88 ×4, 93,
+      93, 95). Home read 90 and the transfer 95.
+    - It also blinded headline-guard: text in a skipped block reads as empty
+      through `innerText`, so the route and related headings failed.
+      copy-subset would have lost the same text.
+    - It did not earn its place, so it was cut.
+  - **The rest was a preview-only script.**
+    - Every preview build appends `https://vercel.live/_next-live/feedback/feedback.js`
+      (Vercel's comment toolbar). The site's CSP blocks it, but the request
+      is still made, and Lighthouse simulates a new cross-origin connection
+      for it.
+    - Production ships the same module, but loads it only when a
+      `__vercel_toolbar=1` cookie is set. 0 of 6 production runs made the
+      request; all 27 preview runs did.
+    - The request was the one node that consistently separated the slow
+      runs (simulated LCP 3.91 s, a flat plateau) from the fast ones
+      (3.13–3.20 s). Blocking the URL in Lighthouse does not remove it: a
+      blocked request is still logged.
+  - **The counterfactual, exact.**
+    - Method: 7 runs gathered once each. Each was audited twice from the same
+      artifacts: as gathered, and with only that one request removed from
+      the devtools log (`.hunt/cplus/rollout/S9b/lh-strip.mts`).
+    - Result: every run rose by 3–5 points, from 87/88 to 90/93 (median
+      93). Simulated LCP fell by 0.45–0.70 s. Nothing else changed.
+  - **Ruling: S9b passes on its intent**, which is to predict production
+    before main moves.
+    - The counterfactual median (93) clears the 90 abort line. The measured
+      home (90) and transfer (95) medians clear it even with the toolbar
+      penalty.
+    - The binding budget is still the unchanged production measurement at
+      S10, with a revert on any breach. `qa/lighthouse.mts` was not touched.
+  - **Ruled out, measured:**
+    - `text-wrap` settings;
+    - the scrim's border-image;
+    - the Fraunces headline;
+    - the paper grain;
+    - excluding the `/design-3` drafts from Tailwind's scan (−0.8 KB);
+    - the headline line-measuring, which runs after first paint.
+  - **Not taken:** `experimental.inlineCss`. It would double the CSS into
+    every document (style tag plus RSC payload), which is the wrong trade
+    for Lighthouse's slow-4G model.
+
+- **S10, release R1: live and within budget.**
+  - **The release:** `main` fast-forwarded from `5ad04e2` to `014b9e9`
+    (`59de988` rollout, `a833d0c` loading boundary, `6c36767` + `abebb96`
+    deferral tried and reverted, `014b9e9` 404 routing), pushed, and the
+    alias asserted LIVE on `014b9e9`.
+  - **Guards against the alias,** one at a time and un-piped: all ten, plus
+    copy-subset and visual-check, exit 0.
+  - **Lighthouse,** 5 interleaved runs per route with the unchanged method:
+
+    | Route | Median | Spread | a11y | TBT | CLS |
+    |---|---|---|---|---|---|
+    | `/` | **93** | 92–94 | 100 | 77 ms | 0 |
+    | Kourtaliotis | **91** | 90–93 | 100 | 25 ms | 0 |
+    | Transfer detail | **94** | 91–95 | 100 | 85 ms | 0 |
+    | `/transfers` | **100** | 94–100 | 100 | 28 ms | 0 |
+    | `/contact` | **100** | 96–100 | 100 | 19 ms | 0 |
+
+  - **LCP elements:** the cover plate on `/` (3.0 s), and the ItemHero
+    photograph on both item routes (3.1 s and 3.0 s).
+  - **Fonts:** three requests per page: Fraunces roman (68 KB), Inter
+    (49 KB) and Inter greek (19 KB). No italic.
+  - **Scripts on `/`,** measured the S0 way (every `<script src>`, gzip level
+    6): 12 tags, 255,593 B gzipped, against 304,437 B at S0. That is
+    −48,844 B (−16 %).
+- **S10b, release R2 (the italic): passed the §K.4 gate and stays.**
+  - **The change:** `b019985` sets the two Layer E tokens
+    (`--ed-em-style: italic`, and `--ed-em-family` led by the Fraunces
+    italic). The alias was asserted LIVE on it.
+  - **Lighthouse,** 5 interleaved runs per route:
+
+    | Route | Median | Spread | a11y | TBT | CLS |
+    |---|---|---|---|---|---|
+    | `/` | **93** | 89–93 | 100 | 51 ms | 0 |
+    | Kourtaliotis | **90** | 90–90 | 100 | 23 ms | 0 |
+    | Transfer detail | **93** | 92–95 | 100 | 40 ms | 0 |
+    | `/transfers` | **97** | 94–99 | 100 | 19 ms | 0 |
+    | `/contact` | **96** | 93–99 | 100 | 13 ms | 0 |
+
+  - **Italic requests:**
+    - Bytes: the italic latin file is 81,990–82,026 B on the wire. It loads
+      on `/`, `/transfers` and `/contact`, the pages that set an emphasis
+      word.
+    - Item routes: zero requests in every Lighthouse report. A separate
+      check made 5 loads each of both experiences and the transfer, at 412
+      and 1440: 0 italic requests every time. The cover requested it once
+      per load.
+  - **Slow-font CLS** (§K.3, fonts held 3 s, then fonts 3 s plus images 2 s,
+    both motion settings): 60 runs on production, all 0.00000, and the
+    cover CTA row never moved.
+
+- **S10c, the side-by-sides (`e5b1059`, live before the close).**
+  - **Capture:** `qa/design3-shots.mts` gained an additive `QA_PAIRS=1` mode.
+    It captured `/design-3/c-plus` beside `/` from the same live build
+    (`b019985`, R2):
+    - both viewports (1440×900 and 390×844);
+    - with motion (first screen at t = 2.5 s) and with reduced motion;
+    - the first screen and the whole page: 16 frames.
+  - **Publication:** the `/design-3` index showed them in a "C+ draft and the
+    rolled-out site" block. All 8 first-screen images loaded at 1440 and at
+    390, with no overflow.
+  - **Drift, one line each:**
+    - **Phone masthead:** the draft draws the wordmark left and Menu right.
+      The site draws Menu, a centred wordmark and Book Now at every width, so
+      the drawn order is the Tab order (the ruling above).
+    - **Map:** the site keeps "Where these journeys take you" after the
+      journeys index; the draft has no map.
+    - **Everything else** matches block for block at both widths, with and
+      without motion: the cover, positioning, why-us rows, strap, journeys
+      index, photo essay, golden band, how-to-book and back cover.
+- **The C and C+ frames stay in the record.**
+  - **In git:** the index, the drafts and all 32 frames with their manifest
+    (the C · C+ captures from `5967a0f`, the pairs from `b019985`) are in git
+    at `e5b1059`. Retrieve them with
+    `git archive e5b1059 public/design3-assets | tar -x`.
+  - **Locally:** a copy is in `.hunt/cplus/frames/`.
+- **The close (`524cada`).**
+  - **Removed:** `src/app/design-3` (drafts A, B, C, C+ and the index),
+    `public/design3-assets`, `qa/design3-shots.mts`, the draft chrome block in
+    `globals.css`, and `FeaturedFrame.tsx` with its never-rendered section on
+    `/experiences`.
+  - **Quality 90** left `next.config.ts`: only the drafts used it. The site
+    serves 68 and 75.
+  - **preflight** lost the allowlists that expired with those files: the
+    draft exemptions in P8–P13, and the FeaturedFrame entries in P9–P11. The
+    rules only got stricter. All ten preflight fault proofs still fail as
+    declared on the new tree.
+  - **The `data-site-chrome` markers stay,** although the old
+    `DEPLOYMENT.md` said to remove them. The guards and the masthead's
+    night-surface reader find the chrome by them. `DEPLOYMENT.md` now says so.
+- **Optional 3D relief: not built, by the gate's own terms.**
+  - **Headroom:** after R2, the Kourtaliotis median sits at 90 against a floor
+    of 89, and `/` at 93. A Copernicus DEM relief as a lazy GLB (≤ 1.5 MB)
+    would need a WebGL runtime on the page (three.js alone is well over
+    100 KB gzipped).
+    One point of headroom cannot absorb that, and the brief says to cut it
+    without ceremony if mobile drops below 89.
+  - **Design:** the C+ page is a printed issue. Its map is a flat chart on
+    bone, and a spinning terrain would be the one element that reads as an
+    app. Recorded as not shipped.
+- **Client photographs from Google Drive:** no link was supplied, so nothing
+  was downloaded or placed. When the link comes, the procedure stands:
+  1. download each file;
+  2. verify its dimensions;
+  3. ledger it as "client-supplied, rights held by client";
+  4. grade it with grade D;
+  5. place it with before/after pairs;
+  6. flag whatever paperwork is missing.
+
+- **The photo pool, finished: zero changes to the site, by choice.**
+  - **Verification:** the 33 records still open were re-verified
+    adversarially by five independent verifiers (workflow `wf_68306335-a38`),
+    and 5 had been verified before. For each record, the verifier:
+    - re-read the licence line live on the photo's own page;
+    - hashed the local master (SHA-1 and SHA-256) against the record, and
+      against the Commons API where one exists;
+    - checked the metadata for personal data;
+    - tried to refute the outcome (licence in disguise, authorship, place
+      names, monuments, lookalikes, processing, size).
+  - **How pages were read:**
+    - No image was downloaded.
+    - Nobody logged in, and nothing was worked around. Every Unsplash page
+      answered curl with an Anubis challenge; that was recorded, and the
+      licence line was read through WebFetch instead.
+  - **Outcomes:** 32 CONDITIONAL and 1 PASS. Four records were tightened:
+    - one frame whose CC BY credit must carry a title that names a barred
+      place;
+    - one frame that shows a protected cave-tomb headland;
+    - one frame whose embedded name must be stripped and whose credit is the
+      account name only;
+    - one frame that is really a named chapel.
+  - **The curator:** viewed every survivor beside the live grade-D slots and
+    proposed **no swap**. The frames that would improve the site each wait on
+    a client ruling:
+    - `flickr-34810174192`, the strongest golden frame (8/10), on its licence
+      history (Commons recorded it as BY-SA in 2018; Flickr shows CC BY 4.0
+      today);
+    - two golden band candidates, on the title-credit question;
+    - the Rethymno lighthouse at evening, on the monument question;
+    - a warmer old-town lane, on its legible business signs.
+
+    The fully usable frames do not beat the live cover, band or 404 plate.
+  - **Follow-ups done:**
+    - **The ledger:** the note for `unsplash-3atB9u9SG_o` no longer claims a
+      "stacked composite", which nothing supports; the file records a single
+      exposure.
+    - **Local evidence:** the client IP was redacted from 32 header files;
+      no tracked file ever held it.
+    - **The client lists** were brought up to date: `PHOTOGRAPHERS.md`
+      (status, live slots, the Tradition tour's named places, the monument
+      caveat), `SHORTLIST.md` (status, only the C hero row applies, the menu
+      pick has no slot, the monument caveat on three picks, cost without the
+      menu pick) and `TOURISM-LIBRARIES.md` (status, the monument caveat).
+  - **Credits:** `/credits` keeps every ledgered photograph, including the
+    two that only the deleted drafts showed. Their graded copies are still
+    served from `public/`, so the attribution still applies.
+
+
+## For the client
+
+- **Vercel Bot Protection:** enable it, log mode first, then challenge. It is
+  a project setting, so it was left alone here.
+- **Deployment Protection for preview deployments:** worth considering.
+- **HSTS `preload` / `includeSubDomains`:** at the cutover, as domain policy.
+- **Photographs** (details in `PHOTOGRAPHERS.md`, `SHORTLIST.md` and
+  `TOURISM-LIBRARIES.md`, and in the pool record above):
+  - **The CC BY-SA contact sheet** (`.hunt/design-reset/by-sa/`): may BY-SA
+    frames be used, given that the graded copies would themselves become
+    BY-SA?
+  - **Public Domain Mark labels:** acceptable? And should Pixabay stay held?
+  - **The monument question:** do Greek rules on commercial images of
+    monuments touch this site? One lawyer's answer would settle the Fortezza
+    and lighthouse frames, including the live `rethymno-fortezza.jpg`.
+  - **Title credits:** CC BY credits whose required title names a place the
+    tours don't visit (on `/credits` only, with generic captions on the
+    page).
+  - **Rolf Dietrich Brecher's "Cretan Sunset I":** CC BY 4.0 on Flickr today,
+    BY-SA 2.0 on Commons in 2018. A yes makes it the first frame to trial
+    against the cover or the band.
+  - **Recognisable places and lookalikes** on mood surfaces, and the frames
+    with legible signs, registrations, masts or turbines: accept, crop, or a
+    declared retouch?
+  - **Purchases and permissions:** which photographers to ask, and whether
+    to buy. The public-repository condition must be settled first.
+- **The Google Drive link** for the client's own photographs (none was
+  supplied). Camera originals of the tours are still the largest improvement
+  available.
+
+## If the client prefers plain C
+
+If the client prefers plain C, the revert is token-level for these:
+- the palette;
+- the type families;
+- the grade;
+- the texture strengths;
+- the CSS photo treatment;
+- the CTA accent.
+
+**How:**
+1. Copy [`editions/plain-c.css`](editions/plain-c.css) (the "Plain C" column
+   of the C+ token tables, laid out like the live file) over
+   `src/app/edition.css`.
+2. In `src/lib/edition.ts`, set `GRADE = "c"`, `THEME_COLOR = "#faf4e8"`,
+   `DUOTONE = false` and `ITALIC_EMPHASIS = false`.
+3. Only if C's preload profile is wanted too: flip the `preload` literals in
+   `src/app/fonts.ts`, as their comments say.
+
+**Why that is enough:**
+- Preflight P9, P10 and P12 together show that every colour, font and texture
+  value is read from those two files.
+- Both graded trees (`public/images/graded/c` and `d`) are in the repository.
+- The plate tokens bring back C's sepia filter on photographs and its multiply
+  print over the cover plate, so photographs are as warm as they were in C.
+- The hero photograph needs no change: draft C used the same dusk-coast frame.
+
+**What does not revert with tokens** (reverting it means reverting
+components):
+1. **Composition:** the cover geometry (server-split lines, right bleed,
+   margin column), the positioning spread, the why-us pull-quote rows, the
+   journeys index, the golden band, the signature photo essay, the
+   place-break sequences, the back-cover structure and the paper menu layout.
+2. **Polarity:** which surfaces are paper, bone or night is a class choice in
+   markup.
+3. **The emphasis words:** which word is italic is set at each call site.
+   `ITALIC_EMPHASIS = false` removes them all; choosing different words is a
+   code edit.
+4. **Numerals:** the roman folios I–IV and the step and chapter numerals, as
+   well as the card, menu, channel and "included" numerals that were removed.
+5. **Captions:** the caption-and-credit markup under plates. Their styles are
+   tokens.
+6. **Retired motion:** the pan, the GSAP film, the stacked-panel scrub and the
+   kinetic cursor do not come back.
+7. **Grain and duotone:** the grain SVG parameters and the duotone JPEG
+   itself. Only their strength and use are switches.
+8. **Masthead and footer:** the fixed masthead (C's was in the flow), drawn in
+   one order at every width, and the back cover (C had a colophon row).
+9. **Type settings:** leading, tracking and per-step weights live in
+   `globals.css`, not in the edition file.
+10. **The van:** C's greyscale-and-multiply print of the studio van
+    photograph.
+11. **Grid placements:** the cover margin column's grid rows and the
+    640–1023 px placements.
+12. **The removed loading screen:** it and the unknown-slug 404 routing are
+    route structure, not tokens.
+
+---
+
 # DESIGN RESET, AND THE RESEARCH BRIEF — 2026-09-11 to 2026-09-14
 
 Two briefs, worked together. The **design reset** gets new colours, a new look and

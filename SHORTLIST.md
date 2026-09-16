@@ -6,6 +6,16 @@ a visitor from Greece, in euros; whether VAT is included was not checked.
 
 ---
 
+**Status, 17 September 2026.** Nothing bought.
+- **Which picks still apply:** direction C, "Warm Editorial", was chosen and
+  is live. Only the C hero row and the shared set still apply; the A and B
+  hero rows stay for the record.
+- **The public-repository condition** below is still open.
+- **Still the clear upgrades for the tour pages:** 1391161549 (Preveli from
+  the sea at sunset) and 2183033611 (sunrise in the Venetian harbour). The
+  free photo pool closed the same day without a warm-light frame of Preveli
+  or Rethymno that the site can use today.
+
 ## The short answer
 
 - **iStock (Getty Images) is the only stock library we could verify.**
@@ -44,6 +54,12 @@ The same caution applies to **Pixabay** frames. Its licence forbids
 distributing its images on a standalone basis, and a colour grade leaves a
 photograph substantially the same. Pixabay frames found in the free hunt are
 therefore **held**, not shipped, under the same condition.
+
+**A second question applies to three picks:** 589972934 (the Fortezza),
+2201313213 (the lighthouse) and 2183033569 (the harbour with its lighthouse).
+Greek law has its own rules on commercial use of images of monuments, and the
+client has not yet ruled on whether they touch this site. Settle that before
+buying these three.
 
 ## The licence, in plain words
 
@@ -110,11 +126,17 @@ Cheaper alternate for the second band: [464925504](https://www.istockphoto.com/p
 
 ### Closing scene
 
+*The live design has no full-width closing scene. This pick would now fill the
+back-cover plate, which is shown small, as a terracotta duotone.*
+
 | iStock | Contributor | What it shows | Size | Coll. | Score | Caption |
 |---|---|---|---|---|---|---|
 | [1203989498](https://www.istockphoto.com/photo/loutro-bay-crete-island-gm1203989498-346259844) | borchee | Low sun across bare mountains, a white chapel on the point, deep-blue water. Not a tour stop, so it is not named. | 6071×5842 | P | 8 | Crete's south coast at sunset |
 
 ### Menu backdrop
+
+*The live design has no menu backdrop, so this pick has no slot. Leave it out
+of the set.*
 
 | iStock | Contributor | What it shows | Size | Coll. | Score | Caption |
 |---|---|---|---|---|---|---|
@@ -161,6 +183,13 @@ Basic and 3 Premium:
 - Rethymno (2183033611)
 
 That is 14 credits, or €117 on demand.
+
+**Without the menu pick**, which has no slot in the live design, the shared set
+is 7 images (4 Basic, 3 Premium): 13 credits, or €108 on demand. With the C
+hero (1391161574) it becomes 8 images and 16 credits:
+- €132 on demand;
+- €118 with credit packs (12 + 3 + 1);
+- €85 on a one-month Premium 10.
 
 | Direction | Hero added | Images | On demand | Cheapest with credits | **Cheapest overall** |
 |---|---|---|---|---|---|

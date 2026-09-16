@@ -1,51 +1,54 @@
 # Closing record
 
-The redesign was built, deployed, verified and closed on 2026-09-11. **It is
-open again for one decision.** After the close, the client asked for a design
-reset — new colours, a new look, new hero photographs — and three directions
-now wait for his pick. This page is the front door: what the project is, where
-it lives, how to change the things most likely to need changing, and what is
-deliberately parked.
+The redesign was built, deployed, verified and closed on 2026-09-11. It was
+reopened for a design reset: new colours, a new look and new hero
+photographs. **It closed again on 2026-09-17.** The client picked direction C,
+"Warm Editorial". It was refined into **C+** and rolled out across the whole
+site, and the drafts were deleted. This page is the front door: what the
+project is, where it lives, how to change the things most likely to need
+changing, and what is deliberately parked.
 
-The full history — every decision and every thing that went wrong before it
-went right — is in [`MORNING.md`](MORNING.md), newest first.
+The full history, including every decision and everything that went wrong
+before it went right, is in [`MORNING.md`](MORNING.md), newest first.
 
 ---
 
-## Open: the design reset
-
-**Waiting on the client: pick A, B or C.** Everything else the reset asked
-for is done.
+## State
 
 | | state |
 |---|---|
-| **Team section** | Out of the homepage, live since `392602f`. The names, roles and intro stay in `content/site.json → team`; the portraits are retired and no URL serves them; `#team` lands on `#positioning`. |
-| **Three directions** | Live drafts: `/design-3` (the index), `/design-3/a` Deep Aegean, `/design-3/b` Cycladic Light, `/design-3/c` Warm Editorial. The same real homepage content, each with its own palette, type and hero photograph. Noindex, linked from nowhere, and deleted after the pick — the command is in `src/app/design-3/layout.tsx` and in [`DEPLOYMENT.md`](DEPLOYMENT.md). |
-| **The photo pool** | Ten new frames in `content/photo-credits.json` (29 photographs in all). The rest of the verified pool, with each verdict, is in the gitignored `.hunt/design-reset/`. |
-| **The client lists** | [`PHOTOGRAPHERS.md`](PHOTOGRAPHERS.md), [`TOURISM-LIBRARIES.md`](TOURISM-LIBRARIES.md), [`SHORTLIST.md`](SHORTLIST.md). |
-| **CC BY-SA contact sheet** | Local only: `.hunt/design-reset/by-sa/contact-sheet.html`. |
+| **The look** | C+ "Warm Editorial": cream and bone paper, burnt sienna, olive, ink charcoal, and one warm gold kept for buttons. Fraunces at display size with one italic emphasis word; Inter for text. Photographs are graded "D, amber soft". Live since `014b9e9` (R1), with the italic since `b019985` (R2). |
+| **The drafts** | Deleted at the close (`524cada`). The captures, C beside C+ and the C+ draft beside the rolled-out site, are in git history at `e5b1059`. |
+| **Reverting to plain C** | A token change: copy [`editions/plain-c.css`](editions/plain-c.css) over `src/app/edition.css`, and set the four switches in `src/lib/edition.ts` as its header says. Layout and composition do not revert that way (see `MORNING.md`). |
+| **Team section** | Out of the homepage since `392602f`. The names, roles and intro stay in `content/site.json → team`. |
+| **The photo pool** | The verified pool, each record with its verdict, is in the gitignored `.hunt/cplus/pool/`. What it proposes for the site is in `MORNING.md`. |
+| **The client lists** | [`PHOTOGRAPHERS.md`](PHOTOGRAPHERS.md), [`TOURISM-LIBRARIES.md`](TOURISM-LIBRARIES.md), [`SHORTLIST.md`](SHORTLIST.md). The CC BY-SA contact sheet is local only: `.hunt/design-reset/by-sa/`. |
 
-The direction he picks is then rolled out across the whole site.
+**The client's decisions.** This repository takes none of them on the
+client's behalf:
 
-**The client's decisions.** This repository takes none of them for him:
-
-1. **The direction** — A, B or C.
-2. **CC BY-SA.** Several of the most beautiful frames found are BY-SA. Using
+1. **Vercel Bot Protection:** turn it on, in log mode first, then challenge.
+   It is a project setting.
+2. **Deployment Protection for preview deployments:** worth considering. It is
+   also a project setting.
+3. **HSTS `includeSubDomains` and `preload`:** at the cutover, as domain
+   policy.
+4. **CC BY-SA.** Several of the most beautiful frames found are BY-SA. Using
    any of them obliges publishing our graded version under BY-SA on
    `/credits`.
-3. **Photographer permissions.** `PHOTOGRAPHERS.md` names the frames and gives
-   the message in Greek and English, and he sends it. A written yes is stored
-   under `assets-src/stock-local/permissions/` before its frame ships; the
-   credits guard fails without it.
-4. **Paid stock.** `SHORTLIST.md` prices it, and buying is his. It needs a
-   private repository or a private asset store first: iStock's licence
-   forbids letting others download the file, and this repository is public.
-5. **Camera originals.** Still the largest improvement available. Two of the
-   draft critics rated the journeys cards the weakest part of the page, and
-   those cards use the client's own tour photographs, several only 683×1024.
-6. **HSTS `includeSubDomains` and `preload`, and Vercel Bot and Deployment
-   Protection.** These are domain and project-settings decisions for the
-   cutover, not for this repository's automation.
+5. **Public Domain Mark frames:** held until the client rules on them.
+6. **Photographer permissions.** `PHOTOGRAPHERS.md` names the frames and gives
+   the message in Greek and English, for the client to send. A written yes is
+   stored under `assets-src/stock-local/permissions/` before its frame ships;
+   the credits guard fails without it.
+7. **Paid stock.** `SHORTLIST.md` prices it, and buying is the client's call.
+   It needs a private repository or a private asset store first: iStock's
+   licence forbids letting others download the file, and this repository is
+   public.
+8. **The client's own photographs:** share a Google Drive link and they will
+   be graded, ledgered as "client-supplied, rights held by client", and
+   placed. Camera originals of the tours are still the largest improvement
+   available.
 
 ---
 
@@ -107,13 +110,29 @@ content/
 There is no CMS and no database. A JSON file is the source of truth, and the
 routes, sitemap, menu previews and index pages all read from it.
 
-What ships, as the client approved it: every photograph through **Grade C
-"vivid"** (one constant, `GRADE` in `src/lib/content.ts`); **Fraunces** on the
-headlines; the full-screen overlay menu with its mask reveal and drifting
-photograph; the journeys panning sideways on desktop; the hero answering the
-cursor; the route as a journey that draws itself; a film grain over the whole
-site; and on the transfers page, Rethymno's harbour at night at the top, with
-the van in its card and gallery.
+What ships is C+, a travel feature in print:
+- **The cover:** a paper cover whose headline is printed across a dusk-coast
+  plate, with a slow Ken Burns push and the caption set as a photo credit.
+- **The homepage:**
+  - a positioning spread with a drop cap;
+  - the why-us statements set as pull quotes beside photographs that bleed
+    alternately left and right;
+  - an olive strap;
+  - the journeys as an index of titles (pointing at one shows its
+    photograph; phones show them inline);
+  - a map of the places;
+  - the signature journey as a night photo essay;
+  - a golden band;
+  - how-to-book on bone;
+  - the footer as a back cover with a terracotta duotone and the wordmark set
+    large.
+- **The masthead:** a serif wordmark over a hairline, which turns night over
+  night surfaces. The menu is a paper panel with operator-photograph
+  previews.
+- **Every photograph** goes through grade **D "amber soft"**, set by one
+  constant, `GRADE` in `src/lib/edition.ts`.
+- **Every colour, font and texture value** is read from `src/app/edition.css`
+  and `src/lib/edition.ts`; preflight enforces it.
 
 ---
 
@@ -128,12 +147,12 @@ the van in its card and gallery.
    *ungraded* path; the site resolves it through the live grade at render time.
 3. **Grade them, then generate their blur placeholders:**
    ```bash
-   powershell -File qa/grade.ps1 -Grade C
-   powershell -File qa/blur-map.ps1
+   powershell -File qa/grade.ps1 -Grade D
+   powershell -File qa/blur-map.ps1 -Grade D
    ```
-   Name the grade. The script's own default is Grade A, not the live grade, and
-   an ungraded-looking photograph among the vivid ones is the result of
-   forgetting. Asset-audit fails on any rendered photograph with no blur
+   Name the grade. The script's own default is Grade A, not the live grade
+   (`GRADE` in `src/lib/edition.ts`), and an off-colour photograph among the
+   warm ones is the result of forgetting. Asset-audit fails on any rendered photograph with no blur
    placeholder — that is how the whole site once shipped without them.
 4. **If a photograph is sourced rather than the client's**, add it to
    `content/photo-credits.json` with its licence, source and SHA-1, having read
@@ -179,6 +198,11 @@ Then, from another shell, **the ten guards**:
 node qa/headline-guard.mts && node qa/arc-guard.mts && node qa/nav-flash-guard.mts && node qa/credits-guard.mts && node qa/menu-audit.mts && node qa/asset-audit.mts && node qa/parity.mts && node qa/mobile-audit.mts && node qa/text-contrast.mts && node qa/security-headers.mts
 ```
 
+Then the C+ additions, one at a time: `node qa/copy-subset.mts` (nothing
+invented: every rendered string traces to content or code), `node
+qa/visual-check.mts`, and `node qa/preflight.mts` (the edition rules P1–P13,
+source only).
+
 Point any of them at the deployment with `QA_BASE_URL=https://routes-crete-redesign.vercel.app`.
 
 **Run them un-piped.** `node qa/parity.mts | tail` always exits 0 no matter what
@@ -199,12 +223,24 @@ has been held to throughout: performance ≥ 89, a11y 100, CLS 0, TBT ≤ 250 ms
 **Do not lower a floor to make a red run green.** Localhost on this machine runs
 about ten points under the deployment; the deployment is the only gate.
 
-Measured on the deployment on 2026-09-14, five interleaved runs per route, on
-commit `7ae6276`: Team out, security headers enforcing, the `/design-3` drafts
-live.
+Measured on the deployment on 2026-09-17, five interleaved runs per route, on
+the close commit `524cada` (C+ with the italic, drafts deleted):
 
 | route | performance | spread | a11y | TBT | CLS |
 |---|---|---|---|---|---|
+| `/` | **90** | 89 89 90 93 93 | 100 | 63 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **90** | 90 90 90 90 91 | 100 | 43 ms | 0 |
+| `/transfers/private-transfers-rethymno` | **93** | 92 92 93 94 95 | 100 | 50 ms | 0 |
+| `/transfers` | **94** | 92 94 94 94 96 | 100 | 24 ms | 0 |
+| `/contact` | **97** | 94 96 97 99 99 | 100 | 16 ms | 0 |
+
+**Branch previews read about 3 points lower on the item routes.** Every
+preview build loads Vercel's comment-toolbar script from `vercel.live`, and
+Lighthouse charges a new connection for it. Production loads it only behind a
+cookie. Judge budgets on production. The previous close, on `7ae6276`,
+measured 92 / 92 / 94 on the first three routes.
+
+---|---|---|---|---|---|
 | `/` | **92** | 79 90 92 92 93 | 100 | 187 ms | 0 |
 | `/experiences/kourtaliotis-temple-of-nature` | **92** | 88 89 92 93 93 | 100 | 95 ms | 0 |
 | `/transfers/private-transfers-rethymno` | **94** | 86 94 94 94 95 | 100 | 61 ms | 0 |
@@ -240,12 +276,8 @@ None of it blocks anything, and none of it is work waiting to be done here.
   detectable; confirming Project → Settings → Git is dashboard work for the
   client, not something this repository's automation touches.
 
-And two things that are not parked but next, in this order:
-
-1. **The client's pick on `/design-3`**, then that direction rolled out across
-   the site and the drafts deleted.
-2. **The `routescrete.gr` cutover**, with the client, in its own conversation.
-   See [`DEPLOYMENT.md`](DEPLOYMENT.md).
+And one thing that is not parked but next: **the `routescrete.gr` cutover**,
+with the client, in its own conversation. See [`DEPLOYMENT.md`](DEPLOYMENT.md).
 
 ---
 
@@ -262,3 +294,4 @@ And two things that are not parked but next, in this order:
 | [`PHOTOGRAPHERS.md`](PHOTOGRAPHERS.md) | photographers to ask, the frames per surface, and the permission message in Greek and English |
 | [`TOURISM-LIBRARIES.md`](TOURISM-LIBRARIES.md) | the official Cretan and Greek image libraries: their terms, and what a request must cover |
 | [`SHORTLIST.md`](SHORTLIST.md) | paid stock per direction and surface, with cost, and the private-repository precondition |
+| [`editions/plain-c.css`](editions/plain-c.css) | the plain-C token values, a drop-in for `src/app/edition.css` |

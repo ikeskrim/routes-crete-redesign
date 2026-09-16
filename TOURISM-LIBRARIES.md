@@ -1,5 +1,9 @@
 # Tourism-board photo libraries — what Routes Crete may use
 
+**Status, 17 September 2026:** unchanged. Nothing has been requested from any
+library. No library photograph is on the site, or in the free photo pool,
+which closed that day.
+
 Checked 2026-09-11. Each body's terms were read on its own pages. Nothing was
 registered, downloaded, submitted or requested — every step below is the
 client's to take.
@@ -99,6 +103,11 @@ On that last point: the *original* file and the written permission are never
 put in the repository. They are kept privately, and their fingerprint (SHA-1)
 is recorded in the credits ledger. The credits guard enforces this. Only the
 graded image is public, which is why the grant must say so.
+
+A library's permission covers the photograph's copyright only. Photographs of
+monuments, such as the Fortezza and the Venetian lighthouse, also fall under
+Greek law's own rules on commercial use of images of monuments. The client has
+not yet ruled on those, and a library's yes may not settle them.
 
 ## How a written yes enters the site
 

@@ -6,6 +6,20 @@ a credit. **A written yes is a licence** and enters the ledger as one.
 Compiled 2026-09-11. **Nobody has been contacted.** The client sends the
 messages below.
 
+**Status, 17 September 2026.** Still nobody contacted.
+- **The design:** the site now runs direction C, "Warm Editorial" (C+),
+  live since that day.
+- **The free photo pool** closed the same day with 38 checked candidates.
+  None is a warm-light photograph of a place the tours name that the site
+  can use today. The closest, a Rethymno lighthouse in evening light, waits
+  on the monument question below.
+- **So asking photographers is still the best route** to warm tour-page
+  photographs. For the live design, start with:
+  - #13, Rethymno at a June sunset;
+  - #4, the lighthouse against Psiloritis at golden hour;
+  - #5, the old town and harbour before sunrise;
+  - #6, Rethymno and the Fortezza from the air at sunset.
+
 ---
 
 ## How to use this list
@@ -20,6 +34,18 @@ messages below.
    1,000–2,000 px. A hero needs 2,400 px or more. The message asks for "the
    largest file you have, without a signature".
 4. **Keep the reply.** See "After a yes" at the end.
+5. **Mind the live slots.** Direction C is live. Its photo slots are:
+   - the cover plate;
+   - one golden band;
+   - the small back-cover plate, shown as a terracotta duotone;
+   - the 404 plate;
+   - the transfer page hero;
+   - the tour-page place breaks;
+   - the route previews.
+
+   The menu backdrop and the closing scene no longer exist. The uses named
+   below for "Deep Aegean" (A) and "Cycladic Light" (B) are kept only for the
+   record.
 
 Everything below is **all rights reserved** or **CC BY-NC-ND** on its own page.
 None of it may be used without the photographer's written permission. That is
@@ -34,12 +60,19 @@ sign-in.
 - The tours name these places: Kourtaliotiko Gorge and the chapel of Saint
   Nicholas, Preveli beach, lagoon and palm forest, Preveli Monastery, and
   Rethymno's town, harbour, Fortezza and old town. A frame of one of them may
-  appear on the tour pages.
+  appear on the tour pages. The Heart of Cretan Tradition tour also names
+  Sfedoni Cave, the village of Anogeia and the Paraschakis Olive Mill.
 - A frame from anywhere else in Crete is **mood only**. It may be used for the
   homepage hero, section bands or the closing scene, with a generic caption.
-- The places the copy leaves unnamed (the "historic village", the "cave", the
-  "mountains of central Crete") stay unnamed. No frame may be presented as one
-  of them.
+- The places the copy leaves unnamed stay unnamed: the Kourtaliotis tour's
+  "historic village" and "cave-like Byzantine chapel", and the Tradition
+  tour's "mountains of central Crete". No frame may be presented as one of
+  them.
+- **Monuments.** A photographer's permission covers the photograph, not the
+  monument in it. Greek law has its own rules on commercial use of images of
+  monuments, and the client has not yet settled whether they touch this site.
+  Until then, frames whose subject is the Fortezza or the Venetian lighthouse
+  wait on that answer: #4, #6, and the harbour frames of #5.
 
 ---
 
