@@ -6,6 +6,12 @@ import { ItemJsonLd } from "@/components/seo/ItemJsonLd";
 import { getExperience, getExperiences } from "@/lib/content";
 import { socialImage } from "@/lib/site-url";
 
+/* Every experience is generated at build. Any other slug is the prerendered 404
+   page (full HTML, real 404 status), not an on-demand render. That render
+   answered with an empty error shell once the route-level loading boundary
+   was removed (C+ S9b). */
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getExperiences().map((experience) => ({ slug: experience.slug }));
 }
