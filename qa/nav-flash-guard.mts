@@ -112,8 +112,9 @@ try {
       const p = await page.evaluate(probe, SITE_HEADER);
 
       if (route.status) {
-        /* The not-found page, not an item that happens to exist. Next streams
-           this route (src/app/loading.tsx is a Suspense boundary), so
+        /* The not-found page, not an item that happens to exist. When a
+           Suspense boundary sits above the page (a route-level loading.tsx,
+           as the site had until C+ S9b), Next streams this route, so
            notFound() can land after a 200 has been sent; it then marks the
            page noindex (a soft 404). Either form is the 404 page. */
         const status = res?.status() ?? 0;

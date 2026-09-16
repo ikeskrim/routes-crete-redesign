@@ -893,29 +893,6 @@
   }
 }
 
-/* Loading sweep — transform only, so it never triggers layout. */
-@keyframes loading-sweep {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(300%);
-  }
-}
-
-/* 1.6 s (§G.1 row 17). Under reduced motion the bar holds still where it is
-   drawn, over the left third of its track. */
-@utility loading-sweep {
-  animation: loading-sweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .loading-sweep {
-    animation: none;
-    transform: none;
-  }
-}
-
 /* ------------------------------------------------------------------
    MOTION PREFERENCES
    Every animation in the app is transform/opacity only, and all of it
