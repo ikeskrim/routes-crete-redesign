@@ -34,7 +34,8 @@ const LEDGER_LINK = cn(ctaClass({ variant: "rule" }), "text-eyebrow");
    widened and the links moved (CLS 0.00058 on the first row at 1440 × 900
    once the shorter intro brought that row above the fold). Widest labels
    measured: "Unsplash License" 156.9 / 147.3 px, "Source" 66.3 / 60.7 px
-   (fallback / Inter, 12.8 px). */
+   (fallback / Inter, 12.8 px). A share-alike row adds a third link,
+   "Download", which takes the next grid row under the licence cell. */
 const LEDGER_LINKS =
   "flex flex-wrap items-center gap-x-6 lg:grid lg:grid-cols-[11rem_4.5rem] lg:justify-items-start";
 
@@ -126,10 +127,19 @@ export default function CreditsPage() {
                     {photo.subject}
                   </h2>
                   <p className={cn("mt-2 text-caption text-ink-soft", CAPTION_MEASURE)}>
-                    <cite className="not-italic">{photo.title}</cite> by{" "}
+                    <cite className="not-italic">{photo.title}</cite>
+                    {photo.titleAsPublished ? " (title as published)" : ""} by{" "}
                     {photo.author}
                     {photo.modified ? ", colour-graded by Routes Crete" : ""}.
                   </p>
+                  {/* Share-alike (CC BY-SA 4.0): the graded file is itself
+                      shared under the licence, and the row links it below. */}
+                  {photo.shareAlike ? (
+                    <p className={cn("mt-2 text-caption text-ink-soft", CAPTION_MEASURE)}>
+                      The colour-graded version on this site is shared under{" "}
+                      {photo.shareAlike.licence}, as that licence requires.
+                    </p>
+                  ) : null}
                 </div>
 
                 <div className={LEDGER_LINKS}>
@@ -151,6 +161,15 @@ export default function CreditsPage() {
                     Source
                     <span className="sr-only"> for {photo.subject}</span>
                   </a>
+                  {photo.shareAlike ? (
+                    <a href={photo.shareAlike.derivative} download className={LEDGER_LINK}>
+                      Download
+                      <span className="sr-only">
+                        {" "}
+                        the graded file of {photo.subject}, {photo.shareAlike.licence}
+                      </span>
+                    </a>
+                  ) : null}
                 </div>
               </div>
             </Reveal>

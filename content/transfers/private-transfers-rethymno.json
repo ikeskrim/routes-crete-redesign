@@ -7,7 +7,7 @@
   "categoryOriginal": "Transfers",
   "sourceModal": "portfolio1Modal1",
   "cardImage": "/images/transfers/private-transfers-rethymno/mercedes-v300.jpg",
-  "heroImage": "/images/sourced/rethymno-harbour-dusk.jpg",
+  "heroImage": "/images/sourced/rethymno-harbour-lighthouse.jpg",
   "qrImage": null,
   "facts": {
     "region": "Rethymno and throughout the island",
@@ -76,7 +76,8 @@
   ],
   "placeBreaksNote": "Photo hunt III. This page carried a single 930x620 photograph of the van as hero, card and entire gallery, and no place bands at all. Rethymno is where every transfer starts or ends (rethymno-town is one of its three locations), so the three bands are geographically honest: the Fortezza and the old-town lane were already licensed, graded and credited but placed nowhere, and the harbour at night is the pass's one warm-light find. In the order a day ends — fortress in daylight, a lane in the old town, the harbour after dark. R9 moved the harbour frame to the hero. The ruling says it takes the top of the page; keeping it as the third band as well would show one photograph twice on one page, so it moved rather than duplicated, and the Fortezza and old-town lane bands stand. The three-band set as reviewed is preserved in placeBreaks_original.",
   "heroImage_original": "/images/transfers/private-transfers-rethymno/mercedes-v300.jpg",
-  "heroImageNote": "R9, the client's ruling on /review-2 (2026-09-11): the harbour at night takes the top of the transfers page; the van stays in its card and gallery below. One constant; the van is preserved in heroImage_original and cardImage is untouched. Rethymno is one of this page's three locations, so the frame is geographically true here, and the hero renders it with alt=\"\" as decoration, so no caption can go false.",
+  "heroImage_r9": "/images/sourced/rethymno-harbour-dusk.jpg",
+  "heroImageNote": "R9, the client's ruling on /review-2 (2026-09-11): the harbour at night takes the top of the transfers page; the van stays in its card and gallery below. One constant; the van is preserved in heroImage_original and cardImage is untouched. Rethymno is one of this page's three locations, so the frame is geographically true here, and the hero renders it with alt=\"\" as decoration, so no caption can go false. 2026-09-17: the same ruling with a better frame. rethymno-harbour-lighthouse.jpg (CC BY-SA 4.0, allowed that day) replaced the R9 frame, which filled with boats, showed a legible HOTEL sign and diners, and lost the lighthouse from the phone crop. The R9 frame is kept in heroImage_r9 and in the ledger.",
   "placeBreaks_original": [
     {
       "src": "/images/sourced/rethymno-fortezza.jpg",

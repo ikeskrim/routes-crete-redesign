@@ -147,7 +147,10 @@ namespace RoutesCrete {
 '@
 }
 
-$proj = (Get-Item "C:\Users\mcapt\Downloads\*\routes-crete").FullName
+# The project root is the folder above this script. A wildcard over Downloads
+# once matched a second, empty "routes-crete" (a mis-encoded copy of the
+# folder name) and handed Join-Path two paths (2026-09-17).
+$proj = Split-Path -Parent $PSScriptRoot
 $srcRoot = Join-Path $proj 'public\images'
 $outRoot = Join-Path $proj ("public\images\graded\" + $Grade.ToLower())
 

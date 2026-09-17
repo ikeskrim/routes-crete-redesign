@@ -17,7 +17,8 @@ param(
 )
 Add-Type -AssemblyName System.Drawing
 $ErrorActionPreference = 'Stop'
-$proj = (Get-Item "C:\Users\mcapt\Downloads\*\routes-crete").FullName
+# The project root is the folder above this script (see qa/grade.ps1).
+$proj = Split-Path -Parent $PSScriptRoot
 $ref  = Join-Path $proj 'qa\grade-reference'
 $new  = Join-Path $proj 'public\images\graded\b\sourced'
 

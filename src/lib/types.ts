@@ -267,6 +267,26 @@ export interface PhotoCredit {
   attributionRequired: boolean;
   /** We colour-grade every image, and CC BY requires changes to be marked. */
   modified: boolean;
+  /**
+   * The licence requires the work's title, and that title names a place the
+   * tours do not visit: /credits keeps it verbatim, marked "(title as
+   * published)" (ruling of 2026-09-17). Page captions stay generic.
+   */
+  titleAsPublished?: boolean;
+  /**
+   * A share-alike licence (CC BY-SA 4.0 only): the graded file the site
+   * serves is published under the same licence, and /credits links it for
+   * download (qa/credits-guard.mts C16).
+   */
+  shareAlike?: {
+    licence: string;
+    licenceUrl: string;
+    /** The served graded file, a public path under /images/graded/. */
+    derivative: string;
+    obligation: string;
+  };
+  /** A frame that depicts a monument, and where its Greek licence stands. */
+  monument?: { name: string; status: string; note: string };
   note: string;
 }
 

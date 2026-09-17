@@ -18,6 +18,16 @@
  *   8. the footer links to /credits from every page
  *   9. C15 (C+ SPEC §I.2): every caption that credits a photograph names
  *      what the ledger records for THAT photograph
+ *  10. C16 (ruling of 2026-09-17): share-alike is admitted for CC BY-SA 4.0
+ *      only, and only as an obligation met. The record carries a
+ *      `shareAlike` block with the same licence and a non-empty obligation,
+ *      and names the graded file the site serves (the live GRADE letter, the
+ *      record's own file name) as its derivative. That file exists, and
+ *      /credits says it is shared under the licence and links it with
+ *      `download`, and the link answers 200 as an image. Every other BY-SA
+ *      version, and anything NonCommercial or NoDerivatives, stays forbidden.
+ *      A record marked `titleAsPublished` shows its title verbatim followed
+ *      by "(title as published)".
  *
  * C15, on the nine routes: every `figcaption` whose tier 2
  * (`[data-caption-tier="2"]`) starts "Photograph: " belongs to a figure whose
@@ -63,7 +73,18 @@ const FORBIDDEN = /BY-SA|ShareAlike|NonCommercial|\bNC\b|NoDeriv|\bND\b|editoria
  * licences and written permission were admitted by the design-reset brief of
  * 2026-09-11 — each still read on the photo's own page. */
 const ALLOWED =
-  /^(CC0 1\.0|CC BY [234]\.0|Public Domain( Mark 1\.0)?|Unsplash License|Pexels License|Pixabay Content License|Written permission)$/;
+  /^(CC0 1\.0|CC BY [234]\.0|CC BY-SA 4\.0|Public Domain( Mark 1\.0)?|Unsplash License|Pexels License|Pixabay Content License|Written permission)$/;
+/* C16: the one share-alike licence the client admitted (2026-09-17). It
+ * passes FORBIDDEN only together with the obligation checks below. */
+const SHARE_ALIKE = /^CC BY-SA 4\.0$/;
+
+/* The live grade letter, read as qa/parity.mts reads it: one line-start
+ * declaration in src/lib/edition.ts, exactly once. */
+const GRADE = (() => {
+  const found = [...fs.readFileSync("src/lib/edition.ts", "utf8").matchAll(/^export const GRADE = "([a-z])";$/gm)];
+  if (found.length !== 1) throw new Error(`src/lib/edition.ts: ${found.length} GRADE declarations, expected exactly one`);
+  return found[0][1];
+})();
 
 let failed = 0;
 const check = (name: string, ok: boolean, detail: string) => {
@@ -75,6 +96,7 @@ const ledger = JSON.parse(fs.readFileSync("content/photo-credits.json", "utf8"))
   photographs: {
     file: string;
     subject: string;
+    title: string;
     author: string;
     licence: string;
     licenceUrl: string;
@@ -84,6 +106,8 @@ const ledger = JSON.parse(fs.readFileSync("content/photo-credits.json", "utf8"))
     surface?: string;
     /** For "Written permission": repo path of the stored written confirmation. */
     permission?: string;
+    titleAsPublished?: boolean;
+    shareAlike?: { licence: string; licenceUrl: string; derivative: string; obligation: string };
   }[];
 };
 
@@ -138,9 +162,27 @@ for (const p of ledger.photographs.filter((p) => !locate(p.file) && LOCAL_ONLY.t
 for (const photo of ledger.photographs) {
   check(
     `${photo.file}: licence is permitted`,
-    ALLOWED.test(photo.licence) && !FORBIDDEN.test(photo.licence),
+    ALLOWED.test(photo.licence) && (!FORBIDDEN.test(photo.licence) || SHARE_ALIKE.test(photo.licence)),
     `"${photo.licence}"`,
   );
+
+  if (SHARE_ALIKE.test(photo.licence)) {
+    const sa = photo.shareAlike;
+    const own = `/images/graded/${GRADE}/sourced/${photo.file.replace(/\.(jpe?g|png)$/i, ".jpg")}`;
+    check(
+      `${photo.file}: C16 the share-alike obligation is recorded`,
+      !!sa &&
+        sa.licence === photo.licence &&
+        sa.licenceUrl.replace(/\/$/, "") === photo.licenceUrl.replace(/\/$/, "") &&
+        sa.obligation.trim().length > 0,
+      sa ? `${sa.licence}, ${sa.obligation.trim().length} characters of obligation` : "no shareAlike block in the ledger",
+    );
+    check(
+      `${photo.file}: C16 the shared file is the one the site serves`,
+      !!sa && sa.derivative === own && fs.existsSync(path.join("public", ...own.split("/").filter(Boolean))),
+      sa ? `${sa.derivative}${sa.derivative === own ? "" : `, expected ${own}`}` : "no derivative named",
+    );
+  }
   check(
     `${photo.file}: has source + licence URLs`,
     /^https?:\/\//.test(photo.source) && /^https?:\/\//.test(photo.licenceUrl),
@@ -234,7 +276,34 @@ await page.waitForTimeout(1200);
 const rendered = await page.evaluate(() => ({
   text: document.body.innerText,
   links: [...document.querySelectorAll("a")].map((a) => a.getAttribute("href") ?? ""),
+  downloads: [...document.querySelectorAll("a[download]")].map((a) => a.getAttribute("href") ?? ""),
 }));
+
+/* C16 and the title marker, on the page. */
+for (const photo of ledger.photographs) {
+  const sa = photo.shareAlike;
+  if (sa) {
+    check(
+      `${photo.file}: C16 /credits says the graded file is shared under ${sa.licence}`,
+      rendered.text.includes(`shared under ${sa.licence}`),
+      `"shared under ${sa.licence}"`,
+    );
+    const linked = rendered.downloads.includes(sa.derivative);
+    const served = linked ? await fetch(`${BASE}${sa.derivative}`) : null;
+    check(
+      `${photo.file}: C16 /credits links the graded file for download`,
+      linked && served?.status === 200 && /^image\//.test(served.headers.get("content-type") ?? ""),
+      linked ? `${sa.derivative}: ${served?.status} ${served?.headers.get("content-type")}` : `no a[download] with href ${sa.derivative}`,
+    );
+  }
+  if (photo.titleAsPublished) {
+    check(
+      `${photo.file}: title kept verbatim, marked "(title as published)"`,
+      rendered.text.includes(`${photo.title} (title as published)`),
+      `"${photo.title} (title as published)"`,
+    );
+  }
+}
 
 for (const photo of ledger.photographs) {
   check(

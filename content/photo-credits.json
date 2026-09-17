@@ -1,5 +1,5 @@
 {
-  "note": "Provenance for every photograph on this site that we did not take ourselves. Each entry was verified by SHA-1: the local master is byte-for-byte the file at the source URL, so these are identity matches rather than resemblances. Licences were read off the file page's own wikitext and extmetadata, never inferred from a category, a filename, or a sibling file by the same author. CC BY-SA and NonCommercial files were excluded on purpose: the site applies a colour grade to every image, which creates a derivative, and share-alike would oblige the graded result to carry BY-SA too. The three frames added on 2026-08-28 were sourced in the beauty pass with a deliberate bias to spectacle; each licence was read on its own file page that day, not carried over from the earlier pass.",
+  "note": "Provenance for every photograph on this site that we did not take ourselves. Each entry was verified by SHA-1: the local master is byte-for-byte the file at the source URL, so these are identity matches rather than resemblances. Licences were read off the file page's own wikitext and extmetadata, never inferred from a category, a filename, or a sibling file by the same author. NonCommercial files are excluded. CC BY-SA was excluded until the client's ruling of 2026-09-17, because the site colour-grades every image, which makes a derivative, and share-alike obliges the graded result to carry the same licence. The ruling accepts that obligation for CC BY-SA 4.0 only: each such record carries a `shareAlike` block naming the graded file, and /credits publishes that file under CC BY-SA 4.0 with a download link (qa/credits-guard.mts C16). The three frames added on 2026-08-28 were sourced in the beauty pass with a deliberate bias to spectacle; each licence was read on its own file page that day, not carried over from the earlier pass.",
   "verifiedOn": "2026-09-13",
   "photographs": [
     {
@@ -60,7 +60,12 @@
       "dimensions": "4320 × 3240",
       "attributionRequired": false,
       "modified": true,
-      "note": "READ THIS BEFORE 'CORRECTING' THIS ENTRY. Wikimedia's Structured Data for this file still carries a stale CC BY-SA 4.0 copyright claim alongside the CC0 one, so any tool that reads Structured Data instead of the page wikitext will report this file as BY-SA — a licence we forbid. The operative licence is CC0. The file was uploaded in 2013 with an empty permission field; a third party tagged it BY-SA 4.0 in 2015 from the uploader's credit page; the author and sole copyright holder then dedicated it CC0 himself in the revision of 2022-09-03. A bot wrote the Structured Data claims in 2020, while the page genuinely said BY-SA, and later bot passes never purged the superseded value. CC0 is the only licence the author has personally written onto this page. Attribution is not legally required here; we credit him anyway."
+      "note": "READ THIS BEFORE 'CORRECTING' THIS ENTRY. Wikimedia's Structured Data for this file still carries a stale CC BY-SA 4.0 copyright claim alongside the CC0 one, so any tool that reads Structured Data instead of the page wikitext will report this file as BY-SA — a licence we forbid. The operative licence is CC0. The file was uploaded in 2013 with an empty permission field; a third party tagged it BY-SA 4.0 in 2015 from the uploader's credit page; the author and sole copyright holder then dedicated it CC0 himself in the revision of 2022-09-03. A bot wrote the Structured Data claims in 2020, while the page genuinely said BY-SA, and later bot passes never purged the superseded value. CC0 is the only licence the author has personally written onto this page. Attribution is not legally required here; we credit him anyway.",
+      "monument": {
+        "name": "Preveli Monastery (Archaeological Cadastre 153830 and 153829, within site 165050)",
+        "status": "licence application pending",
+        "note": "Shown as the Preveli Monastery preview on the homepage chart and on the Kourtaliotis route journey. The monastery is most likely owned by the Monastery itself, not the State; if so, art. 46 may not apply and the Monastery's own consent is what counts. The application asks the Ephorate to confirm. Greek law (ν. 4858/2021 art. 46 par. 4B) requires a prior licence to publish depictions of State-owned monuments for profit. The client decided on 2026-09-17 that the frame stays live while the application is prepared; the application, image list and fee are in MONUMENT-LICENCE.md."
+      }
     },
     {
       "file": "preveli-palm-beach-aerial.jpg",
@@ -120,7 +125,12 @@
       "dimensions": "4515 × 3045",
       "attributionRequired": false,
       "modified": true,
-      "note": "Sourced and licence-verified in a two-pass review: one agent proposed it, a second independently re-read the licence off the file page and confirmed the subject. Downloaded dimensions match the verified record exactly."
+      "note": "Sourced and licence-verified in a two-pass review: one agent proposed it, a second independently re-read the licence off the file page and confirmed the subject. Downloaded dimensions match the verified record exactly.",
+      "monument": {
+        "name": "The Venetian harbour of Rethymno and its lighthouse (Archaeological Cadastre 153875)",
+        "status": "licence application pending",
+        "note": "Shown as the Rethymno preview on the homepage chart and on the transfer route journey. The harbour was declared in ΦΕΚ Β' 605/1965; whether that declaration covers the lighthouse, and who owns it, are open questions for the Ephorate. Greek law (ν. 4858/2021 art. 46 par. 4B) requires a prior licence to publish depictions of State-owned monuments for profit. The client decided on 2026-09-17 that the frame stays live while the application is prepared; the application, image list and fee are in MONUMENT-LICENCE.md."
+      }
     },
     {
       "file": "rethymno-old-town-lane.jpg",
@@ -150,7 +160,12 @@
       "dimensions": "3696 × 2808",
       "attributionRequired": true,
       "modified": true,
-      "note": "Sourced and licence-verified in a two-pass review: one agent proposed it, a second independently re-read the licence off the file page and confirmed the subject. Downloaded dimensions match the verified record exactly."
+      "note": "Sourced and licence-verified in a two-pass review: one agent proposed it, a second independently re-read the licence off the file page and confirmed the subject. Downloaded dimensions match the verified record exactly.",
+      "monument": {
+        "name": "The Fortezza of Rethymno (Archaeological Cadastre 153874)",
+        "status": "licence application pending",
+        "note": "Shown as the first place break on /transfers/private-transfers-rethymno. Declared (ΦΕΚ Β' 227/1941) and built 1573-1580. State ownership is probable, not confirmed. Greek law (ν. 4858/2021 art. 46 par. 4B) requires a prior licence to publish depictions of State-owned monuments for profit. The client decided on 2026-09-17 that the frame stays live while the application is prepared; the application, image list and fee are in MONUMENT-LICENCE.md."
+      }
     },
     {
       "file": "spili-fountains.jpg",
@@ -285,7 +300,38 @@
       "dimensions": "3888 × 2504",
       "attributionRequired": true,
       "modified": true,
-      "note": "Photo hunt III. The only warm-light frame the pass produced that is of a place this site names — and it is the operator's home base. Own work by the photographer, Old Venetian harbour of Rethymno, May 2009. The file page dual-licenses it CC BY 3.0 Unported and GFDL 1.2; under a dual licence the licensee may choose either, and this site takes the CC BY 3.0 grant. No ShareAlike, NonCommercial or NoDerivatives term appears anywhere on the page. Licence read on the file page itself on 2026-09-01, not trusted from the API cache."
+      "note": "Photo hunt III. The only warm-light frame the pass produced that is of a place this site names — and it is the operator's home base. Own work by the photographer, Old Venetian harbour of Rethymno, May 2009. The file page dual-licenses it CC BY 3.0 Unported and GFDL 1.2; under a dual licence the licensee may choose either, and this site takes the CC BY 3.0 grant. No ShareAlike, NonCommercial or NoDerivatives term appears anywhere on the page. Licence read on the file page itself on 2026-09-01, not trusted from the API cache.",
+      "monument": {
+        "name": "The Venetian harbour of Rethymno and its lighthouse (Archaeological Cadastre 153875)",
+        "status": "not displayed since 2026-09-17",
+        "note": "Retired from the transfer hero on 2026-09-17 and shown on no page since; not in the licence application. The graded file stays in public/ (reachable at its own URL, linked from nowhere), so this credit stays."
+      }
+    },
+    {
+      "file": "rethymno-harbour-lighthouse.jpg",
+      "subject": "The Venetian harbour of Rethymno, its lighthouse lit",
+      "title": "Λιμάνι Ρεθύμνου 6495.jpg",
+      "author": "C messier (Wikimedia Commons)",
+      "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:%CE%9B%CE%B9%CE%BC%CE%AC%CE%BD%CE%B9_%CE%A1%CE%B5%CE%B8%CF%8D%CE%BC%CE%BD%CE%BF%CF%85_6495.jpg",
+      "sha1": "491511585c96be730b622932ce926262b441ca4f",
+      "bytes": 4653170,
+      "dimensions": "4555 × 3416",
+      "attributionRequired": true,
+      "modified": true,
+      "shareAlike": {
+        "licence": "CC BY-SA 4.0",
+        "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "derivative": "/images/graded/d/sourced/rethymno-harbour-lighthouse.jpg",
+        "obligation": "The colour-graded file this site serves is an adaptation, so it is shared under CC BY-SA 4.0 as well (licence section 3(b)): /credits says so and links that file for download, with no added terms and no technical restriction. Any regrade or crop carries the same obligation, and `derivative` must follow the file the site serves."
+      },
+      "monument": {
+        "name": "The Venetian harbour of Rethymno and its lighthouse (Archaeological Cadastre 153875)",
+        "status": "licence application pending",
+        "note": "The transfer page hero since 2026-09-17, replacing rethymno-harbour-dusk.jpg, which shows the same lighthouse. Greek law (ν. 4858/2021 art. 46 par. 4B) requires a prior licence to publish depictions of State-owned monuments for profit. The client decided on 2026-09-17 that the frame stays live while the application is prepared; the application, image list and fee are in MONUMENT-LICENCE.md."
+      },
+      "note": "Rulings of 2026-09-17 (CC BY-SA allowed). One of twelve CC BY-SA frames on the contact sheet, and the only one that clearly beat a live frame: the transfer hero it replaces fills with a replica tour boat and moored boats, shows a legible HOTEL sign and diners in the served file, and loses the lighthouse from the phone crop. Own work by C messier, uploaded 2021-04-18, one version, a Commons Quality Image; the page's own licence line (\"I, the copyright holder of this work, hereby publish it under ... Creative Commons Attribution-Share Alike 4.0 International\") and its extmetadata were read on 2026-09-17 between 15:22 and 15:30 UTC. The master was downloaded that day from upload.wikimedia.org and its SHA-1 matches the file page. Checked at 100% the same day: no person in frame and no legible boat registration. The caption makes no time-of-day claim and does not name the mountain."
     },
     {
       "file": "pexels-16993748.jpg",
@@ -381,7 +427,8 @@
       "attributionRequired": true,
       "surface": "mood",
       "modified": true,
-      "note": "Design reset, photo hunt IV. Licence read on the Flickr photo page itself on 2026-09-13 ('Some rights reserved', CC BY 2.0) and confirmed in the page data; EXIF is a consistent camera original (Panasonic DMC-FZ45, 2012-10-08). Crete rests on the photographer's own title and tags; the title names Agia Galini, which the tours do not visit, so it appears only here as the work's title, and every on-page caption stays generic."
+      "note": "Design reset, photo hunt IV. Licence read on the Flickr photo page itself on 2026-09-13 ('Some rights reserved', CC BY 2.0) and confirmed in the page data; EXIF is a consistent camera original (Panasonic DMC-FZ45, 2012-10-08). Crete rests on the photographer's own title and tags; the title names Agia Galini, which the tours do not visit, so it appears only here as the work's title, marked \"(title as published)\" under the client's ruling of 2026-09-17, and every on-page caption stays generic. CC BY 2.0 requires the title where one is supplied, so it is kept verbatim.",
+      "titleAsPublished": true
     },
     {
       "file": "libyan-sea-coast-dusk.jpg",
@@ -448,5 +495,5 @@
       "note": "Design reset, photo hunt IV. Exact place verified: the photographer's own description names the Preveli palm forest in southern Crete, with a location of Preveli beach (35.1526, 24.4739), and the frame is the palm-lined river running to the beach. Preveli is on the Kourtaliotis route, so this may carry an itinerary caption. The swimmers in the river are too small to identify. Licence read on the live photo page on 2026-09-13 ('Free to use under the Unsplash License'); the proposer's page-data snapshot showed it is not premium and not Unsplash+. A browser visit the same day confirmed only the page's own title, 'Free Photo on Unsplash': the page body did not render for text extraction, so the licence line itself was not re-read there. Held outside the repository."
     }
   ],
-  "storageNote": "WHERE THE MASTERS LIVE. CC0 / CC BY / public-domain masters are committed in assets-src/sourced/: those licences permit redistribution, and this repository is public. Free-stock masters (Pexels here; Unsplash if any ship) and any photograph used by written permission are NOT committed. They are held in assets-src/stock-local/, which is gitignored, and only the graded derivative the site serves is published. Pexels forbids redistributing its files on other platforms, and a permission granted for a website does not reach a public repository handing out the original. The SHA-1 above is what ties each held master to its licence; qa/credits-guard.mts fails if such a master is found inside the repo. Pixabay-licensed frames are held entirely, not shipped: that licence forbids distributing content on a standalone basis, and a colour grade leaves a photograph substantially the same. CC BY-SA is still excluded from the site and is a separate decision for the client (see the local contact sheet in .hunt/design-reset/by-sa/)."
+  "storageNote": "WHERE THE MASTERS LIVE. CC0 / CC BY / public-domain masters are committed in assets-src/sourced/: those licences permit redistribution, and this repository is public. Free-stock masters (Pexels here; Unsplash if any ship) and any photograph used by written permission are NOT committed. They are held in assets-src/stock-local/, which is gitignored, and only the graded derivative the site serves is published. Pexels forbids redistributing its files on other platforms, and a permission granted for a website does not reach a public repository handing out the original. The SHA-1 above is what ties each held master to its licence; qa/credits-guard.mts fails if such a master is found inside the repo. Pixabay-licensed frames are held entirely, not shipped: that licence forbids distributing content on a standalone basis, and a colour grade leaves a photograph substantially the same. CC BY-SA 4.0 masters are committed like CC BY ones: the licence permits redistribution. The client allowed them on 2026-09-17; of the twelve frames on the local contact sheet (.hunt/design-reset/by-sa/), one clearly beat a live frame and shipped."
 }
