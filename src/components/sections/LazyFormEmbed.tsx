@@ -40,8 +40,10 @@ export function LazyFormEmbed({
     const box = boxRef.current;
     if (!box || mounted) return;
     if (!("IntersectionObserver" in window)) {
-      setMounted(true);
-      return;
+      // Nothing to wait for: mount straight away, from a task rather than the
+      // effect body, as the observer below does from its callback.
+      const timer = setTimeout(() => setMounted(true), 0);
+      return () => clearTimeout(timer);
     }
     const observer = new IntersectionObserver(
       (entries) => {
