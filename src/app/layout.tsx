@@ -65,6 +65,10 @@ export function generateMetadata(): Metadata {
         process.env.BUILD_COMMIT ??
         "local",
       "build-ref": process.env.VERCEL_GIT_COMMIT_REF ?? "local",
+      /* The cutover switch this build was made with (next.config.ts,
+         CUTOVER.md): "unset" before the cutover, the canonical origin after.
+         qa/security-headers.mts checks the HSTS header against it. */
+      "site-url": process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") || "unset",
     },
     robots: {
       index: true,

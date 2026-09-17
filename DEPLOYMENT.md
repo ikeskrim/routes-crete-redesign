@@ -97,6 +97,11 @@ those beyond images and redirects.
 
 ## Cutover checklist — replacing the current routescrete.gr
 
+**The executable version is [`CUTOVER.md`](CUTOVER.md)** (prepared 2026-09-17, not
+executed). It has the ordered CLIENT and OURS steps, the domain as it is today, the origin
+switch (`NEXT_PUBLIC_SITE_URL`), the rollback, and `qa/cutover-smoke.mts`, which runs most of
+the boxes below as one command. Where the two differ, `CUTOVER.md` is current.
+
 Run top to bottom. Do not start until the pre-launch smoke list passes on a staging URL.
 
 ### Before DNS
@@ -115,14 +120,17 @@ Run top to bottom. Do not start until the pre-launch smoke list passes on a stag
 
 - [ ] **`/assets/files/entypo.pdf` returns 200 and is byte-exact — 1,120,049 bytes.**
       Printed material points at this path; it must not move or be re-compressed.
-- [ ] Legacy image URLs 308-redirect, e.g. `/media/sp1-103.jpg` →
-      `/images/experiences/heart-of-cretan-tradition/sp1-103.jpg`.
+- [ ] Legacy image URLs 308-redirect, e.g. `/media/sp1-152.jpg` →
+      `/images/experiences/heart-of-cretan-tradition/sp1-152.jpg`, including the two
+      with Greek file names (`/media/spΤΥΡΟΚΟΜ.jpg`), whose sources are written
+      percent-encoded (`qa/cutover-smoke.mts` S2).
 - [ ] Old one-pager anchors resolve to the new sections. These are handled **client-side**
       (a server never receives the fragment) by `SmoothScroll` via `legacyAnchorMap`:
       `#portfolio` → Experiences, `#portfolio1` → Transfers, `#services` → Why Us,
       `#about` → How to Book, `#team` → the positioning statement ("A family runs
-      this" — the team section was removed on 2026-09-11), `#contact` → Contact.
-      Check each of the six by hand. The three legacy team-photo URLs
+      this" — the team section was removed on 2026-09-11), `#contact` → the `/contact`
+      page (until 2026-09-17 it pointed at an id the homepage does not have).
+      `qa/cutover-smoke.mts` S3 checks all six. The three legacy team-photo URLs
       (`/media/team2.jpg`, `/media/team3.jpg`, `/media/stavros.jpg`) no longer
       redirect: the photographs are retired and are deliberately not served.
 - [ ] `/sitemap.xml` lists all 7 URLs; `/robots.txt` points at it.
@@ -147,8 +155,12 @@ Run top to bottom. Do not start until the pre-launch smoke list passes on a stag
 - [ ] Point `routescrete.gr` and `www.routescrete.gr` at the new host; keep one canonical host
       and 301 the other.
 - [ ] Issue/verify TLS before cutover; confirm HTTPS and the HTTP → HTTPS redirect.
-- [ ] **Decide the HSTS scope with the client — do not just add it.** The site sends
-      `max-age=63072000` only.
+- [ ] **Decide the HSTS scope with the client — do not just add it.** Until the cutover
+      the site sends `max-age=63072000` only. The origin switch adds
+      `includeSubDomains; preload` (decided 2026-09-17, `CUTOVER.md`). Sent from
+      `www.routescrete.gr`, that covers only the subdomains of `www`. The two points
+      below apply to the apex and to a preload submission, which stay a later, separate
+      decision (`CUTOVER.md` step 17).
   - `includeSubDomains` would commit **every** subdomain of `routescrete.gr` to
     HTTPS, including mail or any other service. Add it only once each one
     serves HTTPS.

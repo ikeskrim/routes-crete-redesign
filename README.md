@@ -54,7 +54,11 @@ exits 0 no matter what parity found, so a piped guard cannot fail.
 | `qa/parity.mts` | A word or an image of the original that stopped reaching the page. |
 | `qa/mobile-audit.mts` | Horizontal overflow, sub-44px tap targets, or body text under 14px at 390. |
 | `qa/text-contrast.mts` | Text on a photograph under 3:1 at its worst pixel, measured against the rendered backdrop. No CSS-pair check can see this. |
-| `qa/security-headers.mts` | A route served without its security headers, an `X-Powered-By` header, an HSTS header that commits the whole domain, any CSP violation in a real browser (report-only included), or an unsandboxed third-party form. Needs a production server: dev serves no CSP. |
+| `qa/security-headers.mts` | A route served without its security headers, an `X-Powered-By` header, an HSTS header that does not match the cutover switch the build declares (no domain-wide commitment before the cutover, `includeSubDomains; preload` after it), any CSP violation in a real browser (report-only included), or an unsandboxed third-party form. Needs a production server: dev serves no CSP. |
+
+Two more run in the full suite: `qa/copy-subset.mts` and `qa/visual-check.mts` (the list is in `CLOSING.md`).
+
+**For the cutover**, `qa/cutover-smoke.mts` checks, per host, what visitors, bookmarks and printed material depend on. Preflight rule P14 keeps any committed environment down to the one-line origin switch. The ordered plan is [`CUTOVER.md`](CUTOVER.md).
 
 | Script | Purpose |
 |---|---|

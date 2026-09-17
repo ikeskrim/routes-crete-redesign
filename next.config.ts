@@ -46,14 +46,16 @@ function legacyImageRedirects() {
 
   walk(contentDir);
 
-  return [...pairs.entries()]
-    // Non-ASCII source paths can't be matched reliably by the router.
-    .filter(([source]) => /^[\x20-\x7E]*$/.test(source))
-    .map(([source, destination]) => ({
-      source,
-      destination,
-      permanent: true,
-    }));
+  /* A source is matched against the path as it arrives, and a browser sends
+     a Greek file name percent-encoded (/media/spΤΥΡΟΚΟΜ.jpg arrives as
+     /media/sp%CE%A4%CE%A5…), so a non-ASCII source is written encoded. These
+     two used to be dropped here, and both URLs, still served by the old site,
+     would have gone 404 at cutover (qa/cutover-smoke.mts S2, 2026-09-17). */
+  return [...pairs.entries()].map(([source, destination]) => ({
+    source: /^[\x20-\x7E]*$/.test(source) ? source : encodeURI(source),
+    destination,
+    permanent: true,
+  }));
 }
 
 /**
@@ -76,10 +78,10 @@ function legacyImageRedirects() {
  * exactly one origin, the Monday.com booking form; every other route frames
  * nothing.
  *
- * STRICT-TRANSPORT-SECURITY — two years, but WITHOUT includeSubDomains or
- * preload. Those two commit the whole routescrete.gr domain, every subdomain
- * included, to HTTPS in browsers' built-in lists, which is hard to undo; that
- * is a domain decision and belongs to the cutover, taken with the client.
+ * STRICT-TRANSPORT-SECURITY — two years. includeSubDomains and preload are
+ * added only when the cutover switch below is on: they commit the domain to
+ * HTTPS in browsers' built-in lists, which is hard to undo, so they belong to
+ * the cutover (CUTOVER.md), never to an ordinary deploy.
  *
  * Development is left without CSP: the dev server's hot reload needs eval and
  * websockets, and a dev-only exception would only teach the policy to lie.
@@ -142,9 +144,48 @@ function cspHeaders(scopedFrameSrc: string) {
   ];
 }
 
+/**
+ * THE CUTOVER SWITCH: `NEXT_PUBLIC_SITE_URL` (CUTOVER.md).
+ *
+ * Unset, as today, the site is served from its Vercel domain while
+ * routescrete.gr still serves the old site. Set it to the canonical origin
+ * (`brand.url` in content/site.json, https://www.routescrete.gr) and this
+ * build declares itself live on its own domain. Then:
+ *   - HSTS adds includeSubDomains and preload (here);
+ *   - social images resolve on the canonical origin (src/lib/site-url.ts);
+ *   - every page's `site-url` meta says so, and qa/security-headers.mts
+ *     checks the header against it.
+ * Canonical URLs do not change: they always resolve against `brand.url`.
+ *
+ * Any other value fails the build: a typo (the apex instead of www, http,
+ * a trailing path) must not ship. Next reads the variable from the
+ * environment first, then from .env.production. It is a build-time value, so
+ * changing it takes a new deployment.
+ */
+function cutoverSwitch(): { live: boolean; url: string | null } {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (!raw) return { live: false, url: null };
+  const site = JSON.parse(fs.readFileSync(path.join(process.cwd(), "content", "site.json"), "utf8")) as {
+    brand: { url: string };
+  };
+  const canonical = site.brand.url.replace(/\/$/, "");
+  const url = raw.replace(/\/$/, "");
+  if (url !== canonical) {
+    throw new Error(
+      `NEXT_PUBLIC_SITE_URL is "${raw}", but the canonical origin (content/site.json brand.url) is "${canonical}". ` +
+        "Set it to exactly the canonical origin, or leave it unset (CUTOVER.md).",
+    );
+  }
+  return { live: true, url };
+}
+
+const CUTOVER = cutoverSwitch();
+
+const HSTS = CUTOVER.live ? "max-age=63072000; includeSubDomains; preload" : "max-age=63072000";
+
 const SECURITY_HEADERS = [
   ...cspHeaders("'none'"),
-  { key: "Strict-Transport-Security", value: "max-age=63072000" },
+  { key: "Strict-Transport-Security", value: HSTS },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

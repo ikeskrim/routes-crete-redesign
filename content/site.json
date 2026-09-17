@@ -63,9 +63,9 @@
     "#services": "#why-us",
     "#about": "#how-to-book",
     "#team": "#positioning",
-    "#contact": "#contact"
+    "#contact": "/contact"
   },
-  "legacyAnchorMapNote": "#team pointed at the team movement until 2026-09-11, when the client took that section out. It now lands on #positioning — the statement of who runs this (\"A family runs this.\") — so old printed links and bookmarks still arrive somewhere true rather than nowhere.",
+  "legacyAnchorMapNote": "#team pointed at the team movement until 2026-09-11, when the client took that section out. It now lands on #positioning — the statement of who runs this (\"A family runs this.\") — so old printed links and bookmarks still arrive somewhere true rather than nowhere. #contact pointed at #contact, an id that exists only on /contact, so on the homepage it went nowhere (found by qa/cutover-smoke.mts on 2026-09-17). A value that starts with / is a page: it now opens /contact, where the nav's Contact item goes.",
   "navRetired": [
     {
       "key": "team",

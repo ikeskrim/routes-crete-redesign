@@ -10,8 +10,14 @@
  *   1. CSP (enforcing or report-only), HSTS, X-Frame-Options, nosniff,
  *      Referrer-Policy and Permissions-Policy are served
  *   2. no X-Powered-By header
- *   3. HSTS does NOT carry includeSubDomains or preload — those commit the
- *      whole routescrete.gr domain and belong to the cutover, not to a deploy
+ *   3. HSTS matches the cutover switch the build declares in its `site-url`
+ *      meta (next.config.ts, CUTOVER.md). Before the cutover ("unset", or no
+ *      meta on builds older than the switch), it does NOT carry
+ *      includeSubDomains or preload: those commit the whole domain and belong
+ *      to the cutover, not to a deploy. Once the build declares the canonical
+ *      origin (content/site.json brand.url), it MUST carry both, with a
+ *      max-age of at least one year (the preload list's minimum). Any other
+ *      declared value fails, and so do routes that disagree with each other.
  *   4. loading the page in Chromium raises ZERO CSP violations, report-only
  *      included — this is what earns the switch from report-only to enforcing
  *   X6. the page is scrolled to its end with REAL WHEEL EVENTS, and the guard
@@ -27,6 +33,7 @@
  *   node qa/security-headers.mts        (expects a PRODUCTION server:
  *                                        dev deliberately serves no CSP)
  */
+import fs from "node:fs";
 import { chromium, type Page } from "playwright";
 import { preflight } from "./preflight.mts";
 
@@ -45,6 +52,18 @@ const ROUTES = [
 ];
 
 const VIEWPORT = { width: 1440, height: 900 };
+
+/* The canonical origin: the only value the cutover switch may declare. */
+const CANONICAL = (
+  JSON.parse(fs.readFileSync("content/site.json", "utf8")) as { brand: { url: string } }
+).brand.url.replace(/\/$/, "");
+
+/** The cutover switch a page declares in `<meta name="site-url">`. */
+function declaredSwitch(html: string): string {
+  const tag = html.match(/<meta[^>]+name="site-url"[^>]*>/)?.[0];
+  if (!tag) return "absent";
+  return tag.match(/content="([^"]*)"/)?.[1] ?? "absent";
+}
 const MONDAY_FRAME = 'iframe[src*="forms.monday.com"]';
 
 let failed = 0;
@@ -102,9 +121,12 @@ await preflight(BASE, process.cwd() + "/qa");
 
 console.log("\n[headers] served on every route");
 let enforcing = false;
+const declared = new Set<string>();
 for (const route of ROUTES) {
   const res = await fetch(`${BASE}${route}`, { redirect: "manual" });
   const h = res.headers;
+  const site = declaredSwitch(await res.text());
+  declared.add(site);
   const csp = h.get("content-security-policy") ?? h.get("content-security-policy-report-only");
   if (h.get("content-security-policy")) enforcing = true;
   const hsts = h.get("strict-transport-security") ?? "";
@@ -118,17 +140,29 @@ for (const route of ROUTES) {
   ].filter(Boolean);
   check(`${route} (${res.status})`, missing.length === 0, missing.length ? `missing ${missing.join(", ")}` : "all six present");
   check(`${route}: no X-Powered-By`, !h.get("x-powered-by"), h.get("x-powered-by") ?? "absent");
-  check(
-    `${route}: HSTS makes no domain-wide commitment`,
-    !/includesubdomains|preload/i.test(hsts),
-    hsts || "none",
-  );
+  if (site === "unset" || site === "absent") {
+    check(
+      `${route}: HSTS makes no domain-wide commitment (cutover switch ${site})`,
+      !/includesubdomains|preload/i.test(hsts),
+      hsts || "none",
+    );
+  } else if (site === CANONICAL) {
+    const maxAge = Number(hsts.match(/max-age=(\d+)/i)?.[1] ?? 0);
+    check(
+      `${route}: HSTS carries the cutover commitment (switch on: ${site})`,
+      /includesubdomains/i.test(hsts) && /(^|;)\s*preload\s*(;|$)/i.test(hsts) && maxAge >= 31536000,
+      hsts || "none",
+    );
+  } else {
+    check(`${route}: the cutover switch declares the canonical origin or "unset"`, false, `site-url "${site}", canonical ${CANONICAL}`);
+  }
   if (csp) {
     check(`${route}: CSP forbids framing`, /frame-ancestors 'none'/.test(csp), "frame-ancestors");
     check(`${route}: CSP allows no third-party script`, !/script-src[^;]*https?:/.test(csp), "script-src");
   }
 }
 console.log(`  note  CSP mode: ${enforcing ? "ENFORCING" : "report-only"}`);
+check("every route declares the same cutover switch", declared.size === 1, [...declared].join(", "));
 
 console.log("\n[browser] zero CSP violations (report-only included), wheel scroll to the end, every iframe sandboxed");
 const browser = await chromium.launch();

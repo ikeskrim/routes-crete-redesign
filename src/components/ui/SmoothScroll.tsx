@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Lenis from "lenis";
 
 /**
@@ -12,7 +12,7 @@ import Lenis from "lenis";
  *
  * Also resolves the legacy one-pager anchors (#portfolio, #services, …) that
  * printed material and old links still point at, mapping them onto the new
- * homepage section ids.
+ * homepage section ids, or onto a page (#contact → /contact).
  */
 export function SmoothScroll({
   legacyAnchorMap,
@@ -20,6 +20,7 @@ export function SmoothScroll({
   legacyAnchorMap: Record<string, string>;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -146,6 +147,14 @@ export function SmoothScroll({
     const mapped = legacyAnchorMap[hash];
     if (!mapped) return;
 
+    /* A value that is a path is a page, not a section: the old one-pager's
+       #contact now lives at /contact. Only from the homepage, where the old
+       anchors pointed, and only a same-site path. */
+    if (mapped.startsWith("/")) {
+      if (pathname === "/" && !mapped.startsWith("//")) router.replace(mapped);
+      return;
+    }
+
     const target = document.querySelector(mapped);
     if (!target) return;
 
@@ -159,7 +168,7 @@ export function SmoothScroll({
       history.replaceState(null, "", mapped);
     });
     return () => cancelAnimationFrame(id);
-  }, [legacyAnchorMap, pathname]);
+  }, [legacyAnchorMap, pathname, router]);
 
   return null;
 }

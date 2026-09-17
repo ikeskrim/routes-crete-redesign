@@ -18,14 +18,27 @@ import { getSite } from "@/lib/content";
  * og:image at the canonical origin meant every share of the preview showed no
  * image at all.
  *
- * So: canonical URLs use CANONICAL, image URLs use SERVING. After DNS cutover
- * the two converge and this quietly becomes a no-op.
+ * So: canonical URLs use CANONICAL, image URLs use SERVING.
+ *
+ * The cutover switch, `NEXT_PUBLIC_SITE_URL` (next.config.ts, CUTOVER.md),
+ * ends the split. Once routescrete.gr points at this site, it is set to the
+ * canonical origin, and SERVING becomes CANONICAL on every deployment,
+ * including the vercel.app alias, whose canonical URLs already pointed there.
+ * next.config.ts refuses any other value at build time.
  */
 export function canonicalOrigin(): string {
   return getSite().brand.url.replace(/\/$/, "");
 }
 
+/** The origin the cutover switch declares, or null while it is unset. */
+export function liveOrigin(): string | null {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  return raw ? raw.replace(/\/$/, "") : null;
+}
+
 export function servingOrigin(): string {
+  const live = liveOrigin();
+  if (live) return live;
   // Vercel's own project domain is stable and shareable, unlike the
   // per-deployment hash URL, so it is preferred when both are present.
   const vercel =

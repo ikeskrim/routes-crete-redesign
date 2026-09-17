@@ -19,13 +19,15 @@
  *        photograph, no clip or opacity gate in the hero, no hidden
  *        overflow over a sticky child, emphasis words that exist,
  *        texture strengths within the measured legibility floor      S9
+ *   P14  a committed env file is only .env.production, holding only
+ *        the cutover switch at the canonical origin          always on
  * (C+ SPEC §I.2.) P8–P13 cannot pass before the rollout, so they are switched
  * on at the S9 integration by qa/cplus-stage.mts, the one switch every C+
  * assertion reads.
  *
  *   node qa/preflight.mts      the source rules alone, without a server
  */
-import { execSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
 import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -1393,10 +1395,71 @@ async function cplusRuleErrors(notes: string[]): Promise<Error[]> {
   return errors;
 }
 
+/* P14 -----------------------------------------------------------------------
+   The committed environment (CUTOVER.md). Every `.env*` file is gitignored;
+   the one that may be force-added is `.env.production`, and it may hold one
+   line: the cutover switch, NEXT_PUBLIC_SITE_URL, set to the canonical origin
+   (content/site.json brand.url). Anything else committed is a secret on its
+   way to GitHub, or a second switch nobody reviews. Both copies are read: the
+   git index (what the next commit contains) and the working tree (what a
+   local build reads). */
+function assertCommittedEnv(notes: string[]): void {
+  const git = (...args: string[]) =>
+    execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+  const tracked = git("ls-files", "-z", "--", ":(glob)**/.env*").split("\0").filter(Boolean);
+  const site = JSON.parse(fsSync.readFileSync(path.join("content", "site.json"), "utf8")) as {
+    brand: { url: string };
+  };
+  const want = `NEXT_PUBLIC_SITE_URL=${site.brand.url.replace(/\/$/, "")}`;
+  const lines = (text: string) =>
+    text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+  const offenders: string[] = [];
+
+  for (const file of tracked) {
+    if (file !== ".env.production") {
+      offenders.push(`${file}  is committed; only .env.production may be (force-added, CUTOVER.md)`);
+      continue;
+    }
+    const copies: [string, string | null][] = [
+      ["committed", git("show", `:${file}`)],
+      ["working tree", fsSync.existsSync(file) ? fsSync.readFileSync(file, "utf8") : null],
+    ];
+    for (const [where, text] of copies) {
+      if (text === null) continue;
+      const found = lines(text);
+      if (found.length === 1 && found[0] === want) continue;
+      // Variable names only: a value may be a secret. The switch's own value is not.
+      const names = found.map((l) => l.split("=")[0]).join(", ") || "nothing";
+      const value =
+        found.length === 1 && found[0].startsWith("NEXT_PUBLIC_SITE_URL=")
+          ? ` = ${found[0].slice("NEXT_PUBLIC_SITE_URL=".length)}`
+          : "";
+      offenders.push(`${file} (${where})  holds ${names}${value}; it may hold exactly ${want}`);
+    }
+  }
+
+  notes.push(
+    tracked.length
+      ? `P14 committed env: ${tracked.join(", ")}${offenders.length ? "" : `, holding only ${want}`}`
+      : "P14 committed env: none (the cutover switch is unset)",
+  );
+  if (offenders.length) {
+    throw new Error(
+      `PREFLIGHT FAILED (P14): committed environment.\n` +
+        `Only .env.production may be committed, and only with the cutover switch at the canonical origin:\n` +
+        offenders.map((o) => `  P14  ${o}`).join("\n"),
+    );
+  }
+}
+
 /** The file-based rules, runnable on their own: `node qa/preflight.mts`. */
 export async function assertSourceRules(notes: string[] = []): Promise<void> {
   const errors: Error[] = [];
-  for (const rule of [assertNoGrainPositionClash, () => assertStockTexturePairing()]) {
+  for (const rule of [
+    assertNoGrainPositionClash,
+    () => assertStockTexturePairing(),
+    () => assertCommittedEnv(notes),
+  ]) {
     try {
       await rule();
     } catch (error) {
