@@ -816,7 +816,15 @@ on a conservative default and logged below.
   supplied). Camera originals of the tours are still the largest improvement
   available.
 
-## If the client prefers plain C
+## If the client prefers plain C (closed on 2026-09-17, kept for the record)
+
+> **Closed.** The client saw C+ live and said "much better now", and C+ is
+> locked. This revert is no longer an active path:
+> - `editions/plain-c.css` left the tree on 2026-09-17; it is in git history
+>   at `e5b1059`;
+> - `CLOSING.md` no longer lists the revert.
+>
+> The steps below record what it would take, as of 2026-09-17.
 
 If the client prefers plain C, the revert is token-level for these:
 - the palette;
@@ -827,8 +835,9 @@ If the client prefers plain C, the revert is token-level for these:
 - the CTA accent.
 
 **How:**
-1. Copy [`editions/plain-c.css`](editions/plain-c.css) (the "Plain C" column
-   of the C+ token tables, laid out like the live file) over
+1. Restore `editions/plain-c.css` from `e5b1059`
+   (`git show e5b1059:editions/plain-c.css`). It holds the "Plain C" column of
+   the C+ token tables, laid out like the live file. Copy it over
    `src/app/edition.css`.
 2. In `src/lib/edition.ts`, set `GRADE = "c"`, `THEME_COLOR = "#faf4e8"`,
    `DUOTONE = false` and `ITALIC_EMPHASIS = false`.
@@ -883,6 +892,16 @@ drafts before anything is rolled out. The **research brief** (13 September)
 arrived mid-reset and was folded in, not started over: its security and
 performance foundation shipped, its design patterns went into the drafts, and
 its 3D item stayed optional.
+
+> **Chapter closed on 2026-09-17.** The reset ended where it was meant to:
+> - the client chose direction C from the three drafts;
+> - C was refined into C+ and rolled out;
+> - on 17 September the client saw C+ live and said "much better now".
+>
+> C+ is the production design. The three drafts and the plain-C revert are
+> history (`e5b1059`); nothing in this chapter is still pending as design
+> work. Its open client items (photographs, protection settings, the Drive
+> link) moved to the current `CLOSING.md` list.
 
 ## The wall that did not move
 

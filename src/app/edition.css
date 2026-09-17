@@ -17,8 +17,10 @@
    Colours are opaque hex literals by construction: a computed color-mix()
    serialises as color(srgb …), which the menu-audit parser misreads (§B.1).
 
-   Plain-C revert (§B.9): replace the values below with the "Plain C" column
-   of §B.2–§B.4, and flip the switches in src/lib/edition.ts.
+   C+ is the production design, locked on 2026-09-17 when the client
+   approved the live site. The plain-C revert (§B.9) is no longer an active
+   path: its values stay in the record (MORNING.md, and
+   editions/plain-c.css in git history at e5b1059).
    ========================================================================== */
 
 :root {

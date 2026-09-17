@@ -4,8 +4,8 @@
  * Contract C10: `GRADE`, `THEME_COLOR`, `DUOTONE` and `ITALIC_EMPHASIS` are
  * read only from this file. Its CSS twin is `src/app/edition.css` (Layer E);
  * together with the `preload` literals in `src/app/fonts.ts` they are the
- * whole of a token-level edition revert (§B.9). Plain C: `GRADE` "c",
- * `THEME_COLOR` "#faf4e8", `DUOTONE` false, `ITALIC_EMPHASIS` false.
+ * whole of the edition. C+ is locked (2026-09-17); the plain-C values of a
+ * token-level revert (§B.9) are kept in the record, MORNING.md.
  */
 
 /**

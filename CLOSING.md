@@ -19,7 +19,7 @@ before it went right, is in [`MORNING.md`](MORNING.md), newest first.
 |---|---|
 | **The look** | C+ "Warm Editorial": cream and bone paper, burnt sienna, olive, ink charcoal, and one warm gold kept for buttons. Fraunces at display size with one italic emphasis word; Inter for text. Photographs are graded "D, amber soft". Live since `014b9e9` (R1), with the italic since `b019985` (R2). |
 | **The drafts** | Deleted at the close (`524cada`). The captures, C beside C+ and the C+ draft beside the rolled-out site, are in git history at `e5b1059`. |
-| **Reverting to plain C** | A token change: copy [`editions/plain-c.css`](editions/plain-c.css) over `src/app/edition.css`, and set the four switches in `src/lib/edition.ts` as its header says. Layout and composition do not revert that way (see `MORNING.md`). |
+| **Design status** | **C+ is the production design, locked on 2026-09-17.** The client saw the live site and said: "much better now". The plain-C revert is no longer an active path; its values are kept in the record (`MORNING.md`). |
 | **Team section** | Out of the homepage since `392602f`. The names, roles and intro stay in `content/site.json → team`. |
 | **The photo pool** | The verified pool, each record with its verdict, is in the gitignored `.hunt/cplus/pool/`. What it proposes for the site is in `MORNING.md`. |
 | **The client lists** | [`PHOTOGRAPHERS.md`](PHOTOGRAPHERS.md), [`TOURISM-LIBRARIES.md`](TOURISM-LIBRARIES.md), [`SHORTLIST.md`](SHORTLIST.md). The CC BY-SA contact sheet is local only: `.hunt/design-reset/by-sa/`. |
@@ -294,4 +294,3 @@ with the client, in its own conversation. See [`DEPLOYMENT.md`](DEPLOYMENT.md).
 | [`PHOTOGRAPHERS.md`](PHOTOGRAPHERS.md) | photographers to ask, the frames per surface, and the permission message in Greek and English |
 | [`TOURISM-LIBRARIES.md`](TOURISM-LIBRARIES.md) | the official Cretan and Greek image libraries: their terms, and what a request must cover |
 | [`SHORTLIST.md`](SHORTLIST.md) | paid stock per direction and surface, with cost, and the private-repository precondition |
-| [`editions/plain-c.css`](editions/plain-c.css) | the plain-C token values, a drop-in for `src/app/edition.css` |
