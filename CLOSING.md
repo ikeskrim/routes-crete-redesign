@@ -29,7 +29,7 @@ before it went right, is in [`MORNING.md`](MORNING.md), newest first.
 | **The drafts** | Deleted at the close (`524cada`). The captures, C beside C+ and the C+ draft beside the rolled-out site, are in git history at `e5b1059`. |
 | **Design status** | **C+ is the production design, locked on 2026-09-17.** The client saw the live site and said: "much better now". The plain-C revert is no longer an active path; its values are kept in the record (`MORNING.md`). |
 | **Team section** | Out of the homepage since `392602f`. The names, roles and intro stay in `content/site.json → team`. |
-| **The photo rulings (2026-09-17)** | **CC BY-SA 4.0:** allowed, as an obligation met. The graded file is shared under the same licence on `/credits`, with a download link, and credits-guard C16 checks it. One such frame is the transfer page hero. **Public Domain Mark:** only where verifiable at source; none qualified. **Monument frames:** live, with the licence application pending ([`MONUMENT-LICENCE.md`](MONUMENT-LICENCE.md)). **A title naming a place the tours don't visit:** shown verbatim on `/credits`, marked "(title as published)". |
+| **The photo rulings (2026-09-17)** | **CC BY-SA 4.0:** allowed, as an obligation met. The graded file is shared under the same licence on `/credits`, with a download link, and credits-guard C16 checks it. One such frame is the transfer page hero. **Public Domain Mark:** only where verifiable at source; none qualified. **Monument frames:** live, with the licence application pending ([`MONUMENT-LICENCE.md`](MONUMENT-LICENCE.md)). **A title naming a place the tours don't visit, where the licence requires the title:** shown verbatim on `/credits`, marked "(title as published)". Today that is one frame, "Rain on Agia Galini". |
 | **The cutover** | Prepared, not executed ([`CUTOVER.md`](CUTOVER.md)). `www` is primary and the apex redirects to it. The origin switch `NEXT_PUBLIC_SITE_URL` is unset, and setting it is one committed line on the day. |
 | **Dependencies** | The minor and patch bumps are merged (`4db5387`). The major bumps (TypeScript 7, ESLint 10, @types/node 26) are held on `maint/post-cutover-majors`, with its `MAINTENANCE.md`, until after the cutover. |
 | **The photo pool** | The verified pool, each record with its verdict, is in the gitignored `.hunt/cplus/pool/`. The CC BY-SA re-evaluation and the monument research are in `.hunt/lock/`. |
@@ -68,6 +68,10 @@ has been sent, bought, submitted or switched.
 6. **Registrar access and a cutover date.** [`CUTOVER.md`](CUTOVER.md) steps
    1–3 cover this:
    - access to the aspx.gr DNS panel and to Vercel → Domains;
+   - with the host, the list of mail names in use. The zone has a wildcard
+     record, so any name other than `mail.routescrete.gr` (for example
+     `smtp`, `imap`, `webmail`) would follow the apex to Vercel unless it
+     gets its own record first;
    - a weekday date;
    - a saved copy of the DNS zone;
    - the TTL lowered 24 hours before.
@@ -206,8 +210,18 @@ What ships is C+, a travel feature in print:
    - **A title that names a place the tours don't visit,** where the
      licence requires the title: set `titleAsPublished`.
 
-   The credits guard fails on any of these, and on a checksum that no longer
-   matches the file. On **itinerary** surfaces — cards, waypoints, galleries,
+   **What the credits guard catches:** a licence outside the allowed list;
+   other BY-SA versions, NC and ND; a CC BY-SA 4.0 record without a correct
+   `shareAlike` block and download link; a stock or permission master in the
+   public repository; a `titleAsPublished` record that `/credits` does not
+   mark; and a checksum that no longer matches the file.
+
+   **What it does not check** (check these by hand):
+   - the `monument` mark;
+   - whether a title needs `titleAsPublished`;
+   - whether a Public Domain Mark is verifiable at its source.
+
+   On **itinerary** surfaces — cards, waypoints, galleries,
    route stops — photograph only places this site names. On **mood** surfaces —
    the hero, section bands, the closing scene, dark backgrounds — a photograph
    of Crete broadly is allowed. Either way, caption only what the frame
@@ -250,9 +264,6 @@ Then, one at a time:
   and anchors, credits, contact links, the form, the 404 page and the
   origin.
 
-`.hunt/lock/suite/run-suite.sh <label> [base]` runs the first twelve and
-preflight in that order, each into its own log.
-
 Point any of them at the deployment with `QA_BASE_URL=https://routes-crete-redesign.vercel.app`.
 
 **Run them un-piped.** `node qa/parity.mts | tail` always exits 0 no matter what
@@ -288,15 +299,8 @@ the close commit `524cada` (C+ with the italic, drafts deleted):
 preview build loads Vercel's comment-toolbar script from `vercel.live`, and
 Lighthouse charges a new connection for it. Production loads it only behind a
 cookie. Judge budgets on production. The previous close, on `7ae6276`,
-measured 92 / 92 / 94 on the first three routes.
-
----|---|---|---|---|---|
-| `/` | **92** | 79 90 92 92 93 | 100 | 187 ms | 0 |
-| `/experiences/kourtaliotis-temple-of-nature` | **92** | 88 89 92 93 93 | 100 | 95 ms | 0 |
-| `/transfers/private-transfers-rethymno` | **94** | 86 94 94 94 95 | 100 | 61 ms | 0 |
-
-The home route's one run at 79 is the reason the gate is the median. The
-previous close, on `2345b01`, measured 90 / 93 / 94.
+measured 92 / 92 / 94 on the first three routes (its table is in
+`MORNING.md`).
 
 ---
 

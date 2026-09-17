@@ -449,12 +449,27 @@ for (const src of [
 }
 
 console.log("\nsocial images");
+/* The cutover switch (next.config.ts, CUTOVER.md) decides where a social
+ * image belongs, and every page declares it in <meta name="site-url">.
+ * Unset (or absent, on builds older than the switch): the rule above, the
+ * origin serving this build. Set to the canonical origin: every social image
+ * moves there, so it must be on that origin, and its path must be one this
+ * deployment serves. Before DNS moves, the canonical host still answers with
+ * the old site, so the path is fetched from the deployment under test; on the
+ * canonical host itself that is the same request. The first switch-on dry run
+ * (a vercel.app preview, 2026-09-17) failed the old rule on exactly this. */
+const CANONICAL = (
+  JSON.parse(readFileSync(path.join(ROOT, "content", "site.json"), "utf8")) as { brand: { url: string } }
+).brand.url.replace(/\/$/, "");
 let socialFailures = 0;
 for (const route of ["/", "/experiences/kourtaliotis-temple-of-nature"]) {
   const html = await (await fetch(`${BASE}${route}`)).text();
   const grab = (re: RegExp) => html.match(re)?.[1];
   const ogImage = grab(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
   const canonical = grab(/<link[^>]+rel="canonical"[^>]+href="([^"]+)"/);
+  const siteUrlTag = html.match(/<meta[^>]+name="site-url"[^>]*>/)?.[0];
+  const declared = siteUrlTag ? (siteUrlTag.match(/content="([^"]*)"/)?.[1] ?? "absent") : "absent";
+  const switchOn = declared !== "unset" && declared !== "absent";
 
   if (!ogImage) {
     console.log(`  FAIL  ${route} — no og:image`);
@@ -472,7 +487,21 @@ for (const route of ["/", "/experiences/kourtaliotis-temple-of-nature"]) {
      does not resolve yet. That is by design, not a regression, so the
      resolve check only runs against a real deployment. */
   const local = /^https?:\/\/(localhost|127\.0\.0\.1)/.test(BASE);
-  if (local) {
+  if (switchOn) {
+    if (declared !== CANONICAL) {
+      console.log(`  FAIL  ${route} — the cutover switch declares "${declared}", not the canonical origin ${CANONICAL}`);
+      socialFailures++;
+    } else {
+      const image = new URL(ogImage);
+      const onCanonical = image.origin === CANONICAL;
+      const res = await fetch(`${BASE}${image.pathname}${image.search}`, { method: "HEAD" }).catch(() => null);
+      const ok = onCanonical && !!res && res.status < 400;
+      console.log(
+        `  ${ok ? "ok   " : "FAIL "} ${route} — og:image (switch on) ${onCanonical ? "on the canonical origin" : "WRONG ORIGIN"}, path ${res?.status ?? "unreachable"} on this deployment: ${ogImage}`,
+      );
+      if (!ok) socialFailures++;
+    }
+  } else if (local) {
     console.log(`  skip  ${route} — og:image resolution not assertable on a local build (${ogImage})`);
   } else {
     const sameOrigin = new URL(ogImage).origin === new URL(BASE).origin;

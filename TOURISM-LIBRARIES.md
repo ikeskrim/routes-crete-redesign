@@ -1,7 +1,8 @@
 # Tourism-board photo libraries — what Routes Crete may use
 
-**Status, 17 September 2026:** unchanged. Nothing has been requested from any
-library. No library photograph is on the site, or in the free photo pool,
+**Status, 17 September 2026:** unchanged, except the monument note below,
+which now follows the client's ruling of that day. Nothing has been requested
+from any library. No library photograph is on the site, or in the free photo pool,
 which closed that day.
 
 Checked 2026-09-11. Each body's terms were read on its own pages. Nothing was
@@ -104,10 +105,11 @@ put in the repository. They are kept privately, and their fingerprint (SHA-1)
 is recorded in the credits ledger. The credits guard enforces this. Only the
 graded image is public, which is why the grant must say so.
 
-A library's permission covers the photograph's copyright only. Photographs of
-monuments, such as the Fortezza and the Venetian lighthouse, also fall under
-Greek law's own rules on commercial use of images of monuments. The client has
-not yet ruled on those, and a library's yes may not settle them.
+A library's permission covers the photograph's copyright only. A photograph of
+the Fortezza, the Venetian harbour or lighthouse, or Preveli Monastery also
+needs the Ministry licence (ruling of 17 September 2026):
+- add it to the application in `MONUMENT-LICENCE.md`;
+- for Preveli Monastery, also ask the Monastery for written consent.
 
 ## How a written yes enters the site
 

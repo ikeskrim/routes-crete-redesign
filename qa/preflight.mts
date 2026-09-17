@@ -1413,6 +1413,20 @@ function assertCommittedEnv(notes: string[]): void {
   const want = `NEXT_PUBLIC_SITE_URL=${site.brand.url.replace(/\/$/, "")}`;
   const lines = (text: string) =>
     text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+  /* Variable names only: a value may be a secret. Next's dotenv (@next/env)
+     also accepts `KEY: value` lines and quoted values that span lines, so the
+     names are read with that grammar over the whole text (a multi-line value
+     is consumed as one entry), and anything that is not a conventional
+     variable name is counted, never printed. */
+  const DOTENV_ENTRY =
+    /^[ \t]*(?:export[ \t]+)?([\w.-]+)(?:[ \t]*=|:[ \t])(?:[ \t]*'(?:\\'|[^'])*'|[ \t]*"(?:\\"|[^"])*"|[ \t]*`(?:\\`|[^`])*`|[^#\n]*)/gm;
+  const variableNames = (text: string) => {
+    const keys = [...text.replace(/\r\n?/g, "\n").matchAll(DOTENV_ENTRY)].map((m) => m[1]);
+    const named = keys.filter((k) => /^[A-Z][A-Z0-9_]{0,63}$/.test(k));
+    const other = keys.length - named.length;
+    const parts = [...named, ...(other ? [`${other} unrecognised entr${other === 1 ? "y" : "ies"}`] : [])];
+    return parts.join(", ") || "nothing a variable name can be read from";
+  };
   const offenders: string[] = [];
 
   for (const file of tracked) {
@@ -1428,8 +1442,8 @@ function assertCommittedEnv(notes: string[]): void {
       if (text === null) continue;
       const found = lines(text);
       if (found.length === 1 && found[0] === want) continue;
-      // Variable names only: a value may be a secret. The switch's own value is not.
-      const names = found.map((l) => l.split("=")[0]).join(", ") || "nothing";
+      // The switch's own value is not a secret, so it is shown; nothing else is.
+      const names = variableNames(text);
       const value =
         found.length === 1 && found[0].startsWith("NEXT_PUBLIC_SITE_URL=")
           ? ` = ${found[0].slice("NEXT_PUBLIC_SITE_URL=".length)}`

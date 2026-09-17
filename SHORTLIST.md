@@ -13,20 +13,27 @@ bought, nothing in a cart, no account used. Buying is the client's call.
   rows stay for the record.
 - **Before any purchase:** the public-repository condition below is still
   open. Settle it first.
-- **The monument question is settled** (ruling of 17 September). Three picks
-  show monuments: 589972934 (the Fortezza), 2201313213 (the lighthouse) and
-  2183033569 (the harbour with its lighthouse). Each one bought must also go
-  into the Ministry licence application in `MONUMENT-LICENCE.md`, which covers
-  up to 20 photographs for one fee. The same applies to 2183033611 (sunrise
-  in the Venetian harbour).
+- **The monument question is settled** (ruling of 17 September). These
+  picks show monuments:
+  - 589972934 (the Fortezza);
+  - 2201313213 (the lighthouse);
+  - 2183033569 (the harbour with its lighthouse);
+  - 2183033611 (sunrise in the Venetian harbour);
+  - the Preveli Monastery picks 2258974563 (in the shared set) and
+    2191680305.
+
+  Each one bought must also go into the Ministry licence application in
+  `MONUMENT-LICENCE.md`, which covers up to 20 photographs for one fee. For
+  a Preveli Monastery frame, also ask the Monastery for written consent
+  (step 6 there).
 - **Lower priority now:** 2201313213, the lighthouse at blue hour. A free
   CC BY-SA frame of the same view became the transfer page hero on
   17 September.
 - **Still the clear upgrades for the tour pages:** 1391161549 (Preveli from
   the sea at sunset) and 2183033611 (sunrise in the Venetian harbour).
-- **CC BY-SA** is allowed from 17 September, but that ruling does not change
-  iStock's terms: the standalone-download clause is the reason for the
-  repository condition.
+- **CC BY-SA 4.0** (that version only) is allowed from 17 September. That
+  ruling does not change iStock's terms: the standalone-download clause is
+  the reason for the repository condition.
 
 ## The short answer
 
@@ -37,12 +44,18 @@ bought, nothing in a cart, no account used. Buying is the client's call.
     could be read on its photo pages.
 - **Every pick is iStock "Creative", royalty-free**, and none is marked
   editorial-only.
-- **The recommendation: 9 images** — the hero for the chosen direction, 2
-  section bands, the closing scene, the menu backdrop and 4 tour-page frames.
-  - On a one-month **Premium 10** subscription: **€85**, whichever direction
-    is chosen.
-  - With credits instead: €109 for direction A, €125 for B or C.
+- **The recommendation for C+, the locked design: 8 images.** That is:
+  - the C hero (1391161574);
+  - 2 section bands;
+  - the closing scene (now the back-cover plate);
+  - 4 tour-page frames.
+
+  The menu backdrop has no slot in the live design.
+  - On a one-month **Premium 10** subscription: **€85**.
+  - With credit packs: €118 (€132 on demand).
   - An all-Basic alternative set: €35.
+  - The 9-image figures in the cost table include the menu pick and are kept
+    for the record.
 
 ## ⚠ One condition must be settled before buying anything
 
@@ -67,11 +80,17 @@ distributing its images on a standalone basis, and a colour grade leaves a
 photograph substantially the same. Pixabay frames found in the free hunt are
 therefore **held**, not shipped, under the same condition.
 
-**A second question applies to three picks:** 589972934 (the Fortezza),
-2201313213 (the lighthouse) and 2183033569 (the harbour with its lighthouse).
-Greek law has its own rules on commercial use of images of monuments, and the
-client has not yet ruled on whether they touch this site. Settle that before
-buying these three.
+**Monument picks.** These picks show monuments:
+- 589972934 (the Fortezza);
+- 2201313213 (the lighthouse);
+- 2183033569 (the harbour with its lighthouse);
+- 2183033611 (sunrise in the Venetian harbour);
+- the Preveli Monastery picks 2258974563 and 2191680305.
+
+Under the client's ruling of 17 September, each one bought must also be added
+to the Ministry licence application in `MONUMENT-LICENCE.md`; one fee covers
+up to 20 photographs. For a Preveli Monastery frame, also ask the Monastery
+for written consent (step 6 there).
 
 ## The licence, in plain words
 
@@ -203,8 +222,12 @@ hero (1391161574) it becomes 8 images and 16 credits:
 - €118 with credit packs (12 + 3 + 1);
 - €85 on a one-month Premium 10.
 
+The rows below include the menu pick and are kept for the record. For C+
+without it, use the figures just above.
+
 | Direction | Hero added | Images | On demand | Cheapest with credits | **Cheapest overall** |
 |---|---|---|---|---|---|
+| **C+ (locked), without the menu pick** | 1391161574 (P) | 8 | €132 | €118 | **€85** — Premium 10, one month |
 | A — Deep Aegean | 2201313213 (B) | 9 | €126 | €109 | **€85** — Premium 10, one month |
 | B — Cycladic Light | 1197273375 (P) | 9 | €141 | €125 | **€85** — Premium 10, one month |
 | C — Warm Editorial | 1391161574 (P) | 9 | €141 | €125 | **€85** — Premium 10, one month |

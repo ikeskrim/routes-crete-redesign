@@ -848,6 +848,12 @@ If the client prefers plain C, the revert is token-level for these:
 - Preflight P9, P10 and P12 together show that every colour, font and texture
   value is read from those two files.
 - Both graded trees (`public/images/graded/c` and `d`) are in the repository.
+  - **The exception:** the transfer hero added on 2026-09-17
+    (`rethymno-harbour-lighthouse.jpg`) exists only in grade D.
+  - **What a C revert must do for it:** grade it (`qa/grade.ps1 -Grade C`,
+    then `qa/blur-map.ps1 -Grade C`) and set its `shareAlike.derivative` in
+    `content/photo-credits.json` to the grade-C path.
+  - **Otherwise** the hero has no file, and credits guard C16 fails.
 - The plate tokens bring back C's sepia filter on photographs and its multiply
   print over the cover plate, so photographs are as warm as they were in C.
 - The hero photograph needs no change: draft C used the same dusk-coast frame.

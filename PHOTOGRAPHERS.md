@@ -10,9 +10,13 @@ messages below.
 been contacted. The client sends every message; we send nothing.
 - **The design is locked:** C+ ("Warm Editorial") is the production design.
 - **The client's rulings of 17 September change three things here:**
-  - **CC BY-SA** is allowed. One free frame, the Rethymno lighthouse at
-    dusk, is now the transfer page hero, so #4's lighthouse is no longer
-    the first ask.
+  - **CC BY-SA 4.0 (that version only) is allowed**, as an obligation met.
+    - **The condition:** the graded copy is shared under the same licence,
+      with a download link on /credits. Other BY-SA versions are still
+      refused.
+    - **What it changed here:** one free frame, the Rethymno lighthouse at
+      dusk, is now the transfer page hero, so #4's lighthouse is no longer
+      the first ask.
   - **Monuments.** The licence application is prepared in
     `MONUMENT-LICENCE.md`. A photographer's yes for a frame of the Fortezza,
     the Venetian harbour or Preveli Monastery is not enough on its own: that
@@ -24,8 +28,8 @@ been contacted. The client sends every message; we send nothing.
     sent.
 - **What to send first, for the live design:**
   1. #13, Rethymno at a June sunset (a band);
-  2. #5, the old town and harbour before sunrise (add its harbour frames to
-     the monument application);
+  2. #5, the old town and harbour before sunrise (add its harbour frames,
+     and its Moni Preveli frame if used, to the monument application);
   3. #6, Rethymno and the Fortezza from the air at sunset (same);
   4. #3, the Preveli Monastery gallery (also ask the Monastery; see
      `MONUMENT-LICENCE.md`).
@@ -57,9 +61,12 @@ been contacted. The client sends every message; we send nothing.
    below for "Deep Aegean" (A) and "Cycladic Light" (B) are kept only for the
    record.
 
-Everything below is **all rights reserved** or **CC BY-NC-ND** on its own page.
-None of it may be used without the photographer's written permission. That is
-the point of this list.
+The shortlist below (#1–#13) is **all rights reserved** or **CC BY-NC-ND** on
+its own page. None of it may be used without the photographer's written
+permission, and that is the point of this list.
+
+The one exception is the optional Brecher section at the end: it is CC BY 4.0,
+and no permission is needed.
 
 **Contact routes.** Only each platform's own route (Flickr's "Message" button,
 an Instagram DM, a public contact page) is used. No personal email addresses
@@ -81,8 +88,13 @@ sign-in.
 - **Monuments.** A photographer's permission covers the photograph, not the
   monument in it. Settled on 2026-09-17: frames of the Fortezza, the
   Venetian harbour and lighthouse, or Preveli Monastery go into the Ministry
-  licence application (`MONUMENT-LICENCE.md`) as well. That applies to #3,
-  #4, #6, and the harbour frames of #5.
+  licence application (`MONUMENT-LICENCE.md`) as well. That applies to:
+  - #3 (also ask the Monastery);
+  - #4;
+  - #5's harbour frames, and its "The bells of Moni Preveli" (also ask the
+    Monastery);
+  - #6;
+  - #7's old-harbour frame.
 
 ---
 
@@ -270,8 +282,9 @@ photographer whose work is weddings and portraits.
 εκδρομής στο Κουρταλιώτικο φαράγγι, στη στάση του Αγίου Νικολάου»}.
 
 Για να ξέρετε ακριβώς τι ζητάμε:
-- Θα αναφέρουμε το όνομά σας, με σύνδεσμο προς τη σελίδα σας, δίπλα στη
-  φωτογραφία και στη σελίδα με τις πιστώσεις των φωτογραφιών μας.
+- Θα αναφέρουμε το όνομά σας δίπλα στη φωτογραφία, και στη σελίδα με τους
+  δημιουργούς των φωτογραφιών μας το όνομά σας με σύνδεσμο προς τη σελίδα
+  της φωτογραφίας σας.
 - Η φωτογραφία θα περάσει από χρωματική επεξεργασία και μπορεί να αλλάξει
   μέγεθος ή κάδρο, ώστε να δένει με το ύφος του site.
 - Ο κώδικας της ιστοσελίδας μας είναι δημόσιος (στο GitHub), οπότε η
@@ -318,8 +331,8 @@ With your permission, we would love to use it on our website, {where — e.g.
 at the Saint Nicholas stop"}.
 
 So you know exactly what we are asking:
-- We will credit you by name, with a link to your page, next to the photograph
-  and on our photo-credits page.
+- We will credit you by name next to the photograph, and by name with a link
+  to your photograph's page on our photo-credits page.
 - The image will be colour-graded, and may be resized or cropped, so it sits
   with the look of the site.
 - Our website's code is public (on GitHub), so the graded image will be there
@@ -404,6 +417,14 @@ CC BY 4.0, never under the old BY-SA grant, and never from the Commons copy.
 not a tour stop, so it could only be a mood frame, and /credits would mark
 its title "(title as published)".
 
+**The Matala cliff.** The pale rock in "Matala" is the sea cliff of Matala,
+whose rock-cut tombs are a protected archaeological site, and the
+17 September ruling does not cover it. Before it ships, do one of these:
+- crop the rock out: keep the left ~37% of the frame, about 1,610 px wide,
+  which is card or band size, not a hero;
+- or add the frame to the application in `MONUMENT-LICENCE.md` and ask the
+  Ephorate.
+
 Send through Flickr's "Message" button on his profile.
 
 ### Ελληνικά
@@ -414,7 +435,7 @@ Send through Flickr's "Message" button on his profile.
 >
 > Σας γράφω εκ μέρους της Routes Crete, μιας μικρής οικογενειακής επιχείρησης που οργανώνει ιδιωτικές εκδρομές από το Ρέθυμνο της Κρήτης. Ετοιμάζουμε μια νέα έκδοση της ιστοσελίδας μας και θα θέλαμε πολύ να χρησιμοποιήσουμε τη φωτογραφία σας «Cretan Sunset I» (https://www.flickr.com/photos/104249543@N07/34810174192/).
 >
-> Θα περικόπταμε ελαφρώς την εικόνα, κυρίως για να αφαιρεθεί το διακοσμητικό περίγραμμα, και θα προσαρμόζαμε τα χρώματά της ώστε να ταιριάζει με την αισθητική της σελίδας. Η φωτογραφία θα εμφανίζεται στην ιστοσελίδα της Routes Crete με αναφορά στο όνομά σας, για παράδειγμα:
+> Θα περικόπταμε ελαφρώς την εικόνα, κυρίως για να αφαιρεθεί το διακοσμητικό περίγραμμα, και θα προσαρμόζαμε τα χρώματά της ώστε να ταιριάζει με την αισθητική της σελίδας. Η φωτογραφία θα εμφανιζόταν στην ιστοσελίδα της Routes Crete με αναφορά στο όνομά σας, για παράδειγμα:
 > Φωτογραφία: «Cretan Sunset I», Rolf Dietrich Brecher, CC BY 4.0, με περικοπή και χρωματική επεξεργασία
 > με συνδέσμους προς τη σελίδα σας στο Flickr και προς την άδεια.
 >
@@ -455,5 +476,6 @@ Send through Flickr's "Message" button on his profile.
 **Before either frame ships:** the border crop needs its own step. The
 pipeline grades masters as they are, and the credits guard checks the
 master's checksum. The "clearly beats a live frame" bar still applies, and
-this pass did not judge either frame against the live slots. The evidence
+this pass did not judge either frame against the live slots. For "Matala",
+the cliff question above applies as well. The evidence
 is local, in `.hunt/lock/history/cretan-sunset/` and `matala/`.

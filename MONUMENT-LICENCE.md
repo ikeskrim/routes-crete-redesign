@@ -6,8 +6,9 @@ anyone.
 
 **The ruling (client, 2026-09-17):**
 - Prepare the application for commercial internet use under art. 46 of
-  ν. 4858/2021, for the Fortezza, the Venetian lighthouse and Preveli
-  Monastery.
+  ν. 4858/2021, for the Fortezza, "the Venetian lighthouse" and Preveli
+  Monastery. "The Venetian lighthouse" is the lighthouse of Rethymno's
+  Venetian harbour; the tower itself may be later (see below).
 - The frames stay live meanwhile. `content/photo-credits.json` marks each one
   "licence application pending".
 
@@ -39,7 +40,7 @@ anyone.
 |---|---|---|---|
 | **Fortezza of Rethymno** (Archaeological Cadastre 153874) | Declared: ΥΑ 89901/2722/23.12.1941 (ΦΕΚ Β' 227/1941) for "Φρούριον (Καστέλλι)" with its mosque; the mosque alone by ΒΔ 13.1.1938 (ΦΕΚ Α' 18/1938). Built 1573–1580, so also an ancient monument protected by law (art. 6 par. 4). | **Unconfirmed, with signs both ways.** The Cadastre records that the State expropriated the houses inside, but the Municipality of Rethymno lets venues inside and calls them municipal property (Municipal Council decision 182/2025). | **Treat as in scope.** Ask the Ephorate to confirm ownership, and whether the Municipality must also consent. |
 | **Venetian harbour of Rethymno and its lighthouse** (Cadastre 153875) | The harbour ("Ο Ενετικός λιμήν") was declared by ΥΑ 16307/9.9.1965 (ΦΕΚ Β' 605/1965). No separate declaration of the lighthouse was found, and it is not on the Navy Lighthouse Service's list of 46 lighthouses declared as monuments. Its date (1838) comes from secondary sources only. | **Unconfirmed.** The candidates are the State, the Navy lighthouse service and the municipal port fund (Δημοτικό Λιμενικό Ταμείο Ρεθύμνου), which runs the harbour. | **Uncertain.** Photos framed on the harbour show a declared monument. Include them, and ask which service is competent and whether a licence is needed. |
-| **Preveli Monastery**: the Πίσω Μονή (St John the Theologian, Cadastre 153830) and the Κάτω Μονή (153829), within site 165050 | Declared historic place and archaeological site, zones A1, A2 and B. ΥΑ Α/Φ.31/36852/2942/12.10.1973 (ΦΕΚ Β' 1242/1973) names "Περιοχή Μονής Πρέβελη, Κουρταλιώτικο Φαράγγι". | **Most likely the Monastery** (Stavropegic and Patriarchal, Diocese of Lampi and Sfakia). No source shows State ownership. | **Probably not.** Ask the Ephorate to confirm. **Separately, ask the Monastery for written consent.** Its only public contact is webmaster@preveli.org. |
+| **Preveli Monastery**: the Πίσω Μονή (St John the Theologian, Cadastre 153830) and the Κάτω Μονή (153829), within site 165050 | Declared historic place and archaeological site, zones A1, A2 and B. ΥΑ Α/Φ.31/36852/2942/12.10.1973 (ΦΕΚ Β' 1242/1973) names "Περιοχή Μονής Πρέβελη, Κουρταλιώτικο Φαράγγι". **Two competent services** per the Cadastre: ΥΝΜΤΕ Κρήτης and the Ephorate. The Ephorate dates the Πίσω Μονή church to the 1830s. | **Most likely the Monastery** (Stavropegic and Patriarchal, Diocese of Lampi and Sfakia). No source shows State ownership. | **Probably not.** Ask the Ephorate to confirm. **Separately, ask the Monastery for written consent.** Its only public contact is webmaster@preveli.org. |
 
 On the Preveli names: the Cadastre's monument records swap the two
 dedications. The draft follows the Ephorate and the Monastery, who call the
@@ -48,28 +49,51 @@ dedications. The draft follows the Ephorate and the Monastery, who call the
 ## Annex A — the photographs
 
 **Four photographs, all third-party, all live on 2026-09-17.** Four is within
-the 1–20 band. The site serves each as a colour-graded web copy, at most
-2400 px on the long edge, with no watermark.
+the 1–20 band.
+- **How the site serves them:** each as a web copy in the site's standard
+  colour grade (grade D), at most 2400 px on the long edge, with no
+  watermark.
+- **Older copies:** grade-B and grade-C copies of photographs 1, 3 and 4 are
+  still in the site's files, reachable at their own URLs and linked from
+  nowhere.
 
-| # | File (site) | Monument | What it shows | Where on the site | Caption on the site | Author · licence · source | Date taken · shot |
-|---|---|---|---|---|---|---|---|
-| 1 | `rethymno-fortezza.jpg` | Fortezza | The fortress walls above Rethymno in daylight | `/transfers/private-transfers-rethymno`, first place break | "The Venetian Fortezza above Rethymno" | Marc Ryckaert (Commons user MJJR) · CC BY 3.0 · [File:Rethymno Old Fort R01.jpg](https://commons.wikimedia.org/wiki/File:Rethymno_Old_Fort_R01.jpg) | [from the file page] · [amateur/professional: ask or read the page] |
-| 2 | `rethymno-harbour-lighthouse.jpg` | Venetian harbour and lighthouse | The harbour at dusk, the lighthouse lit, the town and a snow-covered peak behind | `/transfers/private-transfers-rethymno`, the page hero (since 2026-09-17) | "The Venetian harbour of Rethymno, its lighthouse lit" | C messier · **CC BY-SA 4.0** · [File:Λιμάνι Ρεθύμνου 6495.jpg](https://commons.wikimedia.org/wiki/File:%CE%9B%CE%B9%CE%BC%CE%AC%CE%BD%CE%B9_%CE%A1%CE%B5%CE%B8%CF%8D%CE%BC%CE%BD%CE%BF%CF%85_6495.jpg) | EXIF 2019-02-02 (camera clock not verified) · uploaded as own work, camera Olympus E-PL5 |
-| 3 | `rethymno-harbour-mountains.jpg` | Venetian harbour and lighthouse | The lighthouse and harbour in daylight, snowy mountains behind | Homepage map (Rethymno preview) and the transfer page's route map | "Rethymno harbour, with the snow-covered mountains behind it" | Jebulon · CC0 1.0 · [File:Harbour snowy mountains Rethymno Crete Greece.jpg](https://commons.wikimedia.org/wiki/File:Harbour_snowy_mountains_Rethymno_Crete_Greece.jpg) | [from the file page] · [ask] |
-| 4 | `preveli-monastery.jpg` | Preveli Monastery | A courtyard of the monastery, church and cells | Homepage map (Preveli Monastery preview) and the Kourtaliotis tour's route map | "Preveli Monastery" | Benoît Prieur · CC0 1.0 · [File:Monastère de Preveli - 1.JPG](https://commons.wikimedia.org/wiki/File:Monast%C3%A8re_de_Preveli_-_1.JPG) | [from the file page] · [ask] |
+| # | File (site) | Monument | What it shows | Where on the site | On a page since | Caption on the site | Author · licence · source | Date taken · shot |
+|---|---|---|---|---|---|---|---|---|
+| 1 | `rethymno-fortezza.jpg` | Fortezza | The fortress walls above Rethymno in daylight | `/transfers/private-transfers-rethymno`, first place break | 3–4 September 2026 | "The Venetian Fortezza above Rethymno" | Marc Ryckaert (Commons user MJJR) · CC BY 3.0 · [File:Rethymno Old Fort R01.jpg](https://commons.wikimedia.org/wiki/File:Rethymno_Old_Fort_R01.jpg) | [from the file page] · [amateur/professional: ask or read the page] |
+| 2 | `rethymno-harbour-lighthouse.jpg` | Venetian harbour and lighthouse | The harbour at dusk, the lighthouse lit, the town and a snow-covered peak behind | `/transfers/private-transfers-rethymno`, the page hero | 17 September 2026 | "The Venetian harbour of Rethymno, its lighthouse lit" | C messier · **CC BY-SA 4.0** · [File:Λιμάνι Ρεθύμνου 6495.jpg](https://commons.wikimedia.org/wiki/File:%CE%9B%CE%B9%CE%BC%CE%AC%CE%BD%CE%B9_%CE%A1%CE%B5%CE%B8%CF%8D%CE%BC%CE%BD%CE%BF%CF%85_6495.jpg) | EXIF 2019-02-02 (camera clock not verified) · uploaded as own work, camera Olympus E-PL5 |
+| 3 | `rethymno-harbour-mountains.jpg` | Venetian harbour and lighthouse | The lighthouse and harbour in daylight, snowy mountains behind | Homepage map (Rethymno preview) and the transfer page's route map | 18 August 2026 | "Rethymno harbour, with the snow-covered mountains behind it" | Jebulon · CC0 1.0 · [File:Harbour snowy mountains Rethymno Crete Greece.jpg](https://commons.wikimedia.org/wiki/File:Harbour_snowy_mountains_Rethymno_Crete_Greece.jpg) | [from the file page] · [ask] |
+| 4 | `preveli-monastery.jpg` | Preveli Monastery | A courtyard of the monastery, church and cells | Homepage map (Preveli Monastery preview) and the Kourtaliotis tour's route map | 18 August 2026, possibly on draft pages from 7 August | "Preveli Monastery" | Benoît Prieur · CC0 1.0 · [File:Monastère de Preveli - 1.JPG](https://commons.wikimedia.org/wiki/File:Monast%C3%A8re_de_Preveli_-_1.JPG) | [from the file page] · [ask] |
+
+The "on a page since" dates are the dates of the commits that placed each
+photograph (`e7ed358`, `aa45e96`, `b1a8690`, and `0383ee9` for the drafts).
+Confirm each against the Vercel deployment history before writing it into
+the letter. Before those dates, a graded file was reachable only at its own
+URL.
 
 **Not in the application, and why:**
 - **`rethymno-harbour-dusk.jpg`** (the harbour at night). It was the transfer
   hero until 2026-09-17 and appears on no page now. Its graded file is still
   reachable at its own URL, linked from nowhere.
 - **`gorge-saint-nicholas-aerial.jpg`** (the chapel of Saint Nicholas in
-  Kourtaliotiko Gorge). The gorge lies in the area named by the 1973
-  declaration, but the chapel is not one of the three monuments in the
-  ruling, and it is most likely church property. **Ask the Ephorate in the
-  same letter** if the client wants certainty.
-- **`rethymno-old-town-lane.jpg`** (a lane in the old town). It is a
-  townscape, not a photograph of a monument. ΥΑ 436630/2023 art. 2 par. 2
-  exempts open-air urban views that do not focus on a monument.
+  Kourtaliotiko Gorge). It appears on no page; like the dusk frame, its
+  graded files are reachable only at their own URLs.
+  - **If it is ever placed on a page:** the gorge lies in the area named by
+    the 1973 declaration. The chapel is not one of the three monuments in
+    the ruling and is most likely church property.
+  - **So ask the Ephorate first.**
+- **`rethymno-old-town-lane.jpg`** (a lane in the old town). The frame shows
+  a street and private houses, not a State-owned monument, and art. 46
+  par. 4Δ(α) covers only State-owned monuments. **This exclusion is our
+  reading, not settled.** Two points cut the other way:
+  - **The lane is in a declared section.** It lies inside the declared
+    old-town section of Rethymno (Archaeological Cadastre 153876; ΦΕΚ Β'
+    606/1967, 700/1991, 753/1997).
+  - **The exemption is about taking photographs, not using them.**
+    ΥΑ 436630/2023 art. 2 par. 2 lets photographs be taken without a permit
+    in open spaces of the contemporary urban landscape, if they do not focus
+    on a monument.
+
+  Ask the Ephorate in the same letter if the client wants certainty.
 
 ## What the client does, in order
 
@@ -80,21 +104,55 @@ the 1–20 band. The site serves each as a colour-graded web copy, at most
      at https://routes-crete-redesign.vercel.app. After it, the site is at
      https://www.routescrete.gr. Name both if the letter goes before the
      cutover.
-   - **The dates.** Photographs 1, 3 and 4 have been on the vercel.app
-     deployment since August 2026, and the site history gives the exact
-     day of each on request. Photograph 2 went up on 17 September 2026.
-2. **Take legal advice** on two points: the exposure for photographs already
-   online, and whether the draft's statement about the colour grade (point ε)
-   is the right way to put it.
+   - **The dates.** Use the "on a page since" column of Annex A, once
+     confirmed. The letter gives one date per photograph.
+2. **Take legal advice** on three points:
+   - the exposure for photographs already online;
+   - whether the draft's statement about the colour grade (point ε) is the
+     right way to put it;
+   - how to handle the form's printed declaration (step 3) before anyone
+     signs it.
 3. **Download and fill in the Ministry's internet-use form:**
    https://www.culture.gov.gr/DocLib/aitisi_diadiktio_GR.doc (the Mitos link
    with spaces in the filename returns 404).
-   - **Tick:** applicant «Τουριστικό Γραφείο»; purpose «Εμπορικός»;
-     «Δισδιάστατη/Στατική»; access «Δωρεάν»; duration «Έως πέντε έτη».
-   - **Fill in:** the URL, the server location and the operator.
-   - The form's printed declaration is outdated (fees to Τ.Α.Π., a credit
-     line under ν. 3028/2002). The covering letter commits to the current
-     rules instead.
+   - **Tick:**
+     - applicant «Τουριστικό Γραφείο»;
+     - legal status as it applies («Νομικό Πρόσωπο Ιδιωτικού Δικαίου» for a
+       company; otherwise «Ιδιωτικός Φορέας» or «Φυσικό Πρόσωπο»);
+     - purpose «Εμπορικός»;
+     - «Δισδιάστατη/Στατική»;
+     - access «Δωρεάν»;
+     - duration «Έως πέντε έτη».
+   - **Origin:** tick «Διαδίκτυο» and give the four Commons file URLs from
+     Annex A.
+     - **Do not tick «Φωτογράφηση – Επαγγελματική»:** it requires a Ministry
+       photography permit.
+     - If the form insists on a shoot type, write «έργα τρίτων, βλ.
+       Παράρτημα Α».
+   - **Fill in:**
+     - the applicant's details and the date;
+     - the URL, the server location and the operator;
+     - resolution «άνω των 72 dpi» (up to 2,400 px on the long edge);
+     - display language: English;
+     - watermark: none;
+     - other protection: none (the letter explains the CC BY-SA download of
+       photograph 2).
+   - **Do not sign the form's printed declaration (ΥΠΕΥΘΥΝΗ ΔΗΛΩΣΗ) as
+     printed.** The signatory declares it true under penalty, and three of
+     its sentences are untrue or outdated here:
+     - (a) **«Η χρήση των απεικονίσεων σε καμία περίπτωση δε θα αλλοιώνει το
+       περιεχόμενό τους».** The site colour-grades and crops every
+       photograph (point ε).
+     - (b) **«Πριν από την ανάρτηση ... θα καταβληθούν τα υπέρ του Τ.Α.Π.
+       ... τέλη».** The photographs are already online, and the fee now goes
+       to ODAP after the decision.
+     - (c) **The credit line under ν. 3028/2002 (the rights "belong to the
+       Greek State").** It is outdated, and possibly untrue for Preveli and
+       the lighthouse.
+
+     With the lawyer, either strike or annotate (a)–(c) (for example «βλ.
+     συνοδευτική επιστολή») before signing, or apply by letter alone and ask
+     the Ephorate whether it accepts that (see "Open questions").
 4. **Attach:**
    - the form;
    - the letter;
@@ -116,10 +174,15 @@ the 1–20 band. The site serves each as a colour-graded web copy, at most
    before sending; it listed Παπαδοπούλου Ελένη on 2026-09-17.
 6. **Write to Preveli Monastery separately** (webmaster@preveli.org), asking
    for written consent to show photograph 4 on the site.
-7. **Wait for the decision.** A single competent service decides within 5
-   working days. If another service is competent (for example, for the
-   lighthouse, ΥΝΜΤΕ Κρήτης, ynmkr@culture.gr), the application goes to its
-   General Directorate. Mitos gives 5 days to 2 months overall.
+7. **Wait for the decision.**
+   - **One competent service:** it decides within 5 working days.
+   - **Another service also competent:** the application goes to its General
+     Directorate (ΥΑ 436630/2023 art. 4 par. 3), and the Ephorate may
+     forward it there.
+     - For Preveli, the Cadastre already lists ΥΝΜΤΕ Κρήτης
+       (ynmkr@culture.gr) beside the Ephorate.
+     - Possibly for the lighthouse too.
+   - Mitos gives 5 days to 2 months overall.
 8. **Pay** the fee set in the decision to **ODAP**, into the account printed
    in the decision, quoting its protocol number.
    - Mitos lists ODAP's Bank of Greece IBAN
@@ -158,22 +221,34 @@ this band.
 
 A letter to the Ministry must be true. Three statements differ from the
 research's first draft on purpose:
-1. **The colour grade.** Every photograph on the site carries the same
-   colour grade and is cropped to its slot. The draft says so (point ε) and
-   declares that the *monuments* are not altered. It does not claim the
-   photographs are untouched.
+1. **The colour grade.** The four photographs carry the site's standard
+   colour grade (grade D) and are cropped to their slots. The draft says so
+   (point ε) and declares that the *monuments* are not altered. It does not
+   claim the photographs are untouched.
 2. **Already online.** The photographs are already on the site, so the draft
    says so. It asks for the use to be regularised, and offers to take them
    down until the licence is issued if the Ephorate asks. It promises
    payment on the decision, not "before publication".
-3. **Photograph 2 is CC BY-SA 4.0.** That licence obliges us to offer the
-   graded copy for download under the same licence, and /credits does. A
-   downloadable copy sits awkwardly with the form's question about
-   "protection against further use", so the draft discloses it and asks.
+3. **Photograph 2 is CC BY-SA 4.0.**
+   - **What the licence requires** (section 3(b)): any adaptation we share,
+     including our graded copy, must be licensed under CC BY-SA 4.0 too,
+     with no added terms or technical restrictions. The licence does not
+     itself require a download link.
+   - **Where the link comes from:** the client's condition of 17 September
+     that the graded file itself be published under the same licence. The
+     /credits download link is how the site meets it, and credits guard C16
+     fails without it.
+   - **Why the draft discloses it:** a downloadable copy sits awkwardly with
+     the form's question about "protection against further use", so the
+     draft discloses it and asks.
    - **If the Ephorate objects,** the fix is on our side: take photograph 2
-     off the hero. Its predecessor is kept in the content as `heroImage_r9`.
-   - **Pulling the download link while the photograph stays is not an
-     option.** The photographer's licence requires it.
+     off the hero and restore the van (`heroImage_original`). Removing only
+     the download link would not help: the graded image stays licensed to
+     everyone under CC BY-SA 4.0 either way, and removing it would break C16
+     and the client's condition.
+   - **Not the earlier harbour frame.** `heroImage_r9` shows the same
+     monument and is not in this application, so restore it only once it is
+     licensed.
 
 ## The application — Ελληνικά
 
@@ -214,8 +289,9 @@ research's first draft on purpose:
 Ρέθυμνο.
 
 Με την παρούσα αιτούμαστε, σύμφωνα με τα ανωτέρω σχετικά, άδεια χρήσης των
-τεσσάρων (4) φωτογραφιών του συνημμένου Πίνακα (Παράρτημα Α), δηλαδή άδεια
-για την αναπαραγωγή και διάδοσή τους στο κοινό αποκλειστικά μέσω του
+απεικονίσεων μνημείων που περιέχονται στις τέσσερις (4) φωτογραφίες του
+συνημμένου Πίνακα (Παράρτημα Α), δηλαδή άδεια για την αναπαραγωγή και
+διάδοσή τους στο κοινό αποκλειστικά μέσω του
 διαδικτυακού τόπου της επιχείρησής μας. Οι φωτογραφίες απεικονίζουν μνημεία
 της χωρικής αρμοδιότητας της Υπηρεσίας σας, και συγκεκριμένα: το Φρούριο
 Φορτέτζα Ρεθύμνου· το Ενετικό Λιμάνι (Μανδράκι) του Ρεθύμνου με τον φάρο
@@ -232,10 +308,10 @@ research's first draft on purpose:
    επιχείρησης στον ιστότοπό της.
 γ. Αριθμός φωτογραφιών: τέσσερις (4).
 δ. Διάρκεια: πέντε (5) έτη από την έκδοση της άδειας.
-ε. Είδος απεικόνισης: στατικές, δισδιάστατες φωτογραφίες. Όλες οι
-   φωτογραφίες του ιστοτόπου φέρουν την ίδια χρωματική επεξεργασία και
-   περικόπτονται στις διαστάσεις της θέσης τους· η μορφή των μνημείων δεν
-   αλλοιώνεται. Ανάλυση: έως 2.400 εικονοστοιχεία στη μεγαλύτερη πλευρά, σε
+ε. Είδος απεικόνισης: στατικές, δισδιάστατες φωτογραφίες. Οι τέσσερις
+   φωτογραφίες φέρουν την ίδια χρωματική επεξεργασία με τις υπόλοιπες
+   φωτογραφίες του ιστοτόπου και περικόπτονται στις διαστάσεις της θέσης
+   τους· η μορφή των μνημείων δεν αλλοιώνεται. Ανάλυση: έως 2.400 εικονοστοιχεία στη μεγαλύτερη πλευρά, σε
    συμπιεσμένα αρχεία για το διαδίκτυο, χωρίς υδατοσήμανση.
 στ. Προέλευση: και οι τέσσερις φωτογραφίες είναι έργα τρίτων δημιουργών,
    διαθέσιμα με άδειες Creative Commons (CC BY 3.0, CC BY-SA 4.0, CC0 1.0).
@@ -251,14 +327,16 @@ research's first draft on purpose:
    άλλη γνωστοποίηση ορίσει η απόφασή σας.
 
 Σημειώνουμε ότι οι φωτογραφίες του Παραρτήματος Α εμφανίζονται ήδη στον
-ιστότοπο, από [ημερομηνία] (η φωτογραφία α/α 2 από 17.9.2026). Με την
+ιστότοπο: οι φωτογραφίες α/α 3 και 4 από [ημερομηνία], η φωτογραφία α/α 1
+από [ημερομηνία] και η φωτογραφία α/α 2 από 17.9.2026. Με την
 παρούσα ζητούμε την τακτοποίηση της χρήσης τους. Εφόσον η Υπηρεσία σας το
 ζητήσει, θα τις αποσύρουμε έως την έκδοση της άδειας.
 
 Η φωτογραφία α/α 2 διατίθεται από τον δημιουργό της με άδεια Creative
 Commons BY-SA 4.0. Η άδεια αυτή υποχρεώνει να διατίθεται και η επεξεργασμένη
-εκδοχή της με την ίδια άδεια, γι' αυτό ο ιστότοπος παρέχει σύνδεσμο λήψης του
-αρχείου στη σελίδα των πιστώσεων. Παρακαλούμε να μας ενημερώσετε αν αυτό
+εκδοχή της με την ίδια άδεια. Γι' αυτό ο ιστότοπος παρέχει σύνδεσμο λήψης
+του αρχείου στη σελίδα με τους δημιουργούς και τις άδειες των φωτογραφιών
+([διεύθυνση ιστοτόπου]/credits). Παρακαλούμε να μας ενημερώσετε αν αυτό
 είναι συμβατό με την αιτούμενη άδεια· σε αντίθετη περίπτωση θα αποσύρουμε τη
 φωτογραφία αυτή.
 
@@ -291,10 +369,11 @@ Commons BY-SA 4.0. Η άδεια αυτή υποχρεώνει να διατίθ
 (α) αν για κάποιο από τα μνημεία του Παραρτήματος Α, ιδίως για τον φάρο του
     Ενετικού Λιμανιού και για τη Μονή Πρέβελη, δεν απαιτείται άδεια κατά το
     άρθρο 46 παρ. 4 του ν. 4858/2021, επειδή δεν ανήκει στο Ελληνικό Δημόσιο·
-(β) αν για κάποιο από αυτά, ιδίως για τον φάρο, εφόσον χρονολογείται μετά το
-    1830, αρμόδια είναι άλλη Υπηρεσία του Υπουργείου Πολιτισμού (π.χ. η
-    Υπηρεσία Νεωτέρων Μνημείων και Τεχνικών Έργων Κρήτης), ώστε να
-    απευθυνθούμε αναλόγως·
+(β) αν για κάποιο από αυτά αρμόδια είναι και άλλη Υπηρεσία του Υπουργείου
+    Πολιτισμού, ιδίως η Υπηρεσία Νεωτέρων Μνημείων και Τεχνικών Έργων
+    Κρήτης για τη Μονή Πρέβελη (την οποία το Αρχαιολογικό Κτηματολόγιο
+    αναφέρει ως αρμόδια) και για τον φάρο, εφόσον χρονολογείται μετά το 1830,
+    ώστε να απευθυνθούμε αναλόγως·
 (γ) αν, δεδομένου ότι χώροι εντός της Φορτέτζας παραχωρούνται από τον Δήμο
     Ρεθύμνης (απόφαση 182/2025 του Δημοτικού Συμβουλίου), απαιτείται και η
     σύμφωνη γνώμη του Δήμου.
@@ -349,8 +428,9 @@ REF.:
 [address] and legally represented by [full name], [capacity], is a private
 tour operator in Rethymno.
 
-We apply for a licence to use the four (4) photographs in the attached table
-(Annex A), that is, to reproduce them and make them available to the public
+We apply for a licence to use the depictions of monuments contained in the
+four (4) photographs in the attached table (Annex A), that is, to reproduce
+them and make them available to the public
 solely on our company's website. They depict monuments within your Service's
 competence: the Fortezza of Rethymno; the Venetian (Mandraki) harbour of
 Rethymno and its lighthouse; Preveli Monastery (the rear monastery of St John
@@ -365,9 +445,9 @@ b. Purpose: commercial, presenting the company's touring services on its
    website.
 c. Number of photographs: four (4).
 d. Duration: five (5) years from the issue of the licence.
-e. Type: still, two-dimensional photographs. Every photograph on the site
-   carries the same colour grade and is cropped to its slot; the appearance
-   of the monuments is not altered. Resolution: at most 2,400 pixels on the
+e. Type: still, two-dimensional photographs. The four photographs carry the
+   same colour grade as the site's other photographs and are cropped to
+   their slots; the appearance of the monuments is not altered. Resolution: at most 2,400 pixels on the
    long edge, as compressed web files, without a watermark.
 f. Origin: all four are works of third-party photographers, available under
    Creative Commons licences (CC BY 3.0, CC BY-SA 4.0, CC0 1.0). Annex A
@@ -381,14 +461,16 @@ h. Credits: once the licence is issued, each photograph will carry the
    article 3 para. 2 of Ref. 2 requires, and any other credit your decision
    sets.
 
-The photographs in Annex A are already on the website, since [date]
-(photograph no. 2 since 17.9.2026). With this application we ask for their
+The photographs in Annex A are already on the website: nos. 3 and 4 since
+[date], no. 1 since [date], and no. 2 since 17.9.2026. With this application
+we ask for their
 use to be regularised. If your Service asks, we will take them down until the
 licence is issued.
 
 Photograph no. 2 is offered by its author under Creative Commons BY-SA 4.0.
 That licence requires the edited version to be offered under the same
-licence, so the website's credits page links the file for download. Please
+licence, so the website's photo credits page ([site URL]/credits) links the
+file for download. Please
 tell us whether this is compatible with the requested licence; if not, we
 will take that photograph down.
 
@@ -416,9 +498,10 @@ Please also tell us:
 (a) whether, for any monument in Annex A (in particular the harbour
     lighthouse and Preveli Monastery), no licence under article 46 para. 4 is
     needed because it does not belong to the Greek State;
-(b) whether another Service is competent for any of them (in particular the
-    lighthouse, if it dates from after 1830, e.g. the Service of Newer
-    Monuments and Technical Works of Crete);
+(b) whether another Service of the Ministry of Culture is also competent for
+    any of them, in particular the Service of Newer Monuments and Technical
+    Works of Crete for Preveli Monastery (which the Archaeological Cadastre
+    lists as competent) and for the lighthouse, if it dates from after 1830;
 (c) whether, since the Municipality of Rethymno lets venues inside the
     Fortezza (Municipal Council decision 182/2025), the Municipality's
     consent is also required.
@@ -463,17 +546,24 @@ up to 20 photographs), or to a new one.
 - **Preveli.** Is a monastery's property outside «Ελληνικό Δημόσιο» for
   art. 46?
 - **The colour grade.** Is point ε the right way to describe it?
+- **The form's printed declaration.** How should it be handled before
+  signing (step 3)? Strike or annotate the three sentences that don't fit
+  this case, or apply by letter alone?
+- **The old-town lane.** Is our reading right that
+  `rethymno-old-town-lane.jpg` needs no licence?
 
 **For the Ephorate** (the letter asks most of these):
 - **Ownership:** of the Fortezza, the lighthouse and Preveli.
-- **Competence:** which service handles the lighthouse.
+- **Competence:** which service handles Preveli (the Cadastre lists
+  ΥΝΜΤΕ Κρήτης and the Ephorate) and the lighthouse.
 - **Municipal consent:** for the Fortezza.
 - **The fee:** the internet band rather than art. 4 par. 8; how photographs
   are counted; the VAT rate on the payment date.
 - **Licences and downloads:** whether Creative Commons licences are accepted
   as use licences, and whether the BY-SA download link is compatible.
-- **The form:** the 2018 internet form, the 2024 ΔΠΑΝΣΜ form, or a letter.
-  Whether «Εμπορικός» is the right purpose box.
+- **The form:** the 2018 internet form (whose printed declaration no longer
+  fits), the 2024 ΔΠΑΝΣΜ form, or a letter. Whether «Εμπορικός» is the right
+  purpose box.
 - **Documents:** whether a company applicant needs proof of representation.
 
 **Records the research could not read:**

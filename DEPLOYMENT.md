@@ -229,8 +229,9 @@ The git-main alias carries `X-Robots-Tag: noindex`, so Lighthouse reports
 ### Before cutover
 
 `src/lib/site-url.ts` sends canonical URLs to `routescrete.gr` while social
-images resolve on whatever origin is actually serving. After DNS cutover the
-two converge and the file becomes a no-op — no change required.
+images resolve on whatever origin is actually serving. The two converge when
+the cutover switch `NEXT_PUBLIC_SITE_URL` is set (`CUTOVER.md` step 10), which
+also changes HSTS. The file itself needs no edit.
 
 **No temporary route is live.** `/design-3` held the three drafts of the
 homepage top, the C+ draft and their captures while the client chose a
