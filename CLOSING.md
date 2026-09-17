@@ -2,11 +2,19 @@
 
 The redesign was built, deployed, verified and closed on 2026-09-11. It was
 reopened for a design reset: new colours, a new look and new hero
-photographs. **It closed again on 2026-09-17.** The client picked direction C,
-"Warm Editorial". It was refined into **C+** and rolled out across the whole
-site, and the drafts were deleted. This page is the front door: what the
-project is, where it lives, how to change the things most likely to need
-changing, and what is deliberately parked.
+photographs. **It closed again on 2026-09-17.**
+- **The design:** the client picked direction C, "Warm Editorial". It was
+  refined into **C+** and rolled out across the whole site, and the drafts
+  were deleted.
+- **The lock:** the same day the client saw it live and said "much better
+  now". **C+ is locked.**
+- **The photo rulings** were carried out.
+- **The `routescrete.gr` cutover is prepared, not executed:** see
+  [`CUTOVER.md`](CUTOVER.md).
+
+This page is the front door: what the project is, where it lives, how to
+change the things most likely to need changing, and what the client still
+has to do.
 
 The full history, including every decision and everything that went wrong
 before it went right, is in [`MORNING.md`](MORNING.md), newest first.
@@ -21,34 +29,52 @@ before it went right, is in [`MORNING.md`](MORNING.md), newest first.
 | **The drafts** | Deleted at the close (`524cada`). The captures, C beside C+ and the C+ draft beside the rolled-out site, are in git history at `e5b1059`. |
 | **Design status** | **C+ is the production design, locked on 2026-09-17.** The client saw the live site and said: "much better now". The plain-C revert is no longer an active path; its values are kept in the record (`MORNING.md`). |
 | **Team section** | Out of the homepage since `392602f`. The names, roles and intro stay in `content/site.json → team`. |
-| **The photo pool** | The verified pool, each record with its verdict, is in the gitignored `.hunt/cplus/pool/`. What it proposes for the site is in `MORNING.md`. |
-| **The client lists** | [`PHOTOGRAPHERS.md`](PHOTOGRAPHERS.md), [`TOURISM-LIBRARIES.md`](TOURISM-LIBRARIES.md), [`SHORTLIST.md`](SHORTLIST.md). The CC BY-SA contact sheet is local only: `.hunt/design-reset/by-sa/`. |
+| **The photo rulings (2026-09-17)** | **CC BY-SA 4.0:** allowed, as an obligation met. The graded file is shared under the same licence on `/credits`, with a download link, and credits-guard C16 checks it. One such frame is the transfer page hero. **Public Domain Mark:** only where verifiable at source; none qualified. **Monument frames:** live, with the licence application pending ([`MONUMENT-LICENCE.md`](MONUMENT-LICENCE.md)). **A title naming a place the tours don't visit:** shown verbatim on `/credits`, marked "(title as published)". |
+| **The cutover** | Prepared, not executed ([`CUTOVER.md`](CUTOVER.md)). `www` is primary and the apex redirects to it. The origin switch `NEXT_PUBLIC_SITE_URL` is unset, and setting it is one committed line on the day. |
+| **Dependencies** | The minor and patch bumps are merged (`4db5387`). The major bumps (TypeScript 7, ESLint 10, @types/node 26) are held on `maint/post-cutover-majors`, with its `MAINTENANCE.md`, until after the cutover. |
+| **The photo pool** | The verified pool, each record with its verdict, is in the gitignored `.hunt/cplus/pool/`. The CC BY-SA re-evaluation and the monument research are in `.hunt/lock/`. |
+| **The client lists** | [`PHOTOGRAPHERS.md`](PHOTOGRAPHERS.md), [`SHORTLIST.md`](SHORTLIST.md) (both final for the client's action), [`TOURISM-LIBRARIES.md`](TOURISM-LIBRARIES.md), [`MONUMENT-LICENCE.md`](MONUMENT-LICENCE.md). |
 
-**The client's decisions.** This repository takes none of them on the
-client's behalf:
+## For the client
 
-1. **Vercel Bot Protection:** turn it on, in log mode first, then challenge.
-   It is a project setting.
-2. **Deployment Protection for preview deployments:** worth considering. It is
-   also a project setting.
-3. **HSTS `includeSubDomains` and `preload`:** at the cutover, as domain
-   policy.
-4. **CC BY-SA.** Several of the most beautiful frames found are BY-SA. Using
-   any of them obliges publishing our graded version under BY-SA on
-   `/credits`.
-5. **Public Domain Mark frames:** held until the client rules on them.
-6. **Photographer permissions.** `PHOTOGRAPHERS.md` names the frames and gives
-   the message in Greek and English, for the client to send. A written yes is
-   stored under `assets-src/stock-local/permissions/` before its frame ships;
-   the credits guard fails without it.
-7. **Paid stock.** `SHORTLIST.md` prices it, and buying is the client's call.
-   It needs a private repository or a private asset store first: iStock's
-   licence forbids letting others download the file, and this repository is
-   public.
-8. **The client's own photographs:** share a Google Drive link and they will
-   be graded, ledgered as "client-supplied, rights held by client", and
-   placed. Camera originals of the tours are still the largest improvement
+This repository takes none of these steps on the client's behalf. Nothing
+has been sent, bought, submitted or switched.
+
+1. **Vercel Bot Protection and Deployment Protection** (both are project
+   settings).
+   - **Bot Protection:** turn it on in log mode, then move it to challenge
+     once the log shows no real visitors caught.
+   - **Deployment Protection:** decide it for preview deployments.
+2. **The Google Drive link** for the client's own photographs. They will be
+   graded, ledgered as "client-supplied, rights held by client", and placed.
+   Camera originals of the tours are still the largest improvement
    available.
+3. **Submit the monument licence application and pay the fee.**
+   - [`MONUMENT-LICENCE.md`](MONUMENT-LICENCE.md) has the letter in Greek
+     (with an English translation), Annex A and the steps.
+   - The fee is €250 plus VAT to ODAP, once the Ephorate decides.
+   - Also write to Preveli Monastery, and get a lawyer's view on the frames
+     already online.
+4. **Send the photographer messages.**
+   [`PHOTOGRAPHERS.md`](PHOTOGRAPHERS.md) names the frames and gives the
+   messages in Greek and English, including an optional confirmation to Rolf
+   Dietrich Brecher. A written yes is stored under
+   `assets-src/stock-local/permissions/` before its frame ships; the credits
+   guard fails without it.
+5. **Any stock purchases.** [`SHORTLIST.md`](SHORTLIST.md) prices them.
+   First decide how to meet iStock's condition: a private repository or a
+   private asset store. Monument frames also need adding to the licence
+   application.
+6. **Registrar access and a cutover date.** [`CUTOVER.md`](CUTOVER.md) steps
+   1–3 cover this:
+   - access to the aspx.gr DNS panel and to Vercel → Domains;
+   - a weekday date;
+   - a saved copy of the DNS zone;
+   - the TTL lowered 24 hours before.
+
+**Later, separately:** submitting the domain to the HSTS preload list (the
+preconditions are in `CUTOVER.md` step 17). The held dependency upgrades go
+in after the cutover week.
 
 ---
 
@@ -61,11 +87,15 @@ client's behalf:
 | **Repository** | https://github.com/ikeskrim/routes-crete-redesign |
 | **Deploys from** | `main` → Vercel production alias, automatically |
 
-**The domain has not been cut over.** `routescrete.gr` still serves the original
-site. Moving it is a decision and a DNS change, taken with the client, step by
-step, in its own conversation — see [`DEPLOYMENT.md`](DEPLOYMENT.md) for the
-runbook, the rollback and the order of operations. Nothing in this repository's
-automation touches DNS, the domain, or the Vercel project settings.
+**The domain has not been cut over.** `routescrete.gr` still serves the
+original site. Moving it is a decision and a DNS change, taken with the
+client, step by step.
+- **The plan:** [`CUTOVER.md`](CUTOVER.md) is the ordered plan, with the
+  domain facts, the CLIENT and OURS steps, the verification commands and the
+  rollback.
+- **The background:** [`DEPLOYMENT.md`](DEPLOYMENT.md).
+- **What automation touches:** nothing in this repository's automation
+  touches DNS, the domain, or the Vercel project settings.
 
 ### Is my change live?
 
@@ -159,11 +189,22 @@ What ships is C+, a travel feature in print:
    the licence on the photograph's own page. Where the original goes depends on
    the licence, because this repository is public:
    - **PD, CC0, CC BY:** the original is committed in `assets-src/sourced/`.
+   - **CC BY-SA 4.0:** the original is committed too. The record needs a
+     `shareAlike` block naming the served graded file
+     (`/images/graded/d/sourced/<file>`); `/credits` then states the licence
+     and links that file for download.
    - **Unsplash, Pexels, or a written permission:** the original is held in the
      gitignored `assets-src/stock-local/`, and only the graded image ships. A
      written permission is stored under `assets-src/stock-local/permissions/`.
    - **Pixabay:** held entirely; nothing graded ships.
-   - **BY-SA, NC, ND:** refused.
+   - **Other BY-SA versions, NC, ND, and a Public Domain Mark that can't be
+     verified at its source:** refused.
+   - **A photograph of the Fortezza, the Venetian harbour or lighthouse, or
+     Preveli Monastery** also goes into the Ministry licence application
+     ([`MONUMENT-LICENCE.md`](MONUMENT-LICENCE.md)), and its record gets a
+     `monument` mark.
+   - **A title that names a place the tours don't visit,** where the
+     licence requires the title: set `titleAsPublished`.
 
    The credits guard fails on any of these, and on a checksum that no longer
    matches the file. On **itinerary** surfaces — cards, waypoints, galleries,
@@ -175,7 +216,9 @@ What ships is C+, a travel feature in print:
 
 **Swapping a hero or card image** is one line: set `heroImage` or `cardImage`,
 and keep the previous value in `heroImage_original` / `cardImage_original` with a
-note saying why. That convention is what makes every one of these decisions
+note saying why. The `_original` key is never overwritten: a later swap
+keeps its intermediate value under its own key (the transfer page's
+`heroImage_r9`). That convention is what makes every one of these decisions
 reversible. A landscape hero needs nothing extra — the hero reads the
 photograph's real dimensions and asks phones for the width `object-cover`
 actually shows.
@@ -198,10 +241,17 @@ Then, from another shell, **the ten guards**:
 node qa/headline-guard.mts && node qa/arc-guard.mts && node qa/nav-flash-guard.mts && node qa/credits-guard.mts && node qa/menu-audit.mts && node qa/asset-audit.mts && node qa/parity.mts && node qa/mobile-audit.mts && node qa/text-contrast.mts && node qa/security-headers.mts
 ```
 
-Then the C+ additions, one at a time: `node qa/copy-subset.mts` (nothing
-invented: every rendered string traces to content or code), `node
-qa/visual-check.mts`, and `node qa/preflight.mts` (the edition rules P1–P13,
-source only).
+Then, one at a time:
+- `node qa/copy-subset.mts`: nothing invented; every rendered string traces
+  to content or code;
+- `node qa/visual-check.mts`;
+- `node qa/preflight.mts`: the source rules P1–P14, source only;
+- for the cutover, `node qa/cutover-smoke.mts`: the brochure, legacy URLs
+  and anchors, credits, contact links, the form, the 404 page and the
+  origin.
+
+`.hunt/lock/suite/run-suite.sh <label> [base]` runs the first twelve and
+preflight in that order, each into its own log.
 
 Point any of them at the deployment with `QA_BASE_URL=https://routes-crete-redesign.vercel.app`.
 
@@ -276,8 +326,9 @@ None of it blocks anything, and none of it is work waiting to be done here.
   detectable; confirming Project → Settings → Git is dashboard work for the
   client, not something this repository's automation touches.
 
-And one thing that is not parked but next: **the `routescrete.gr` cutover**,
-with the client, in its own conversation. See [`DEPLOYMENT.md`](DEPLOYMENT.md).
+And one thing that is not parked but next: **the `routescrete.gr` cutover**.
+It is prepared in [`CUTOVER.md`](CUTOVER.md); the date and the DNS access
+are the client's.
 
 ---
 
@@ -286,7 +337,9 @@ with the client, in its own conversation. See [`DEPLOYMENT.md`](DEPLOYMENT.md).
 | file | what it holds |
 |---|---|
 | [`README.md`](README.md) | stack, commands, architecture, the guards in detail |
-| [`DEPLOYMENT.md`](DEPLOYMENT.md) | the cutover runbook, rollback, how deploys actually work here |
+| [`CUTOVER.md`](CUTOVER.md) | the `routescrete.gr` cutover as ordered CLIENT and OURS steps: the switch, verification, rollback |
+| [`DEPLOYMENT.md`](DEPLOYMENT.md) | the deployment paths, the original cutover checklist, how deploys actually work here |
+| [`MONUMENT-LICENCE.md`](MONUMENT-LICENCE.md) | the Greek licence application for photographs of monuments, for the client to submit and pay |
 | [`COPY-MAP.md`](COPY-MAP.md) | every copy change, with provenance |
 | [`MORNING.md`](MORNING.md) | the full build log, every client decision, and the closing record |
 | [`BACKLOG.md`](BACKLOG.md) | what was considered and not done, with reasons |

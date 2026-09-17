@@ -6,19 +6,29 @@ a credit. **A written yes is a licence** and enters the ledger as one.
 Compiled 2026-09-11. **Nobody has been contacted.** The client sends the
 messages below.
 
-**Status, 17 September 2026.** Still nobody contacted.
-- **The design:** the site now runs direction C, "Warm Editorial" (C+),
-  live since that day.
-- **The free photo pool** closed the same day with 38 checked candidates.
-  None is a warm-light photograph of a place the tours name that the site
-  can use today. The closest, a Rethymno lighthouse in evening light, waits
-  on the monument question below.
-- **So asking photographers is still the best route** to warm tour-page
-  photographs. For the live design, start with:
-  - #13, Rethymno at a June sunset;
-  - #4, the lighthouse against Psiloritis at golden hour;
-  - #5, the old town and harbour before sunrise;
-  - #6, Rethymno and the Fortezza from the air at sunset.
+**Status, 17 September 2026 (final for the client's action).** Nobody has
+been contacted. The client sends every message; we send nothing.
+- **The design is locked:** C+ ("Warm Editorial") is the production design.
+- **The client's rulings of 17 September change three things here:**
+  - **CC BY-SA** is allowed. One free frame, the Rethymno lighthouse at
+    dusk, is now the transfer page hero, so #4's lighthouse is no longer
+    the first ask.
+  - **Monuments.** The licence application is prepared in
+    `MONUMENT-LICENCE.md`. A photographer's yes for a frame of the Fortezza,
+    the Venetian harbour or Preveli Monastery is not enough on its own: that
+    frame must also be added to the Ministry application. The fee band
+    covers up to 20 photographs.
+  - **"Cretan Sunset I"** (Rolf Dietrich Brecher) is usable as it stands:
+    CC BY 4.0 today, CC BY 2.0 in a 2020 web archive, both irrevocable.
+    A confirmation message is optional and drafted below; it has not been
+    sent.
+- **What to send first, for the live design:**
+  1. #13, Rethymno at a June sunset (a band);
+  2. #5, the old town and harbour before sunrise (add its harbour frames to
+     the monument application);
+  3. #6, Rethymno and the Fortezza from the air at sunset (same);
+  4. #3, the Preveli Monastery gallery (also ask the Monastery; see
+     `MONUMENT-LICENCE.md`).
 
 ---
 
@@ -69,10 +79,10 @@ sign-in.
   tour's "mountains of central Crete". No frame may be presented as one of
   them.
 - **Monuments.** A photographer's permission covers the photograph, not the
-  monument in it. Greek law has its own rules on commercial use of images of
-  monuments, and the client has not yet settled whether they touch this site.
-  Until then, frames whose subject is the Fortezza or the Venetian lighthouse
-  wait on that answer: #4, #6, and the harbour frames of #5.
+  monument in it. Settled on 2026-09-17: frames of the Fortezza, the
+  Venetian harbour and lighthouse, or Preveli Monastery go into the Ministry
+  licence application (`MONUMENT-LICENCE.md`) as well. That applies to #3,
+  #4, #6, and the harbour frames of #5.
 
 ---
 
@@ -367,3 +377,83 @@ www.routescrete.gr
 
    The credits guard will not let the photograph ship without it.
 4. **They are credited** on the page and on `/credits`, as they asked.
+
+---
+
+## Optional: Rolf Dietrich Brecher, "Cretan Sunset I" (and "Matala")
+
+**No permission is needed.** This message is a courtesy, and it removes any
+doubt about the photo's licence history. Neither photograph is on the site
+yet.
+
+**"Cretan Sunset I"**
+([Flickr](https://www.flickr.com/photos/104249543@N07/34810174192/)). Checked
+on 2026-09-17:
+- **2026:** CC BY 4.0 on the photographer's own page today, as when the file
+  was saved on 2026-09-14.
+- **2020:** CC BY 2.0 in the Wayback Machine capture of 2020-04-28, for the
+  same original file.
+- **2018:** CC BY-SA 2.0 when Wikimedia Commons reviewed it.
+
+Creative Commons grants cannot be withdrawn. The site would credit it under
+CC BY 4.0, never under the old BY-SA grant, and never from the Commons copy.
+
+**"Matala"**
+([Flickr](https://www.flickr.com/photos/104249543@N07/32838616277/)): CC BY
+4.0 today, CC BY 2.0 in 2019 and 2020. It was never share-alike. Matala is
+not a tour stop, so it could only be a mood frame, and /credits would mark
+its title "(title as published)".
+
+Send through Flickr's "Message" button on his profile.
+
+### Ελληνικά
+
+> **Θέμα:** Αίτημα για χρήση της φωτογραφίας σας «Cretan Sunset I»
+>
+> Αγαπητέ κύριε Brecher,
+>
+> Σας γράφω εκ μέρους της Routes Crete, μιας μικρής οικογενειακής επιχείρησης που οργανώνει ιδιωτικές εκδρομές από το Ρέθυμνο της Κρήτης. Ετοιμάζουμε μια νέα έκδοση της ιστοσελίδας μας και θα θέλαμε πολύ να χρησιμοποιήσουμε τη φωτογραφία σας «Cretan Sunset I» (https://www.flickr.com/photos/104249543@N07/34810174192/).
+>
+> Θα περικόπταμε ελαφρώς την εικόνα, κυρίως για να αφαιρεθεί το διακοσμητικό περίγραμμα, και θα προσαρμόζαμε τα χρώματά της ώστε να ταιριάζει με την αισθητική της σελίδας. Η φωτογραφία θα εμφανίζεται στην ιστοσελίδα της Routes Crete με αναφορά στο όνομά σας, για παράδειγμα:
+> Φωτογραφία: «Cretan Sunset I», Rolf Dietrich Brecher, CC BY 4.0, με περικοπή και χρωματική επεξεργασία
+> με συνδέσμους προς τη σελίδα σας στο Flickr και προς την άδεια.
+>
+> Βλέπουμε ότι η φωτογραφία διατίθεται σήμερα με άδεια CC BY 4.0 και θα τηρήσουμε τους όρους της. Επειδή η άδεια που εμφανίζεται για τη φωτογραφία έχει αλλάξει με τα χρόνια, θα σας ήμασταν ευγνώμονες αν μας επιβεβαιώνατε ότι συμφωνείτε με αυτή τη χρήση. [Προαιρετικά: Θα θέλαμε επίσης να χρησιμοποιήσουμε με τους ίδιους όρους τη φωτογραφία σας «Matala» (https://www.flickr.com/photos/104249543@N07/32838616277/).]
+>
+> Αν προτιμάτε διαφορετική μορφή αναφοράς ή δεν επιθυμείτε να χρησιμοποιήσουμε τη φωτογραφία, απλώς ενημερώστε μας και φυσικά θα σεβαστούμε την επιθυμία σας.
+>
+> Σας ευχαριστούμε θερμά που μοιράζεστε τη δουλειά σας.
+>
+> Με εκτίμηση,
+> [Όνομα]
+> Routes Crete, Ρέθυμνο, Κρήτη
+> [διεύθυνση email] | [ιστοσελίδα]
+
+### English
+
+> **Subject:** Request to use your photograph "Cretan Sunset I"
+>
+> Dear Mr Brecher,
+>
+> I am writing on behalf of Routes Crete, a small family-run company offering private tours from Rethymno, Crete. We are preparing a new version of our website and would very much like to use your photograph "Cretan Sunset I" (https://www.flickr.com/photos/104249543@N07/34810174192/).
+>
+> We would crop the image slightly, mainly to remove the decorative border, and adjust its colours to suit the look of the site. It would appear on the Routes Crete website with a credit to you, for example:
+> Photo: "Cretan Sunset I" by Rolf Dietrich Brecher, CC BY 4.0, cropped and colour-graded
+> with links to your Flickr page and to the licence.
+>
+> We can see that the photo is currently shared under CC BY 4.0, and we will follow its terms. Because the licence shown for this photo has changed over the years, we would be grateful for your confirmation that you are happy with this use. [Optional: We would also like to use your photograph "Matala" (https://www.flickr.com/photos/104249543@N07/32838616277/) on the same terms.]
+>
+> If you would prefer a different credit, or would rather we did not use the photograph, just let us know and we will of course respect that.
+>
+> Thank you for sharing your work so generously.
+>
+> Kind regards,
+> [Name]
+> Routes Crete, Rethymno, Crete
+> [email address] | [website]
+
+**Before either frame ships:** the border crop needs its own step. The
+pipeline grades masters as they are, and the credits guard checks the
+master's checksum. The "clearly beats a live frame" bar still applies, and
+this pass did not judge either frame against the live slots. The evidence
+is local, in `.hunt/lock/history/cretan-sunset/` and `matala/`.

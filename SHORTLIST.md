@@ -6,15 +6,27 @@ a visitor from Greece, in euros; whether VAT is included was not checked.
 
 ---
 
-**Status, 17 September 2026.** Nothing bought.
-- **Which picks still apply:** direction C, "Warm Editorial", was chosen and
-  is live. Only the C hero row and the shared set still apply; the A and B
-  hero rows stay for the record.
-- **The public-repository condition** below is still open.
+**Status, 17 September 2026 (final for the client's action).** Nothing
+bought, nothing in a cart, no account used. Buying is the client's call.
+- **Which picks apply:** C+ ("Warm Editorial") is the locked production
+  design. Only the C hero row and the shared set apply; the A and B hero
+  rows stay for the record.
+- **Before any purchase:** the public-repository condition below is still
+  open. Settle it first.
+- **The monument question is settled** (ruling of 17 September). Three picks
+  show monuments: 589972934 (the Fortezza), 2201313213 (the lighthouse) and
+  2183033569 (the harbour with its lighthouse). Each one bought must also go
+  into the Ministry licence application in `MONUMENT-LICENCE.md`, which covers
+  up to 20 photographs for one fee. The same applies to 2183033611 (sunrise
+  in the Venetian harbour).
+- **Lower priority now:** 2201313213, the lighthouse at blue hour. A free
+  CC BY-SA frame of the same view became the transfer page hero on
+  17 September.
 - **Still the clear upgrades for the tour pages:** 1391161549 (Preveli from
-  the sea at sunset) and 2183033611 (sunrise in the Venetian harbour). The
-  free photo pool closed the same day without a warm-light frame of Preveli
-  or Rethymno that the site can use today.
+  the sea at sunset) and 2183033611 (sunrise in the Venetian harbour).
+- **CC BY-SA** is allowed from 17 September, but that ruling does not change
+  iStock's terms: the standalone-download clause is the reason for the
+  repository condition.
 
 ## The short answer
 
