@@ -101,6 +101,19 @@ export function BookingCta({
      on screen: two observers, one state each. */
   useEffect(() => {
     if (variant !== "bar") return;
+
+    /* No observers: show the bar. Both states it watches for are reasons to
+       step aside — the hero is still in the fold, or the back cover's own
+       gold pill is — and neither can be read without them. Hidden is the
+       state with a cost the reader cannot recover from: below 1024 the bar is
+       the only place "Request" and WhatsApp are printed, because the panel
+       that carries them above it is not rendered (ItemDetail). Set from a
+       task rather than the effect body, as LazyFormEmbed does. */
+    if (!("IntersectionObserver" in window)) {
+      const timer = setTimeout(() => setHeroGone(true), 0);
+      return () => clearTimeout(timer);
+    }
+
     const hero = document.querySelector("[data-hero]");
     if (!hero) return;
     const observers: IntersectionObserver[] = [];

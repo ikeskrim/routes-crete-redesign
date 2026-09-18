@@ -232,6 +232,22 @@ export function Nav({
    */
   const expectHero = routeHasHero(pathname, itemHrefs);
   useEffect(() => {
+    /* No observer: the solid bar, the same state a route without a hero
+       already gets below. Nothing else can report when the hero's text
+       reaches the bar, and both standing alternatives are worse than one
+       settle after hydration. Staying transparent would leave the wordmark
+       and the trigger printed over whatever scrolls under them, for the
+       whole page rather than a frame; turning solid on the first scroll
+       instead would make the bar at the top of the page depend on how the
+       reader got there, which the amended §H.1 rules out for /contact's
+       head. The tone is left as the route set it: it is only read while the
+       bar is transparent. */
+    if (!("IntersectionObserver" in window)) {
+      // From a task, not the effect body (react-hooks/set-state-in-effect).
+      const timer = setTimeout(() => setOverHero(false), 0);
+      return () => clearTimeout(timer);
+    }
+
     let cancelled = false;
     let frame = 0;
     let rewatch = 0;

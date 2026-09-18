@@ -32,6 +32,16 @@ export function useRevealTrigger(
       return;
     }
 
+    /* No observer to report the crossing: reveal. A reveal is a one-shot
+       entrance for content that is already in the document, so the failure it
+       must never have is content that stays hidden (the two above are the
+       same fault by another route). Set from a task rather than the effect
+       body, as LazyFormEmbed does. */
+    if (!("IntersectionObserver" in window)) {
+      const timer = setTimeout(() => setSeen(true), 0);
+      return () => clearTimeout(timer);
+    }
+
     const io = new IntersectionObserver(
       ([entry]) => {
         const passedAbove = entry.boundingClientRect.bottom <= 0;

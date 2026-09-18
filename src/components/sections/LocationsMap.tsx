@@ -263,6 +263,17 @@ export function LocationsMap({
   const reduced = useReducedMotionSafe();
   const [hovered, setHovered] = useState<string | null>(null);
 
+  /* Is there an IntersectionObserver for the pin entrance below?
+     Read during render, not from an effect: motion mounts the `whileInView`
+     observer in a layout effect of the very commit this renders, and
+     framer-motion only guards its update() path, not the mount() that
+     constructs it (motion/features/viewport). A state flipped from an effect
+     of ours would be a commit too late, and the ReferenceError takes the
+     whole React root down with it. Reading a capability during hydration is
+     safe here because nothing rendered changes with it: `initial` is an
+     object, so the markup is the same `opacity: 0` on either branch. */
+  const observed = typeof IntersectionObserver !== "undefined";
+
   const chart = useMemo(() => {
     if (locations.length === 0) return null;
 
@@ -405,8 +416,14 @@ export function LocationsMap({
             <motion.span
               data-reveal
               initial={reduced ? false : { opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, amount: 0.4 }}
+              /* Without an observer nothing can report a pin entering the
+                 chart, so they simply arrive — same fade, same 0.07 s apart,
+                 just not waited for. The prop has to be absent rather than
+                 ignored: any `whileInView` at all is what mounts the
+                 observer (motion/features/definitions). */
+              whileInView={observed ? { opacity: 1 } : undefined}
+              viewport={observed ? { once: true, amount: 0.4 } : undefined}
+              animate={observed ? undefined : { opacity: 1 }}
               transition={{
                 duration: reduced ? 0 : 0.6,
                 delay: reduced ? 0 : i * 0.07,
