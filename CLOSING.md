@@ -284,28 +284,38 @@ has been held to throughout: performance ≥ 89, a11y 100, CLS 0, TBT ≤ 250 ms
 **Do not lower a floor to make a red run green.** Localhost on this machine runs
 about ten points under the deployment; the deployment is the only gate.
 
-Measured on the deployment on 2026-09-18, five interleaved runs per route, on
-`ed2506f` (the close of the lock-and-cutover-preparation brief; its guard
-suite ran on 2026-09-17):
+Measured on the deployment on 2026-09-18 (UTC), five interleaved runs per
+route, on `06e13d0` (the no-observer fallbacks; its guard suite ran against
+the same production deployment, 13/13):
 
 | route | performance | spread | a11y | TBT | CLS |
 |---|---|---|---|---|---|
-| `/` | **92** | 64 89 92 92 93 | 100 | 114 ms | 0 |
-| `/experiences/kourtaliotis-temple-of-nature` | **90** | 89 90 90 90 90 | 100 | 41 ms | 0 |
-| `/transfers/private-transfers-rethymno` | **93** | 89 93 93 95 96 | 100 | 80 ms | 0 |
-| `/transfers` | **95** | 94 95 95 97 97 | 100 | 32 ms | 0 |
-| `/contact` | **97** | 94 97 97 97 98 | 100 | 24 ms | 0 |
+| `/` | **95** | 93 93 95 95 96 | 100 | 38 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **93** | 89 93 93 93 95 | 100 | 18 ms | 0 |
+| `/transfers/private-transfers-rethymno` | **96** | 92 95 96 96 96 | 100 | 45 ms | 0 |
+| `/transfers` | **97** | 96 97 97 99 99 | 100 | 14 ms | 0 |
+| `/contact` | **98** | 96 97 98 99 99 | 100 | 11 ms | 0 |
 
-The home route's first run read 64 (TBT 810 ms), a cold start; the other four
-read 89–93. That is why the gate is the median. The previous close, on
-`524cada`, measured 90 / 90 / 93 / 94 / 97.
+The previous close, on `ed2506f`, measured 92 / 90 / 93 / 95 / 97, and the one
+before it, `524cada`, 90 / 90 / 93 / 94 / 97. Read those gaps as sessions and
+networks, not as builds: the only like-for-like comparison of `06e13d0`
+against its parent — two previews built the same way, five warm runs each —
+came out level (`/` 89 against 89, the experience route 88 against 88, the
+transfer 91 against 91).
 
 **Branch previews read about 3 points lower on the item routes.** Every
 preview build loads Vercel's comment-toolbar script from `vercel.live`, and
 Lighthouse charges a new connection for it. Production loads it only behind a
 cookie. Judge budgets on production. That script is also why a preview fails
 `security-headers` and `visual-check` on the CSP while production passes
-both.
+both — the failures name `vercel.live`, and `visual-check` reports "no failed
+groups", meaning no visual difference at all.
+
+**A preview also fails `asset-audit` on the social images,** with og:image
+"WRONG ORIGIN". With `NEXT_PUBLIC_SITE_URL` unset the social origin is the
+project's production URL by design, so it equals the base under test only on
+production. The same failure appears on any commit served from a deployment
+URL rather than the production alias — it is the URL, never the build.
 
 ---
 

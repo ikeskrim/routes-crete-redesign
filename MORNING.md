@@ -1,3 +1,148 @@
+# THE TREE RECONCILED, AND `06e13d0` PUBLISHED — 2026-09-19
+
+The other session's unpublished commit has been rebased, verified and put on
+production. It earns its place: **without it the site renders a blank page in
+any browser that has no `IntersectionObserver`.** Not a degraded page — a
+blank one.
+
+All times below are UTC. The work ran 2026-09-18 21:51Z–23:00Z, which is the
+small hours of the 19th in Crete.
+
+## What happened, in one line each
+
+- **Rebased.** `git pull --rebase origin main` dropped the duplicate record
+  commit and replayed `a76ed76` onto `3ac6c34` as **`06e13d0`**, exactly as
+  the previous chapter said it would.
+- **Verified** on a preview: full guard suite, the no-observer probe, and
+  Lighthouse against a like-for-like baseline preview.
+- **Published.** `origin/main` moved `3ac6c34..06e13d0`. Production is
+  **13/13 green, `CUTOVER SMOKE OK`, `NO-OBSERVER PROBE OK`,
+  `LIGHTHOUSE BUDGET OK`.**
+- **Nothing cutover-related was executed.** No DNS record, domain, project
+  setting or environment variable was touched. `NEXT_PUBLIC_SITE_URL` is
+  still unset; every page still declares `site-url: unset` and a canonical on
+  `www.routescrete.gr`.
+
+## Why it is worth having: the blank page
+
+The commit adds fallbacks for a missing `IntersectionObserver` in
+`use-reveal-trigger.ts`, `Nav.tsx`, `BookingCta.tsx` and `LocationsMap.tsx`.
+To find out whether that fixes anything real, both builds were deployed as
+previews and probed with `.hunt/lock/noobs/probe.mts`, which deletes
+`window.IntersectionObserver` before any script runs and compares against an
+untouched control.
+
+**On the code that was live (`3ac6c34`'s tree, deployed as `aebf829`):**
+
+| route, both viewports | `<main>` | body text | reveals | page errors |
+|---|---|---|---|---|
+| `/` | **absent** | **70 chars** (control: 5,761) | 0 | `IntersectionObserver is not defined` |
+| `/contact` | **absent** | **70 chars** (control: 1,019) | 0 | same |
+| `/experiences/kourtaliotis-temple-of-nature` | **absent** | **70 chars** (control: 5,436) | 0 | same |
+
+The React root throws on mount and the page never renders. 33 failing checks,
+27 of them real.
+
+**On `06e13d0`:** `<main>` present, body text identical to the control on
+every route, every `[data-reveal]` painted (75/75 on `/`), the sandboxed
+Monday form mounted at scroll 0 on `/contact`, the booking bar visible and not
+`inert` on the experience page at 390px. **0 real failures.** The control
+still gates properly — 12 reveals waiting on `/`, no Monday frame, the bar
+`inert` — so the fallback is not "reveal everything always".
+
+Verified again on production after publishing: **`NO-OBSERVER PROBE OK`, 0
+failures**, and there no third-party artifact at all.
+
+## The preview was red three times, and none of it was the commit
+
+The suite against the preview read **10/13**. Each red was reproduced on code
+that predates the commit, so each is the environment, not `06e13d0`:
+
+| guard | what it said | control |
+|---|---|---|
+| `asset-audit` | og:image "WRONG ORIGIN" on `/` and the experience page | **`3ac6c34` fails identically** when served from its own deployment URL. With the switch unset the social origin is the project's production URL by design; it only equals the base under test *on* production. |
+| `security-headers` | 9 × CSP `script-src-elem` for `https://vercel.live/_next-live/feedback/feedback.js` | **A preview of `7abe153` fails identically.** The script is not in our source and not in the served HTML; Vercel injects it into previews at runtime. |
+| `visual-check` | failed with **"no failed groups"** | No visual diff at all — the same `vercel.live` console errors. |
+
+`CLOSING.md` already predicted two of these three. The third, `asset-audit`,
+is now documented there too.
+
+**On production all three pass: 13/13, `failures: 0`.**
+
+## Lighthouse: measured against a baseline built the same way
+
+Preview numbers cannot be judged against production floors, so a baseline
+preview was built from a commit whose **tree is byte-identical to `3ac6c34`**
+(`git commit-tree`, so the working tree was never touched) and both arms were
+treated the same way: five interleaved runs per route, cold, then five more
+once warm. Medians:
+
+| route | base `aebf829` warm | commit `06e13d0` warm |
+|---|---|---|
+| `/` | 91 | 89 |
+| `/experiences/kourtaliotis-temple-of-nature` | **88** | **88** |
+| `/transfers/private-transfers-rethymno` | 91 | 91 |
+
+The one sub-floor route reads 88 on **both** arms — a preview property, not a
+regression. The `/` gap did not survive re-measurement: run back to back, five
+runs each, both read **89** (commit `88 89 89 90 91`, base `89 89 89 90 90`).
+The commit's TBT does sit consistently higher — 99 ms against 69 ms on `/` —
+which is the one measurable cost, against a budget of 250 ms.
+
+**Production, `06e13d0`, five interleaved runs per route:**
+
+| route | performance | spread | a11y | TBT | CLS |
+|---|---|---|---|---|---|
+| `/` | **95** | 93 93 95 95 96 | 100 | 38 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **93** | 89 93 93 93 95 | 100 | 18 ms | 0 |
+| `/transfers/private-transfers-rethymno` | **96** | 92 95 96 96 96 | 100 | 45 ms | 0 |
+| `/transfers` | **97** | 96 97 97 99 99 | 100 | 14 ms | 0 |
+| `/contact` | **98** | 96 97 98 99 99 | 100 | 11 ms | 0 |
+
+The previous close (`ed2506f`) read 92 / 90 / 93 / 95 / 97. Every route is
+1–3 points higher, but those were different sessions on a different network:
+**the like-for-like comparison is the preview A/B above, and it says parity.**
+The experience route that read 88 on both previews reads **93** on production,
+which settles the artifact question.
+
+## Two things about Vercel worth keeping
+
+1. **One build slot, and a stuck build blocks everything behind it.** Two
+   previews sat `● Queued` for an hour and 47 minutes during the open incident
+   *"Deployment stuck in initializing state"* (Builds degraded). Cancelling
+   the older one moved the other from `QUEUED` to `BUILDING` **within 30
+   seconds**. If a preview will not start, look for a stuck one ahead of it
+   before assuming the platform is down.
+2. **Vercel creates no deployment when both the tree and the commit SHA have
+   already been deployed.** Pushing `3ac6c34` under two fresh branch names
+   produced no build and 404 aliases — it looked like dropped webhooks. A
+   commit with an identical tree but a distinct SHA builds normally, which is
+   how the A/B baseline was obtained without touching the working tree.
+
+## Evidence
+
+Under `.hunt/lock/suite/` (gitignored, on this machine):
+`noobs-local/` 13/13 · `noobs-preview/` with `controls/`, both probe logs and
+six Lighthouse logs · `noobs-production/` 13/13, probe, smoke and Lighthouse.
+
+Deployments, all still reachable:
+
+| what | URL |
+|---|---|
+| commit preview `06e13d0` | `routes-crete-redesign-d6wbrb82q-domisi.vercel.app` |
+| baseline preview `aebf829` (tree of `3ac6c34`) | `routes-crete-redesign-pk87xf3rq-domisi.vercel.app` |
+| older preview used as CSP control (`7abe153`) | `routes-crete-redesign-lx9p3jyqc-domisi.vercel.app` |
+| base at a non-production URL (`3ac6c34`) | `routes-crete-redesign-amx7e11sv-domisi.vercel.app` |
+
+The temporary branches created for this verification were deleted; the
+deployment URLs above are immutable and survive them. `origin` is back to
+`main`, `cplus-integration`, `maint/post-cutover-majors` and the three
+Dependabot branches.
+
+**This session ran nothing else while measuring** — no other build, no other
+QA, no sibling repository — and no other session was running on this machine.
+
+---
 # C+ LOCKED — THE RULINGS, AND THE CUTOVER PREPARED — 2026-09-17
 
 The client saw the live site and said: **"much better now."** This brief locks
