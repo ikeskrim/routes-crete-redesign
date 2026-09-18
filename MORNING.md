@@ -30,8 +30,13 @@ Every guard, budget and hard wall stood.
   - **Local `main` also carries `a76ed76`,** another session's work on the
     no-observer fallbacks, committed into this working tree while this brief
     was closing. This brief did not push it: it is that session's to verify
-    and publish, so `origin/main` skips it and local `main` is one commit
-    ahead. Reconcile with `git pull --rebase origin main`.
+    and publish.
+    - **So the two branches diverge on purpose:** local `main` holds
+      `a76ed76` and a local copy of this record (`db5fe03`); `origin/main`
+      holds the same record parented on `ed2506f` (`8a8e69b`).
+    - **Reconcile with `git pull --rebase origin main`,** which drops the
+      duplicate record commit and replays `a76ed76` on top, for that
+      session to verify and push.
 - **Nothing cutover-related was executed:**
   - no DNS record, domain, Vercel project setting or environment variable
     was touched;
