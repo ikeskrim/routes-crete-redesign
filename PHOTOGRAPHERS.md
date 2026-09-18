@@ -96,6 +96,15 @@ sign-in.
   - #6;
   - #7's old-harbour frame.
 
+  **Not settled by that ruling, and worth the same question before any of
+  these goes on a page:**
+  - **A chapel inside Kourtaliotiko Gorge** (#1, #2, #7's gorge church,
+    #12). The gorge lies inside the area named by the 1973 declaration, and
+    `MONUMENT-LICENCE.md` holds the site's own chapel frame back with "ask
+    the Ephorate first".
+  - **An old-town lane.** It rides on our reading that the lane needs no
+    licence, which the Ephorate has not confirmed.
+
 ---
 
 ## The shortlist

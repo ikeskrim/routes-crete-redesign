@@ -1421,7 +1421,8 @@ function assertCommittedEnv(notes: string[]): void {
   const DOTENV_ENTRY =
     /^[ \t]*(?:export[ \t]+)?([\w.-]+)(?:[ \t]*=|:[ \t])(?:[ \t]*'(?:\\'|[^'])*'|[ \t]*"(?:\\"|[^"])*"|[ \t]*`(?:\\`|[^`])*`|[^#\n]*)/gm;
   const variableNames = (text: string) => {
-    const keys = [...text.replace(/\r\n?/g, "\n").matchAll(DOTENV_ENTRY)].map((m) => m[1]);
+    // A BOM would otherwise swallow the first variable's name (2026-09-18).
+    const keys = [...text.replace(/^﻿/, "").replace(/\r\n?/g, "\n").matchAll(DOTENV_ENTRY)].map((m) => m[1]);
     const named = keys.filter((k) => /^[A-Z][A-Z0-9_]{0,63}$/.test(k));
     const other = keys.length - named.length;
     const parts = [...named, ...(other ? [`${other} unrecognised entr${other === 1 ? "y" : "ies"}`] : [])];

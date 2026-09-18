@@ -23,6 +23,11 @@ anyone.
   reproduce depictions of monuments for public dissemination for profit.")
 - **Publishing without one is an offence.** Art. 66 par. 1 punishes it with up
   to three years' imprisonment.
+- **The fee is also due before use, not after.** ΥΑ 436630/2023 art. 3
+  par. 5: «Τα αναλογούντα υπέρ του Ο.Δ.Α.Π. τέλη καταβάλλονται, πριν τη
+  χρήση των απεικονίσεων.» The plan here (the frames stay up, the fee is
+  paid as soon as the decision sets it) runs against that too, which is part
+  of what the letter asks the Ephorate to regularise.
 - **The frames are live by the client's decision.** That exposure is the
   client's. We recommend a short written opinion from a lawyer, and the
   draft below says truthfully that the photographs are already online.
@@ -141,11 +146,19 @@ URL.
      printed.** The signatory declares it true under penalty, and three of
      its sentences are untrue or outdated here:
      - (a) **«Η χρήση των απεικονίσεων σε καμία περίπτωση δε θα αλλοιώνει το
-       περιεχόμενό τους».** The site colour-grades and crops every
-       photograph (point ε).
+       περιεχόμενό τους ή θα θίγει με οποιονδήποτε τρόπο τα εικονιζόμενα
+       μνημεία».** Only the first half is untrue here: the site
+       colour-grades and crops every photograph (point ε). The second half
+       the letter declares anyway (declaration (3)), so annotate the first
+       half rather than striking the whole sentence.
      - (b) **«Πριν από την ανάρτηση ... θα καταβληθούν τα υπέρ του Τ.Α.Π.
-       ... τέλη».** The photographs are already online, and the fee now goes
-       to ODAP after the decision.
+       ... τέλη».** The payee is outdated: the fee now goes to Ο.Δ.Α.Π. **The
+       timing is not.** ΥΑ 436630/2023 art. 3 par. 5 still requires the fee
+       to be paid «πριν τη χρήση των απεικονίσεων», and recent Ephorate
+       decisions say it is pre-paid. What makes the sentence untrue here is
+       that the photographs are already online: the letter therefore
+       promises payment immediately on the decision and offers to take them
+       down until then.
      - (c) **The credit line under ν. 3028/2002 (the rights "belong to the
        Greek State").** It is outdated, and possibly untrue for Preveli and
        the lighthouse.
@@ -176,12 +189,23 @@ URL.
    for written consent to show photograph 4 on the site.
 7. **Wait for the decision.**
    - **One competent service:** it decides within 5 working days.
-   - **Another service also competent:** the application goes to its General
-     Directorate (ΥΑ 436630/2023 art. 4 par. 3), and the Ephorate may
-     forward it there.
-     - For Preveli, the Cadastre already lists ΥΝΜΤΕ Κρήτης
-       (ynmkr@culture.gr) beside the Ephorate.
-     - Possibly for the lighthouse too.
+   - **More than one service competent:** ΥΑ 436630/2023 art. 4 par. 3 files
+     the application with a **General Directorate**, chosen by the kind of
+     monument, not by the second service:
+     - **ancient monuments:** the General Directorate of Antiquities and
+       Cultural Heritage;
+     - **newer monuments (after 1830):** the General Directorate of
+       Restoration, Museums and Technical Works (gdamte@culture.gr).
+
+     That Directorate circulates the application to the regional services
+     within 2 working days, they reply with their views and the fee
+     calculation within 3, and it decides within 5.
+     - **Which one applies to Preveli is unclear:** the Cadastre records it
+       as «Αρχαίο Μνημείο» yet lists ΥΝΜΤΕ Κρήτης (ynmkr@culture.gr), the
+       newer-monuments service, beside the Ephorate. The Ephorate dates the
+       Πίσω Μονή church to the 1830s.
+     - **So letter question (β) asks,** and an application filed with the
+       Ephorate may be forwarded on.
    - Mitos gives 5 days to 2 months overall.
 8. **Pay** the fee set in the decision to **ODAP**, into the account printed
    in the decision, quoting its protocol number.
@@ -228,7 +252,8 @@ research's first draft on purpose:
 2. **Already online.** The photographs are already on the site, so the draft
    says so. It asks for the use to be regularised, and offers to take them
    down until the licence is issued if the Ephorate asks. It promises
-   payment on the decision, not "before publication".
+   payment immediately on the decision, which is as close as it can now get
+   to the «πριν τη χρήση» rule the frames are already past.
 3. **Photograph 2 is CC BY-SA 4.0.**
    - **What the licence requires** (section 3(b)): any adaptation we share,
      including our graded copy, must be licensed under CC BY-SA 4.0 too,
@@ -241,11 +266,21 @@ research's first draft on purpose:
    - **Why the draft discloses it:** a downloadable copy sits awkwardly with
      the form's question about "protection against further use", so the
      draft discloses it and asks.
-   - **If the Ephorate objects,** the fix is on our side: take photograph 2
-     off the hero and restore the van (`heroImage_original`). Removing only
-     the download link would not help: the graded image stays licensed to
-     everyone under CC BY-SA 4.0 either way, and removing it would break C16
-     and the client's condition.
+   - **If the Ephorate objects,** the fix is on our side, and "taking it
+     down" has to be complete, because `/credits` lists every ledger record
+     and C16 requires the download link for any CC BY-SA 4.0 record:
+     1. restore the van in the hero (`heroImage_original`);
+     2. remove the record from `content/photo-credits.json`;
+     3. remove `public/images/graded/*/sourced/rethymno-harbour-lighthouse.jpg`;
+     4. remove the master from `assets-src/sourced/`.
+
+     Steps 2–4 go together: the credits guard fails a master with no ledger
+     row, and a ledger row whose file is missing. Stopping at step 1 would
+     leave the graded monument photograph on public download, so the
+     letter's promise would not be kept.
+   - **Removing only the download link is not an option:** the graded image
+     stays licensed to everyone under CC BY-SA 4.0 either way, and removing
+     it would break C16 and the client's condition.
    - **Not the earlier harbour frame.** `heroImage_r9` shows the same
      monument and is not in this application, so restore it only once it is
      licensed.
@@ -309,9 +344,9 @@ research's first draft on purpose:
 γ. Αριθμός φωτογραφιών: τέσσερις (4).
 δ. Διάρκεια: πέντε (5) έτη από την έκδοση της άδειας.
 ε. Είδος απεικόνισης: στατικές, δισδιάστατες φωτογραφίες. Οι τέσσερις
-   φωτογραφίες φέρουν την ίδια χρωματική επεξεργασία με τις υπόλοιπες
-   φωτογραφίες του ιστοτόπου και περικόπτονται στις διαστάσεις της θέσης
-   τους· η μορφή των μνημείων δεν αλλοιώνεται. Ανάλυση: έως 2.400 εικονοστοιχεία στη μεγαλύτερη πλευρά, σε
+   φωτογραφίες φέρουν την τυπική χρωματική επεξεργασία του ιστοτόπου
+   (grade D) και περικόπτονται στις διαστάσεις της θέσης τους· η μορφή των
+   μνημείων δεν αλλοιώνεται. Ανάλυση: έως 2.400 εικονοστοιχεία στη μεγαλύτερη πλευρά, σε
    συμπιεσμένα αρχεία για το διαδίκτυο, χωρίς υδατοσήμανση.
 στ. Προέλευση: και οι τέσσερις φωτογραφίες είναι έργα τρίτων δημιουργών,
    διαθέσιμα με άδειες Creative Commons (CC BY 3.0, CC BY-SA 4.0, CC0 1.0).
@@ -446,8 +481,8 @@ b. Purpose: commercial, presenting the company's touring services on its
 c. Number of photographs: four (4).
 d. Duration: five (5) years from the issue of the licence.
 e. Type: still, two-dimensional photographs. The four photographs carry the
-   same colour grade as the site's other photographs and are cropped to
-   their slots; the appearance of the monuments is not altered. Resolution: at most 2,400 pixels on the
+   site's standard colour grade (grade D) and are cropped to their slots;
+   the appearance of the monuments is not altered. Resolution: at most 2,400 pixels on the
    long edge, as compressed web files, without a watermark.
 f. Origin: all four are works of third-party photographers, available under
    Creative Commons licences (CC BY 3.0, CC BY-SA 4.0, CC0 1.0). Annex A
@@ -537,7 +572,9 @@ up to 20 photographs), or to a new one.
 
 **For a lawyer:**
 - **Photographs already online.** What is the exposure, and can the
-  Ephorate license existing amateur photographs retrospectively?
+  Ephorate license existing amateur photographs retrospectively? The same
+  question applies to the fee, which ΥΑ 436630/2023 art. 3 par. 5 requires
+  before use.
 - **Amendments.** Has art. 46 been amended since 2021? ν. 5021/2023,
   ν. 5271/2026 and ν. 5324/2026 were checked and leave paras 4–5 alone;
   other laws were not checked.

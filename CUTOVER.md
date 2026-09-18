@@ -268,16 +268,23 @@ What it does not change:
 ## Rollback
 
 **If the new site misbehaves on the domain:**
+**The items below are the rollback's own steps 1–4, not the numbered steps
+of the day.**
+
 1. **CLIENT:** put the saved `routescrete.gr` and `www` records back in the
    aspx.gr panel. The old site answers again once the TTL of the Vercel
-   records expires: minutes if step 7 set them to 300, up to an hour at the
-   panel default of 3600.
-2. **CLIENT: remove both domains from Vercel** (Settings → Domains) before
-   step 3.
-   - **Why this is required:** while a custom domain is attached, Vercel
-     points `VERCEL_PROJECT_PRODUCTION_URL` at it. The reverted build would
-     then put its social images on `routescrete.gr`, which by then serves
-     the old site again.
+   records expires: minutes if step 7 on the day set them to 300, up to an
+   hour at the panel default of 3600.
+2. **CLIENT: remove both domains from Vercel** (Settings → Domains) once the
+   restored records have taken effect — about 5 minutes at TTL 300, up to an
+   hour at 3600 — and in any case **before rollback step 3**.
+   - **Not before that:** a host that is no longer attached to the project
+     gets Vercel's DEPLOYMENT_NOT_FOUND. While resolvers still send visitors
+     to Vercel, removing the domain turns a misbehaving site into no site.
+   - **Why it must happen before step 3:** while a custom domain is
+     attached, Vercel points `VERCEL_PROJECT_PRODUCTION_URL` at it. The
+     reverted build would then put its social images on `routescrete.gr`,
+     which by then serves the old site again.
 3. **OURS: turn the switch off.**
    - **If it was set in `.env.production`:** `git revert` the switch commit
      and push.
@@ -297,7 +304,7 @@ What it does not change:
      with a valid certificate, so they still reach it. The domain was never
      submitted to the preload list, so there is nothing to withdraw.
    - **Mail:** `mail` and `MX` are untouched throughout. Names served by the
-     wildcard follow the apex back when step 1 restores it.
+     wildcard follow the apex back when rollback step 1 restores it.
 
 ## Found while preparing (fixed before the day)
 

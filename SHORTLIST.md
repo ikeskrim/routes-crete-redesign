@@ -92,6 +92,9 @@ to the Ministry licence application in `MONUMENT-LICENCE.md`; one fee covers
 up to 20 photographs. For a Preveli Monastery frame, also ask the Monastery
 for written consent (step 6 there).
 
+**One more, not settled:** 949984108 (the old-town lane) rides on our reading
+that a lane needs no licence, which the Ephorate has not confirmed.
+
 ## The licence, in plain words
 
 Read in full at [istockphoto.com/legal/license-agreement](https://www.istockphoto.com/legal/license-agreement)

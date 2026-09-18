@@ -1,3 +1,575 @@
+# C+ LOCKED — THE RULINGS, AND THE CUTOVER PREPARED — 2026-09-17
+
+The client saw the live site and said: **"much better now."** This brief locks
+C+, carries out the photo rulings, and prepares the `routescrete.gr`
+cutover without executing any of it. No approval stops: every judgement
+call was taken on a conservative default, and each one is logged below.
+Every guard, budget and hard wall stood.
+
+## Where it ended
+
+- **Commits on `main`,** in order:
+
+  | commit | what it did |
+  |---|---|
+  | `4db5387` | Dependabot #5 merged |
+  | `437fa02` | C+ locked |
+  | `32b586e` | the cutover prepared |
+  | `b1a8690` | the photo rulings in code and content |
+  | `bed5d7b` | the rulings written up for the client (`MONUMENT-LICENCE.md`, the lists, `CLOSING.md`, one ledger note) |
+  | `9951760` | the `LazyFormEmbed` lint fix, made by the separate task this brief offered |
+  | `ed2506f` | the fixes from the dry run and the first adversarial review |
+  | the record commit | this chapter, `CLOSING.md`'s measurements, and the second review's fixes (documents, plus the P14 BOM fix in `qa/preflight.mts`) |
+
+  **What is live, and what was measured:**
+  - **`ed2506f` is the last code commit this brief put on production**, and
+    it is what the full suite (13/13), the smoke check and Lighthouse
+    measured.
+  - **The record commit is documents and one guard file,** so production's
+    code is the measured code. It is parented on `ed2506f` for that reason.
+  - **Local `main` also carries `a76ed76`,** another session's work on the
+    no-observer fallbacks, committed into this working tree while this brief
+    was closing. This brief did not push it: it is that session's to verify
+    and publish, so `origin/main` skips it and local `main` is one commit
+    ahead. Reconcile with `git pull --rebase origin main`.
+- **Nothing cutover-related was executed:**
+  - no DNS record, domain, Vercel project setting or environment variable
+    was touched;
+  - the origin switch is unset on production;
+  - the one deployment it was turned on for was a throwaway preview branch,
+    deleted after the run;
+  - locally, it was on only in proof builds.
+- **Nothing was bought or sent.** The Greek licence application, the
+  photographer messages and the stock picks are drafts for the client.
+
+## Ground truth at the start
+
+- `HEAD` = `origin/main` = `9f4f9b1`, the working tree clean, and the alias
+  LIVE on it.
+- **Dependabot:** #1 was already closed (superseded by #5); #2, #3, #4 and #5
+  were open.
+- **The domain, read-only lookups:** `routescrete.gr` and `www` point at the
+  old IIS host (31.22.115.30). Mail runs on the same machine under its own
+  `mail` record, and a wildcard record sends every other name to the apex.
+  The facts table is in `CUTOVER.md`.
+
+## 0. C+ locked
+
+- **`editions/plain-c.css` left the tree.** It stays in history at `e5b1059`.
+  - The plain-C section of the previous chapter is marked closed and kept
+    as record, with the restore command. It now also notes that the new
+    transfer hero exists only in grade D.
+  - `CLOSING.md` no longer offers the revert.
+  - The two edition files' comments now point at the record instead of
+    describing a live path.
+- **The design-reset chapter is closed** (a note at its head).
+- **Default:** the revert *file* was removed, not just unlinked. A drop-in
+  kept in the tree is an active path whatever the documents say. Git history
+  keeps it one command away.
+
+## 1. The photo rulings
+
+### CC BY-SA: allowed, as an obligation met
+
+**The mechanism, for CC BY-SA 4.0 only:**
+- **The ledger:** each such record carries a `shareAlike` block, with the
+  licence, the graded file the site serves, and the obligation in words.
+- **/credits:** the row says "The colour-graded version on this site is
+  shared under CC BY-SA 4.0, as that licence requires." and links that file
+  with `download`.
+  - The licence itself requires the adaptation to carry the same licence.
+  - The download link is how the site meets the client's condition that the
+    graded file itself be published.
+- **`qa/credits-guard.mts` C16:** the admitted licence passes only with the
+  block, a derivative equal to the served grade file, the statement on the
+  page, and a download link answering 200 as an image. Every other BY-SA
+  version stays forbidden.
+- **`qa/copy-subset.mts`:** it now derives the /credits row units from the
+  ledger as the page composes them. Before this, a ledger record added after
+  the S0 baseline could never pass.
+
+**The contact sheet, re-evaluated:** 12 frames, including two alternates.
+Licences were re-read on every file page (15:22–15:30 UTC).
+- **Clean passes:** only frames 03 and 05.
+- **Conditional:** the other ten, because they show monuments, need a 100%
+  check, or carry credit conditions.
+
+**One frame clearly beat a live one, and shipped:**
+
+| slot | old (live until today) | new |
+|---|---|---|
+| Transfer page hero | [`rethymno-harbour-dusk.jpg`](https://routes-crete-redesign.vercel.app/images/graded/d/sourced/rethymno-harbour-dusk.jpg). Jerzy Strzelecki, CC BY 3.0. | [`rethymno-harbour-lighthouse.jpg`](https://routes-crete-redesign.vercel.app/images/graded/d/sourced/rethymno-harbour-lighthouse.jpg). C messier, CC BY-SA 4.0, a Commons Quality Image, 4555×3416. |
+
+**Why it is a clear win:**
+- **The old frame:**
+  - a replica tour boat and a moored boat under tarps fill it;
+  - the served 2400 px file shows a legible **HOTEL** sign and seated
+    diners;
+  - there are lens-flare spots in the water;
+  - on a phone, the lighthouse falls outside the crop.
+- **The new frame:**
+  - one lit subject, the lighthouse and its reflection, over calm water;
+  - the title sits on the water;
+  - the phone crop keeps the tower.
+- **Monuments:** it adds no new exposure. Both frames show the same
+  lighthouse.
+
+**Checks on the new frame:**
+- **Provenance:** the master was downloaded from upload.wikimedia.org
+  (4,653,170 B), and its SHA-1 matches the file page (`491511585c96…`).
+- **At 100%:** no person in frame, and no legible registration on any boat.
+  The only sign is the tourist-information "i".
+- **The grade:** grade D; the file is 2400×1800 with no EXIF, XMP or ICC.
+  One blur placeholder was added and nothing else in the map changed.
+- **The caption:** "The Venetian harbour of Rethymno, its lighthouse lit". It
+  makes no time-of-day claim (the camera clock is unverified) and does not
+  name the mountain.
+- **The old frame is kept** in `heroImage_r9` and in the ledger; its monument
+  mark reads "not displayed since 2026-09-17".
+- **One honest caveat:** the frame is cooler than the rest of the edition,
+  even after grade D. The text-contrast guard passed the title over it.
+
+**Not shipped, one line each:**
+- **01, the Fortezza at dusk from the air:** the runner-up, and the first to
+  try if the client wants break 1 at dusk.
+- **03, a Libyan Sea sunset:** a near-twin of the live cover, and weaker.
+- **04, the Plakias sea cave:** its arch is lost at 2:1, Plakias is barred
+  from captions, and the wall's monument status is open.
+- **05, the Preveli heart-shaped rock:** it beats no live frame in its role.
+  If the operator confirms it is the tour's "Heart of Paradise" rock, it is
+  worth adding.
+- **06, the harbour silhouette:** two-thirds empty sky, and its required
+  credit form does not fit the credit line.
+- **07, Arkadi:** not a tour place, and not a cleared monument.
+- **08, the lighthouse through an arch:** a second lighthouse on the page,
+  hard light, and the weakest provenance of the set.
+- **09, the harbour from the air:** diners and boat registrations, and the
+  harbour twice.
+- **10, the Preveli beach:** weaker than both live Preveli frames, with
+  bathers.
+- **The Zelenov panorama:** a stock-sold photographer, an "all rights
+  reserved" EXIF note, and no preview viewed.
+- **The Fortezza 6520:** two night frames in a row, and no preview viewed.
+
+### Public Domain Mark: only where verifiable at source
+
+106 PDM-labelled items were read at source:
+- **59 excluded:**
+  - mostly labels that personal accounts applied to their own photographs,
+    with no waiver (Greek law 2121/1993 art. 29 still protects them);
+  - plus re-uploads of older or third-party works whose public-domain basis
+    is not shown at the source (a 1968 US Navy ship, an 1889 Renoir, a
+    NASA/ESA view);
+  - plus off-topic search results.
+- **47 verifiable at the institution:** 44 US Navy federal works, and one
+  each from Queensland State Archives, the Biodiversity Heritage Library and
+  the Cleveland Museum of Art (a CC0 icon). **None is a candidate:**
+  military subjects, off-topic records, a museum icon.
+
+**Result:** no PDM frame enters the site. Pixabay stays held.
+
+### Monuments: the licence application, prepared
+
+**`MONUMENT-LICENCE.md`** is the client's to submit and pay:
+- the legal basis (ν. 4858/2021 art. 46 par. 4Β and 4Δ; ΥΑ 436630/2023; the
+  fee decision ΚΥΑ 126463/2011 art. 5 par. 2);
+- the monuments, with their declarations and what is known of ownership and
+  competence;
+- Annex A, four live photographs with descriptions, uses and the date each
+  reached a page;
+- the fee band, 1–20 photographs over up to five years: **€250 plus VAT**,
+  €310 at 24%;
+- the authority, the Ephorate of Antiquities of Rethymno;
+- the steps, including the form's fields;
+- the application in Greek, with an English translation;
+- the open questions.
+
+**The ledger** marks the Fortezza, the harbour-and-lighthouse frames and
+Preveli Monastery "licence application pending". The frames stay live by
+the client's call, recorded.
+
+**Research, then a verification pass** (evidence in `.hunt/lock/`):
+- **Fortezza ownership is genuinely open.** The Cadastre records State
+  expropriation of the houses inside, but the Municipality lets venues in
+  the fortress as municipal property (decision 182/2025). The letter asks.
+- **The lighthouse:** no declaration of its own was found, and it is not on
+  the Navy's list of 46 declared lighthouses. The harbour was declared in
+  1965. Ownership and the competent service are open.
+- **Preveli** is most likely the Monastery's own property, which would put
+  it outside art. 46. The Cadastre lists two competent services (ΥΝΜΤΕ
+  Κρήτης and the Ephorate). The Monastery's consent is needed in any case.
+- **The licence must come *before* publication** (art. 46 par. 4Β), and
+  art. 66 makes publication without one an offence. The document says so
+  first, and recommends a lawyer.
+
+**Default: the letter says three true things** that the research's first
+draft did not:
+- the photographs are colour-graded and cropped;
+- they are already online, so the draft asks for regularisation and offers
+  to take them down;
+- photograph 2 is downloadable under its CC BY-SA licence, so the draft asks
+  whether that is compatible.
+
+**Default: the Ministry's form is not signed as printed.** Its printed
+declaration states that the images are unaltered and paid for before
+posting. The document tells the client to strike or annotate those sentences
+with a lawyer, or to apply by letter.
+
+A letter to the Ministry that promises "unaltered" photographs and payment
+"before publication" would be false.
+
+### Title credits
+
+**"Rain on Agia Galini"** (CC BY 2.0, which requires the title) now reads
+"Rain on Agia Galini (title as published)" on `/credits`. Its page captions
+are unchanged. C16 checks the marker.
+
+**Default: the other three were left unmarked:**
+- **"Old Olive Tree near Kavousi":** CC BY 4.0, which does not require the
+  title.
+- **"Fields Messara plain from Phaistos":** CC0, which does not require it
+  either.
+- **"Anougia Crete":** CC BY 2.0, but the site itself names Anogeia on the
+  chart, so marking it would contradict the page.
+
+### "Cretan Sunset I"
+
+**A point-in-time open grant is verified:**
+- CC BY 4.0 on the photographer's page (read 14, 16 and 17 September);
+- CC BY 2.0 in a 2020 Wayback capture of the same original file;
+- CC BY-SA 2.0 when Commons reviewed it in 2018.
+
+All three are irrevocable. The research also corrected the pool record: the
+Flickr file was never replaced; only the licence changed.
+
+**The optional confirmation message** (Greek and English, not sent) is in
+`PHOTOGRAPHERS.md`, with the same result for "Matala". "Matala" also carries
+a hold: its cliff belongs to a protected archaeological site.
+
+**Default: not trialled here.** Its border crop needs a pipeline step (the
+guard checks the master's checksum, and the grade script cannot crop), and
+this pass made no clear-win judgement against the live cover or band.
+
+### The client lists
+
+`PHOTOGRAPHERS.md` and `SHORTLIST.md` are marked final for the client's
+action, and `TOURISM-LIBRARIES.md` follows the ruling. Their status blocks
+and bodies carry the rulings:
+- **The monument application:** every monument frame goes into it, with the
+  Preveli frames and the Monastery's consent named explicitly.
+- **CC BY-SA 4.0 only.**
+- **Lower priority now:** iStock 2201313213 and photographer #4's
+  lighthouse, since the free lighthouse frame now fills that slot.
+- **The C+ stock set is 8 images,** from €85.
+- **Before any purchase:** the public-repository condition still gates it.
+
+## 2. Dependabot
+
+- **#5 (the minor-and-patch group):** motion 13.2.0, playwright 1.63.0 and
+  @types/react-dom were merged as `4db5387`, after the full suite passed on
+  the PR build (13/13, `.hunt/lock/suite/pr5/`).
+- **Held on `maint/post-cutover-majors` (`7670382`):** #3 (TypeScript 7),
+  #4 (ESLint 10), and **#2 (@types/node 20 → 26)**.
+  - **Default:** #2 is a major bump too. Its version should match the Node
+    major that Vercel builds with.
+  - **On that branch:** install, types and build pass, but lint cannot start
+    (typescript-eslint does not support TypeScript 7), and the suite and
+    Lighthouse were not run. `MAINTENANCE.md` there has the merge steps.
+  - **The three PRs stay open.** Nothing is merged before the cutover.
+- **Found in passing:** `npx eslint src` reported one error that was already
+  on `main`: `react-hooks/set-state-in-effect` in `LazyFormEmbed.tsx`, on the
+  fallback for browsers without IntersectionObserver.
+  - It was offered as a separate task, which fixed it in `9951760`: the
+    fallback now mounts from a zero-delay timeout that the cleanup clears.
+  - That task verified its own change (eslint, tsc, security-headers, the
+    smoke check).
+  - Production was measured with it included.
+
+## 3. The cutover, prepared
+
+**`CUTOVER.md`** is `DEPLOYMENT.md`'s checklist made into ordered CLIENT and
+OURS steps:
+- the domain facts;
+- before the day, including the mail names;
+- the day: domains in Vercel, DNS exactly as displayed with TTL 300,
+  verification, the switch, the full suite and Lighthouse on
+  `https://www.routescrete.gr`, and the two real-world flows on a phone;
+- after the day: Search Console, re-checks, Bot Protection, the preload
+  preconditions, and the SPF note;
+- rollback: DNS back, domains removed from Vercel, then the switch off.
+
+`DEPLOYMENT.md` and `README.md` point at it.
+
+**Decided, and documented there:**
+- **`www` is primary** (the current canonical), and the apex redirects to it
+  with a 308.
+
+**The switch, `NEXT_PUBLIC_SITE_URL`:**
+- **Unset today. On cutover day, setting it is one line:** `.env.production`
+  holding `NEXT_PUBLIC_SITE_URL=https://www.routescrete.gr`, force-added and
+  pushed.
+- **Set, it does three things:**
+  - social images move onto the domain;
+  - every page's `<meta name="site-url">` names it;
+  - HSTS becomes `max-age=63072000; includeSubDomains; preload`.
+- **Any other value fails the build.**
+- **Prepared, not enabled:** that header stays off until the switch.
+
+**Two guards read the switch:**
+- **`qa/security-headers.mts`** (HSTS):
+  - off: no domain-wide commitment;
+  - on: both tokens and at least a year;
+  - anything else, or routes that disagree: a failure.
+- **`qa/asset-audit.mts`** (social images; changed after the dry run):
+  - off: on the serving origin, as before;
+  - on: on the canonical origin, with the path served by the deployment
+    under test.
+
+**Preflight P14** (always on): a committed `.env*` may only be
+`.env.production`, holding only the switch at the canonical origin.
+- **What it reads:** the git index and the working tree.
+- **What it prints:** variable names, read with the dotenv grammar — no
+  values, except the switch's own origin when that is the file's only entry.
+  After the reviews, the grammar also covers `KEY: value` lines, multi-line
+  quoted values and a leading BOM.
+
+**`qa/cutover-smoke.mts`** runs the checklist per host:
+- **S1:** the brochure against a pinned SHA-256;
+- **S2:** `/index.html` and the 29 legacy image URLs, plus the retired team
+  photos;
+- **S3:** the six legacy anchors;
+- **S4:** the /credits links;
+- **S5:** WhatsApp and phone links;
+- **S6:** the sandboxed form;
+- **S7:** the 404 page;
+- **S8:** sitemap, robots and canonical.
+
+On the canonical host it also checks the apex and HTTP redirects, and prints
+the apex's HSTS.
+
+**Shown before the day:**
+- **Local, switch on:**
+  - three hosts fetched (www, apex, the alias) against one build;
+  - canonical self-referencing on www and pointing at www elsewhere;
+  - og:url, og:image, sitemap and robots on the domain;
+  - HSTS with both tokens;
+  - a wrong value refused at build;
+  - the new security-headers guard passes, and its previous version fails.
+- **Local, full suite with the switch on:** 12/13. The one failure was
+  copy-subset, which exposed the guard flake below.
+- **Preview dry run** (`cutover-dry-run` branch, `.env.production`
+  force-added, never merged, deleted after):
+  - **The pushes:** first `638d31b` on `32b586e`, then replaced by `0a9d158`
+    on `bed5d7b`, which was measured.
+  - **What Vercel built:** the switch on, HSTS with both tokens, and
+    og:image on www.
+  - **The full suite:** 10/13, and the smoke check passed.
+  - **The three failures:**
+    - `asset-audit`, whose social-image rule assumed the switch off. Fixed
+      (above); the new guard passes on that preview.
+    - `security-headers` and `visual-check`, whose only errors were the CSP
+      blocking Vercel's preview toolbar (`vercel.live/.../feedback.js`).
+      The control was a switch-off preview (`lx9p3jyqc`, a Dependabot
+      build), which fails both in exactly the same way. Production does not
+      load the toolbar.
+  - **Nothing else depends on the origin.**
+  - **One caveat:** that suite ran while the uncommitted `LazyFormEmbed`
+    change sat in the working tree; only its preflight step reads local
+    source.
+
+**Found while preparing, all fixed:**
+1. **Two legacy image URLs returned 404** on production:
+   `/media/spΤΥΡΟΚΟΜ.jpg` and `/media/spΚΑΛΙΤΣ.2.jpg`.
+   - **Cause:** `next.config.ts` dropped non-ASCII redirect sources.
+   - **Why it matters:** the old site still serves both files.
+   - **Fix:** the sources are now written percent-encoded. Vercel matches
+     them, lowercase hex included.
+2. **`/#contact` went nowhere.** It was mapped to an id that exists only on
+   `/contact`. It now opens `/contact` (a mapped value starting with `/` is
+   a page, from the homepage only).
+3. **copy-subset never judged the transfer page's printed preview.** The
+   page opens on a stop with no photograph and prints "No photograph we can
+   honestly caption as this place — so it gets none." The guard saw that
+   only when its scrolling pointer happened to end on such a stop. The
+   sentence is now a listed template.
+4. **asset-audit assumed the switch was off** (the dry run, above).
+5. **Fixed in my own tooling:**
+   - The first smoke fault run did not fire S1. Git's `astextplain` driver
+     made `git diff` compare the PDF's text, so the seeded byte change never
+     reached the patch. Patches are now generated with `--no-textconv`.
+   - The three grading scripts found the project with a Downloads wildcard.
+     It matched an empty, mis-encoded copy of this folder's name left by
+     this work on 14 September, and grading failed. The scripts now use
+     their own location, and the empty folder (14 directories, no files)
+     was removed.
+
+**The mail host, read-only:** `http://mail.routescrete.gr` answers with the
+host's generic "site not found" page, and HTTPS does not answer.
+
+## The adversarial review
+
+Before the record, a read-only workflow reviewed the whole brief's output:
+- **The reviewers:** five, for the cutover plan, the code diff, the monument
+  document, the record, and the client lists.
+- **The skeptics:** one per area, trying to refute each finding.
+- **The result:** 42 findings confirmed, 1 uncertain, 4 refuted. All
+  confirmed ones were fixed in `ed2506f` or in this record. The full list is
+  in `.hunt/lock/review-findings.md`.
+
+**The ones that mattered:**
+- **High: the wildcard DNS record.** `*.routescrete.gr` is a CNAME to the
+  apex. I re-checked it against the authoritative server.
+  - **The risk:** at step 7, every name without its own record (`smtp`,
+    `imap`, `webmail`, `autodiscover`, ...) would follow the apex to Vercel.
+    `CUTOVER.md` had said mail does not move.
+  - **The fix:** step 1 now has the client and host list the mail names in
+    use and give them their own records first. The rollback and the preload
+    preconditions say the same.
+- **High: the Ministry form's printed declaration.** The client would have
+  signed two untrue statements ("unaltered", "paid before posting").
+  `MONUMENT-LICENCE.md` now says not to sign it as printed.
+- **Medium, the cutover plan:**
+  - the TTL of the new records (it decides how fast a rollback is);
+  - removing the Vercel domains before a rollback revert, because
+    `VERCEL_PROJECT_PRODUCTION_URL` follows a custom domain and social
+    images would land on the old site;
+  - the Vercel-variable rollback path;
+  - two commands that tested the wrong host.
+- **Medium, the monument document:**
+  - per-photograph dates (the Fortezza reached a page on 3–4 September, not
+    in August);
+  - the download link is the client's condition, not a licence term;
+  - the fallback if the Ephorate objects is the van, not the unlicensed
+    earlier harbour frame.
+- **Medium, the client lists:**
+  - stale "not yet ruled" text;
+  - the Preveli and old-harbour frames that need the application;
+  - the Matala cliff hold.
+- **Low, the code:** P14 could print a value for `KEY: value` or multi-line
+  entries. Fixed and proven.
+- **Medium, the record:** an orphaned old table in `CLOSING.md`, an
+  overstatement of what the credits guard checks, and a pointer to a
+  gitignored local script.
+- **Low, the record:** the title-marker rule in `CLOSING.md` needed the
+  licence qualifier, and several statements in this chapter were narrowed to
+  what the logs actually show.
+
+**Then a second round, on the fixes themselves.** Three reviewers and three
+skeptics re-read the changed documents and the two changed guards. All twelve
+fixes in their scope had landed correctly, and they found 15 more, every one
+confirmed and fixed (`.hunt/lock/review2-findings.md`):
+- **The rollback removed the Vercel domains too early.** Doing it while
+  resolvers still point at Vercel turns a misbehaving site into
+  DEPLOYMENT_NOT_FOUND. It is now tied to the TTL window, and still before
+  the revert.
+- **The letters still compared the four photographs to "the site's other
+  photographs".** One of those is the terracotta duotone back-cover plate,
+  so the sentence was untrue. Both letters now name grade D.
+- **The fee is due before use, not after.** ΥΑ 436630/2023 art. 3 par. 5
+  says «πριν τη χρήση των απεικονίσεων»; only the payee changed with ODAP.
+  The document had filed the whole sentence under "outdated". It now states
+  the rule, in the risk list and in the lawyer's questions.
+- **"Take photograph 2 down" was incomplete.** `/credits` lists every ledger
+  record, so the download would survive the hero swap. The steps now include
+  the ledger row, the graded file and the master.
+- **The chapel frames in the photographer list had no hold,** although the
+  site's own gorge-chapel frame has one. Added, with the old-town lane.
+- **The form's declaration quote was half a sentence,** and the multi-service
+  step misdescribed which General Directorate receives the application.
+- **P14 dropped the first variable name after a BOM.** Fixed, with a
+  fifteenth proof case.
+- **This chapter** claimed a clean `HEAD` = `origin/main` while another
+  session's commit sat on local `main`, and overstated two proof controls.
+
+## Proofs (D13)
+
+Every changed instrument was proven both ways with seeded faults:
+- **The runners:** `.hunt/cplus/proofs/run-proofs.mjs`, and for P14
+  `.hunt/lock/p14/prove-p14.sh`.
+- **Where the records are:** manifests and summaries in `.hunt/lock/`, and
+  run-proofs' per-run logs in `.hunt/cplus/proofs/`.
+
+| instrument | pass | faults caught | control |
+|---|---|---|---|
+| **copy-subset**, no-photo template | the forced no-photo state passes | a reworded fallback | the old guard flags the printed preview |
+| **copy-subset**, /credits rows | the new row passes | a reworded share-alike statement | the old guard cannot judge a new row |
+| **security-headers**, switch | on and off builds pass | preload while off; no preload while on; a foreign `site-url`; routes that disagree | the old guard misses three of them |
+| **asset-audit**, switch | local switch-on; production (off); the preview (on) | og:image on the vercel origin while on; a missing image path; a foreign `site-url` | the old guard misjudges the preview, and misses the served-origin and foreign-switch faults (it catches the missing path through its graded-files rule) |
+| **P14** (15 cases) | none; the switch alone; the switch with a comment | an extra key (value never printed); a wrong origin; working-tree drift; another root file; a nested file; a `KEY: value` entry; a multi-line value; a leading BOM | the old preflight misses the extra key and the nested file; the pre-fix P14 leaks both values; tree and index untouched |
+| **cutover-smoke** | local off; local on; production `32b586e`, `bed5d7b` and `ed2506f` | S1–S8 at once, 10 failures | production `4db5387`: the two real defects |
+| **credits-guard C16** | the new row and the marker | empty obligation; wrong derivative; CC BY-SA 3.0; no download link; reworded statement and dropped marker | the old guard rejects the admitted licence |
+
+## Conservative defaults taken
+
+1. Removed the plain-C file rather than only unlinking it.
+2. Held #2 (@types/node) with the two named majors.
+3. Admitted **CC BY-SA 4.0 only**, not every BY-SA version, and only as an
+   obligation the guard can check.
+4. Shipped one BY-SA frame, not the runner-up.
+5. Added no new monument frame while the licence is pending, beyond the
+   like-for-like swap.
+6. Marked only the one title that the licence requires and that names a
+   place the site does not otherwise name.
+7. Did not trial "Cretan Sunset I", and put "Matala" behind its cliff
+   question.
+8. Made the Ministry letter truthful where the first draft was not, and
+   advised against signing the form's printed declaration as printed.
+9. Named the vercel.app address in the letter until the cutover.
+10. Kept the old-town lane out of the application as a stated reading, to
+    be confirmed.
+11. If the Ephorate objects to the BY-SA hero, fall back to the van, never
+    to the unlicensed earlier harbour frame.
+12. Ran the switch-on dry run on a throwaway preview, not on production:
+    turning it on in production would *be* the cutover switch.
+13. Left an apex `includeSubDomains` and preload submission as later client
+    decisions, with the wildcard as a new precondition.
+14. Offered the pre-existing lint error as a separate task. It was done
+    there, and shipped with this brief.
+
+## Measured
+
+**Production, `ed2506f`** (this brief's code, including the lint fix):
+- **The full guard suite: 13/13**, and `qa/cutover-smoke.mts` OK
+  (`.hunt/lock/suite/prod-ed2506f/`).
+- **Before the review fixes,** `bed5d7b` also measured 13/13 with the smoke
+  check (`prod-bed5d7b/`).
+
+**Lighthouse on production `ed2506f`,** mobile, median of five interleaved
+runs per route (Playwright's HeadlessChrome 153.0.8010.12, Lighthouse 13.4.1,
+benchmark index ~3100):
+
+| route | performance | the five runs | a11y | TBT | CLS |
+|---|---|---|---|---|---|
+| `/` | **92** | 64 89 92 92 93 | 100 | 114 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **90** | 89 90 90 90 90 | 100 | 41 ms | 0 |
+| `/transfers/private-transfers-rethymno` | **93** | 89 93 93 95 96 | 100 | 80 ms | 0 |
+| `/transfers` | **95** | 94 95 95 97 97 | 100 | 32 ms | 0 |
+| `/contact` | **97** | 94 97 97 97 98 | 100 | 24 ms | 0 |
+
+- **The floors held on every route:** performance ≥ 89, a11y 100, CLS 0,
+  TBT ≤ 250 ms. None was touched.
+- **The home route's first run read 64** (TBT 810 ms), a cold start; its
+  other four read 89–93. That is why the gate is the median.
+- **Against the previous close** (`524cada`): 90 / 90 / 93 / 94 / 97. This
+  one reads 92 / 90 / 93 / 95 / 97.
+- **Two honest notes on the measurement:**
+  - Another local session was active on this machine during part of this
+    brief (it made `9951760`), so "idle" is not claimed. The Lighthouse
+    passes ran after that commit, with routes interleaved and the median as
+    the gate; this session ran nothing else while they ran.
+  - The first attempt at `/transfers` and `/contact` measured nothing:
+    Git Bash rewrote the leading-slash arguments, so Lighthouse loaded
+    `C:/Program Files/Git/transfers` and scored 0 five times. Re-run with
+    `MSYS_NO_PATHCONV=1`.
+
+**Local, `ed2506f`'s tree** (build `JcuY3nGdQr0ehOwlCSa0p`, switch off): the
+full suite 13/13 and the smoke check OK.
+
+**The switch-on preview** (`0a9d158`): 10/13 and the smoke check, with the
+three failures explained above.
+
+---
+
 # DIRECTION C CHOSEN — C+, THE ROLLOUT, AND THE FOUNDATIONS — 2026-09-14 to 2026-09-17
 
 The client picked **C — Warm Editorial**, with one instruction: "it can become

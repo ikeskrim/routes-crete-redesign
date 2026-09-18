@@ -284,23 +284,28 @@ has been held to throughout: performance ≥ 89, a11y 100, CLS 0, TBT ≤ 250 ms
 **Do not lower a floor to make a red run green.** Localhost on this machine runs
 about ten points under the deployment; the deployment is the only gate.
 
-Measured on the deployment on 2026-09-17, five interleaved runs per route, on
-the close commit `524cada` (C+ with the italic, drafts deleted):
+Measured on the deployment on 2026-09-18, five interleaved runs per route, on
+`ed2506f` (the close of the lock-and-cutover-preparation brief; its guard
+suite ran on 2026-09-17):
 
 | route | performance | spread | a11y | TBT | CLS |
 |---|---|---|---|---|---|
-| `/` | **90** | 89 89 90 93 93 | 100 | 63 ms | 0 |
-| `/experiences/kourtaliotis-temple-of-nature` | **90** | 90 90 90 90 91 | 100 | 43 ms | 0 |
-| `/transfers/private-transfers-rethymno` | **93** | 92 92 93 94 95 | 100 | 50 ms | 0 |
-| `/transfers` | **94** | 92 94 94 94 96 | 100 | 24 ms | 0 |
-| `/contact` | **97** | 94 96 97 99 99 | 100 | 16 ms | 0 |
+| `/` | **92** | 64 89 92 92 93 | 100 | 114 ms | 0 |
+| `/experiences/kourtaliotis-temple-of-nature` | **90** | 89 90 90 90 90 | 100 | 41 ms | 0 |
+| `/transfers/private-transfers-rethymno` | **93** | 89 93 93 95 96 | 100 | 80 ms | 0 |
+| `/transfers` | **95** | 94 95 95 97 97 | 100 | 32 ms | 0 |
+| `/contact` | **97** | 94 97 97 97 98 | 100 | 24 ms | 0 |
+
+The home route's first run read 64 (TBT 810 ms), a cold start; the other four
+read 89–93. That is why the gate is the median. The previous close, on
+`524cada`, measured 90 / 90 / 93 / 94 / 97.
 
 **Branch previews read about 3 points lower on the item routes.** Every
 preview build loads Vercel's comment-toolbar script from `vercel.live`, and
 Lighthouse charges a new connection for it. Production loads it only behind a
-cookie. Judge budgets on production. The previous close, on `7ae6276`,
-measured 92 / 92 / 94 on the first three routes (its table is in
-`MORNING.md`).
+cookie. Judge budgets on production. That script is also why a preview fails
+`security-headers` and `visual-check` on the CSP while production passes
+both.
 
 ---
 
